@@ -19,6 +19,12 @@
                                       | PostgreSQL |
                                       +------------+
 </pre>
+## Development
+### PostgreSQL Docker
+Run PostgreSQL in docker:
+~~~
+    docker-compose up
+~~~
 
 ## Links
 * Developer Portal Prod:

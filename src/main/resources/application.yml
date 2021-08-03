@@ -4,3 +4,8 @@ spring:
     username: user
     password: pwd
     driver-class-name: org.postgresql.Driver
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
