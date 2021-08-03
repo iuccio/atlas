@@ -9,6 +9,6 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pwd
-      POSTGRES_DB: timetable-number
+      POSTGRES_DB: timetable-field-number
     volumes:
       - "/var/lib/postgresql/data"
