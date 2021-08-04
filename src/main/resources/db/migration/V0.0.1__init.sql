@@ -9,8 +9,8 @@ CREATE TABLE timetable_field_number_version
     creator                         VARCHAR(50),
     edition_date                    TIMESTAMP,
     editor                          VARCHAR(50),
-    valid_from                      TIMESTAMP,
-    valid_to                        TIMESTAMP,
+    valid_from                      DATE,
+    valid_to                        DATE,
     business_organisation           BIGINT,
     comment                         VARCHAR(250),
     name_compact                    VARCHAR(50)
@@ -22,8 +22,9 @@ CREATE TABLE timetable_field_lines_relation
 (
     id                              BIGINT NOT NULL PRIMARY KEY,
     slnid                           VARCHAR(500),
+    timetable_field_version_id      BIGINT,
     CONSTRAINT fk_timetable_field_number_version
-        FOREIGN KEY (id)
+        FOREIGN KEY (timetable_field_version_id)
             REFERENCES timetable_field_number_version(id)
 );
 
