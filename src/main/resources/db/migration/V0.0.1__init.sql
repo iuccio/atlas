@@ -5,6 +5,7 @@ CREATE TABLE timetable_field_number_version
     name                            VARCHAR(500),
     number                          VARCHAR(50),
     swiss_timetable_field_number    VARCHAR(50),
+    status                          VARCHAR(50),
     creation_date                   TIMESTAMP,
     creator                         VARCHAR(50),
     edition_date                    TIMESTAMP,
@@ -13,6 +14,7 @@ CREATE TABLE timetable_field_number_version
     valid_to                        DATE,
     business_organisation           BIGINT,
     comment                         VARCHAR(250),
+    type                            VARCHAR(50),
     name_compact                    VARCHAR(50)
 );
 
