@@ -1,13 +1,13 @@
-package ch.sbb.atlas;
+package ch.sbb.timetable.field.number;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AtlasBackendApplication {
+public class TimetableFieldNumberApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AtlasBackendApplication.class, args);
+		SpringApplication.run(TimetableFieldNumberApplication.class, args);
 	}
 
 }

@@ -1,13 +1,13 @@
-package ch.sbb.atlas;
+package ch.sbb.timetable.field.number;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AtlasBackendApplicationTests {
+public class TimetableFieldNumberApplicationTest {
 
 	@Test
-	void contextLoads() {
+	public void contextLoads() {
 	}
 
 }
