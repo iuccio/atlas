@@ -12,9 +12,9 @@ CREATE TABLE timetable_field_number_version
     editor                          VARCHAR(50),
     valid_from                      DATE,
     valid_to                        DATE,
-    business_organisation           BIGINT,
+    business_organisation           VARCHAR(50),
     comment                         VARCHAR(250),
-    type                            VARCHAR(50),
+    type      VARCHAR(50),
     name_compact                    VARCHAR(50)
 );
 
