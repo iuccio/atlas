@@ -1,7 +1,7 @@
-package ch.sbb.atlas.entity;
+package ch.sbb.timetable.field.number.entity;
 
-import ch.sbb.atlas.enumaration.Status;
-import ch.sbb.atlas.enumaration.Type;
+import ch.sbb.timetable.field.number.enumaration.Status;
+import ch.sbb.timetable.field.number.enumaration.Type;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity(name = "timetable_field_number_version")
 @Data
-public class TimetableFieldNumberVersion {
+public class Version {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "timetable_field_number_version_seq")

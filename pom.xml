@@ -6,13 +6,13 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.5.2</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>ch.sbb</groupId>
-	<artifactId>atlas</artifactId>
+	<artifactId>timetable-field-number</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>AtlasBackend</name>
-	<description>Atlas Backend</description>
+	<name>TimetableFieldNumber Backend</name>
+	<description>TimetableFieldNumber Backend</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
