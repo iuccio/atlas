@@ -2,7 +2,7 @@ CREATE TABLE timetable_field_number_version
 (
     id                              BIGINT NOT NULL PRIMARY KEY,
     fpfnid                          VARCHAR(500),
-    name                            VARCHAR(500),
+    name                            VARCHAR(1000),
     number                          VARCHAR(50),
     swiss_timetable_field_number    VARCHAR(50),
     status                          VARCHAR(50),
