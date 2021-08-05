@@ -38,6 +38,16 @@ Run PostgreSQL in docker:
     docker-compose up
 ~~~
 
+Stop PostgreSQL container:
+~~~
+    docker-compose down
+~~~
+
+Stop PostgreSQL container and remove volume:
+~~~
+   docker-compose down -v 
+~~~
+
 ## Links
 * Developer Portal Prod:
 * Developer Portal Int:
