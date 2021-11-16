@@ -1,0 +1,22 @@
+server:
+  port: 8888
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+info:
+  app:
+    name: atlas-gateway
+    version: @version@
+    buildtime: @timestamp@
+logging:
+  level:
+    root: INFO
+gateway:
+  routes:
+    timetable-field-number: http://localhost:8080
+    line-directory: http://localhost:8082
