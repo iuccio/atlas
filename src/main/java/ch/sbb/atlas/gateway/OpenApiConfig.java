@@ -1,6 +1,5 @@
 package ch.sbb.atlas.gateway;
 
-import static ch.sbb.atlas.gateway.RouteConfig.BACKEND_SUFFIX;
 
 import feign.Feign;
 import feign.FeignException;
@@ -79,10 +78,7 @@ public class OpenApiConfig {
   private Map<String, OpenAPI> loadOpenApis(RouteLocator routeLocator) {
     List<Route> routes = Objects.requireNonNull(routeLocator.getRoutes().collectList().block());
     Map<String, OpenAPI> openApis = new HashMap<>();
-    routes.forEach(route -> {
-      String resource = route.getId().replace(BACKEND_SUFFIX, "");
-      openApis.put(resource, getOpenApi(route.getUri().toString()));
-    });
+    routes.forEach(route -> openApis.put(route.getId(), getOpenApi(route.getUri().toString())));
     return openApis;
   }
 
