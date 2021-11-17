@@ -14,7 +14,6 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,22 +33,36 @@ import org.springframework.web.bind.annotation.GetMapping;
 @EnableFeignClients
 public class OpenApiConfig {
 
+  private static final String NEWLINE = "<br/>";
+
   @Value("${info.app.version}")
   private String version;
 
   @Bean
   public OpenAPI openApi(RouteLocator routeLocator) {
     Map<String, OpenAPI> openApis = loadOpenApis(routeLocator);
-    return createAtlasApi().components(combineComponents(openApis.values()))
-                           .paths(combinePaths(openApis));
+    return createAtlasApi(openApis).components(combineComponents(openApis))
+                                   .paths(combinePaths(openApis));
   }
 
-  private OpenAPI createAtlasApi() {
+  private OpenAPI createAtlasApi(Map<String, OpenAPI> apis) {
+    StringBuilder description = new StringBuilder().append(
+                                                       "This is the API for all your needs SKI core data")
+                                                   .append(NEWLINE)
+                                                   .append(NEWLINE)
+                                                   .append(
+                                                       "Atlas serves the following applications:")
+                                                   .append(
+                                                       NEWLINE);
+    apis.forEach((application, api) -> description.append(application)
+                                                  .append(":")
+                                                  .append(api.getInfo().getVersion())
+                                                  .append(NEWLINE));
     return new OpenAPI()
         .addServersItem(new Server().url("/"))
         .info(new Info()
             .title("Atlas API")
-            .description("This is the API for all your needs SKI core data")
+            .description(description.toString())
             .contact(new Contact().name("ATLAS Team")
                                   .url(
                                       "https://confluence.sbb.ch/display/ATLAS/ATLAS+-+SKI+Business+Platform")
@@ -57,9 +70,9 @@ public class OpenApiConfig {
             .version(version));
   }
 
-  private Components combineComponents(Collection<OpenAPI> apis) {
+  private Components combineComponents(Map<String, OpenAPI> apis) {
     Components components = new Components();
-    for (OpenAPI openAPI : apis) {
+    for (OpenAPI openAPI : apis.values()) {
       openAPI.getComponents().getSchemas().forEach(components::addSchemas);
     }
     return components;
