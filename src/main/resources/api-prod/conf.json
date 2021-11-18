@@ -1,0 +1,166 @@
+{
+  "apim_schemaversion": "2.0",
+  "system_name": "blueprint",
+  "name": "ESTA Blueprint API",
+  "mega_id": "BLUEPRINT",
+  "scm_url": "https://code.sbb.ch/scm/kd_esta_blueprints/aitg-apim-configuration.git",
+  "developer_resources_url": "https://confluence.sbb.ch/display/AITG/Getting+started+with+APIM",
+  "icon": "170_zug_249",
+  "teaser": "This API shows how to integrate your Application with the API-Management",
+  "tags": [
+    "blueprint",
+    "esta"
+  ],
+  "scope": "internal",
+  "provider": "test04",
+  "routing_over_wsg" : true,
+  "owner_email": "xai182@sbb.ch",
+  "contact": {
+    "name": "Team Integration",
+    "email": "integration@sbb.ch"
+  },
+  "personenkreis_betrieb": [
+    {
+      "name": "Entwicklungshelfer Example",
+      "email": "entwicklungshelfer@sbb.ch"
+    },
+    {
+      "name": "Teambox Example",
+      "email": "teambox@sbb.ch"
+    },
+    {
+      "name": "Fachsupport Example",
+      "email": "fachsupport@sbb.ch"
+    }
+  ],
+  "api_provider": [
+    "philip.moesli2@sbb.ch",
+    "pascal.moser2@sbb.ch",
+    "roland.jost@sbb.ch",
+    "claude.gex@sbb.ch",
+    "manuel.schulz@sbb.ch"
+  ],
+  "auth_provider" : [ "rh_sso"],
+  "sso": {
+    "client_roles": [
+      "read",
+      "write",
+      "delete"
+    ],
+    "default_oauth_flow": "implicit",
+    "oauth_flows": [
+      "authorizationCode",
+      "implicit",
+      "clientCredentials"
+    ]
+  },
+  "proxy": {
+    "dns_prefix": "blueprint",
+    "api_backend": "https://@@user.api.backend@@",
+    "api_internal": "https://@@user.api.internal@@",
+    "add_try_it_out_to_spec": true,
+    "proxy_rules": [
+      {
+        "http_method": "GET",
+        "pattern": "/api/blueprint",
+        "metric_system_name": "read_item"
+      },
+      {
+        "http_method": "POST",
+        "pattern": "/api/blueprint",
+        "metric_system_name": "create_item"
+      },
+      {
+        "http_method": "PUT",
+        "pattern": "/api/blueprint/{id}",
+        "metric_system_name": "update_item"
+      },
+      {
+        "http_method": "DELETE",
+        "pattern": "/api/blueprint/{id}",
+        "metric_system_name": "delete_item"
+      }
+    ]
+  },
+  "metric_methods": [
+    {
+      "name": "read Item",
+      "system_name": "read_item"
+    },
+    {
+      "name": "Create Item",
+      "system_name": "create_item"
+    },
+    {
+      "name": "Update Item",
+      "system_name": "update_item"
+    },
+    {
+      "name": "Delete Item",
+      "system_name": "delete_item"
+    }
+  ],
+  "application_plans": [
+    {
+      "name": "Read",
+      "description": "Plan for reading items",
+      "system_name": "read",
+      "approval_required": false,
+      "limits": [
+        {
+          "period": "minute",
+          "value": 5,
+          "metric_system_name": "read_item"
+        },
+        {
+          "period": "eternity",
+          "value": 0,
+          "metric_system_name": "create_item"
+        },
+        {
+          "period": "eternity",
+          "value": 0,
+          "metric_system_name": "update_item"
+        },
+        {
+          "period": "eternity",
+          "value": 0,
+          "metric_system_name": "delete_item"
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "description": "Plan providing admin rights to clients",
+      "system_name": "admin",
+      "approval_required": false,
+      "limits": [
+        {
+          "period": "minute",
+          "value": 5,
+          "metric_system_name": "read_item"
+        },
+        {
+          "period": "day",
+          "value": 10,
+          "metric_system_name": "create_item"
+        },
+        {
+          "period": "hour",
+          "value": 15,
+          "metric_system_name": "update_item"
+        },
+        {
+          "period": "week",
+          "value": 50,
+          "metric_system_name": "delete_item"
+        }
+      ]
+    },
+    {
+      "name": "Unlimited",
+      "system_name": "unlimited",
+      "approval_required": true
+    }
+  ]
+}
