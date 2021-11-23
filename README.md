@@ -1,8 +1,7 @@
 # Atlas versioning library
 
 [![Build Status](https://ci.sbb.ch/job/KI_ATLAS/job/atlas-versioning/job/master/badge/icon)](https://ci.sbb.ch/job/KI_ATLAS/job/atlas-versioning/job/master/)
-[![Quality Gate Status](https://codequality.sbb.ch/api/project_badges/measure?project=ch.sbb%3Atimetable-field-number-backend&metric=alert_status)](https://codequality.sbb.ch/dashboard?id=ch.sbb%3Atimetable-field-number-backend)
-
+[![Quality Gate Status](https://codequality.sbb.ch/api/project_badges/measure?project=ch.sbb%3Aatlas-versioning&metric=alert_status)](https://codequality.sbb.ch/dashboard?id=ch.sbb%3Aatlas-versioning)
 <!-- toc -->
 
 - [ATLAS](#atlas)
