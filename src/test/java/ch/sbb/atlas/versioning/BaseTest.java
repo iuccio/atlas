@@ -1,4 +1,4 @@
-package ch.sbb.atlas;
+package ch.sbb.atlas.versioning;
 
 import ch.sbb.atlas.versioning.annotation.AtlasVersionable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionableProperty;
@@ -27,8 +27,7 @@ public abstract class BaseTest {
     private String property;
     @AtlasVersionableProperty
     private String anotherProperty;
-    @AtlasVersionableProperty(relationType = RelationType.ONE_TO_MANY, relationsFields = {
-        Relation.Fields.value})
+    @AtlasVersionableProperty(relationType = RelationType.ONE_TO_MANY, relationsFields = {Relation.Fields.value})
     private List<Relation> oneToManyRelation;
 
     @Data

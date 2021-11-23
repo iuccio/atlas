@@ -1,10 +1,10 @@
 package ch.sbb.atlas.versioning.service;
 
-import ch.sbb.atlas.versioning.model.Versionable;
-import ch.sbb.atlas.versioning.model.VersionableProperty;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.annotation.AtlasAnnotationProcessor;
 import ch.sbb.atlas.versioning.engine.VersioningEngine;
+import ch.sbb.atlas.versioning.model.Versionable;
+import ch.sbb.atlas.versioning.model.VersionableProperty;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 

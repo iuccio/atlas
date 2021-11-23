@@ -2,10 +2,10 @@ package ch.sbb.atlas.versioning.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import ch.sbb.atlas.BaseTest.VersionableObject.Relation;
 import ch.sbb.atlas.versioning.model.Entity;
 import ch.sbb.atlas.versioning.model.Property;
 import ch.sbb.atlas.versioning.model.VersionedObject;
+import ch.sbb.atlas.versioning.BaseTest.VersionableObject.Relation;
 import ch.sbb.atlas.versioning.model.VersioningAction;
 import java.time.LocalDate;
 import java.util.Arrays;
