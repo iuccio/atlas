@@ -3,11 +3,11 @@ package ch.sbb.atlas.versioning.convert;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import ch.sbb.atlas.BaseTest;
-import ch.sbb.atlas.BaseTest.VersionableObject.Relation;
-import ch.sbb.atlas.versioning.exception.VersioningException;
 import ch.sbb.atlas.versioning.model.Entity;
 import ch.sbb.atlas.versioning.model.Property;
+import ch.sbb.atlas.versioning.BaseTest;
+import ch.sbb.atlas.versioning.BaseTest.VersionableObject.Relation;
+import ch.sbb.atlas.versioning.exception.VersioningException;
 import ch.sbb.atlas.versioning.model.ToVersioning;
 import ch.sbb.atlas.versioning.model.VersionableProperty;
 import ch.sbb.atlas.versioning.model.VersionableProperty.RelationType;
@@ -24,12 +24,12 @@ public class ConverterHelperTest extends BaseTest {
 
   static {
     VERSIONABLE.add(VersionableProperty.builder()
-                                       .fieldName(BaseTest.VersionableObject.Fields.property)
+                                       .fieldName(VersionableObject.Fields.property)
                                        .relationType(RelationType.NONE)
                                        .build());
     VERSIONABLE.add(VersionableProperty.builder()
                                        .fieldName(
-                                           BaseTest.VersionableObject.Fields.oneToManyRelation)
+                                           VersionableObject.Fields.oneToManyRelation)
                                        .relationType(RelationType.ONE_TO_MANY)
                                        .relationsFields(List.of(Relation.Fields.value))
                                        .build());
@@ -207,7 +207,7 @@ public class ConverterHelperTest extends BaseTest {
     List<VersionableProperty> VERSIONABLE = new ArrayList<>();
 
     VERSIONABLE.add(VersionableProperty.builder()
-                                       .fieldName(BaseTest.VersionableObject.Fields.property)
+                                       .fieldName(VersionableObject.Fields.property)
                                        .relationType(RelationType.ONE_TO_ONE)
                                        .build());
     //when
@@ -250,7 +250,7 @@ public class ConverterHelperTest extends BaseTest {
 
     VERSIONABLE.add(VersionableProperty.builder()
                                        .fieldName(
-                                           BaseTest.VersionableObject.Fields.oneToManyRelation)
+                                           VersionableObject.Fields.oneToManyRelation)
                                        .relationType(RelationType.ONE_TO_MANY)
                                        .relationsFields(List.of("not_defined"))
                                        .build());

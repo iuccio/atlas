@@ -4,13 +4,14 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import ch.sbb.atlas.versioning.model.Entity;
 import ch.sbb.atlas.versioning.model.Property;
+import ch.sbb.atlas.versioning.model.Entity;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.model.VersioningAction;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class VersionableServiceScenario5Test extends VersionableServiceBaseTest {
@@ -64,7 +65,7 @@ public class VersionableServiceScenario5Test extends VersionableServiceBaseTest 
     Property oneToManyRelationFirstVersionedObjectEntity = filterProperty(
         firstVersionedObjectEntity.getProperties(), VersionableObject.Fields.oneToManyRelation);
     assertThat(oneToManyRelationFirstVersionedObjectEntity.hasOneToManyRelation()).isTrue();
-    assertThat(oneToManyRelationFirstVersionedObjectEntity.getOneToMany()).isEmpty();
+    Assertions.assertThat(oneToManyRelationFirstVersionedObjectEntity.getOneToMany()).isEmpty();
 
     VersionedObject secondVersionedObject = sortedVersionedObjects.get(1);
     assertThat(secondVersionedObject.getAction()).isEqualTo(VersioningAction.NEW);
@@ -81,7 +82,7 @@ public class VersionableServiceScenario5Test extends VersionableServiceBaseTest 
     Property oneToManyRelationSecondVersionedObjectEntity = filterProperty(
         secondVersionedObjectEntity.getProperties(), VersionableObject.Fields.oneToManyRelation);
     assertThat(oneToManyRelationSecondVersionedObjectEntity.hasOneToManyRelation()).isTrue();
-    assertThat(oneToManyRelationSecondVersionedObjectEntity.getOneToMany()).isEmpty();
+    Assertions.assertThat(oneToManyRelationSecondVersionedObjectEntity.getOneToMany()).isEmpty();
 
     VersionedObject thirdVersionedObject = sortedVersionedObjects.get(2);
     assertThat(thirdVersionedObject.getAction()).isEqualTo(VersioningAction.UPDATE);
@@ -98,7 +99,7 @@ public class VersionableServiceScenario5Test extends VersionableServiceBaseTest 
     Property oneToManyRelationThirdVersionedObjectEntity = filterProperty(
         thirdVersionedObjectEntity.getProperties(), VersionableObject.Fields.oneToManyRelation);
     assertThat(oneToManyRelationThirdVersionedObjectEntity.hasOneToManyRelation()).isTrue();
-    assertThat(oneToManyRelationThirdVersionedObjectEntity.getOneToMany()).isEmpty();
+    Assertions.assertThat(oneToManyRelationThirdVersionedObjectEntity.getOneToMany()).isEmpty();
 
     VersionedObject fourthVersionedObject = sortedVersionedObjects.get(3);
     assertThat(fourthVersionedObject.getAction()).isEqualTo(VersioningAction.UPDATE);
@@ -133,7 +134,7 @@ public class VersionableServiceScenario5Test extends VersionableServiceBaseTest 
     Property oneToManyRelationFifthVersionedObjectEntity = filterProperty(
         fifthVersionedObjectEntity.getProperties(), VersionableObject.Fields.oneToManyRelation);
     assertThat(oneToManyRelationFifthVersionedObjectEntity.hasOneToManyRelation()).isTrue();
-    assertThat(oneToManyRelationFifthVersionedObjectEntity.getOneToMany()).isEmpty();
+    Assertions.assertThat(oneToManyRelationFifthVersionedObjectEntity.getOneToMany()).isEmpty();
 
     VersionedObject sixthVersionedObject = sortedVersionedObjects.get(5);
     assertThat(sixthVersionedObject.getAction()).isEqualTo(VersioningAction.UPDATE);
@@ -150,7 +151,7 @@ public class VersionableServiceScenario5Test extends VersionableServiceBaseTest 
     Property oneToManyRelationSixthVersionedObjectEntity = filterProperty(
         sixthVersionedObjectEntity.getProperties(), VersionableObject.Fields.oneToManyRelation);
     assertThat(oneToManyRelationSixthVersionedObjectEntity.hasOneToManyRelation()).isTrue();
-    assertThat(oneToManyRelationSixthVersionedObjectEntity.getOneToMany()).isEmpty();
+    Assertions.assertThat(oneToManyRelationSixthVersionedObjectEntity.getOneToMany()).isEmpty();
 
   }
 

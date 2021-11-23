@@ -4,11 +4,11 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import ch.sbb.atlas.BaseTest.VersionableObject.Fields;
 import ch.sbb.atlas.versioning.model.Entity;
 import ch.sbb.atlas.versioning.model.Property;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.model.VersioningAction;
+import ch.sbb.atlas.versioning.BaseTest.VersionableObject.Fields;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -134,11 +134,11 @@ public class VersionableServiceScenario8Test extends VersionableServiceBaseTest 
     assertThat(thirdVersionedObjectEntity.getProperties()).isNotEmpty();
     assertThat(thirdVersionedObjectEntity.getProperties().size()).isEqualTo(3);
     Property propertyThirdVersionedObjectEntity = filterProperty(
-        thirdVersionedObjectEntity.getProperties(), VersionableObject.Fields.property);
+        thirdVersionedObjectEntity.getProperties(), Fields.property);
     assertThat(propertyThirdVersionedObjectEntity).isNotNull();
     assertThat(propertyThirdVersionedObjectEntity.getValue()).isEqualTo("Ciao-Ciao");
     Property oneToManyRelationThirdVersionedObjectEntity = filterProperty(
-        thirdVersionedObjectEntity.getProperties(), VersionableObject.Fields.oneToManyRelation);
+        thirdVersionedObjectEntity.getProperties(), Fields.oneToManyRelation);
     assertThat(oneToManyRelationThirdVersionedObjectEntity.hasOneToManyRelation()).isTrue();
     assertThat(oneToManyRelationThirdVersionedObjectEntity.getOneToMany()).isEmpty();
 
@@ -151,11 +151,11 @@ public class VersionableServiceScenario8Test extends VersionableServiceBaseTest 
     assertThat(fourthVersionedObjectEntity).isNotNull();
     assertThat(fourthVersionedObjectEntity.getProperties().size()).isEqualTo(3);
     Property propertyFourthVersionedObjectEntity = filterProperty(
-        fourthVersionedObjectEntity.getProperties(), VersionableObject.Fields.property);
+        fourthVersionedObjectEntity.getProperties(), Fields.property);
     assertThat(propertyFourthVersionedObjectEntity).isNotNull();
     assertThat(propertyFourthVersionedObjectEntity.getValue()).isEqualTo("Ciao3");
     Property oneToManyRelationFourthVersionedObjectEntity = filterProperty(
-        fourthVersionedObjectEntity.getProperties(), VersionableObject.Fields.oneToManyRelation);
+        fourthVersionedObjectEntity.getProperties(), Fields.oneToManyRelation);
     assertThat(oneToManyRelationFourthVersionedObjectEntity.hasOneToManyRelation()).isTrue();
     assertThat(oneToManyRelationFourthVersionedObjectEntity.getOneToMany()).isEmpty();
 
@@ -375,11 +375,11 @@ public class VersionableServiceScenario8Test extends VersionableServiceBaseTest 
     assertThat(fourthVersionedObjectEntity).isNotNull();
     assertThat(fourthVersionedObjectEntity.getProperties()).isNotEmpty();
     Property propertyFourthVersionedObjectEntity = filterProperty(
-        fourthVersionedObjectEntity.getProperties(), VersionableObject.Fields.property);
+        fourthVersionedObjectEntity.getProperties(), Fields.property);
     assertThat(propertyFourthVersionedObjectEntity).isNotNull();
     assertThat(propertyFourthVersionedObjectEntity.getValue()).isEqualTo("Ciao-Ciao");
     Property oneToManyRelationFourthVersionedObjectEntity = filterProperty(
-        fourthVersionedObjectEntity.getProperties(), VersionableObject.Fields.oneToManyRelation);
+        fourthVersionedObjectEntity.getProperties(), Fields.oneToManyRelation);
     assertThat(oneToManyRelationFourthVersionedObjectEntity.hasOneToManyRelation()).isTrue();
     assertThat(oneToManyRelationFourthVersionedObjectEntity.getOneToMany()).isEmpty();
 
@@ -486,11 +486,11 @@ public class VersionableServiceScenario8Test extends VersionableServiceBaseTest 
     assertThat(fourthVersionedObjectEntity).isNotNull();
     assertThat(fourthVersionedObjectEntity.getProperties()).isNotEmpty();
     Property propertyFourthVersionedObjectEntity = filterProperty(
-        fourthVersionedObjectEntity.getProperties(), VersionableObject.Fields.property);
+        fourthVersionedObjectEntity.getProperties(), Fields.property);
     assertThat(propertyFourthVersionedObjectEntity).isNotNull();
     assertThat(propertyFourthVersionedObjectEntity.getValue()).isEqualTo("Ciao-Ciao");
     Property oneToManyRelationFourthVersionedObjectEntity = filterProperty(
-        fourthVersionedObjectEntity.getProperties(), VersionableObject.Fields.oneToManyRelation);
+        fourthVersionedObjectEntity.getProperties(), Fields.oneToManyRelation);
     assertThat(oneToManyRelationFourthVersionedObjectEntity.hasOneToManyRelation()).isTrue();
     assertThat(oneToManyRelationFourthVersionedObjectEntity.getOneToMany()).isEmpty();
 
@@ -503,11 +503,11 @@ public class VersionableServiceScenario8Test extends VersionableServiceBaseTest 
     assertThat(fifthVersionedObjectEntity).isNotNull();
     assertThat(fifthVersionedObjectEntity.getProperties()).isNotEmpty();
     Property propertyFifthVersionedObjectEntity = filterProperty(
-        fifthVersionedObjectEntity.getProperties(), VersionableObject.Fields.property);
+        fifthVersionedObjectEntity.getProperties(), Fields.property);
     assertThat(propertyFifthVersionedObjectEntity).isNotNull();
     assertThat(propertyFifthVersionedObjectEntity.getValue()).isEqualTo("Ciao4");
     Property oneToManyRelationFifthVersionedObjectEntity = filterProperty(
-        fifthVersionedObjectEntity.getProperties(), VersionableObject.Fields.oneToManyRelation);
+        fifthVersionedObjectEntity.getProperties(), Fields.oneToManyRelation);
     assertThat(oneToManyRelationFifthVersionedObjectEntity.hasOneToManyRelation()).isTrue();
     assertThat(oneToManyRelationFifthVersionedObjectEntity.getOneToMany()).isEmpty();
   }
@@ -606,11 +606,11 @@ public class VersionableServiceScenario8Test extends VersionableServiceBaseTest 
     assertThat(fourthVersionedObjectEntity).isNotNull();
     assertThat(fourthVersionedObjectEntity.getProperties()).isNotEmpty();
     Property propertyFourthVersionedObjectEntity = filterProperty(
-        fourthVersionedObjectEntity.getProperties(), VersionableObject.Fields.property);
+        fourthVersionedObjectEntity.getProperties(), Fields.property);
     assertThat(propertyFourthVersionedObjectEntity).isNotNull();
     assertThat(propertyFourthVersionedObjectEntity.getValue()).isEqualTo("Ciao3");
     Property oneToManyRelationFourthVersionedObjectEntity = filterProperty(
-        fourthVersionedObjectEntity.getProperties(), VersionableObject.Fields.oneToManyRelation);
+        fourthVersionedObjectEntity.getProperties(), Fields.oneToManyRelation);
     assertThat(oneToManyRelationFourthVersionedObjectEntity.hasOneToManyRelation()).isTrue();
     assertThat(oneToManyRelationFourthVersionedObjectEntity.getOneToMany()).isEmpty();
 
