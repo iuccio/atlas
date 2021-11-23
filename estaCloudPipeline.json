@@ -22,6 +22,7 @@
     "notifyBackToNormal": true,
     "notifyRepeatedFailure": true
   },
+  "stages": [],
   "steps": [
     {
       "stepType": "continuous",
