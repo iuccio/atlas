@@ -7,11 +7,11 @@
 
 - [ATLAS](#atlas)
 - [Atlas Versioning Library](#atlas-versioning-library)
-  * [How to](#how-to)
-  * [Add atlas-library to the pom.xml](#add-atlas-library-to-the-pomxml)
-  * [Integrate atlas-library](#integrate-atlas-library)
-  * [Define VersionableService as Bean for SpringBoot](#define-versionableservice-as-bean-for-springboot)
-  * [How to use VersionableService](#how-to-use-versionableservice)
+    * [How to](#how-to)
+    * [Add atlas-library to the pom.xml](#add-atlas-library-to-the-pomxml)
+    * [Integrate atlas-library](#integrate-atlas-library)
+    * [Define VersionableService as Bean for SpringBoot](#define-versionableservice-as-bean-for-springboot)
+    * [How to use VersionableService](#how-to-use-versionableservice)
 
 <!-- tocstop -->
 
@@ -27,6 +27,10 @@ This library tries to generify the versioning of certain entity for ATLAS projec
 is based on the following
 document: [Versionirung](https://confluence.sbb.ch/pages/viewpage.action?spaceKey=ATLAS&title=%5BATLAS%5D+8.7+Versionierung)
 .
+
+:warning: **Please note that this library implements only the scenarios
+in [Versionirung](https://confluence.sbb.ch/pages/viewpage.action?spaceKey=ATLAS&title=%5BATLAS%5D+8.7+Versionierung)
+defined!** :warning:
 
 ### How to
 
