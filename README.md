@@ -10,8 +10,8 @@
   * [How to](#how-to)
   * [Add atlas-library to the pom.xml](#add-atlas-library-to-the-pomxml)
   * [Integrate atlas-library](#integrate-atlas-library)
-  * [Define [VersionableService](src/main/java/ch/sbb/atlas/versioning/service/VersionableService.java) as Bean for SpringBoot](#define-versionableservicesrcmainjavachsbbatlasversioningserviceversionableservicejava-as-bean-for-springboot)
-  * [How to use [VersionableService](src/main/java/ch/sbb/atlas/versioning/service/VersionableService.java)](#how-to-use-versionableservicesrcmainjavachsbbatlasversioningserviceversionableservicejava)
+  * [Define VersionableService as Bean for SpringBoot](#define-versionableservice-as-bean-for-springboot)
+  * [How to use VersionableService](#how-to-use-versionableservice)
 
 <!-- tocstop -->
 
