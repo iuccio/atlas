@@ -16,7 +16,7 @@ public final class VersioningHelper {
   }
 
   /**
-   * |___________|
+   *                  |___________|
    * |-----------|----------------------|--------------------|
    */
   public static boolean isEditedVersionInTheMiddleOfCurrentEntity(LocalDate editedValidFrom,
@@ -26,7 +26,7 @@ public final class VersioningHelper {
   }
 
   /**
-   * |_____________________|
+   *            |_____________________|
    * |----------|----------|----------|----------|----------|
    */
   public static boolean isEditedVersionExactMatchingMultipleEntities(LocalDate editedValidFrom,
@@ -39,7 +39,7 @@ public final class VersioningHelper {
 
   /**
    * |_____________________|
-   * |----------|----------|----------|----------|----------|
+   *            |----------|----------|----------|----------|----------|
    */
   public static boolean isOnTheLeftBorderAndEditedValidFromIsBeforeTheLeftBorder(
       VersioningData vd, ToVersioning toVersioning) {
@@ -47,8 +47,8 @@ public final class VersioningHelper {
   }
 
   /**
-   * |______________________________|
-   * |----------|----------|----------|----------|----------|
+   *                             |______________________________|
+   *            |----------|----------|----------|----------|----------|
    */
   public static boolean isBetweenMultipleVersionsAndOverTheBorders(
       LocalDate editedValidFrom, LocalDate editedValidTo, List<ToVersioning> toVersioningList) {
@@ -61,8 +61,8 @@ public final class VersioningHelper {
   }
 
   /**
-   * |______________________________
-   * |----------|----------|----------|----------|----------|
+   *       |______________________________
+   *            |----------|----------|----------|----------|----------|
    */
   public static boolean isEditedValidFromOverTheLeftBorder(
       LocalDate editedValidFrom, List<ToVersioning> toVersioningList) {
@@ -73,8 +73,8 @@ public final class VersioningHelper {
   }
 
   /**
-   * ______________________________|
-   * |----------|----------|----------|----------|----------|
+   *                                            ______________________________|
+   *            |----------|----------|----------|----------|----------|
    */
   public static boolean isEditedValidToOverTheRightBorder(LocalDate editedValidTo,
       List<ToVersioning> toVersioningList) {
@@ -86,7 +86,7 @@ public final class VersioningHelper {
   }
 
   /**
-   * |______________|
+   *                                                    |______________|
    * |----------|----------|----------|----------|----------|
    */
   public static boolean isOnTheRightBorderAndValidToIsOnOrOverTheBorder(
