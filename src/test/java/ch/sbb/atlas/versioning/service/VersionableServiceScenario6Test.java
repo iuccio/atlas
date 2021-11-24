@@ -174,15 +174,6 @@ public class VersionableServiceScenario6Test extends VersionableServiceBaseTest 
    *
    * RESULTAT: |----------------------|________________________________     NEUE VERSION EINGEFÜGT
    * Version:        1                               2
-   *
-   * Deckt auch
-   * Spezialfall 2: Update während und nach letzter Version
-   *
-   * Änderung                                                                 |_____________________|
-   *                 |-----------------|----------------|-----------|         |-------------|
-   *                     Version 1          Version 2     Version 3               Version 4
-   *
-   * Ergebnis: Version 4 wird verlängert
    */
   @Test
   public void scenario6WhenEditedValidToIsBiggerThenCurrentValidTo() {

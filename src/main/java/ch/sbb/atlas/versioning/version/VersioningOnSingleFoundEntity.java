@@ -140,17 +140,25 @@ public class VersioningOnSingleFoundEntity implements Versioning {
   private List<VersionedObject> applyVersioningOnTheRightBorderWhenEditedEntityIsOnOrOverTheBorder(
       VersioningData vd, ToVersioning toVersioning) {
     log.info("Found version to split on or over the right border, validTo and properties edited.");
-
     List<VersionedObject> versionedObjects = new ArrayList<>();
-    // update current version: validTo = editedValidFrom.minusDay(1),do not update properties
-    VersionedObject shortenRightVersion = shortenRightVersion(vd, toVersioning);
-    versionedObjects.add(shortenRightVersion);
+    if(vd.getEditedValidFrom().equals(toVersioning.getValidFrom())){
+      // update current version: validTo = editedValidTo and update properties
+      VersionedObject shortenOrLengthenVersion = shortenOrLengthenVersionAndUpdatePropertiesOnTheBorder(vd,
+          toVersioning);
+      versionedObjects.add(shortenOrLengthenVersion);
+      return versionedObjects;
+    }else if(vd.getEditedValidFrom().isAfter(toVersioning.getValidFrom())){
+      // update current version: validTo = editedValidFrom.minusDay(1),do not update properties
+      VersionedObject shortenRightVersion = shortenRightVersion(vd, toVersioning);
+      versionedObjects.add(shortenRightVersion);
 
-    // Create new version: validFrom = editedValidFrom, validTo = versions.get(0).getValidTo(), update properties
-    VersionedObject newVersionAfterTheRightBorder = addNewVersionAfterTheRightBorder(vd,
-        toVersioning);
-    versionedObjects.add(newVersionAfterTheRightBorder);
-    return versionedObjects;
+      // Create new version: validFrom = editedValidFrom, validTo = versions.get(0).getValidTo(), update properties
+      VersionedObject newVersionAfterTheRightBorder = addNewVersionAfterTheRightBorder(vd,
+          toVersioning);
+      versionedObjects.add(newVersionAfterTheRightBorder);
+      return versionedObjects;
+    }
+    throw new VersioningException();
   }
 
   private VersionedObject addNewVersionAfterTheRightBorder(VersioningData vd,
