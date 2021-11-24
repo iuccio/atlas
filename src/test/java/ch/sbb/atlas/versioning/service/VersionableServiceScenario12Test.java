@@ -22,10 +22,10 @@ public class VersionableServiceScenario12Test extends VersionableServiceBaseTest
    *                 |-----------------|-------------|
    *                     Version 1       Version 2
    *
-   * Ergebnis: Version 4 wird verlängert
+   * Ergebnis: Version 2 wird verlängert
    */
   @Test
-  public void scenario11a() {
+  public void scenario12a() {
     //given
     LocalDate editedValidFrom = versionableObject2.getValidFrom();
     LocalDate editedValidTo = LocalDate.of(2024, 6, 1);
