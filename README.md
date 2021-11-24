@@ -82,7 +82,7 @@ public class VersionableObject implements Versionable {
 }
 ```
 
-### Define [VersionableService](src/main/java/ch/sbb/atlas/versioning/service/VersionableService.java) as Bean for SpringBoot
+### Define VersionableService as Bean for SpringBoot
 
 ```java
 @Bean
@@ -91,7 +91,7 @@ public VersionableService versionableService(){
     }
 ```
 
-### How to use [VersionableService](src/main/java/ch/sbb/atlas/versioning/service/VersionableService.java)
+### How to use VersionableService
 
 1. Get all versions of the given object
 
