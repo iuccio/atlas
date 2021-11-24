@@ -36,5 +36,4 @@ public final class MergeHelper {
     return DateHelper.areDatesSequential(current.getValidTo(), next.getValidFrom());
   }
 
-
 }

@@ -49,22 +49,27 @@ public class VersionedObject {
       List<ToVersioning> objectToVersioningFound) {
     List<VersionedObject> versionedObjects = new ArrayList<>();
     List<ToVersioning> objectsToVersioningNotFound =
-        objectsToVersioning.stream()
-                           .filter(toVersioning ->
-                               objectToVersioningFound.stream()
-                                                      .noneMatch(toVersioningFound ->
-                                                          toVersioningFound.equals(toVersioning))
-                           ).collect(Collectors.toList());
-    objectsToVersioningNotFound.forEach(toVersioning -> versionedObjects.add(
-        buildVersionedObjectNotTouched(toVersioning.getValidFrom(),
-            toVersioning.getValidTo(), toVersioning.getEntity())));
+        objectsToVersioning
+            .stream()
+            .filter(toVersioning ->
+                objectToVersioningFound
+                    .stream()
+                    .noneMatch(toVersioningFound -> toVersioningFound.equals(toVersioning))
+            ).collect(Collectors.toList());
+
+    objectsToVersioningNotFound.forEach(
+        toVersioning -> versionedObjects.add(
+            buildVersionedObjectNotTouched(toVersioning.getValidFrom(),
+                toVersioning.getValidTo(), toVersioning.getEntity())
+        )
+    );
     return versionedObjects;
   }
 
   private static VersionedObject buildVersionedObject(LocalDate validFrom, LocalDate validTo,
       Entity entity,
       VersioningAction action) {
-    if (NEW.equals(action) && entity.getId() != null) {
+    if (NEW == action && entity.getId() != null) {
       throw new VersioningException(
           "To create a new VersionedObject the entity id must be null, to avoid to override an existing Entity.\n"
               + entity);
