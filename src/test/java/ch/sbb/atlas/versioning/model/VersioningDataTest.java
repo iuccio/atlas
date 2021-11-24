@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import ch.sbb.atlas.versioning.BaseTest.VersionableObject;
+import ch.sbb.atlas.versioning.annotation.AtlasVersionableException;
 import ch.sbb.atlas.versioning.exception.VersioningException;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -124,6 +125,80 @@ public class VersioningDataTest {
             VersioningException.class)
         .hasMessageContaining(
             "Found more or less than one object to versioning.");
+  }
+
+  @Test
+  public void shouldReturnTrueWhenOnlyValidFromIsEdited() {
+    //given
+    editedVersion.setValidFrom(LocalDate.of(2020, 1, 2));
+    VersioningData versioningData = new VersioningData(editedVersion, currentVersion, editedEntity,
+        toVersioningList);
+
+    //when
+    boolean result = versioningData.isOnlyValidFromEdited();
+
+    //then
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  public void shouldReturnTrueWhenValidFromIsEditedEndEditedValidToIsEqualTOCurrentValidTo() {
+    //given
+    editedVersion.setValidFrom(LocalDate.of(2020, 1, 2));
+    editedVersion.setValidTo(currentVersion.getValidTo());
+    VersioningData versioningData = new VersioningData(editedVersion, currentVersion, editedEntity,
+        toVersioningList);
+
+    //when
+    boolean result = versioningData.isOnlyValidFromEdited();
+
+    //then
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  public void shouldReturnTrueWhenOnlyValidToIsEdited() {
+    //given
+    editedVersion.setValidTo(LocalDate.of(2020, 1, 2));
+    VersioningData versioningData = new VersioningData(editedVersion, currentVersion, editedEntity,
+        toVersioningList);
+
+    //when
+    boolean result = versioningData.isOnlyValidToEdited();
+
+    //then
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  public void shouldReturnTrueWhenValidToIsEditedEndEditedValidFromIsEqualToCurrentValidFrom() {
+    //given
+    editedVersion.setValidTo(LocalDate.of(2020, 1, 2));
+    editedVersion.setValidFrom(currentVersion.getValidFrom());
+    VersioningData versioningData = new VersioningData(editedVersion, currentVersion, editedEntity,
+        toVersioningList);
+
+    //when
+    boolean result = versioningData.isOnlyValidToEdited();
+
+    //then
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  public void shouldThrowVersioningExceptionWhenValidFromIsBiggerThanValidTo() {
+    //given
+    editedVersion.setValidFrom(LocalDate.of(2020, 1, 2));
+    editedVersion.setValidTo(LocalDate.of(2019, 1, 2));
+
+    //when
+    assertThatThrownBy(() -> {
+      new VersioningData(editedVersion, currentVersion, editedEntity,
+          toVersioningList);
+      //then
+    }).isInstanceOf(VersioningException.class)
+      .hasMessageContaining(
+          "Edited ValidFrom 2020-01-02 is bigger than edited ValidTo 2019-01-02");
   }
 
 }
