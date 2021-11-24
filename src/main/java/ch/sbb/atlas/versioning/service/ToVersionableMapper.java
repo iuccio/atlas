@@ -11,7 +11,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-public class ToVersionableMapper {
+final class ToVersionableMapper {
 
   private ToVersionableMapper(){
     throw new VersioningException();
