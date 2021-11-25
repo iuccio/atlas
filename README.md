@@ -75,12 +75,14 @@ public class VersionableObject implements Versionable {
   private String property;
 
   @AtlasVersionableProperty(relationType = RelationType.ONE_TO_MANY, relationsFields = {"value"})
-  private List<Relation> oneToManyRelation;
+  private List<Relation> oneToManyRelation = new ArrayList<>();
 
   public class Relation {
 
     private Long id;
+    @AtlasVersionableProperty
     private String value;
+    private VersionableObject versionableObject;
   }
 
 }
