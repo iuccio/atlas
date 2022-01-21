@@ -32,7 +32,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://atlas-gateway-dev.apps.aws01t.sbb-aws-test.net/v3/api-docs.yaml</url>
+              <url>https://dev.atlas-gateway.sbb-cloud.net/v3/api-docs.yaml</url>
               <outputFileName>spec.yaml</outputFileName>
               <outputDirectory>${project.basedir}/src/main/resources/api-dev</outputDirectory>
             </configuration>
@@ -43,7 +43,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>https://atlas-gateway-test.apps.aws01t.sbb-aws-test.net/v3/api-docs.yaml</url>
+							<url>https://test.atlas-gateway.sbb-cloud.net/v3/api-docs.yaml</url>
 							<outputFileName>spec.yaml</outputFileName>
 							<outputDirectory>${project.basedir}/src/main/resources/api-test</outputDirectory>
 						</configuration>
@@ -54,7 +54,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>https://atlas-gateway-int.apps.maggie.sbb-aws.net/v3/api-docs.yaml</url>
+							<url>https://int.atlas-gateway.sbb-cloud.net/v3/api-docs.yaml</url>
 							<outputFileName>spec.yaml</outputFileName>
 							<outputDirectory>${project.basedir}/src/main/resources/api-int</outputDirectory>
 						</configuration>
