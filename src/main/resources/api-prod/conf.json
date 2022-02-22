@@ -57,7 +57,6 @@
   "proxy": {
     "dns_prefix": "atlas",
     "api_backend": "http://@@user.api.backend@@",
-    "api_internal": "http://@@user.api.internal@@",
     "add_try_it_out_to_spec": true,
     "proxy_rules": [
       {
