@@ -59,6 +59,17 @@
 							<outputDirectory>${project.basedir}/src/main/resources/api-int</outputDirectory>
 						</configuration>
 					</execution>
+          <execution>
+            <id>copy-prod-spec</id>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://atlas-gateway.prod.sbb-cloud.net/v3/api-docs.yaml</url>
+              <outputFileName>spec.yaml</outputFileName>
+              <outputDirectory>${project.basedir}/src/main/resources/api-prod</outputDirectory>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <!-- Assembly of Zips -->
