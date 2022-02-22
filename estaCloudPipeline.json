@@ -58,6 +58,13 @@
         "clientId": "client-atlas-jenkins-int",
         "classifier": "int"
       }
+    },
+    {
+      "stageName": "prod",
+      "isOpenshiftDeploymentEnabled": true,
+      "openshiftProject": "atlas-prod",
+      "openshiftCluster": "aws_maggie",
+      "openshiftJenkinsCredentialsId": "ssp-p9d3z05co-ccn4-44b3-y824-1ut86c5e693"
     }
   ],
   "steps": [
