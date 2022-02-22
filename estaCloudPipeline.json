@@ -64,7 +64,12 @@
       "isOpenshiftDeploymentEnabled": true,
       "openshiftProject": "atlas-prod",
       "openshiftCluster": "aws_maggie",
-      "openshiftJenkinsCredentialsId": "ssp-p9d3z05co-ccn4-44b3-y824-1ut86c5e693"
+      "openshiftJenkinsCredentialsId": "ssp-p9d3z05co-ccn4-44b3-y824-1ut86c5e693",
+      "api": {
+        "instance": "prod",
+        "clientJenkinsId": "ssp-ijzyow7em-c2c6-cd77-kwoi-7vt28p07a93",
+        "clientId": "client-atlas-jenkins-prod"
+      }
     }
   ],
   "steps": [

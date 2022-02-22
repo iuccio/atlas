@@ -2,13 +2,12 @@
 
 ## ATLAS Links
 - Openshift project atlas-dev : https://console-openshift-console.apps.aws01t.sbb-aws-test.net/k8s/cluster/projects/atlas-dev
-- routes: https://console-openshift-console.apps.aws01t.sbb-aws-test.net/k8s/ns/atlas-dev/routes
-- Repositories
-  - https://code.sbb.ch/projects/KI_ATLAS/repos/timetable-field-number-apim-configuration/browse
-  - https://code.sbb.ch/projects/KI_ATLAS/repos/timetable-field-number-apim-gateway/browse
-- apim
-  - https://developer-int.sbb.ch/apis/timetable-field-number-dev/information
-  - https://ttfn-dev-int.api.sbb.ch:443
+- Repositories: https://code.sbb.ch/projects/KI_ATLAS
+- APIM
+  - https://developer-int.sbb.ch/apis/atlas-dev/information
+  - https://developer-int.sbb.ch/apis/atlas-test/information
+  - https://developer-int.sbb.ch/apis/atlas-int/information
+  - https://developer.sbb.ch/apis/atlas/information
 
 ## HowTo Update
 https://api-deploy.int.app.ose.sbb-aws.net/swagger-ui.html#/API/updateServiceUsingPUT mit folgenden Parameter
