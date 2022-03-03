@@ -37,7 +37,8 @@
   "api_provider": [
     "hannes.laner@sbb.ch",
     "frederic.barras@sbb.ch",
-    "antonio.romano@sbb.ch"
+    "antonio.romano@sbb.ch",
+    "***REMOVED***"
   ],
   "auth_provider": [
     "azure_ad"
