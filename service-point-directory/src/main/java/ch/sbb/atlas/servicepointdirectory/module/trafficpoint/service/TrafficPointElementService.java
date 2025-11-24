@@ -3,9 +3,11 @@ package ch.sbb.atlas.servicepointdirectory.module.trafficpoint.service;
 import ch.sbb.atlas.api.model.Container;
 import ch.sbb.atlas.api.servicepoint.ReadTrafficPointElementVersionModel;
 import ch.sbb.atlas.location.LocationService;
+import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.exception.SloidNotFoundException;
 import ch.sbb.atlas.service.OverviewDisplayBuilder;
 import ch.sbb.atlas.servicepoint.enumeration.TrafficPointElementType;
+import ch.sbb.atlas.servicepointdirectory.module.sector.entity.SectorVersion;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.entity.ServicePointVersion;
 import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.entity.TrafficPointElementVersion;
 import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.mapper.TrafficPointElementVersionMapper;
@@ -63,6 +65,7 @@ public class TrafficPointElementService {
       (#servicePointVersions,T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).SEPODI)""")
   public TrafficPointElementVersion create(TrafficPointElementVersion trafficPointElementVersion,
       List<ServicePointVersion> servicePointVersions) {
+    trafficPointElementVersion.setStatus(Status.VALIDATED);
     if (trafficPointElementVersion.getSloid() != null) {
       trafficPointElementValidationService.validatePreconditionBusinessRules(trafficPointElementVersion);
       locationService.claimSloid(LocationService.getSloidType(trafficPointElementVersion.getTrafficPointElementType()),
@@ -78,6 +81,7 @@ public class TrafficPointElementService {
 
   TrafficPointElementVersion save(TrafficPointElementVersion trafficPointElementVersion) {
     trafficPointElementValidationService.validatePreconditionBusinessRules(trafficPointElementVersion);
+    trafficPointElementVersion.setStatus(Status.VALIDATED);
     return trafficPointElementVersionRepository.saveAndFlush(trafficPointElementVersion);
   }
 
@@ -142,9 +146,20 @@ public class TrafficPointElementService {
 
   public void doesTrafficPointExist(String sloid) {
     if (findBySloidOrderByValidFrom(sloid).isEmpty()) {
-      throw new SloidNotFoundException(sloid) {
-      };
+      throw new SloidNotFoundException(sloid);
     }
+  }
+
+  @Transactional
+  public void revoke(String sloid) {
+    List<TrafficPointElementVersion> trafficPointElementVersions = findBySloidOrderByValidFrom(sloid);
+    if(trafficPointElementVersions.isEmpty()) {
+      throw new SloidNotFoundException(sloid);
+    }
+    trafficPointElementVersions.forEach(version -> version.setStatus(Status.REVOKED));
+    TrafficPointElementVersion lastVersions = trafficPointElementVersions.getLast();
+    lastVersions.setValidTo(lastVersions.getValidFrom());
+    trafficPointElementVersionRepository.saveAll(trafficPointElementVersions);
   }
 
 }
