@@ -15,6 +15,7 @@ public class TrafficPointElementVersionMapper {
     return ReadTrafficPointElementVersionModel.builder()
         .id(trafficPointElementVersion.getId())
         .sloid(trafficPointElementVersion.getSloid())
+        .status(trafficPointElementVersion.getStatus())
         .designation(trafficPointElementVersion.getDesignation())
         .designationOperational(trafficPointElementVersion.getDesignationOperational())
         .length(trafficPointElementVersion.getLength())

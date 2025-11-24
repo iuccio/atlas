@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doNothing;
 
 import ch.sbb.atlas.api.model.Container;
 import ch.sbb.atlas.api.servicepoint.ReadTrafficPointElementVersionModel;
+import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.atlas.servicepoint.enumeration.TrafficPointElementType;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.repository.ServicePointVersionRepository;
@@ -73,6 +74,29 @@ class TrafficPointElementServiceTest {
 
     // then
     assertThat(trafficPointElementService.findBySloidOrderByValidFrom("ch:1:sloid:89108:123:123")).hasSize(1);
+  }
+
+  @Test
+  void shouldRevokeTrafficPoint() {
+    // given
+    servicePointVersionRepository.save(TrafficPointTestData.testServicePointForTrafficPoint());
+    TrafficPointElementVersion trafficPointElementVersion1 = TrafficPointTestData.getBasicTrafficPointBuilder().build();
+    String sloid = trafficPointElementVersion1.getSloid();
+    trafficPointElementService.save(trafficPointElementVersion1);
+    TrafficPointElementVersion trafficPointElementVersion2 =
+        TrafficPointTestData.getBasicTrafficPointBuilder().validFrom(LocalDate.of(2025, 1, 1))
+        .validTo(LocalDate.of(2025, 1, 1)).build();
+    trafficPointElementService.save(trafficPointElementVersion2);
+
+
+    // when
+    trafficPointElementService.revoke(sloid);
+    // then
+    List<TrafficPointElementVersion> result = trafficPointElementService.findBySloidOrderByValidFrom(sloid);
+    assertThat(result).hasSize(2);
+    assertThat(result).extracting(TrafficPointElementVersion::getStatus).containsOnly(Status.REVOKED);
+    TrafficPointElementVersion lastVersion = result.getLast();
+    assertThat(lastVersion.getValidTo()).isEqualTo(lastVersion.getValidFrom());
   }
 
   @Test
@@ -624,6 +648,7 @@ class TrafficPointElementServiceTest {
     // Element 1
     trafficPointElementVersionRepository.save(TrafficPointElementVersion
         .builder()
+        .status(Status.VALIDATED)
         .designation("Bezeichnung")
         .sloid("ch:1:sloid:1400015:123:123")
         .servicePointNumber(SERVICE_POINT_NUMBER)
@@ -633,6 +658,7 @@ class TrafficPointElementServiceTest {
         .build());
     trafficPointElementVersionRepository.save(TrafficPointElementVersion
         .builder()
+        .status(Status.VALIDATED)
         .designation("Bezeichnung 2")
         .sloid("ch:1:sloid:1400015:123:123")
         .servicePointNumber(SERVICE_POINT_NUMBER)
@@ -644,6 +670,7 @@ class TrafficPointElementServiceTest {
     // Element 2
     trafficPointElementVersionRepository.save(TrafficPointElementVersion
         .builder()
+        .status(Status.VALIDATED)
         .designation("Bezeichnung")
         .sloid("ch:1:sloid:1400015:345:345")
         .servicePointNumber(SERVICE_POINT_NUMBER)
@@ -653,6 +680,7 @@ class TrafficPointElementServiceTest {
         .build());
     trafficPointElementVersionRepository.save(TrafficPointElementVersion
         .builder()
+        .status(Status.VALIDATED)
         .designation("Bezeichnung 2")
         .sloid("ch:1:sloid:1400015:345:345")
         .servicePointNumber(SERVICE_POINT_NUMBER)
