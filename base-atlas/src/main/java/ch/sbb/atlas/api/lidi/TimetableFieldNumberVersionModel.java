@@ -82,11 +82,6 @@ public class TimetableFieldNumberVersionModel extends BaseVersionModel implement
   @Pattern(regexp = AtlasCharacterSetsRegex.TTFN_NUMBER)
   private String number;
 
-  @Schema(description = "Timetable field number", example = "b0.123")
-  @Size(min = 1, max = AtlasFieldLengths.LENGTH_50)
-  @Pattern(regexp = AtlasCharacterSetsRegex.SID4PT)
-  private String swissTimetableFieldNumber;
-
   @Schema(description = "Status", accessMode = AccessMode.READ_ONLY)
   private Status status;
 

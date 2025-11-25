@@ -75,7 +75,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(firstTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
 
     // second merged with third
     TimetableFieldNumberVersion secondTemporalVersion = result.get(1);
@@ -86,7 +85,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(secondTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(secondTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(secondTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(secondTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
 
     // third version no changes
     TimetableFieldNumberVersion thirdTemporalVersion = result.get(2);
@@ -98,7 +96,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(thirdTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(thirdTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(thirdTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(thirdTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
   }
 
   /**
@@ -150,7 +147,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(firstTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
   }
 
   /**
@@ -208,7 +204,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(firstTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
 
     //second not touched
     TimetableFieldNumberVersion secondTemporalVersion = result.get(1);
@@ -219,7 +214,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(secondTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(secondTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(secondTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(secondTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
   }
 
   /**
@@ -278,7 +272,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(firstTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
 
     //second not touched
     TimetableFieldNumberVersion secondTemporalVersion = result.get(1);
@@ -289,7 +282,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(secondTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(secondTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(secondTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(secondTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
 
     //third not touched
     TimetableFieldNumberVersion thirdTemporalVersion = result.get(2);
@@ -300,7 +292,5 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(thirdTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(thirdTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(thirdTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(thirdTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
   }
-
 }

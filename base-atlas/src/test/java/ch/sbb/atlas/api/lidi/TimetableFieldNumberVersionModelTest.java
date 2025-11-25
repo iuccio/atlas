@@ -24,7 +24,6 @@ class TimetableFieldNumberVersionModelTest extends BaseValidatorTest {
   private static TimetableFieldNumberVersionModelBuilder<?, ?> versionModel() {
     return TimetableFieldNumberVersionModel.builder()
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber("a.90")
         .number("10.100")
         .validFrom(LocalDate.of(2021, 12, 1))
         .validTo(LocalDate.of(2022, 12, 1))
@@ -114,34 +113,6 @@ class TimetableFieldNumberVersionModelTest extends BaseValidatorTest {
     Set<ConstraintViolation<TimetableFieldNumberVersionModel>> constraintViolations = validator.validate(version);
     // Then
     assertThat(constraintViolations).isEmpty();
-  }
-
-  @Test
-  void swissTimetableFieldNumberShouldAllowNull() {
-    // Given
-    TimetableFieldNumberVersionModel version = versionModel().swissTimetableFieldNumber(null).build();
-    // When
-    Set<ConstraintViolation<TimetableFieldNumberVersionModel>> constraintViolations = validator.validate(
-        version);
-    // Then
-    assertThat(constraintViolations).isEmpty();
-  }
-
-  @Test
-  void swissTimetableFieldNumberShouldNotHaveMoreThan50Chars() {
-    // Given
-    StringBuilder sttfn = new StringBuilder("test");
-    while (sttfn.length() < 50) {
-      sttfn.append("test");
-    }
-    TimetableFieldNumberVersionModel version = versionModel().swissTimetableFieldNumber(sttfn.toString()).build();
-    // When
-    Set<ConstraintViolation<TimetableFieldNumberVersionModel>> constraintViolations = validator.validate(
-        version);
-    // Then
-    assertThat(constraintViolations).hasSize(1);
-    assertThat(constraintViolations.iterator().next().getPropertyPath())
-        .hasToString("swissTimetableFieldNumber");
   }
 
   @Test

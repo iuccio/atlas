@@ -28,8 +28,6 @@ public class TimetableFieldNumber {
   @Id
   private String ttfnid;
 
-  private String swissTimetableFieldNumber;
-
   private String number;
 
   @Column(name = "description_outward_line_1")

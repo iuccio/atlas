@@ -49,7 +49,6 @@ class TimetableFieldNumberControllerInternalApiTest extends BaseControllerApiTes
           .meanOfTransport(TtfnMeanOfTransport.TRAIN)
           .number("10.100")
           .status(Status.VALIDATED)
-          .swissTimetableFieldNumber("b0.100")
           .validFrom(LocalDate.of(2020, 1, 1))
           .validTo(LocalDate.of(2020, 12, 31))
           .businessOrganisation("sbb")
@@ -76,7 +75,7 @@ class TimetableFieldNumberControllerInternalApiTest extends BaseControllerApiTes
     mvc.perform(get("/internal/field-numbers")
             .queryParam("page", "0")
             .queryParam("size", "5")
-            .queryParam("sort", "swissTimetableFieldNumber,asc"))
+            .queryParam("sort", "number,asc"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.totalCount").value(1));
   }
@@ -97,5 +96,4 @@ class TimetableFieldNumberControllerInternalApiTest extends BaseControllerApiTes
         .andExpect(jsonPath("$.message")
             .value("Supplied sort field nam not found on TimetableFieldNumber"));
   }
-
 }

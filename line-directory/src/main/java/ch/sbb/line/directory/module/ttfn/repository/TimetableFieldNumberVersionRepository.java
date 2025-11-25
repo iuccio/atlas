@@ -1,10 +1,8 @@
 package ch.sbb.line.directory.module.ttfn.repository;
 
-import ch.sbb.atlas.model.Status;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumberVersion;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,26 +17,14 @@ public interface TimetableFieldNumberVersionRepository extends
   @Query(value = "SELECT v FROM timetable_field_number_version v WHERE v.ttfnid = :ttfnid order by v.validFrom asc")
   List<TimetableFieldNumberVersion> findBySid4ptOrderByValidFrom(@Param("ttfnid") String ttfnid);
 
-  default List<TimetableFieldNumberVersion> findNumberOverlaps(TimetableFieldNumberVersion version) {
-    return findAllByValidToGreaterThanEqualAndValidFromLessThanEqualAndNumberIgnoreCase(
-        version.getValidFrom(), version.getValidTo(), version.getNumber())
-        .stream()
-        .filter(i -> !Objects.equals(i.getTtfnid(), version.getTtfnid()))
-        .filter(i -> i.getStatus() != Status.REVOKED)
-        .toList();
-  }
-
-  List<TimetableFieldNumberVersion> findAllByValidToGreaterThanEqualAndValidFromLessThanEqualAndNumberIgnoreCase(
-      LocalDate validFrom, LocalDate validTo, String number);
-
   @Query(value = "select v from timetable_field_number_version v "
-      + "where (v.number = :number or lower(v.swissTimetableFieldNumber) = :sttfn) "
+      + "where (v.number = :number) "
       + "and (((v.validFrom <= :validFrom and v.validTo >= :validFrom) or "
       + "(v.validFrom <= :validTo and v.validTo >= :validTo)) "
       + "or (v.validFrom > :validFrom and v.validTo < :validTo)) "
       + "and v.ttfnid not like :ttfnid")
-  List<TimetableFieldNumberVersion> getAllByNumberOrSwissTimetableFieldNumberWithValidityOverlap(
-      @Param("number") String number, @Param("sttfn") String sttfn,
+  List<TimetableFieldNumberVersion> getAllByNumberWithValidityOverlap(
+      @Param("number") String number,
       @Param("validFrom") LocalDate validFrom, @Param("validTo") LocalDate validTo,
       @Param("ttfnid") String ttfnid);
 
@@ -51,7 +37,6 @@ public interface TimetableFieldNumberVersionRepository extends
       + " AND tv.ttfnid in :ttfnids"
       + " ORDER BY tv.ttfnid, tv.validFrom ASC")
   List<TimetableFieldNumberVersion> getVersionsValidAt(Set<String> ttfnids, LocalDate validAt);
-
 
   @Modifying(clearAutomatically = true)
   @Query("delete from timetable_field_number_version t where t.validFrom >= :validFrom")
@@ -68,5 +53,4 @@ public interface TimetableFieldNumberVersionRepository extends
         );
       """, nativeQuery = true)
   void updateLastVersionsByTerminating();
-
 }
