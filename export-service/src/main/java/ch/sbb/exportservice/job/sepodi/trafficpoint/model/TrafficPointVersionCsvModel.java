@@ -1,5 +1,6 @@
 package ch.sbb.exportservice.job.sepodi.trafficpoint.model;
 
+import ch.sbb.atlas.model.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -83,4 +84,5 @@ public class TrafficPointVersionCsvModel {
 
   private String servicePointBusinessOrganisationDescriptionEn;
 
+  private Status status;
 }
