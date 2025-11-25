@@ -1248,7 +1248,8 @@
       "COMPASS_DIRECTION": "Kompassrichtung [°]",
       "NOTIFICATION": {
         "ADD_SUCCESS": "Die Haltekante wurde erfolgreich hinzugefügt.",
-        "EDIT_SUCCESS": "Die Haltekante wurde erfolgreich gespeichert."
+        "EDIT_SUCCESS": "Die Haltekante wurde erfolgreich gespeichert.",
+        "REVOKE_SUCCESS": "Die Haltekante wurde erfolgreich als Fehlerfassung gekennzeichnet."
       },
       "VALIDITY_CONFIRMATION": {
         "TITLE": "Gültigkeit",

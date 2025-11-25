@@ -17,7 +17,7 @@
           [currentRecord]="selectedVersion"
           [records]="trafficPointVersions"
           [switchDisabled]="isSwitchVersionDisabled"
-          [showStatus]="false"
+          [showStatus]="true"
         ></app-switch-version>
       }
     </div>
@@ -188,7 +188,7 @@
     [footerEdit]="form.enabled"
   >
   </atlas-button>
-  @if (form.disabled) {
+  @if (form.disabled && (isNew || selectedVersion.status !== 'REVOKED')) {
     <atlas-button
       (buttonClicked)="toggleEdit()"
       applicationType="SEPODI"
@@ -198,6 +198,17 @@
       [businessOrganisations]="servicePointBusinessOrganisations"
       wrapperStyleClass="ms-3"
     ></atlas-button>
+  }
+  @if (form.disabled && !isNew && selectedVersion.status !== 'REVOKED') {
+    <atlas-button
+      (buttonClicked)="revoke()"
+      [applicationType]="'SEPODI'"
+      buttonDataCy="revoke-sector"
+      buttonText="COMMON.REVOKE"
+      buttonType="revoke"
+      wrapperStyleClass="ms-3"
+    >
+    </atlas-button>
   }
   <atlas-button
     [footerEdit]="form.enabled"

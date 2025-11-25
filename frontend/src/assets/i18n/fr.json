@@ -1248,7 +1248,8 @@
       "COMPASS_DIRECTION": "Direction du compas [°]",
       "NOTIFICATION": {
         "ADD_SUCCESS": "La bordure d'arrêt a été ajouté avec succès.",
-        "EDIT_SUCCESS": "La bordure d'arrêt a été enregistrée avec succès."
+        "EDIT_SUCCESS": "La bordure d'arrêt a été enregistrée avec succès.",
+        "REVOKE_SUCCESS": "La bordure d'arrêt a été marqué comme saisie d’erreur avec succès."
       },
       "VALIDITY_CONFIRMATION": {
         "TITLE": "Validité ",

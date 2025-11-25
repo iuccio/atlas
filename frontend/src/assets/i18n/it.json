@@ -1248,7 +1248,8 @@
       "COMPASS_DIRECTION": "Orientamento [°]",
       "NOTIFICATION": {
         "ADD_SUCCESS": "Il bordo di contenimento è stato aggiunto con successo.",
-        "EDIT_SUCCESS": "Il bordo di contenimento è stato salvato con successo."
+        "EDIT_SUCCESS": "Il bordo di contenimento è stato salvato con successo.",
+        "REVOKE_SUCCESS": "Il bordo di contenimento è stato contrassegnato con successo come versione di errore."
       },
       "VALIDITY_CONFIRMATION": {
         "TITLE": "Validità ",
