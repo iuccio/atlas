@@ -31,7 +31,6 @@ class TimetableFieldNumberServiceCustomUniqueValidationTest {
       .meanOfTransport(TtfnMeanOfTransport.TRAIN)
       .number("10.100")
       .status(Status.VALIDATED)
-      .swissTimetableFieldNumber("b0.100")
       .validFrom(LocalDate.of(2020, 1, 1))
       .validTo(LocalDate.of(2020, 12, 31))
       .businessOrganisation("sbb")
@@ -50,6 +49,11 @@ class TimetableFieldNumberServiceCustomUniqueValidationTest {
     version = versionRepository.save(version);
   }
 
+  @AfterEach
+  void clearVersions() {
+    versionRepository.deleteAll();
+  }
+
   @Test
   void shouldNotThrowConflictException() {
     // Given
@@ -60,7 +64,6 @@ class TimetableFieldNumberServiceCustomUniqueValidationTest {
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("10.100")
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber("b0.100")
         .validFrom(LocalDate.of(2021, 1, 1))
         .validTo(LocalDate.of(2021, 12, 31))
         .businessOrganisation("sbb")
@@ -81,58 +84,8 @@ class TimetableFieldNumberServiceCustomUniqueValidationTest {
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("10.100")
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber("b0.101")
         .validFrom(LocalDate.of(2020, 2, 1))
         .validTo(LocalDate.of(2020, 10, 1)).build();
-    // When
-    Executable saveExecutable = () -> timetableFieldNumberService.save(version);
-    // Then
-    Assertions.assertThrows(TimetableFieldNumberConflictException.class, saveExecutable);
-  }
-
-  @Test
-  void shouldThrowConflictExceptionIfSttfnNotUnique() {
-    // Given
-    TimetableFieldNumberVersion version = TimetableFieldNumberVersion.builder()
-        .ttfnid("ch:1:ttfnid:100001")
-        .descriptionOutwardLine1("FPFN Description")
-        .descriptionReturnLine1("FPFN Description")
-        .meanOfTransport(TtfnMeanOfTransport.TRAIN)
-        .number("10.101")
-        .status(Status.VALIDATED)
-        .swissTimetableFieldNumber("B0.100")
-        .validFrom(LocalDate.of(2019, 1, 1))
-        .validTo(LocalDate.of(2021, 12, 31)).build();
-    // When
-    Executable saveExecutable = () -> timetableFieldNumberService.save(version);
-    // Then
-    Assertions.assertThrows(TimetableFieldNumberConflictException.class, saveExecutable);
-  }
-
-  @Test
-  void shouldThrowConflictExceptionIfBothNotUnique() {
-    // Given
-    versionRepository.save(TimetableFieldNumberVersion.builder().ttfnid("ch:1:ttfnid:100000")
-        .descriptionOutwardLine1("FPFN Description")
-        .descriptionReturnLine1("FPFN Description")
-        .meanOfTransport(TtfnMeanOfTransport.TRAIN)
-        .number("10.100")
-        .status(Status.VALIDATED)
-        .swissTimetableFieldNumber("b0.100")
-        .validFrom(LocalDate.of(2021, 1, 1))
-        .validTo(LocalDate.of(2021, 12, 31))
-        .businessOrganisation("sbb")
-        .build());
-    TimetableFieldNumberVersion version = TimetableFieldNumberVersion.builder()
-        .ttfnid("ch:1:ttfnid:100001")
-        .descriptionOutwardLine1("FPFN Description")
-        .descriptionReturnLine1("FPFN Description")
-        .meanOfTransport(TtfnMeanOfTransport.TRAIN)
-        .number("10.100")
-        .status(Status.VALIDATED)
-        .swissTimetableFieldNumber("b0.100")
-        .validFrom(LocalDate.of(2019, 1, 1))
-        .validTo(LocalDate.of(2022, 12, 31)).build();
     // When
     Executable saveExecutable = () -> timetableFieldNumberService.save(version);
     // Then
@@ -149,7 +102,6 @@ class TimetableFieldNumberServiceCustomUniqueValidationTest {
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("10.100")
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber("b0.101")
         .validFrom(LocalDate.of(2019, 1, 1))
         .validTo(LocalDate.of(2020, 10, 1)).build();
     // When
@@ -170,7 +122,6 @@ class TimetableFieldNumberServiceCustomUniqueValidationTest {
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("10.100")
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber("b0.100")
         .validFrom(LocalDate.of(2020, 1, 1))
         .validTo(LocalDate.of(2020, 12, 31))
         .businessOrganisation("sbb")
@@ -179,10 +130,5 @@ class TimetableFieldNumberServiceCustomUniqueValidationTest {
     Executable saveExecutable = () -> timetableFieldNumberService.save(version);
     // Then
     Assertions.assertDoesNotThrow(saveExecutable);
-  }
-
-  @AfterEach
-  void clearVersions() {
-    versionRepository.deleteAll();
   }
 }

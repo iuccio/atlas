@@ -29,7 +29,6 @@ public class TimetableFieldNumber extends BaseEntity {
   private LocalDate validFrom;
   private LocalDate validTo;
   private Status status;
-  private String swissTimetableFieldNumber;
   private String number;
   private String businessOrganisation;
   private String descriptionOutwardLine1;
@@ -40,5 +39,4 @@ public class TimetableFieldNumber extends BaseEntity {
   private String descriptionReturnLine3;
   private TtfnMeanOfTransport meanOfTransport;
   private Set<String> lineRelations;
-
 }

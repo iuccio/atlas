@@ -170,7 +170,6 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
 
     TimetableFieldNumberVersion timetableFieldNumber = TimetableFieldNumberVersion.builder()
         .ttfnid(TTFNID)
-        .swissTimetableFieldNumber("1234")
         .number("5678")
         .descriptionOutwardLine1("Description")
         .descriptionReturnLine1("Description")
@@ -196,7 +195,6 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
   void shouldCreateStatementWithoutDocuments() throws Exception {
     TimetableFieldNumberVersion timetableFieldNumber = TimetableFieldNumberVersion.builder()
         .ttfnid("ch:1:ttfnid:12341241")
-        .swissTimetableFieldNumber("1234")
         .number("5678")
         .descriptionOutwardLine1("Description")
         .descriptionReturnLine1("Description")
@@ -234,7 +232,6 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
   void shouldThrowExceptionOnCreateWhenIdNotNull() throws Exception {
     TimetableFieldNumberVersion timetableFieldNumber = TimetableFieldNumberVersion.builder()
         .ttfnid("ch:1:ttfnid:12341241")
-        .swissTimetableFieldNumber("1234")
         .number("5678")
         .descriptionOutwardLine1("Description")
         .descriptionReturnLine1("Description")

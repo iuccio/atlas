@@ -21,7 +21,6 @@ public class TimetableFieldNumberJsonProcessor implements ItemProcessor<Timetabl
         .meanOfTransport(timetableFieldNumber.getMeanOfTransport())
         .number(timetableFieldNumber.getNumber())
         .ttfnid(timetableFieldNumber.getTtfnid())
-        .swissTimetableFieldNumber(timetableFieldNumber.getSwissTimetableFieldNumber())
         .status(timetableFieldNumber.getStatus())
         .validFrom(timetableFieldNumber.getValidFrom())
         .validTo(timetableFieldNumber.getValidTo())
@@ -33,5 +32,4 @@ public class TimetableFieldNumberJsonProcessor implements ItemProcessor<Timetabl
         .etagVersion(timetableFieldNumber.getVersion())
         .build();
   }
-
 }

@@ -34,7 +34,7 @@ public class TimetableFieldNumberSearchRestrictions extends
   protected SpecificationBuilder<TimetableFieldNumber> specificationBuilder() {
     return SpecificationBuilder.<TimetableFieldNumber>builder()
         .stringAttributes(
-            List.of(TimetableFieldNumber.Fields.swissTimetableFieldNumber,
+            List.of(
                 TimetableFieldNumber.Fields.descriptionOutwardLine1,
                 TimetableFieldNumber.Fields.ttfnid,
                 TimetableFieldNumber.Fields.number))
@@ -43,5 +43,4 @@ public class TimetableFieldNumberSearchRestrictions extends
         .validToAttribute(TimetableFieldNumber_.validTo)
         .build();
   }
-
 }

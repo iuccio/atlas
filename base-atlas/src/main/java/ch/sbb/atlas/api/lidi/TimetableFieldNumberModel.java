@@ -23,10 +23,6 @@ import lombok.NoArgsConstructor;
 @Schema(name = "TimetableFieldNumber")
 public class TimetableFieldNumberModel {
 
-  @Schema(description = "Timetable field number", example = "b0.123")
-  @Size(min = 1, max = AtlasFieldLengths.LENGTH_50)
-  private String swissTimetableFieldNumber;
-
   @Schema(description = "Number", example = "100; 80.099; 2700")
   @Size(min = 1, max = AtlasFieldLengths.LENGTH_50)
   @NotNull
@@ -58,5 +54,4 @@ public class TimetableFieldNumberModel {
   @Schema(description = "Date - valid to", example = "2021-12-01")
   @NotNull
   private LocalDate validTo;
-
 }
