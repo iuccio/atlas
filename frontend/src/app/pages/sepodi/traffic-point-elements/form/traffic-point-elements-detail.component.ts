@@ -383,4 +383,31 @@ export class TrafficPointElementsDetailComponent
       this.form.markAsDirty();
     }
   }
+
+  revoke() {
+    this.dialogService
+      .confirm({
+        title: 'DIALOG.WARNING',
+        message: 'DIALOG.REVOKE',
+        cancelText: 'DIALOG.BACK',
+        confirmText: 'DIALOG.CONFIRM_REVOKE',
+      })
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.trafficPointElementInternalService
+            .revokeTrafficPoint(this.selectedVersion.sloid!)
+            .pipe(catchError(this.handleError()))
+            .subscribe(() => {
+              this.notificationService.success(
+                'SEPODI.TRAFFIC_POINT_ELEMENTS.NOTIFICATION.REVOKE_SUCCESS'
+              );
+              this.router
+                .navigate(['..', this.selectedVersion.sloid], {
+                  relativeTo: this.route,
+                })
+                .then(() => this.ngOnInit());
+            });
+        }
+      });
+  }
 }

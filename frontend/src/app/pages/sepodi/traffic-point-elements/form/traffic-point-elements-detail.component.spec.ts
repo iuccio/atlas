@@ -75,13 +75,11 @@ describe('TrafficPointElementsDetailComponent', () => {
     'trafficPointElementsService',
     ['updateTrafficPoint', 'createTrafficPoint']
   );
-  const trafficPointInternalService = jasmine.createSpyObj(
-    'trafficPointElementsService',
-    ['getAreasOfServicePoint']
-  );
-  trafficPointInternalService.getAreasOfServicePoint.and.returnValue(
-    of({ objects: BERN_WYLEREGG_TRAFFIC_POINTS })
-  );
+  const trafficPointInternalService = jasmine.createSpyObj({
+    getAreasOfServicePoint: of(BERN_WYLEREGG_TRAFFIC_POINTS),
+    revokeTrafficPoint: of(),
+  });
+
   trafficPointService.updateTrafficPoint.and.returnValue(
     of(BERN_WYLEREGG_TRAFFIC_POINTS)
   );
@@ -213,6 +211,13 @@ describe('TrafficPointElementsDetailComponent', () => {
       component.save();
 
       expect(trafficPointService.createTrafficPoint).toHaveBeenCalled();
+    });
+
+    it('should revoke traffic point', () => {
+      component.selectedVersion = BERN_WYLEREGG_TRAFFIC_POINTS[0];
+      component.revoke();
+
+      expect(trafficPointInternalService.revokeTrafficPoint).toHaveBeenCalled();
     });
   });
 
