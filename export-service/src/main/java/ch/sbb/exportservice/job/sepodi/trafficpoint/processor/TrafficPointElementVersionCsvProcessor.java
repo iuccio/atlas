@@ -54,7 +54,8 @@ public class TrafficPointElementVersionCsvProcessor extends BaseSepodiProcessor 
         .servicePointBusinessOrganisationDescriptionIt(
             servicePointSharedBusinessOrganisation.getBusinessOrganisationDescriptionIt())
         .servicePointBusinessOrganisationDescriptionEn(
-            servicePointSharedBusinessOrganisation.getBusinessOrganisationDescriptionEn());
+            servicePointSharedBusinessOrganisation.getBusinessOrganisationDescriptionEn())
+        .status(version.getStatus());
 
     if (version.getTrafficPointElementGeolocation() != null) {
       buildGeolocation(version.getTrafficPointElementGeolocation(), builder);

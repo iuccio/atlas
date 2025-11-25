@@ -1,12 +1,16 @@
 package ch.sbb.atlas.servicepointdirectory.module.trafficpoint.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ch.sbb.atlas.location.LocationService;
+import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.controller.BaseControllerApiTest;
+import ch.sbb.atlas.servicepointdirectory.module.sector.entity.SectorVersion;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.entity.ServicePointVersion;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.repository.ServicePointVersionRepository;
 import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.TrafficPointTestData;
@@ -14,6 +18,7 @@ import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.entity.TrafficPoin
 import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.entity.TrafficPointElementVersion.Fields;
 import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.repository.TrafficPointElementVersionRepository;
 import ch.sbb.atlas.servicepointdirectory.service.CrossValidationService;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,4 +68,14 @@ class TrafficPointElementApiInternalControllerApiTest extends BaseControllerApiT
         .andExpect(jsonPath("$[0]." + Fields.sloid, is("ch:1:sloid:1400015:0:310240")));
   }
 
+  @Test
+  void shouldRevokeTrafficPoint() throws Exception {
+    //when
+    mvc.perform(post("/internal/traffic-point-elements/" + trafficPointElementVersion.getSloid() + "/revoke")).andExpect(status().isOk());
+    //then
+    List<TrafficPointElementVersion> sector = repository.findAllBySloidOrderByValidFrom(trafficPointElementVersion.getSloid());
+    assertThat(sector).hasSize(1);
+    assertThat(sector.getFirst().getStatus()).isEqualTo(Status.REVOKED);
+    assertThat(sector.getFirst().getValidFrom()).isEqualTo(sector.getFirst().getValidTo());
+  }
 }
