@@ -48,7 +48,7 @@ class TimetableFieldNumberServiceScenario6Test extends BaseTimetableFieldNumberS
 
     //when
     timetableFieldNumberService.updateVersion(version3, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version1.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version1.getTtfnid());
 
     //then
     assertThat(result).hasSize(4);
@@ -129,7 +129,7 @@ class TimetableFieldNumberServiceScenario6Test extends BaseTimetableFieldNumberS
 
     //when
     timetableFieldNumberService.updateVersion(version1, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version1.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version1.getTtfnid());
 
     //then
     assertThat(result).hasSize(2);
@@ -187,7 +187,7 @@ class TimetableFieldNumberServiceScenario6Test extends BaseTimetableFieldNumberS
 
     //when
     timetableFieldNumberService.updateVersion(version1, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version1.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version1.getTtfnid());
 
     //then
     assertThat(result).hasSize(2);
@@ -245,7 +245,7 @@ class TimetableFieldNumberServiceScenario6Test extends BaseTimetableFieldNumberS
 
     //when
     timetableFieldNumberService.updateVersion(version1, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version1.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version1.getTtfnid());
 
     //then
     assertThat(result).hasSize(2);

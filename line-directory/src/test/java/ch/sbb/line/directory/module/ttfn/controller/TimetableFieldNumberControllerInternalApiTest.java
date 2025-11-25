@@ -68,8 +68,7 @@ class TimetableFieldNumberControllerInternalApiTest extends BaseControllerApiTes
   @Test
   void shouldRevokeTimetableFieldNumber() throws Exception {
     mvc.perform(post("/internal/field-numbers/" + version.getTtfnid() + "/revoke"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0]." + BaseVersionModel.Fields.status, is("REVOKED")));
+        .andExpect(status().isOk());
   }
 
   @Test

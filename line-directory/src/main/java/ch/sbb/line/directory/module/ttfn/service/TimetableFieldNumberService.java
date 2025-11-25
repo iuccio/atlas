@@ -1,6 +1,7 @@
 package ch.sbb.line.directory.module.ttfn.service;
 
 import ch.sbb.atlas.model.Status;
+import ch.sbb.atlas.revoke.RevokeService;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.service.VersionableService;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumber;
@@ -24,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
-public class TimetableFieldNumberService {
+public class TimetableFieldNumberService extends RevokeService<TimetableFieldNumberVersion> {
 
   private final TimetableFieldNumberVersionRepository versionRepository;
   private final TimetableFieldNumberRepository timetableFieldNumberRepository;
@@ -32,16 +33,22 @@ public class TimetableFieldNumberService {
   private final VersionableService versionableService;
 
   public List<TimetableFieldNumberVersion> getAllVersionsVersioned(String ttfnId) {
-    return versionRepository.getAllVersionsVersioned(ttfnId);
+    return findBySid4ptOrderByValidFrom(ttfnId);
   }
 
   public List<TimetableFieldNumberVersion> revokeTimetableFieldNumber(String ttfnId) {
-    List<TimetableFieldNumberVersion> timetableFieldNumberVersions =
-        versionRepository.getAllVersionsVersioned(
-            ttfnId);
-    timetableFieldNumberVersions.forEach(
-        timetableFieldNumberVersion -> timetableFieldNumberVersion.setStatus(Status.REVOKED));
-    return timetableFieldNumberVersions;
+    return revoke(ttfnId);
+  }
+
+
+  @Override
+  protected List<TimetableFieldNumberVersion> findBySid4ptOrderByValidFrom(String ttfnId) {
+    return versionRepository.findBySid4ptOrderByValidFrom(ttfnId);
+  }
+
+  @Override
+  protected void saveAll(List<TimetableFieldNumberVersion> versionRevokables) {
+    versionRepository.saveAll(versionRevokables);
   }
 
   public Optional<TimetableFieldNumberVersion> findById(Long id) {

@@ -12,8 +12,8 @@ import ch.sbb.atlas.service.OverviewDisplayBuilder;
 import ch.sbb.atlas.servicepointdirectory.module.sector.entity.SectorVersion;
 import ch.sbb.atlas.servicepointdirectory.module.sector.mapper.SectorMapper;
 import ch.sbb.atlas.servicepointdirectory.module.sector.repository.SectorVersionRepository;
-import ch.sbb.atlas.servicepointdirectory.module.sectorgroup.entity.SectorGroupVersion;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.entity.ServicePointVersion;
+import ch.sbb.atlas.revoke.RevokeService;
 import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.service.TrafficPointElementService;
 import ch.sbb.atlas.servicepointdirectory.service.SectorValidationService;
 import ch.sbb.atlas.versioning.consumer.ApplyVersioningDeleteByIdLongConsumer;
@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SectorService {
+public class SectorService extends RevokeService<SectorVersion> {
 
   private final SectorVersionRepository sectorVersionRepository;
   private final TrafficPointElementService trafficPointElementService;
@@ -80,7 +80,7 @@ public class SectorService {
 
     sectorValidationService.validateValidity(editedVersion);
 
-    List<SectorVersion> currentVersions = getSector(currentVersion.getSloid());
+    List<SectorVersion> currentVersions = findBySid4ptOrderByValidFrom(currentVersion.getSloid());
 
     List<VersionedObject> versionedObjects = versionableService.versioningObjectsDeletingNullProperties(currentVersion,
         editedVersion,
@@ -109,7 +109,8 @@ public class SectorService {
     return sectorVersionRepository.findById(id).orElseThrow(() -> new IdNotFoundException(id));
   }
 
-  public List<SectorVersion> getSector(String sectorSloid) {
+  @Override
+  public List<SectorVersion> findBySid4ptOrderByValidFrom(String sectorSloid) {
     List<SectorVersion> sectorVersions = sectorVersionRepository.findAllBySloidOrderByValidFrom(sectorSloid);
 
     if (sectorVersions.isEmpty()) {
@@ -119,19 +120,18 @@ public class SectorService {
     return sectorVersions;
   }
 
+  @Override
+  protected void saveAll(List<SectorVersion> versionRevokables) {
+    sectorVersionRepository.saveAll(versionRevokables);
+  }
+
   private SectorVersion save(SectorVersion sectorVersion) {
     sectorVersion.setStatus(Status.VALIDATED);
     return sectorVersionRepository.saveAndFlush(sectorVersion);
   }
 
   @Transactional
-  public void revoke(String sloid) {
-    List<SectorVersion> sector = getSector(sloid);
-
-    SectorVersion lastVersion = sector.getLast();
-    lastVersion.setValidTo(lastVersion.getValidFrom());
-
-    sector.forEach(sectorVersion -> sectorVersion.setStatus(Status.REVOKED));
-    sectorVersionRepository.saveAll(sector);
+  public void revokeSector(String sloid) {
+    revoke(sloid);
   }
 }

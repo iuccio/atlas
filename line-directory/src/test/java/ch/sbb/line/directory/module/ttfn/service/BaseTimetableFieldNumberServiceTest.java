@@ -116,7 +116,7 @@ abstract class BaseTimetableFieldNumberServiceTest {
 
   @AfterEach
   void cleanUp() {
-    List<TimetableFieldNumberVersion> versionsVersioned = versionRepository.getAllVersionsVersioned(TTFNID);
+    List<TimetableFieldNumberVersion> versionsVersioned = versionRepository.findBySid4ptOrderByValidFrom(TTFNID);
     versionRepository.deleteAll(versionsVersioned);
   }
 }

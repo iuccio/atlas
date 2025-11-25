@@ -1,5 +1,7 @@
 package ch.sbb.atlas.servicepointdirectory.module.sectorgroup.entity;
 
+import ch.sbb.atlas.revoke.Revokable;
+import ch.sbb.atlas.revoke.RevokeService;
 import ch.sbb.atlas.servicepointdirectory.entity.BaseSectorEntity;
 import ch.sbb.atlas.validation.DatesValidator;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionable;
@@ -24,7 +26,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Entity(name = "sector_group_version")
 @AtlasVersionable
-public class SectorGroupVersion extends BaseSectorEntity implements Versionable, DatesValidator {
+public class SectorGroupVersion extends BaseSectorEntity implements Versionable, DatesValidator, Revokable {
 
   private static final String VERSION_SEQ = "sector_group_version_seq";
 

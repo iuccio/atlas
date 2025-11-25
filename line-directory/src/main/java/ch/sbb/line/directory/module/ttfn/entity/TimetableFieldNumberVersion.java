@@ -6,6 +6,7 @@ import ch.sbb.atlas.api.lidi.enumaration.TtfnMeanOfTransport;
 import ch.sbb.atlas.api.model.BusinessOrganisationAssociated;
 import ch.sbb.atlas.model.entity.BaseVersion;
 import ch.sbb.atlas.model.entity.BusinessIdGeneration;
+import ch.sbb.atlas.revoke.Revokable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionableProperty;
 import ch.sbb.atlas.versioning.model.Versionable;
@@ -46,7 +47,7 @@ import lombok.experimental.SuperBuilder;
 @FieldNameConstants
 @AtlasVersionable
 public class TimetableFieldNumberVersion extends BaseVersion implements Versionable,
-    BusinessOrganisationAssociated {
+    BusinessOrganisationAssociated, Revokable {
 
   private static final String VERSION_SEQ = "timetable_field_number_version_seq";
 

@@ -38,7 +38,7 @@ public class SectorGroupApiV1Controller implements SectorGroupApiV1 {
 
     trafficPointElementService.doesTrafficPointExist(createSectorGroupVersionModel.getTrafficPointSloid());
     TrafficPointElementVersion trafficPointElementVersion =
-        trafficPointElementService.findBySloidOrderByValidFrom(createSectorGroupVersionModel.getTrafficPointSloid()).getFirst();
+        trafficPointElementService.findBySid4ptOrderByValidFrom(createSectorGroupVersionModel.getTrafficPointSloid()).getFirst();
 
     List<ServicePointVersion> servicePointVersions = servicePointService.findAllByNumberOrderByValidFrom(
         trafficPointElementVersion.getServicePointNumber());
@@ -54,7 +54,7 @@ public class SectorGroupApiV1Controller implements SectorGroupApiV1 {
 
     trafficPointElementService.doesTrafficPointExist(sectorGroupVersionToUpdate.getTrafficPointSloid());
     TrafficPointElementVersion trafficPointElementVersion =
-        trafficPointElementService.findBySloidOrderByValidFrom(sectorGroupVersionToUpdate.getTrafficPointSloid()).getFirst();
+        trafficPointElementService.findBySid4ptOrderByValidFrom(sectorGroupVersionToUpdate.getTrafficPointSloid()).getFirst();
 
     List<ServicePointVersion> servicePointVersions = servicePointService.findAllByNumberOrderByValidFrom(
         trafficPointElementVersion.getServicePointNumber());

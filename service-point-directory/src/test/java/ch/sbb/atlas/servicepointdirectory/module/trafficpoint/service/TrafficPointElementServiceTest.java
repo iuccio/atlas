@@ -73,11 +73,11 @@ class TrafficPointElementServiceTest {
     trafficPointElementService.updateTrafficPointElementVersion(trafficPointElementVersion, edited);
 
     // then
-    assertThat(trafficPointElementService.findBySloidOrderByValidFrom("ch:1:sloid:89108:123:123")).hasSize(1);
+    assertThat(trafficPointElementService.findBySid4ptOrderByValidFrom("ch:1:sloid:89108:123:123")).hasSize(1);
   }
 
   @Test
-  void shouldRevokeTrafficPoint() {
+  void shouldRevokeTrafficPointTrafficPoint() {
     // given
     servicePointVersionRepository.save(TrafficPointTestData.testServicePointForTrafficPoint());
     TrafficPointElementVersion trafficPointElementVersion1 = TrafficPointTestData.getBasicTrafficPointBuilder().build();
@@ -90,9 +90,9 @@ class TrafficPointElementServiceTest {
 
 
     // when
-    trafficPointElementService.revoke(sloid);
+    trafficPointElementService.revokeTrafficPoint(sloid);
     // then
-    List<TrafficPointElementVersion> result = trafficPointElementService.findBySloidOrderByValidFrom(sloid);
+    List<TrafficPointElementVersion> result = trafficPointElementService.findBySid4ptOrderByValidFrom(sloid);
     assertThat(result).hasSize(2);
     assertThat(result).extracting(TrafficPointElementVersion::getStatus).containsOnly(Status.REVOKED);
     TrafficPointElementVersion lastVersion = result.getLast();

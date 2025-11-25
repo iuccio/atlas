@@ -8,6 +8,7 @@ import ch.sbb.atlas.servicepoint.converter.ServicePointNumberConverter;
 import ch.sbb.atlas.servicepoint.enumeration.TrafficPointElementType;
 import ch.sbb.atlas.servicepointdirectory.module.geodata.entity.GeolocationBaseEntity;
 import ch.sbb.atlas.servicepointdirectory.module.geodata.entity.TrafficPointElementGeolocation;
+import ch.sbb.atlas.revoke.Revokable;
 import ch.sbb.atlas.validation.DatesValidator;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionableProperty;
@@ -52,7 +53,7 @@ import lombok.experimental.SuperBuilder;
 @Entity(name = "traffic_point_element_version")
 @AtlasVersionable
 public class TrafficPointElementVersion extends BaseEntity implements Versionable,
-    DatesValidator {
+    DatesValidator, Revokable {
 
   private static final String VERSION_SEQ = "traffic_point_element_version_seq";
 

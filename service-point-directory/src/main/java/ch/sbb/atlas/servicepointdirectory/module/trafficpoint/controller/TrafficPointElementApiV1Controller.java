@@ -62,7 +62,7 @@ public class TrafficPointElementApiV1Controller implements TrafficPointElementAp
   @Override
   public List<ReadTrafficPointElementVersionModel> getTrafficPointElement(String sloid) {
     List<ReadTrafficPointElementVersionModel> trafficPointElementVersions =
-        trafficPointElementService.findBySloidOrderByValidFrom(
+        trafficPointElementService.findBySid4ptOrderByValidFrom(
                 sloid)
             .stream()
             .map(TrafficPointElementVersionMapper::toModel).toList();
@@ -108,7 +108,7 @@ public class TrafficPointElementApiV1Controller implements TrafficPointElementAp
   @Override
   public List<ReadTrafficPointElementVersionModel> terminateTrafficPoint(String sloid,
       LocalDate validTo) {
-    List<TrafficPointElementVersion> trafficPointElementVersions = trafficPointElementService.findBySloidOrderByValidFrom(sloid);
+    List<TrafficPointElementVersion> trafficPointElementVersions = trafficPointElementService.findBySid4ptOrderByValidFrom(sloid);
     if (trafficPointElementVersions.isEmpty()) {
       throw new SloidNotFoundException(sloid);
     }
@@ -123,7 +123,7 @@ public class TrafficPointElementApiV1Controller implements TrafficPointElementAp
 
   private List<ReadTrafficPointElementVersionModel> getReadTrafficPointElementVersionModels(
       TrafficPointElementVersion trafficPointElementVersion) {
-    List<TrafficPointElementVersion> updatedTrafficPoint = trafficPointElementService.findBySloidOrderByValidFrom(
+    List<TrafficPointElementVersion> updatedTrafficPoint = trafficPointElementService.findBySid4ptOrderByValidFrom(
         trafficPointElementVersion.getSloid());
     servicePointDistributor.publishTrafficPointElements(updatedTrafficPoint);
     return updatedTrafficPoint

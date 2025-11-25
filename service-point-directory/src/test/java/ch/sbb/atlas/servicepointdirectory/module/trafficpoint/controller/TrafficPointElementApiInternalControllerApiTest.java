@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ch.sbb.atlas.location.LocationService;
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.controller.BaseControllerApiTest;
-import ch.sbb.atlas.servicepointdirectory.module.sector.entity.SectorVersion;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.entity.ServicePointVersion;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.repository.ServicePointVersionRepository;
 import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.TrafficPointTestData;

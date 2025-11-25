@@ -3,6 +3,7 @@ package ch.sbb.line.directory.module.line.service;
 import ch.sbb.atlas.api.lidi.enumaration.LineType;
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
+import ch.sbb.atlas.revoke.RevokeService;
 import ch.sbb.atlas.versioning.convert.ReflectionHelper;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.service.VersionableService;
@@ -33,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class LineService {
+public class LineService extends RevokeService<LineVersion> {
 
   private final LineVersionRepository lineVersionRepository;
   private final SublineVersionRepository sublineVersionRepository;
@@ -60,11 +61,11 @@ public class LineService {
   }
 
   public List<LineVersion> findLineVersions(String slnid) {
-    return lineVersionRepository.findAllBySlnidOrderByValidFrom(slnid);
+    return findBySid4ptOrderByValidFrom(slnid);
   }
 
   public List<LineVersion> findLineVersionsForV1(String slnid) {
-    return lineVersionRepository.findAllBySlnidOrderByValidFrom(slnid).stream()
+    return findBySid4ptOrderByValidFrom(slnid).stream()
         .filter(i -> i.getSwissLineNumber() != null)
         .toList();
   }
@@ -112,10 +113,20 @@ public class LineService {
   }
 
   public List<LineVersion> revokeLine(String slnid) {
-    List<LineVersion> lineVersions = lineVersionRepository.findAllBySlnidOrderByValidFrom(slnid);
+    List<LineVersion> lineVersions = findBySid4ptOrderByValidFrom(slnid);
     lineVersions.forEach(lineVersion -> lineVersion.setStatus(Status.REVOKED));
-    lineVersionRepository.saveAll(lineVersions);
+    saveAll(lineVersions);
     return lineVersions;
+  }
+
+  @Override
+  protected void saveAll(List<LineVersion> lineVersions) {
+    lineVersionRepository.saveAll(lineVersions);
+  }
+
+  @Override
+  protected List<LineVersion> findBySid4ptOrderByValidFrom(String slnid) {
+    return lineVersionRepository.findAllBySlnidOrderByValidFrom(slnid);
   }
 
   public void skipWorkflow(Long lineVersionId) {
@@ -135,7 +146,7 @@ public class LineService {
   }
 
   public void deleteAll(String slnid) {
-    List<LineVersion> currentVersions = lineVersionRepository.findAllBySlnidOrderByValidFrom(slnid);
+    List<LineVersion> currentVersions = findBySid4ptOrderByValidFrom(slnid);
 
     if (currentVersions.isEmpty()) {
       throw new SlnidNotFoundException(slnid);

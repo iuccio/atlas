@@ -7,6 +7,7 @@ import ch.sbb.atlas.api.lidi.enumaration.OfferCategory;
 import ch.sbb.atlas.api.model.BusinessOrganisationAssociated;
 import ch.sbb.atlas.model.entity.BaseVersion;
 import ch.sbb.atlas.model.entity.BusinessIdGeneration;
+import ch.sbb.atlas.revoke.Revokable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionableProperty;
 import ch.sbb.atlas.versioning.model.Versionable;
@@ -47,7 +48,7 @@ import lombok.experimental.SuperBuilder;
 @Entity(name = "line_version")
 @AtlasVersionable
 public class LineVersion extends BaseVersion implements Versionable,
-    BusinessOrganisationAssociated {
+    BusinessOrganisationAssociated, Revokable {
 
   private static final String VERSION_SEQ = "line_version_seq";
 

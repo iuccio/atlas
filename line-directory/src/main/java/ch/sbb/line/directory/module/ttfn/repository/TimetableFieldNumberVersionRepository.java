@@ -17,7 +17,7 @@ public interface TimetableFieldNumberVersionRepository extends
     JpaRepository<TimetableFieldNumberVersion, Long> {
 
   @Query(value = "SELECT v FROM timetable_field_number_version v WHERE v.ttfnid = :ttfnid order by v.validFrom asc")
-  List<TimetableFieldNumberVersion> getAllVersionsVersioned(@Param("ttfnid") String ttfnid);
+  List<TimetableFieldNumberVersion> findBySid4ptOrderByValidFrom(@Param("ttfnid") String ttfnid);
 
   default List<TimetableFieldNumberVersion> findNumberOverlaps(TimetableFieldNumberVersion version) {
     return findAllByValidToGreaterThanEqualAndValidFromLessThanEqualAndNumberIgnoreCase(
