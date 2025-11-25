@@ -8,7 +8,6 @@ import ch.sbb.atlas.servicepointdirectory.module.sector.exception.MissingTrainSt
 import ch.sbb.atlas.servicepointdirectory.module.sector.exception.SectorValidityException;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.entity.ServicePointVersion;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.exception.RevokedException;
-import ch.sbb.atlas.servicepointdirectory.module.servicepoint.exception.ServicePointStatusRevokedChangeNotAllowedException;
 import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.entity.TrafficPointElementVersion;
 import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.service.TrafficPointElementService;
 import java.util.List;
@@ -41,7 +40,7 @@ public class SectorValidationService {
 
   public <T extends BaseSectorEntity> void validateValidity(T version) {
     List<TrafficPointElementVersion> trafficPointElementVersions =
-        trafficPointElementService.findBySloidOrderByValidFrom(version.getTrafficPointSloid());
+        trafficPointElementService.findBySid4ptOrderByValidFrom(version.getTrafficPointSloid());
 
     TrafficPointElementVersion oldestVersion = trafficPointElementVersions.getFirst();
     TrafficPointElementVersion latestVersion = trafficPointElementVersions.getLast();

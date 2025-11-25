@@ -41,7 +41,7 @@ public class TrafficPointElementApiInternalController implements TrafficPointEle
 
   @Override
   public void revokeTrafficPoint(String sloid) {
-    trafficPointElementService.revoke(sloid);
+    trafficPointElementService.revokeTrafficPoint(sloid);
   }
 
 }

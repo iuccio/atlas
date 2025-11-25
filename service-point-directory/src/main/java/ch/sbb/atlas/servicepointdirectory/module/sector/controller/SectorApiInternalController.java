@@ -20,7 +20,7 @@ public class SectorApiInternalController implements SectorApiInternal {
 
   @Override
   public void revokeSector(String sloid) {
-    sectorService.revoke(sloid);
+    sectorService.revokeSector(sloid);
   }
 
   @Override

@@ -59,7 +59,7 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
 
     //when
     timetableFieldNumberService.updateVersion(version3, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version1.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version1.getTtfnid());
 
     //then
     assertThat(result).hasSize(3);
@@ -134,7 +134,7 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
 
     //when
     timetableFieldNumberService.updateVersion(version2, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version1.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version1.getTtfnid());
 
     //then
     assertThat(result).hasSize(1);
@@ -193,7 +193,7 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
 
     //when
     timetableFieldNumberService.updateVersion(version2, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version1.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version1.getTtfnid());
 
     //then
     assertThat(result).hasSize(2);
@@ -263,7 +263,7 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
 
     //when
     timetableFieldNumberService.updateVersion(version2, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version1.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version1.getTtfnid());
 
     //then
     assertThat(result).hasSize(3);

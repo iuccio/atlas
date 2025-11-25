@@ -6,6 +6,7 @@ import ch.sbb.atlas.api.lidi.enumaration.SublineType;
 import ch.sbb.atlas.api.model.BusinessOrganisationAssociated;
 import ch.sbb.atlas.model.entity.BaseVersion;
 import ch.sbb.atlas.model.entity.BusinessIdGeneration;
+import ch.sbb.atlas.revoke.Revokable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionableProperty;
 import ch.sbb.atlas.versioning.model.Versionable;
@@ -39,7 +40,7 @@ import lombok.experimental.SuperBuilder;
 @Entity(name = "subline_version")
 @AtlasVersionable
 public class SublineVersion extends BaseVersion implements Versionable,
-    BusinessOrganisationAssociated {
+    BusinessOrganisationAssociated, Revokable {
 
   private static final String SUBLINE_VERSION_SEQ = "subline_version_seq";
 

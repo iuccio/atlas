@@ -21,7 +21,7 @@ public class TransportCompanyRelationService {
   private final TransportCompanyService transportCompanyService;
 
   public TransportCompanyRelation save(TransportCompanyRelation entity, boolean isUpdateTransportCompanyRelation) {
-    if (businessOrganisationService.findBusinessOrganisationVersions(entity.getSboid()).isEmpty()) {
+    if (businessOrganisationService.findBySid4ptOrderByValidFrom(entity.getSboid()).isEmpty()) {
       throw new SboidNotFoundException(entity.getSboid());
     }
     if (!transportCompanyService.existsById(entity.getTransportCompany().getId())) {

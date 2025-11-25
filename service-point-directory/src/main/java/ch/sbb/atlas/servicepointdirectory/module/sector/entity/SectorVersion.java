@@ -3,6 +3,7 @@ package ch.sbb.atlas.servicepointdirectory.module.sector.entity;
 import ch.sbb.atlas.api.servicepoint.SpatialReference;
 import ch.sbb.atlas.api.servicepoint.TransformableGeolocation;
 import ch.sbb.atlas.servicepointdirectory.entity.BaseSectorEntity;
+import ch.sbb.atlas.revoke.Revokable;
 import ch.sbb.atlas.validation.DatesValidator;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionableProperty;
@@ -33,7 +34,8 @@ import lombok.experimental.SuperBuilder;
 @FieldNameConstants
 @Entity(name = "sector_version")
 @AtlasVersionable
-public class SectorVersion extends BaseSectorEntity implements Versionable, DatesValidator, TransformableGeolocation {
+public class SectorVersion extends BaseSectorEntity implements Versionable, DatesValidator, TransformableGeolocation,
+    Revokable {
 
   private static final String VERSION_SEQ = "sector_version_seq";
 
