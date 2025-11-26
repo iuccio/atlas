@@ -11,10 +11,13 @@
         </h2>
       } @else {
         <div class="font-bold-4xl detail-title mb-3">
-          {{ selectedVersion.mainLineNumber }} - {{ selectedVersion.description }}
+          {{ selectedVersion.mainLineNumber }} -
+          {{ selectedVersion.description }}
         </div>
         <div class="font-bold-xl mb-2">
-          <span data-cy="detail-subheading-id">{{ selectedVersion.slnid }}</span>
+          <span data-cy="detail-subheading-id">{{
+            selectedVersion.slnid
+          }}</span>
           <span data-cy="total-range">
             -
             <date-range-text [dateRange]="maxValidity"></date-range-text>
@@ -35,14 +38,17 @@
 
         <div class="form-title-section my-5">
           <h2 class="font-bold-2xl color-gray-900">
-            {{ 'LIDI.SUBLINE.DETAIL_SUBLINE_INFORMATION' | translate }} - {{ 'COMMON.VERSION' | translate }}
+            {{ 'LIDI.SUBLINE.DETAIL_SUBLINE_INFORMATION' | translate }} -
+            {{ 'COMMON.VERSION' | translate }}
             {{ selectedVersionIndex + 1 }}
           </h2>
           <div>
-            <span class="font-bold-lg color-gray-900">{{ 'COMMON.STATUS' | translate }} </span>
+            <span class="font-bold-lg color-gray-900"
+              >{{ 'COMMON.STATUS' | translate }}
+            </span>
             <span class="color-gray-900">{{
-                'COMMON.STATUS_TYPES.' + selectedVersion.status | translate
-              }}</span>
+              'COMMON.STATUS_TYPES.' + selectedVersion.status | translate
+            }}</span>
           </div>
         </div>
       }
@@ -60,9 +66,8 @@
                 (changeTrigger)="mainLineChanged($event)"
                 data-cy="mainline"
               >
-                <mat-label class="font-bold-lg required-indicator">{{
-                    'LIDI.SUBLINE.MAINLINE' | translate
-                  }}
+                <mat-label class="font-bold-lg required-indicator"
+                  >{{ 'LIDI.SUBLINE.MAINLINE' | translate }}
                 </mat-label>
                 <div class="mat-label-form-field-space-between"></div>
                 <ng-template #labelOptionTemplates let-item>
@@ -84,14 +89,24 @@
         @if (currentMainlineSelection) {
           <div class="d-flex flex-row align-self-end">
             <div class="d-flex flex-column" data-cy="selected-line-number">
-              <div class="font-bold-base">{{ 'LIDI.LINE.NUMBER' | translate }}</div>
+              <div class="font-bold-base">
+                {{ 'LIDI.LINE.NUMBER' | translate }}
+              </div>
               <div>{{ currentMainlineSelection.number }}</div>
             </div>
-            <div class="d-flex flex-column ms-5" data-cy="selected-line-short-number">
-              <div class="font-bold-base">{{ 'LIDI.SHORT_NUMBER' | translate }}</div>
+            <div
+              class="d-flex flex-column ms-5"
+              data-cy="selected-line-short-number"
+            >
+              <div class="font-bold-base">
+                {{ 'LIDI.SHORT_NUMBER' | translate }}
+              </div>
               <div>{{ currentMainlineSelection.shortNumber ?? '-' }}</div>
             </div>
-            <div class="d-flex flex-column ms-5" data-cy="selected-line-offer-category">
+            <div
+              class="d-flex flex-column ms-5"
+              data-cy="selected-line-offer-category"
+            >
               <div class="font-bold-base">
                 {{ 'LIDI.OFFER_CATEGORY.TYPE' | translate }}
               </div>
@@ -99,13 +114,12 @@
             </div>
           </div>
         }
-
       </div>
 
       <div class="col-12 d-flex mb-3">
         <div class="d-flex flex-column col-3 pe-3">
           <atlas-select
-            *ngIf="TYPE_OPTIONS.length>0"
+            *ngIf="TYPE_OPTIONS.length > 0"
             [formGroup]="form"
             controlName="sublineType"
             dataCy="type"
@@ -137,11 +151,15 @@
           <atlas-text-field
             *ngIf="form.controls.sublineType.value === 'CONCESSION'"
             [fieldExamples]="[
-            { label: 'FORM.FOR_EXAMPLE', translate: true },
-            { label: 'r.31.001:a', translate: false },
-            { label: ' |', translate: false },
-            { label: 'FORM.MAX_CHARS', translate: true, arg: { key: 'numberOfChars', value: '50' } }
-          ]"
+              { label: 'FORM.FOR_EXAMPLE', translate: true },
+              { label: 'r.31.001:a', translate: false },
+              { label: ' |', translate: false },
+              {
+                label: 'FORM.MAX_CHARS',
+                translate: true,
+                arg: { key: 'numberOfChars', value: '50' },
+              },
+            ]"
             [formGroup]="form"
             [required]="true"
             controlName="swissSublineNumber"
@@ -155,15 +173,15 @@
         <div class="d-flex flex-column col-4 pe-3">
           <atlas-text-field
             [fieldExamples]="[
-            { label: 'FORM.FOR_EXAMPLE', translate: true },
-            { label: 'Thun - Spiez', translate: false },
-            { label: ' |', translate: false },
-            {
-              label: 'FORM.MAX_CHARS',
-              translate: true,
-              arg: { key: 'numberOfChars', value: '255' }
-            }
-          ]"
+              { label: 'FORM.FOR_EXAMPLE', translate: true },
+              { label: 'Thun - Spiez', translate: false },
+              { label: ' |', translate: false },
+              {
+                label: 'FORM.MAX_CHARS',
+                translate: true,
+                arg: { key: 'numberOfChars', value: '255' },
+              },
+            ]"
             [formGroup]="form"
             controlName="description"
             fieldLabel="LIDI.SUBLINE.DESCRIPTION"
@@ -175,18 +193,18 @@
         <div class="d-flex flex-column col-8">
           <atlas-text-field
             [fieldExamples]="[
-            { label: 'FORM.FOR_EXAMPLE', translate: true },
-            {
-              label: 'Thun - Schadau - Gwatt Deltapark - Einigen - Spiez',
-              translate: false
-            },
-            { label: ' |', translate: false },
-            {
-              label: 'FORM.MAX_CHARS',
-              translate: true,
-              arg: { key: 'numberOfChars', value: '255' }
-            }
-          ]"
+              { label: 'FORM.FOR_EXAMPLE', translate: true },
+              {
+                label: 'Thun - Schadau - Gwatt Deltapark - Einigen - Spiez',
+                translate: false,
+              },
+              { label: ' |', translate: false },
+              {
+                label: 'FORM.MAX_CHARS',
+                translate: true,
+                arg: { key: 'numberOfChars', value: '255' },
+              },
+            ]"
             [formGroup]="form"
             controlName="longName"
             fieldLabel="LIDI.LONG_NAME"
@@ -197,7 +215,10 @@
 
       <span class="font-bold-2xl">{{ 'FORM.KEY_DATA' | translate }}</span>
       <div class="w-50">
-        <form-date-range [formGroup]="form" [showMaxValidityAutoFill]="false"></form-date-range>
+        <form-date-range
+          [formGroup]="form"
+          [showMaxValidityAutoFill]="false"
+        ></form-date-range>
       </div>
 
       <div class="col-12 d-flex pt-3 pb-3">
@@ -259,16 +280,12 @@
         buttonType="edit"
         wrapperStyleClass="ms-3"
       ></atlas-button>
-      <atlas-button
-        (buttonClicked)="revoke()"
-        applicationType='LIDI'
-        [disabled]="form.enabled || selectedVersion.status === 'REVOKED'"
-        buttonDataCy="revoke-item"
-        buttonText="COMMON.REVOKE"
-        buttonType="revoke"
-        wrapperStyleClass="ms-3"
-      >
-      </atlas-button>
+      @if (form.disabled && !isNew && selectedVersion.status !== 'REVOKED') {
+        <atlas-revoke-button
+          (revokeClicked)="revoke()"
+          applicationType="LIDI"
+        ></atlas-revoke-button>
+      }
       <atlas-button
         (buttonClicked)="delete()"
         [disabled]="form.enabled"

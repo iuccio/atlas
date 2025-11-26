@@ -3,25 +3,25 @@ package ch.sbb.line.directory.module.line.service;
 import ch.sbb.atlas.api.lidi.enumaration.LineType;
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
-import ch.sbb.atlas.revoke.RevokeService;
+import ch.sbb.atlas.revoke.service.RevokeService;
 import ch.sbb.atlas.versioning.convert.ReflectionHelper;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.service.VersionableService;
-import ch.sbb.line.directory.module.line.entity.Line;
-import ch.sbb.line.directory.module.line.entity.LineVersion;
-import ch.sbb.line.directory.module.line.search.LineVersionSearchRestrictions;
-import ch.sbb.line.directory.module.subline.entity.SublineVersion;
-import ch.sbb.line.directory.module.line.exception.LineDeleteConflictException;
 import ch.sbb.line.directory.exception.SlnidNotFoundException;
 import ch.sbb.line.directory.model.SublineVersionRange;
-import ch.sbb.line.directory.module.line.search.LineSearchRestrictions;
+import ch.sbb.line.directory.module.line.entity.Line;
+import ch.sbb.line.directory.module.line.entity.LineVersion;
+import ch.sbb.line.directory.module.line.exception.LineDeleteConflictException;
 import ch.sbb.line.directory.module.line.repository.LineRepository;
 import ch.sbb.line.directory.module.line.repository.LineVersionRepository;
+import ch.sbb.line.directory.module.line.search.LineSearchRestrictions;
+import ch.sbb.line.directory.module.line.search.LineVersionSearchRestrictions;
+import ch.sbb.line.directory.module.line.validation.LineUpdateValidationService;
+import ch.sbb.line.directory.module.line.validation.LineValidationService;
+import ch.sbb.line.directory.module.subline.entity.SublineVersion;
 import ch.sbb.line.directory.module.subline.repository.SublineVersionRepository;
 import ch.sbb.line.directory.module.subline.service.SublineService;
 import ch.sbb.line.directory.module.subline.service.SublineShorteningService;
-import ch.sbb.line.directory.module.line.validation.LineUpdateValidationService;
-import ch.sbb.line.directory.module.line.validation.LineValidationService;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -113,10 +113,7 @@ public class LineService extends RevokeService<LineVersion> {
   }
 
   public List<LineVersion> revokeLine(String slnid) {
-    List<LineVersion> lineVersions = findBySid4ptOrderByValidFrom(slnid);
-    lineVersions.forEach(lineVersion -> lineVersion.setStatus(Status.REVOKED));
-    saveAll(lineVersions);
-    return lineVersions;
+    return revoke(slnid);
   }
 
   @Override

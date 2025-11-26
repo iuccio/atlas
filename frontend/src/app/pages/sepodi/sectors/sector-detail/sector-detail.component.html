@@ -50,7 +50,7 @@
             [currentRecord]="selectedVersion"
             [records]="sectorVersions"
             [switchDisabled]="form.enabled"
-            [showStatus]="false"
+            [showStatus]="true"
           ></app-switch-version>
         </div>
       </div>
@@ -189,7 +189,10 @@
     >
     </atlas-button>
     @if (form.disabled && !isNew && selectedVersion.status !== 'REVOKED') {
-      <app-revoke-button (revokeClicked)="revoke()"></app-revoke-button>
+      <atlas-revoke-button
+        (revokeClicked)="revoke()"
+        applicationType="SEPODI"
+      ></atlas-revoke-button>
     }
   </atlas-detail-footer>
 </atlas-detail-page-container>

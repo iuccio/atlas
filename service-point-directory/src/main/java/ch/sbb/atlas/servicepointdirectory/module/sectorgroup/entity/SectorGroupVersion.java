@@ -1,7 +1,6 @@
 package ch.sbb.atlas.servicepointdirectory.module.sectorgroup.entity;
 
 import ch.sbb.atlas.revoke.Revokable;
-import ch.sbb.atlas.revoke.RevokeService;
 import ch.sbb.atlas.servicepointdirectory.entity.BaseSectorEntity;
 import ch.sbb.atlas.validation.DatesValidator;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionable;

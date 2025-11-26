@@ -59,7 +59,7 @@
                 'LIDI.LINE.TYPES.' + lineType | translate
               }}</span>
             </div>
-            @if(form.disabled && showWorkflow){
+            @if (form.disabled && showWorkflow) {
               <app-workflow
                 [descriptionForWorkflow]="selectedVersion.description!"
                 [lineRecord]="selectedVersion"
@@ -145,6 +145,17 @@
         wrapperStyleClass="ms-3"
       >
       </atlas-button>
+      @if (
+        form.disabled &&
+        !isNew &&
+        selectedVersion.status !== 'REVOKED' &&
+        selectedVersion.status !== 'IN_REVIEW'
+      ) {
+        <atlas-revoke-button
+          (revokeClicked)="revoke()"
+          applicationType="LIDI"
+        ></atlas-revoke-button>
+      }
       <atlas-button
         (buttonClicked)="delete()"
         [disabled]="form.enabled"

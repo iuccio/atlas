@@ -1,4 +1,4 @@
-package ch.sbb.atlas.revoke;
+package ch.sbb.atlas.revoke.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -7,6 +7,8 @@ import static org.mockito.Mockito.spy;
 
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.exception.Sid4ptNotFoundException;
+import ch.sbb.atlas.revoke.Revokable;
+import ch.sbb.atlas.revoke.exception.TerminationNotAllowedWhenVersionInReview;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
@@ -49,6 +51,21 @@ class RevokeServiceTest {
 
     //when && then
     assertThrows(Sid4ptNotFoundException.class, () -> revokeServiceSpy.revoke("ch:1:sloid:1234"));
+  }
+
+  @Test
+  void shouldNotRevokeWhenInReview() {
+    //given
+    RevokeService<ObjectRevokable> revokeServiceSpy = spy(ObjectRevokableService.class);
+    ObjectRevokable objectRevokable1 = ObjectRevokable.builder()
+        .status(Status.IN_REVIEW)
+        .validFrom(LocalDate.of(2000, 1, 1))
+        .validTo(LocalDate.of(2000, 12, 31))
+        .build();
+    doReturn(List.of(objectRevokable1)).when(revokeServiceSpy).findBySid4ptOrderByValidFrom("ch:1:sloid:1234");
+
+    //when && then
+    assertThrows(TerminationNotAllowedWhenVersionInReview.class, () -> revokeServiceSpy.revoke("ch:1:sloid:1234"));
   }
 
   @Builder

@@ -1,7 +1,7 @@
 package ch.sbb.line.directory.module.ttfn.service;
 
 import ch.sbb.atlas.model.Status;
-import ch.sbb.atlas.revoke.RevokeService;
+import ch.sbb.atlas.revoke.service.RevokeService;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.service.VersionableService;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumber;
@@ -39,7 +39,6 @@ public class TimetableFieldNumberService extends RevokeService<TimetableFieldNum
   public List<TimetableFieldNumberVersion> revokeTimetableFieldNumber(String ttfnId) {
     return revoke(ttfnId);
   }
-
 
   @Override
   protected List<TimetableFieldNumberVersion> findBySid4ptOrderByValidFrom(String ttfnId) {

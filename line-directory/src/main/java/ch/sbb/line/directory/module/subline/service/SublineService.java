@@ -3,7 +3,7 @@ package ch.sbb.line.directory.module.subline.service;
 import ch.sbb.atlas.model.DateRange;
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
-import ch.sbb.atlas.revoke.RevokeService;
+import ch.sbb.atlas.revoke.service.RevokeService;
 import ch.sbb.atlas.service.OverviewDisplayBuilder;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.service.VersionableService;
