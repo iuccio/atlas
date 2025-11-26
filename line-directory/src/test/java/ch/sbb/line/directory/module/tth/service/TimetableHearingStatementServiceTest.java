@@ -11,12 +11,14 @@ import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementRequestParams
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementResponsibleTransportCompanyModel;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementSenderModelV2;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
+import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.kafka.model.transport.company.SharedTransportCompanyModel;
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.atlas.model.exception.NotFoundException.FileNotFoundException;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
+import ch.sbb.line.directory.exception.StatementPartOfDossierException;
 import ch.sbb.line.directory.exception.TtfnidNotFoundException;
 import ch.sbb.line.directory.helper.PdfFiles;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumberVersion;
@@ -291,6 +293,26 @@ class TimetableHearingStatementServiceTest {
         () -> timetableHearingStatementService.updateHearingStatement(timetableHearingStatement, updatingStatement,
             Collections.emptyList())).isInstanceOf(
         IdNotFoundException.class);
+  }
+
+  @Test
+  void shouldNotUpdateHearingStatementIfItIsPartOfDossier() {
+    timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
+
+    TimetableHearingStatementModelV2 timetableHearingStatementModel = buildTimetableHearingStatementModelV2();
+    TimetableHearingStatement timetableHearingStatement =
+        timetableHearingStatementMapperV2.toEntity(timetableHearingStatementModel);
+
+    TimetableHearingStatement statement = timetableHearingStatementService.createHearingStatement(timetableHearingStatement,
+        Collections.emptyList());
+    timetableHearingStatementService.updateStatementFromDossier(statement, BatchUpdateTimetableHearingStatementsModel.builder()
+        .statementStatus(StatementStatus.IN_REVIEW)
+        .dossierId(1L)
+        .build());
+
+    assertThatThrownBy(
+        () -> timetableHearingStatementService.updateHearingStatement(timetableHearingStatement, timetableHearingStatementModel,
+            Collections.emptyList())).isInstanceOf(StatementPartOfDossierException.class);
   }
 
   @Test

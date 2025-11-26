@@ -31,7 +31,7 @@ public class TthDossierService {
   public TthDossier createDossier(TthDossier dossier) {
     dossier.setDossierStatus(DossierStatus.ADDED);
     TthDossier tthDossier = dossierRepository.saveAndFlush(dossier);
-    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier)
+    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier).toBuilder()
         .statementStatus(StatementStatus.IN_REVIEW)
         .build());
     return tthDossier;
@@ -42,7 +42,7 @@ public class TthDossierService {
     dossier.setDossierStatus(DossierStatus.CANCELED);
     dossierRepository.saveAndFlush(dossier);
 
-    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier)
+    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier).toBuilder()
         .statementStatus(StatementStatus.RECEIVED)
         .dossierId(null)
         .dossierContactMail(null)
