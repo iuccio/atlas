@@ -48,6 +48,7 @@ import {
 } from '../../../core/detail/detail-dialog-helper.service';
 import { ValidationService } from '../../../core/validation/validation.service';
 import { TtfnMeanOfTransport } from '../../../api/model/ttfnMeanOfTransport';
+import { RevokeButton } from '../../../core/form-components/revoke-button/revoke-button';
 
 @Component({
   selector: 'app-timetable-field-number-detail',
@@ -69,13 +70,35 @@ import { TtfnMeanOfTransport } from '../../../api/model/ttfnMeanOfTransport';
     DateRangeTextComponent,
     SwitchVersionComponent,
     UserDetailInfoComponent,
+    RevokeButton,
   ],
 })
 export class TimetableFieldNumberDetailComponent
   implements DetailWithCancelEdit, OnInit
 {
+  // Interface impl
+  isNew: boolean = true;
+  form!: FormGroup;
+  protected readonly allowableMeansOfTransport =
+    Object.values(TtfnMeanOfTransport);
+  protected readonly descriptionMaxChars: string = String(
+    DESCRIPTION_MAX_LENGTH
+  );
+  protected displayOutwardLine2$ = of(false);
+  protected displayOutwardLine3$ = of(false);
+  protected displayReturnLine2$ = of(false);
+  protected displayReturnLine3$ = of(false);
+  protected selectedVersion?: TimetableFieldNumberVersion;
+  protected versions: TimetableFieldNumberVersion[] = [];
+  protected showSwitch?: boolean;
+  protected maxValidity?: DateRange;
+  protected selectedVersionIndex?: number;
+  protected boSboidRestriction: string[] = [];
   // DI
   private readonly permissionService = inject(PermissionService);
+  // Template variables
+  protected readonly isAtLeastSupervisor =
+    this.permissionService.isAtLeastSupervisor(ApplicationType.Ttfn);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly timetableFieldNumberInternalService = inject(
@@ -89,33 +112,6 @@ export class TimetableFieldNumberDetailComponent
   private readonly detailDialogHelperService = inject(
     DetailDialogHelperService
   );
-
-  // Template variables
-  protected readonly isAtLeastSupervisor =
-    this.permissionService.isAtLeastSupervisor(ApplicationType.Ttfn);
-
-  protected readonly allowableMeansOfTransport =
-    Object.values(TtfnMeanOfTransport);
-
-  protected readonly descriptionMaxChars: string = String(
-    DESCRIPTION_MAX_LENGTH
-  );
-
-  protected displayOutwardLine2$ = of(false);
-  protected displayOutwardLine3$ = of(false);
-  protected displayReturnLine2$ = of(false);
-  protected displayReturnLine3$ = of(false);
-
-  protected selectedVersion?: TimetableFieldNumberVersion;
-  protected versions: TimetableFieldNumberVersion[] = [];
-  protected showSwitch?: boolean;
-  protected maxValidity?: DateRange;
-  protected selectedVersionIndex?: number;
-  protected boSboidRestriction: string[] = [];
-
-  // Interface impl
-  isNew: boolean = true;
-  form!: FormGroup;
 
   ngOnInit() {
     const versions = this.readVersions();
@@ -226,7 +222,7 @@ export class TimetableFieldNumberDetailComponent
       });
   }
 
-  revokeRecord(): void {
+  revoke(): void {
     const ttfnid = required(this.selectedVersion?.ttfnid, 'ttfnid is required');
     this.timetableFieldNumberInternalService
       .revokeTimetableFieldNumber(ttfnid)
@@ -246,16 +242,6 @@ export class TimetableFieldNumberDetailComponent
         this.notificationService.success('TTFN.NOTIFICATION.DELETE_SUCCESS');
         this.back();
       });
-  }
-
-  revoke() {
-    this.detailDialogHelperService.confirmWarning(
-      {
-        message: 'DIALOG.REVOKE',
-        confirmText: 'DIALOG.CONFIRM_REVOKE',
-      },
-      () => this.revokeRecord()
-    );
   }
 
   delete() {

@@ -3,16 +3,16 @@ package ch.sbb.business.organisation.directory.module.businessorganisation.servi
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.redact.Redacted;
-import ch.sbb.atlas.revoke.RevokeService;
+import ch.sbb.atlas.revoke.service.RevokeService;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.service.VersionableService;
+import ch.sbb.business.organisation.directory.distributor.BusinessOrganisationDistributor;
 import ch.sbb.business.organisation.directory.module.businessorganisation.entity.BusinessOrganisation;
 import ch.sbb.business.organisation.directory.module.businessorganisation.entity.BusinessOrganisationVersion;
 import ch.sbb.business.organisation.directory.module.businessorganisation.model.BusinessOrganisationSearchRestrictions;
 import ch.sbb.business.organisation.directory.module.businessorganisation.model.BusinessOrganisationVersionSearchRestrictions;
 import ch.sbb.business.organisation.directory.module.businessorganisation.repository.BusinessOrganisationRepository;
 import ch.sbb.business.organisation.directory.module.businessorganisation.repository.BusinessOrganisationVersionRepository;
-import ch.sbb.business.organisation.directory.distributor.BusinessOrganisationDistributor;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.StaleObjectStateException;
@@ -100,7 +100,7 @@ public class BusinessOrganisationService extends RevokeService<BusinessOrganisat
   }
 
   @Override
-  protected void saveAll(List<BusinessOrganisationVersion> versions){
+  protected void saveAll(List<BusinessOrganisationVersion> versions) {
     versionRepository.saveAll(versions);
   }
 

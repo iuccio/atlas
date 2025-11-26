@@ -1,19 +1,21 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { DialogService } from '../../components/dialog/dialog.service';
 import { Observable } from 'rxjs';
 import { AtlasButtonComponent } from '../../components/button/atlas-button.component';
+import { ApplicationType } from '../../../api';
 
 export interface Revokable {
   revoke: () => void;
 }
 
 @Component({
-  selector: 'app-revoke-button',
+  selector: 'atlas-revoke-button',
   imports: [AtlasButtonComponent],
   templateUrl: './revoke-button.html',
 })
 export class RevokeButton {
   @Output() revokeClicked = new EventEmitter<Observable<void>>();
+  applicationType = input.required<ApplicationType>();
   private readonly dialogService = inject(DialogService);
 
   revoke() {

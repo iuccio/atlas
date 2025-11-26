@@ -200,7 +200,10 @@
     ></atlas-button>
   }
   @if (form.disabled && !isNew && selectedVersion.status !== 'REVOKED') {
-    <app-revoke-button (revokeClicked)="revoke()"></app-revoke-button>
+    <atlas-revoke-button
+      (revokeClicked)="revoke()"
+      applicationType="LIDI"
+    ></atlas-revoke-button>
   }
   <atlas-button
     (buttonClicked)="toggleEdit()"

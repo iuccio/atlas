@@ -42,16 +42,16 @@ export class TrafficPointElementsTableComponent implements OnInit {
       value: 'designationOperational',
     },
     {
+      headerTitle: 'COMMON.STATUS',
+      value: 'status',
+      translate: { withPrefix: 'COMMON.STATUS_TYPES.' },
+    },
+    {
       headerTitle: 'COMMON.VALID_FROM',
       value: 'validFrom',
       formatAsDate: true,
     },
     { headerTitle: 'COMMON.VALID_TO', value: 'validTo', formatAsDate: true },
-    {
-      headerTitle: 'COMMON.STATUS',
-      value: 'status',
-      translate: { withPrefix: 'COMMON.STATUS_TYPES.' },
-    },
   ];
 
   tableColumnsAreas: TableColumn<ReadTrafficPointElementVersion>[] = [

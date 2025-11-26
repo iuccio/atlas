@@ -56,6 +56,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MainlineDescriptionPipe } from './mainline-description.pipe';
 import { LineService } from '../../../../api/service/lidi/line.service';
 import { LineInternalService } from '../../../../api/service/lidi/line-internal.service';
+import { RevokeButton } from '../../../../core/form-components/revoke-button/revoke-button';
 
 @Component({
   templateUrl: './subline-detail.component.html',
@@ -81,6 +82,7 @@ import { LineInternalService } from '../../../../api/service/lidi/line-internal.
     AtlasButtonComponent,
     TranslatePipe,
     MainlineDescriptionPipe,
+    RevokeButton,
   ],
 })
 export class SublineDetailComponent
@@ -253,32 +255,19 @@ export class SublineDetailComponent
   }
 
   revoke(): void {
-    this.dialogService
-      .confirm({
-        title: 'DIALOG.WARNING',
-        message: 'DIALOG.REVOKE',
-        cancelText: 'DIALOG.BACK',
-        confirmText: 'DIALOG.CONFIRM_REVOKE',
-      })
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          if (this.selectedVersion.slnid) {
-            this.sublineInternalService
-              .revokeSubline(this.selectedVersion.slnid)
-              .subscribe(() => {
-                this.notificationService.success(
-                  'LIDI.SUBLINE.NOTIFICATION.REVOKE_SUCCESS'
-                );
-                this.router
-                  .navigate([
-                    Pages.LIDI.path,
-                    Pages.SUBLINES.path,
-                    this.selectedVersion.slnid,
-                  ])
-                  .then(() => this.ngOnInit());
-              });
-          }
-        }
+    this.sublineInternalService
+      .revokeSubline(this.selectedVersion.slnid!)
+      .subscribe(() => {
+        this.notificationService.success(
+          'LIDI.SUBLINE.NOTIFICATION.REVOKE_SUCCESS'
+        );
+        this.router
+          .navigate([
+            Pages.LIDI.path,
+            Pages.SUBLINES.path,
+            this.selectedVersion.slnid,
+          ])
+          .then(() => this.ngOnInit());
       });
   }
 
