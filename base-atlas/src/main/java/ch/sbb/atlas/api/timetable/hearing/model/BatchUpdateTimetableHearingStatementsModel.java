@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @ToString
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @FieldNameConstants
 @Schema(name = "BatchUpdateTimetableHearingStatements")
 public class BatchUpdateTimetableHearingStatementsModel extends BaseUpdateHearingModel {

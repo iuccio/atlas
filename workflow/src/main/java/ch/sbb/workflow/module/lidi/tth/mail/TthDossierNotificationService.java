@@ -24,7 +24,8 @@ public class TthDossierNotificationService {
   public void notifyCantonAboutNewAnswer(TthDossierQuestion question) {
     // Send actual Mail with ATLAS-3232
     MailNotification mailNotification = MailNotification.builder()
-        .to(List.of()) // An welche Kantonsmail sollen wir die Notification schicken?
+        .to(List.of()) // Dossier editor mail vom UserAdministration via Azure lesen
+        .content(question.getQuestion())
         .build();
     mailProducerService.produceMailNotification(mailNotification);
   }

@@ -43,14 +43,15 @@ public class TthDossierMapper {
         .build();
   }
 
-  public static BatchUpdateTimetableHearingStatementsModelBuilder<?, ?> toBatchUpdateModel(TthDossier dossier) {
+  public static BatchUpdateTimetableHearingStatementsModel toBatchUpdateModel(TthDossier dossier) {
     return BatchUpdateTimetableHearingStatementsModel.builder()
         .ids(dossier.getStatementIds())
         .dossierId(dossier.getId())
         .dossierContactMail(dossier.getBoContactMail())
         .publicComment(dossier.getPublicComment())
         .internalComment(dossier.getInternalComment())
-        .topic(dossier.getTopic());
+        .topic(dossier.getTopic())
+        .build();
   }
 
 }
