@@ -101,8 +101,8 @@
     </div>
 
     <sepodi-geography
-      [form]="form.controls.sectorGeolocation"
       [editMode]="form.enabled"
+      [form]="form.controls.sectorGeolocation"
       [geographyOptional]="false"
     ></sepodi-geography>
 
@@ -151,11 +151,11 @@
   </atlas-detail-page-content>
   <atlas-detail-footer>
     <atlas-button
+      (buttonClicked)="back()"
+      [footerEdit]="form.enabled"
       buttonDataCy="back"
       buttonText="COMMON.BACK"
       buttonType="whiteFooterNonEdit"
-      (buttonClicked)="back()"
-      [footerEdit]="form.enabled"
     >
     </atlas-button>
     @if (form.disabled && (isNew || selectedVersion.status !== 'REVOKED')) {
@@ -170,8 +170,8 @@
       ></atlas-button>
     }
     <atlas-button
-      [footerEdit]="form.enabled"
       (buttonClicked)="toggleEdit()"
+      [footerEdit]="form.enabled"
       buttonDataCy="cancel"
       buttonText="COMMON.CANCEL"
       buttonType="whiteFooterEdit"
@@ -189,15 +189,7 @@
     >
     </atlas-button>
     @if (form.disabled && !isNew && selectedVersion.status !== 'REVOKED') {
-      <atlas-button
-        (buttonClicked)="revoke()"
-        [applicationType]="'SEPODI'"
-        buttonDataCy="revoke-sector"
-        buttonText="COMMON.REVOKE"
-        buttonType="revoke"
-        wrapperStyleClass="ms-3"
-      >
-      </atlas-button>
+      <app-revoke-button (revokeClicked)="revoke()"></app-revoke-button>
     }
   </atlas-detail-footer>
 </atlas-detail-page-container>

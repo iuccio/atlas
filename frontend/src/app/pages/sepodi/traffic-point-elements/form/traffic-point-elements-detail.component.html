@@ -84,16 +84,16 @@
     }
     <div class="d-flex flex-column col-4">
       <atlas-select
+        [additionalLabelspace]="22"
+        [displayExtractor]="displayExtractor"
         [formGroup]="form"
-        controlName="parentSloid"
-        dataCy="parentSloid"
-        label="SEPODI.TRAFFIC_POINT_ELEMENTS.PARENT_SLOID"
         [options]="areaOptions"
         [required]="false"
         [valueExtractor]="extractSloid"
-        [displayExtractor]="displayExtractor"
+        controlName="parentSloid"
+        dataCy="parentSloid"
+        label="SEPODI.TRAFFIC_POINT_ELEMENTS.PARENT_SLOID"
         placeHolderLabel=""
-        [additionalLabelspace]="22"
       >
       </atlas-select>
     </div>
@@ -105,9 +105,9 @@
   </div>
 
   <sepodi-geography
-    [form]="form.controls.trafficPointElementGeolocation"
-    [editMode]="form.enabled"
     (geographyChanged)="$event ? geographyEnabled() : geographyDisabled()"
+    [editMode]="form.enabled"
+    [form]="form.controls.trafficPointElementGeolocation"
   ></sepodi-geography>
 
   @if (!isTrafficPointArea) {
@@ -181,11 +181,11 @@
 
 <atlas-detail-footer>
   <atlas-button
+    (buttonClicked)="confirmCancel()"
+    [footerEdit]="form.enabled"
     buttonDataCy="close-detail"
     buttonText="COMMON.BACK"
     buttonType="whiteFooterNonEdit"
-    (buttonClicked)="confirmCancel()"
-    [footerEdit]="form.enabled"
   >
   </atlas-button>
   @if (form.disabled && (isNew || selectedVersion.status !== 'REVOKED')) {
@@ -200,19 +200,11 @@
     ></atlas-button>
   }
   @if (form.disabled && !isNew && selectedVersion.status !== 'REVOKED') {
-    <atlas-button
-      (buttonClicked)="revoke()"
-      [applicationType]="'SEPODI'"
-      buttonDataCy="revoke-sector"
-      buttonText="COMMON.REVOKE"
-      buttonType="revoke"
-      wrapperStyleClass="ms-3"
-    >
-    </atlas-button>
+    <app-revoke-button (revokeClicked)="revoke()"></app-revoke-button>
   }
   <atlas-button
-    [footerEdit]="form.enabled"
     (buttonClicked)="toggleEdit()"
+    [footerEdit]="form.enabled"
     buttonDataCy="cancel"
     buttonText="COMMON.CANCEL"
     buttonType="whiteFooterEdit"
