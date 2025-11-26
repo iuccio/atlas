@@ -6,6 +6,7 @@ import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
+import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
 import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class TthDossierService {
 
   private final TthDossierRepository dossierRepository;
   private final TimetableHearingStatementClient timetableHearingStatementClient;
+  private final TthDossierNotificationService notificationService;
 
   public TthDossier getDossierById(Long dossierId) {
     return dossierRepository.findById(dossierId).orElseThrow(() -> new IdNotFoundException(dossierId));
@@ -53,6 +55,9 @@ public class TthDossierService {
     tthDossierQuestion.setTthDossier(tthDossier);
     tthDossier.setDossierQuestions(new ArrayList<>(List.of(tthDossierQuestion)));
     tthDossier.setDossierStatus(DossierStatus.DOSSIER_BO_CHECK);
+
+    notificationService.notifyBoAboutNewQuestion(tthDossierQuestion);
+
     return dossierRepository.save(tthDossier);
   }
 }

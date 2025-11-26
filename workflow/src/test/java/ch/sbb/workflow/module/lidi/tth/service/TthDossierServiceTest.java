@@ -9,6 +9,7 @@ import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
+import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +30,9 @@ class TthDossierServiceTest {
 
   @MockitoBean
   private TimetableHearingStatementClient timetableHearingStatementClient;
+
+  @MockitoBean
+  private TthDossierNotificationService tthDossierNotificationService;
 
   private TthDossier exampleDossier;
 
@@ -111,6 +115,7 @@ class TthDossierServiceTest {
     TthDossier tthDossier = tthDossierService.sendDossierToBo(dossier.getId(), question);
 
     // then
+    verify(tthDossierNotificationService).notifyBoAboutNewQuestion(any());
     assertThat(tthDossier.getDossierQuestions()).hasSize(1);
   }
 }
