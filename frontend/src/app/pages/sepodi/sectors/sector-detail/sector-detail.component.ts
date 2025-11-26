@@ -41,6 +41,10 @@ import { filter } from 'rxjs/operators';
 import { TrafficPointMapService } from '../../map/traffic-point-map.service';
 import { SectorInternalService } from '../../../../api/service/sepodi/sector-internal.service';
 import { DialogService } from '../../../../core/components/dialog/dialog.service';
+import {
+  Revokable,
+  RevokeButton,
+} from '../../../../core/form-components/revoke-button/revoke-button';
 
 @Component({
   selector: 'app-sector-detail',
@@ -60,11 +64,27 @@ import { DialogService } from '../../../../core/components/dialog/dialog.service
     MatDivider,
     UserDetailInfoComponent,
     AtlasButtonComponent,
+    RevokeButton,
   ],
 })
 export class SectorDetailComponent
-  implements DetailFormComponent, DetailWithCancelEdit, OnInit, OnDestroy
+  implements
+    Revokable,
+    DetailFormComponent,
+    DetailWithCancelEdit,
+    OnInit,
+    OnDestroy
 {
+  sectorVersions!: ReadSectorVersion[];
+  selectedVersion!: ReadSectorVersion;
+  selectedVersionIndex!: number;
+  maxValidity!: DateRange;
+  servicePointDesignationOfficial!: string;
+  trafficPoint!: ReadTrafficPointElementVersion;
+  isNew = false;
+  form!: FormGroup<SectorDetailFormGroup>;
+  servicePointBusinessOrganisations: string[] = [];
+
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly sectorMapService = inject(SectorMapService);
@@ -76,17 +96,6 @@ export class SectorDetailComponent
   private readonly notificationService = inject(NotificationService);
   private readonly mapService = inject(MapService);
   private readonly dialogService = inject(DialogService);
-
-  sectorVersions!: ReadSectorVersion[];
-  selectedVersion!: ReadSectorVersion;
-  selectedVersionIndex!: number;
-  maxValidity!: DateRange;
-  servicePointDesignationOfficial!: string;
-  trafficPoint!: ReadTrafficPointElementVersion;
-
-  isNew = false;
-  form!: FormGroup<SectorDetailFormGroup>;
-  servicePointBusinessOrganisations: string[] = [];
 
   ngOnInit() {
     this.route.data.subscribe((next) => {
@@ -113,39 +122,6 @@ export class SectorDetailComponent
       }
       this.form.controls.trafficPointSloid.setValue(this.trafficPoint.sloid);
     });
-  }
-
-  private initSelectedVersion(): void {
-    this.form = SectorFormGroupBuilder.buildFormGroup(this.selectedVersion);
-    this.selectedVersionIndex = this.sectorVersions.indexOf(
-      this.selectedVersion
-    );
-    this.form.disable();
-    this.sectorMapService.displayCurrentSector(
-      this.selectedVersion.sectorGeolocation!.wgs84
-    );
-  }
-
-  private initHeaderWithParentInfo(next: Data) {
-    const servicePoint: ReadServicePointVersion[] = next.servicePoint;
-    const servicePointVersion =
-      VersionsHandlingService.determineDefaultVersionByValidity(servicePoint);
-    this.servicePointDesignationOfficial =
-      servicePointVersion.designationOfficial;
-    this.servicePointBusinessOrganisations = servicePoint.map(
-      (i) => i.businessOrganisation
-    );
-    this.trafficPointMapService.displayTrafficPointsOnMap(
-      servicePointVersion.number.number
-    );
-
-    const trafficPoint: ReadTrafficPointElementVersion[] = next.trafficPoint;
-    this.trafficPoint =
-      VersionsHandlingService.determineDefaultVersionByValidity(trafficPoint);
-    this.sectorMapService.displaySectorsOnMap(
-      servicePointVersion.number.number,
-      this.trafficPoint.sloid!
-    );
   }
 
   ngOnDestroy() {
@@ -195,6 +171,55 @@ export class SectorDetailComponent
     }
   }
 
+  revoke() {
+    this.sectorInternalService
+      .revokeSector(this.selectedVersion.sloid!)
+      .pipe(catchError(this.handleError()))
+      .subscribe(() => {
+        this.notificationService.success(
+          'SEPODI.SECTORS.NOTIFICATION.REVOKE_SUCCESS'
+        );
+        this.router
+          .navigate(['..', this.selectedVersion.sloid], {
+            relativeTo: this.route,
+          })
+          .then(() => this.ngOnInit());
+      });
+  }
+
+  private initSelectedVersion(): void {
+    this.form = SectorFormGroupBuilder.buildFormGroup(this.selectedVersion);
+    this.selectedVersionIndex = this.sectorVersions.indexOf(
+      this.selectedVersion
+    );
+    this.form.disable();
+    this.sectorMapService.displayCurrentSector(
+      this.selectedVersion.sectorGeolocation!.wgs84
+    );
+  }
+
+  private initHeaderWithParentInfo(next: Data) {
+    const servicePoint: ReadServicePointVersion[] = next.servicePoint;
+    const servicePointVersion =
+      VersionsHandlingService.determineDefaultVersionByValidity(servicePoint);
+    this.servicePointDesignationOfficial =
+      servicePointVersion.designationOfficial;
+    this.servicePointBusinessOrganisations = servicePoint.map(
+      (i) => i.businessOrganisation
+    );
+    this.trafficPointMapService.displayTrafficPointsOnMap(
+      servicePointVersion.number.number
+    );
+
+    const trafficPoint: ReadTrafficPointElementVersion[] = next.trafficPoint;
+    this.trafficPoint =
+      VersionsHandlingService.determineDefaultVersionByValidity(trafficPoint);
+    this.sectorMapService.displaySectorsOnMap(
+      servicePointVersion.number.number,
+      this.trafficPoint.sloid!
+    );
+  }
+
   private create(sectorVersion: CreateSectorVersion): void {
     this.sectorService
       .createSector(sectorVersion)
@@ -230,32 +255,5 @@ export class SectorDetailComponent
       this.form.enable();
       return EMPTY;
     };
-  }
-
-  revoke() {
-    this.dialogService
-      .confirm({
-        title: 'DIALOG.WARNING',
-        message: 'DIALOG.REVOKE',
-        cancelText: 'DIALOG.BACK',
-        confirmText: 'DIALOG.CONFIRM_REVOKE',
-      })
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          this.sectorInternalService
-            .revokeSector(this.selectedVersion.sloid!)
-            .pipe(catchError(this.handleError()))
-            .subscribe(() => {
-              this.notificationService.success(
-                'SEPODI.SECTORS.NOTIFICATION.REVOKE_SUCCESS'
-              );
-              this.router
-                .navigate(['..', this.selectedVersion.sloid], {
-                  relativeTo: this.route,
-                })
-                .then(() => this.ngOnInit());
-            });
-        }
-      });
   }
 }
