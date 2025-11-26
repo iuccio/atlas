@@ -1056,7 +1056,8 @@
         "CANCEL": "Retour",
         "CONFIRM": "Modifier le canton"
       },
-      "STATEMENT_TRANSFER_COUNTRY": "Cet pris de position a été transmis par le canton {{oldSwissCanton}}."
+      "STATEMENT_TRANSFER_COUNTRY": "Cet pris de position a été transmis par le canton {{oldSwissCanton}}.",
+      "PART_OF_DOSSIER": "La prise de position fait partie intégrante d’un dossier. Elle ne peut donc pas être éditée."
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Clôture de l'année horaire",

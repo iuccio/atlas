@@ -1056,7 +1056,8 @@
         "CANCEL": "Ritorno",
         "CONFIRM": "Modifica Cantone"
       },
-      "STATEMENT_TRANSFER_COUNTRY": "Questo parere è stato trasmesso dal Cantone {{oldSwissCanton}}."
+      "STATEMENT_TRANSFER_COUNTRY": "Questo parere è stato trasmesso dal Cantone {{oldSwissCanton}}.",
+      "PART_OF_DOSSIER": "La presa di posizione fa parte di un dossier. Pertanto non può essere modificata."
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Chiusura dell'anno di calendario",

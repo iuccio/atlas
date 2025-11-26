@@ -2,11 +2,11 @@ package ch.sbb.workflow.module.lidi.tth.service;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
-import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
+import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +29,22 @@ public class TthDossierService {
   public TthDossier createDossier(TthDossier dossier) {
     dossier.setDossierStatus(DossierStatus.ADDED);
     TthDossier tthDossier = dossierRepository.saveAndFlush(dossier);
-    timetableHearingStatementClient.updateStatements(BatchUpdateTimetableHearingStatementsModel.builder()
-        .ids(tthDossier.getStatementIds())
+    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier)
         .statementStatus(StatementStatus.IN_REVIEW)
-        .dossierId(tthDossier.getId())
-        .dossierContactMail(tthDossier.getBoContactMail())
         .build());
     return tthDossier;
+  }
+
+  @Transactional
+  public void cancelDossier(TthDossier dossier) {
+    dossier.setDossierStatus(DossierStatus.CANCELED);
+    dossierRepository.saveAndFlush(dossier);
+
+    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier)
+        .statementStatus(StatementStatus.RECEIVED)
+        .dossierId(null)
+        .dossierContactMail(null)
+        .build());
   }
 
   @Transactional

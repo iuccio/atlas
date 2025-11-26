@@ -33,7 +33,7 @@ public class TthDossierModel extends AuditableVersionModel implements StatementD
 
   @Schema(description = "Topic of the dossier", example = "Increase frequency on line S1 during peak hours")
   @NotBlank
-  @Size(max = AtlasFieldLengths.LENGTH_500)
+  @Size(max = AtlasFieldLengths.LENGTH_255)
   private String topic;
 
   @Schema(description = "Status of the dossier")

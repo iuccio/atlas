@@ -54,6 +54,16 @@ class TthDossierControllerTest {
   }
 
   @Test
+  void shouldCancelDossier() {
+    TthDossier dossier = TthDossier.builder().id(1L).topic(TOPIC).build();
+    when(tthDossierService.getDossierById(any())).thenReturn(dossier);
+
+    tthDossierController.cancelDossier(1L);
+
+    verify(tthDossierService).cancelDossier(dossier);
+  }
+
+  @Test
   void shouldSendDossierToBo() {
     TthDossierQuestionModel model = TthDossierQuestionModel.builder()
         .question("Wie soll mit dem Takt verfahren werden?")

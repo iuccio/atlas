@@ -23,6 +23,9 @@ public interface TthDossierApiInternal {
   @PostMapping
   TthDossierModel createDossier(@Valid @RequestBody TthDossierModel dossierModel);
 
+  @PostMapping("{dossierId}/cancel")
+  void cancelDossier(@PathVariable Long dossierId);
+
   @PostMapping("{dossierId}/send-to-bo")
   void sendDossierToBo(@PathVariable Long dossierId, @Valid @RequestBody TthDossierQuestionModel questionModel);
 
