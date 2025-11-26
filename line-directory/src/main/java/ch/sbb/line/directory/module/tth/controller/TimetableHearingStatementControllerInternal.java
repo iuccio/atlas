@@ -212,8 +212,8 @@ public class TimetableHearingStatementControllerInternal implements TimetableHea
       throw new IllegalStateException("Not all statements could be found for the given ids");
     }
     timetableHearingStatements.forEach(
-        timetableHearingStatement -> timetableHearingStatementService.updateStatement(timetableHearingStatement,
-            batchUpdateModel.getStatementStatus(), batchUpdateModel.getDossierId(), batchUpdateModel.getDossierContactMail()));
+        timetableHearingStatement -> timetableHearingStatementService.updateStatementFromDossier(timetableHearingStatement,
+            batchUpdateModel));
   }
 
 }

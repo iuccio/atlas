@@ -141,4 +141,8 @@ public class TimetableHearingStatement extends BaseEntity implements CantonAssoc
     return String.join(", ", sorted);
   }
 
+  public boolean isPartOfDossier() {
+    return dossierId != null;
+  }
+
 }

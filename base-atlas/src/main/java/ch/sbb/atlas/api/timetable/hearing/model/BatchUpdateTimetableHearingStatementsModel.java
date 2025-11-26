@@ -25,4 +25,10 @@ public class BatchUpdateTimetableHearingStatementsModel extends BaseUpdateHearin
   private Long dossierId;
 
   private String dossierContactMail;
+
+  private String publicComment;
+
+  private String internalComment;
+
+  private String topic;
 }

@@ -3,6 +3,7 @@ package ch.sbb.workflow.module.lidi.tth.controller;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierQuestionModel;
 import ch.sbb.workflow.module.lidi.tth.api.TthDossierApiInternal;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
 import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierQuestionMapper;
 import ch.sbb.workflow.module.lidi.tth.service.TthDossierService;
@@ -23,6 +24,12 @@ public class TthDossierController implements TthDossierApiInternal {
   @Override
   public TthDossierModel createDossier(TthDossierModel dossierModel) {
     return TthDossierMapper.toModel(tthDossierService.createDossier(TthDossierMapper.toEntity(dossierModel)));
+  }
+
+  @Override
+  public void cancelDossier(Long dossierId) {
+    TthDossier tthDossier = tthDossierService.getDossierById(dossierId);
+    tthDossierService.cancelDossier(tthDossier);
   }
 
   @Override

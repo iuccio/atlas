@@ -1,5 +1,7 @@
 package ch.sbb.workflow.module.lidi.tth.mapper;
 
+import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
+import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel.BatchUpdateTimetableHearingStatementsModelBuilder;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import lombok.experimental.UtilityClass;
@@ -39,6 +41,16 @@ public class TthDossierMapper {
         .editionDate(entity.getEditionDate())
         .editor(entity.getEditor())
         .build();
+  }
+
+  public static BatchUpdateTimetableHearingStatementsModelBuilder<?, ?> toBatchUpdateModel(TthDossier dossier) {
+    return BatchUpdateTimetableHearingStatementsModel.builder()
+        .ids(dossier.getStatementIds())
+        .dossierId(dossier.getId())
+        .dossierContactMail(dossier.getBoContactMail())
+        .publicComment(dossier.getPublicComment())
+        .internalComment(dossier.getInternalComment())
+        .topic(dossier.getTopic());
   }
 
 }
