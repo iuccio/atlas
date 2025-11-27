@@ -1,7 +1,9 @@
 package ch.sbb.workflow.module.lidi.tth.service;
 
+import static ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.ALLOWED_STATUSES_FOR_COMPLETE;
+import static ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.UNEDITABLE_DOSSIERS;
+
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
-import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
@@ -31,22 +33,8 @@ public class TthDossierService {
   public TthDossier createDossier(TthDossier dossier) {
     dossier.setDossierStatus(DossierStatus.ADDED);
     TthDossier tthDossier = dossierRepository.saveAndFlush(dossier);
-    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier).toBuilder()
-        .statementStatus(StatementStatus.IN_REVIEW)
-        .build());
+    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier));
     return tthDossier;
-  }
-
-  @Transactional
-  public void cancelDossier(TthDossier dossier) {
-    dossier.setDossierStatus(DossierStatus.CANCELED);
-    dossierRepository.saveAndFlush(dossier);
-
-    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier).toBuilder()
-        .statementStatus(StatementStatus.RECEIVED)
-        .dossierId(null)
-        .dossierContactMail(null)
-        .build());
   }
 
   @Transactional
@@ -59,5 +47,28 @@ public class TthDossierService {
     notificationService.notifyBoAboutNewQuestion(tthDossierQuestion);
 
     return dossierRepository.save(tthDossier);
+  }
+
+  @Transactional
+  public void completeDossier(TthDossier dossier, DossierStatus status) {
+    if (!ALLOWED_STATUSES_FOR_COMPLETE.contains(status)) {
+      throw new IllegalArgumentException("DossierStatus " + status + " is not completable");
+    }
+    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier, status));
+
+    dossier.setDossierStatus(status);
+    dossierRepository.saveAndFlush(dossier);
+  }
+
+  @Transactional
+  public TthDossier updateDossier(Long dossierId, TthDossier dossier) {
+    TthDossier currentDossier = getDossierById(dossierId);
+    if (UNEDITABLE_DOSSIERS.contains(currentDossier.getDossierStatus())) {
+      throw new IllegalStateException("Dossier is not updatable in status " + currentDossier.getDossierStatus());
+    }
+
+    TthDossier updatedDossier = dossierRepository.saveAndFlush(dossier);
+    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(updatedDossier));
+    return updatedDossier;
   }
 }

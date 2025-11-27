@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierQuestionModel;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
@@ -58,9 +59,9 @@ class TthDossierControllerTest {
     TthDossier dossier = TthDossier.builder().id(1L).topic(TOPIC).build();
     when(tthDossierService.getDossierById(any())).thenReturn(dossier);
 
-    tthDossierController.cancelDossier(1L);
+    tthDossierController.completeDossier(1L, DossierStatus.CANCELED);
 
-    verify(tthDossierService).cancelDossier(dossier);
+    verify(tthDossierService).completeDossier(any(), eq(DossierStatus.CANCELED));
   }
 
   @Test
@@ -71,5 +72,15 @@ class TthDossierControllerTest {
     tthDossierController.sendDossierToBo(1L, model);
 
     verify(tthDossierService).sendDossierToBo(eq(1L), any());
+  }
+
+  @Test
+  void shouldUpdateDossier() {
+    TthDossier dossier = TthDossier.builder().id(1L).topic(TOPIC).build();
+    when(tthDossierService.updateDossier(any(), any())).thenReturn(dossier);
+
+    tthDossierController.updateDossier(1L, TthDossierModel.builder().topic(TOPIC).build());
+
+    verify(tthDossierService).updateDossier(eq(1L), any());
   }
 }

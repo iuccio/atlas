@@ -1,6 +1,7 @@
 package ch.sbb.workflow.module.lidi.tth.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -43,10 +44,9 @@ class TthDossierServiceTest {
         .internalComment("Noch mit Bernmobil abklären")
         .publicComment("In Abklärung mit GO")
         .boContactMail("bern@mobil.be")
-        .dossierStatus(DossierStatus.DOSSIER_BO_CHECK)
+        .dossierStatus(DossierStatus.ADDED)
         .statementIds(List.of(132L, 145L))
         .boDeadlineToAnswer(LocalDate.now().plusDays(7))
-        .dossierStatus(DossierStatus.ADDED)
         .build();
     exampleDossier = tthDossierRepository.saveAndFlush(dossier);
   }
@@ -84,13 +84,31 @@ class TthDossierServiceTest {
   @Test
   void shouldCancelDossier() {
     // when
-    tthDossierService.cancelDossier(exampleDossier);
+    tthDossierService.completeDossier(exampleDossier, DossierStatus.CANCELED);
 
     // then
     TthDossier canceledDossier = tthDossierService.getDossierById(exampleDossier.getId());
     assertThat(canceledDossier.getDossierStatus()).isEqualTo(DossierStatus.CANCELED);
 
     verify(timetableHearingStatementClient).updateStatements(any());
+  }
+
+  @Test
+  void shouldDissolveDossier() {
+    // when
+    tthDossierService.completeDossier(exampleDossier, DossierStatus.DISSOLVED);
+
+    // then
+    TthDossier dissolvedDossier = tthDossierService.getDossierById(exampleDossier.getId());
+    assertThat(dissolvedDossier.getDossierStatus()).isEqualTo(DossierStatus.DISSOLVED);
+
+    verify(timetableHearingStatementClient).updateStatements(any());
+  }
+
+  @Test
+  void shouldNotCompleteToAdded() {
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
+        () -> tthDossierService.completeDossier(exampleDossier, DossierStatus.ADDED));
   }
 
   @Test
@@ -117,5 +135,30 @@ class TthDossierServiceTest {
     // then
     verify(tthDossierNotificationService).notifyBoAboutNewQuestion(any());
     assertThat(tthDossier.getDossierQuestions()).hasSize(1);
+  }
+
+  @Test
+  void shouldUpdateDossier() {
+    // when
+    String newPublicComment = "Wir haben uns geeinigt, den Takt zu erhöhen";
+    TthDossier dossier = exampleDossier.toBuilder().publicComment(newPublicComment).build();
+    TthDossier updatedDossier = tthDossierService.updateDossier(exampleDossier.getId(), dossier);
+
+    // then
+    assertThat(updatedDossier.getDossierStatus()).isEqualTo(DossierStatus.ADDED);
+    assertThat(updatedDossier.getPublicComment()).isEqualTo(newPublicComment);
+
+    verify(timetableHearingStatementClient).updateStatements(any());
+  }
+
+  @Test
+  void shouldNotUpdateDossierInBoCheck() {
+    exampleDossier.setDossierStatus(DossierStatus.DOSSIER_BO_CHECK);
+    exampleDossier = tthDossierRepository.saveAndFlush(exampleDossier);
+
+    Long dossierId = exampleDossier.getId();
+    assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
+        () -> tthDossierService.updateDossier(dossierId, exampleDossier)
+    );
   }
 }

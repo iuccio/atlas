@@ -1,6 +1,7 @@
 package ch.sbb.workflow.module.lidi.tth.api;
 
 import ch.sbb.atlas.api.AtlasApiConstants;
+import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierQuestionModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -23,10 +25,13 @@ public interface TthDossierApiInternal {
   @PostMapping
   TthDossierModel createDossier(@Valid @RequestBody TthDossierModel dossierModel);
 
-  @PostMapping("{dossierId}/cancel")
-  void cancelDossier(@PathVariable Long dossierId);
-
   @PostMapping("{dossierId}/send-to-bo")
   void sendDossierToBo(@PathVariable Long dossierId, @Valid @RequestBody TthDossierQuestionModel questionModel);
+
+  @PostMapping("{dossierId}/complete/{status}")
+  void completeDossier(@PathVariable Long dossierId, @PathVariable DossierStatus status);
+
+  @PutMapping("{dossierId}")
+  TthDossierModel updateDossier(@PathVariable Long dossierId, @Valid @RequestBody TthDossierModel dossierModel);
 
 }

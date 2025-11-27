@@ -303,8 +303,9 @@ class TimetableHearingStatementServiceTest {
     TimetableHearingStatement timetableHearingStatement =
         timetableHearingStatementMapperV2.toEntity(timetableHearingStatementModel);
 
+    List<MultipartFile> documents = Collections.emptyList();
     TimetableHearingStatement statement = timetableHearingStatementService.createHearingStatement(timetableHearingStatement,
-        Collections.emptyList());
+        documents);
     timetableHearingStatementService.updateStatementFromDossier(statement, BatchUpdateTimetableHearingStatementsModel.builder()
         .statementStatus(StatementStatus.IN_REVIEW)
         .dossierId(1L)
@@ -312,7 +313,7 @@ class TimetableHearingStatementServiceTest {
 
     assertThatThrownBy(
         () -> timetableHearingStatementService.updateHearingStatement(timetableHearingStatement, timetableHearingStatementModel,
-            Collections.emptyList())).isInstanceOf(StatementPartOfDossierException.class);
+            documents)).isInstanceOf(StatementPartOfDossierException.class);
   }
 
   @Test
