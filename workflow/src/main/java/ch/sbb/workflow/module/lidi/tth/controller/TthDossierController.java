@@ -1,5 +1,6 @@
 package ch.sbb.workflow.module.lidi.tth.controller;
 
+import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierQuestionModel;
 import ch.sbb.workflow.module.lidi.tth.api.TthDossierApiInternal;
@@ -27,13 +28,18 @@ public class TthDossierController implements TthDossierApiInternal {
   }
 
   @Override
-  public void cancelDossier(Long dossierId) {
-    TthDossier tthDossier = tthDossierService.getDossierById(dossierId);
-    tthDossierService.cancelDossier(tthDossier);
+  public void sendDossierToBo(Long dossierId, TthDossierQuestionModel questionModel) {
+    tthDossierService.sendDossierToBo(dossierId, TthDossierQuestionMapper.toEntity(questionModel));
   }
 
   @Override
-  public void sendDossierToBo(Long dossierId, TthDossierQuestionModel questionModel) {
-    tthDossierService.sendDossierToBo(dossierId, TthDossierQuestionMapper.toEntity(questionModel));
+  public void completeDossier(Long dossierId, DossierStatus status) {
+    TthDossier tthDossier = tthDossierService.getDossierById(dossierId);
+    tthDossierService.completeDossier(tthDossier, status);
+  }
+
+  @Override
+  public TthDossierModel updateDossier(Long dossierId, TthDossierModel dossierModel) {
+    return TthDossierMapper.toModel(tthDossierService.updateDossier(dossierId, TthDossierMapper.toEntity(dossierModel)));
   }
 }
