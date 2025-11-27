@@ -51,6 +51,7 @@ public class TthDossierService {
 
   @Transactional
   public void completeDossier(TthDossier dossier, DossierStatus status) {
+    checkDossierIsInEditableStatus(dossier);
     if (!ALLOWED_STATUSES_FOR_COMPLETE.contains(status)) {
       throw new IllegalArgumentException("DossierStatus " + status + " is not completable");
     }
@@ -63,13 +64,17 @@ public class TthDossierService {
   @Transactional
   public TthDossier updateDossier(Long dossierId, TthDossier dossier) {
     TthDossier currentDossier = getDossierById(dossierId);
-    if (UNEDITABLE_DOSSIERS.contains(currentDossier.getDossierStatus())) {
-      throw new IllegalStateException("Dossier is not updatable in status " + currentDossier.getDossierStatus());
-    }
+    checkDossierIsInEditableStatus(currentDossier);
 
     dossier.setDossierStatus(currentDossier.getDossierStatus());
     TthDossier updatedDossier = dossierRepository.saveAndFlush(dossier);
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(updatedDossier));
     return updatedDossier;
+  }
+
+  private static void checkDossierIsInEditableStatus(TthDossier dossier) {
+    if (UNEDITABLE_DOSSIERS.contains(dossier.getDossierStatus())) {
+      throw new IllegalStateException("Dossier is not updatable in status " + dossier.getDossierStatus());
+    }
   }
 }
