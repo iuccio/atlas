@@ -1,5 +1,4 @@
 import {
-  booleanAttribute,
   Component,
   ContentChild,
   EventEmitter,
@@ -28,7 +27,7 @@ export class AtlasButtonComponent {
   @Input() businessOrganisations: string[] = [];
   @Input() canton!: string;
   @Input() uicCountryCode?: number;
-  @Input({ transform: booleanAttribute }) disabled!: boolean;
+  @Input() disabled!: boolean;
 
   @Input() wrapperStyleClass!: string;
   @Input() buttonDataCy!: string;

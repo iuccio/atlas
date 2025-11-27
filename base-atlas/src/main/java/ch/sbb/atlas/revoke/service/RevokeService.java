@@ -35,7 +35,7 @@ public abstract class RevokeService<T extends Revokable> {
     }
   }
 
-  protected abstract List<T> findBySid4ptOrderByValidFrom(String sloid);
+  protected abstract List<T> findBySid4ptOrderByValidFrom(String sid4pt);
 
   protected abstract void saveAll(List<T> versionRevokables);
 
