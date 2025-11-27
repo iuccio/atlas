@@ -16,6 +16,8 @@ export interface Revokable {
 export class RevokeButton {
   @Output() revokeClicked = new EventEmitter<Observable<void>>();
   applicationType = input.required<ApplicationType>();
+  hidden = input(false);
+  disabled = input(false);
   private readonly dialogService = inject(DialogService);
 
   revoke() {

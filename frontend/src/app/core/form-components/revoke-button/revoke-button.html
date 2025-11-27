@@ -1,7 +1,9 @@
 <atlas-button
   (buttonClicked)="revoke()"
   [applicationType]="applicationType()"
-  buttonDataCy="revoke-sector"
+  [hidden]="hidden()"
+  [disabled]="disabled()"
+  buttonDataCy="revoke-item"
   buttonText="COMMON.REVOKE"
   buttonType="revoke"
   wrapperStyleClass="ms-3"
