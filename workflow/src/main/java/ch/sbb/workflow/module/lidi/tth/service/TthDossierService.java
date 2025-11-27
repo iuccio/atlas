@@ -67,6 +67,7 @@ public class TthDossierService {
       throw new IllegalStateException("Dossier is not updatable in status " + currentDossier.getDossierStatus());
     }
 
+    dossier.setDossierStatus(currentDossier.getDossierStatus());
     TthDossier updatedDossier = dossierRepository.saveAndFlush(dossier);
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(updatedDossier));
     return updatedDossier;

@@ -71,6 +71,7 @@ public class TimetableHearingStatementMapperV2 {
         .publicComment(statement.getPublicComment())
         .internalComment(statement.getInternalComment())
         .cantonTransferComment(statement.getCantonTransferComment())
+        .topic(statement.getTopic())
         .dossierId(statement.getDossierId())
         .creationDate(statement.getCreationDate())
         .creator(statement.getCreator())
