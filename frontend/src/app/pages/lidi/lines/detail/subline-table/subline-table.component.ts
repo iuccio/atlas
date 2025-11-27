@@ -30,6 +30,11 @@ export class SublineTableComponent implements OnInit, OnDestroy {
       formatAsDate: true,
     },
     { headerTitle: 'COMMON.VALID_TO', value: 'validTo', formatAsDate: true },
+    {
+      headerTitle: 'COMMON.STATUS',
+      value: 'status',
+      translate: { withPrefix: 'COMMON.STATUS_TYPES.' },
+    },
   ];
   tableFilterConfig!: TableFilter<unknown>[][];
   sublines: Array<Line> = [];
