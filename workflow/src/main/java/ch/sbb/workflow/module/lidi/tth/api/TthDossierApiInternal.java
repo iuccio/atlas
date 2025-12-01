@@ -3,7 +3,6 @@ package ch.sbb.workflow.module.lidi.tth.api;
 import ch.sbb.atlas.api.AtlasApiConstants;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
-import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierQuestionModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,7 @@ public interface TthDossierApiInternal {
   TthDossierModel createDossier(@Valid @RequestBody TthDossierModel dossierModel);
 
   @PostMapping("{dossierId}/send-to-bo")
-  void sendDossierToBo(@PathVariable Long dossierId, @Valid @RequestBody TthDossierQuestionModel questionModel);
+  void sendDossierToBo(@PathVariable Long dossierId);
 
   @PostMapping("{dossierId}/complete/{status}")
   void completeDossier(@PathVariable Long dossierId, @PathVariable DossierStatus status);

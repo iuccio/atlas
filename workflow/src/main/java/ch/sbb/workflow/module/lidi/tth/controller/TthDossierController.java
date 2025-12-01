@@ -2,11 +2,9 @@ package ch.sbb.workflow.module.lidi.tth.controller;
 
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
-import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierQuestionModel;
 import ch.sbb.workflow.module.lidi.tth.api.TthDossierApiInternal;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
-import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierQuestionMapper;
 import ch.sbb.workflow.module.lidi.tth.service.TthDossierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,8 +26,8 @@ public class TthDossierController implements TthDossierApiInternal {
   }
 
   @Override
-  public void sendDossierToBo(Long dossierId, TthDossierQuestionModel questionModel) {
-    tthDossierService.sendDossierToBo(dossierId, TthDossierQuestionMapper.toEntity(questionModel));
+  public void sendDossierToBo(Long dossierId) {
+    tthDossierService.sendDossierToBo(dossierId);
   }
 
   @Override
@@ -40,6 +38,7 @@ public class TthDossierController implements TthDossierApiInternal {
 
   @Override
   public TthDossierModel updateDossier(Long dossierId, TthDossierModel dossierModel) {
+    dossierModel.setId(dossierId);
     return TthDossierMapper.toModel(tthDossierService.updateDossier(dossierId, TthDossierMapper.toEntity(dossierModel)));
   }
 }

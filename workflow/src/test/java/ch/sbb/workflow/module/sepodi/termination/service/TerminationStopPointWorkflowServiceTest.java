@@ -25,16 +25,16 @@ import ch.sbb.atlas.servicepoint.enumeration.Category;
 import ch.sbb.atlas.servicepoint.enumeration.OperatingPointTechnicalTimetableType;
 import ch.sbb.atlas.servicepoint.enumeration.OperatingPointType;
 import ch.sbb.workflow.aop.LoggingAspect;
-import ch.sbb.workflow.exception.SePoDiClientException;
-import ch.sbb.workflow.module.sepodi.termination.exception.TerminationDateBeforeException;
-import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowAlreadyInStatusException;
-import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowPreconditionStatusException;
+import ch.sbb.workflow.exception.AtlasClientException;
 import ch.sbb.workflow.module.sepodi.client.SePoDiAdminClient;
 import ch.sbb.workflow.module.sepodi.hearing.enity.JudgementType;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationDecision;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationDecisionPerson;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationStopPointWorkflow;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationWorkflowStatus;
+import ch.sbb.workflow.module.sepodi.termination.exception.TerminationDateBeforeException;
+import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowAlreadyInStatusException;
+import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowPreconditionStatusException;
 import ch.sbb.workflow.module.sepodi.termination.model.StartTerminationStopPointWorkflowModel;
 import ch.sbb.workflow.module.sepodi.termination.model.TerminationAbortModel;
 import ch.sbb.workflow.module.sepodi.termination.model.TerminationDecisionModel;
@@ -258,11 +258,11 @@ class TerminationStopPointWorkflowServiceTest {
         .build();
 
     ErrorResponse errorResponse = ErrorResponse.builder().details(new TreeSet<>()).build();
-    SePoDiClientException sePoDiClientException = new SePoDiClientException(errorResponse);
-    doThrow(sePoDiClientException).when(sePoDiAdminClient).terminateStopPoint(any());
+    AtlasClientException atlasClientException = new AtlasClientException(errorResponse);
+    doThrow(atlasClientException).when(sePoDiAdminClient).terminateStopPoint(any());
     //when
-    assertThrows(SePoDiClientException.class,
-        () -> service.addDecisionNova(novaDecision, workflow.getId()));
+    Long workflowId = workflow.getId();
+    assertThrows(AtlasClientException.class, () -> service.addDecisionNova(novaDecision, workflowId));
 
     //then
     boolean logFound = listAppender.list.stream()
@@ -450,10 +450,10 @@ class TerminationStopPointWorkflowServiceTest {
         .thenReturn(readServicePointVersionModel);
 
     ErrorResponse errorResponse = ErrorResponse.builder().details(new TreeSet<>()).build();
-    SePoDiClientException sePoDiClientException = new SePoDiClientException(errorResponse);
-    doThrow(sePoDiClientException).when(sePoDiAdminClient).startServicePointTermination(any(), any(), any());
+    AtlasClientException atlasClientException = new AtlasClientException(errorResponse);
+    doThrow(atlasClientException).when(sePoDiAdminClient).startServicePointTermination(any(), any(), any());
     //when
-    assertThrows(SePoDiClientException.class,
+    assertThrows(AtlasClientException.class,
         () -> service.startTerminationWorkflow(stopPointWorkflowModel));
 
     //then
@@ -530,11 +530,11 @@ class TerminationStopPointWorkflowServiceTest {
         .abortComment("Aborting termination workflow").build();
 
     ErrorResponse errorResponse = ErrorResponse.builder().details(new TreeSet<>()).build();
-    SePoDiClientException sePoDiClientException = new SePoDiClientException(errorResponse);
-    doThrow(sePoDiClientException).when(sePoDiAdminClient).stopServicePointTermination(any(), any());
+    AtlasClientException atlasClientException = new AtlasClientException(errorResponse);
+    doThrow(atlasClientException).when(sePoDiAdminClient).stopServicePointTermination(any(), any());
     //when
-    assertThrows(SePoDiClientException.class,
-        () -> service.abortTerminationWorkflow(stopPointWorkflow.getId(), abortingTerminationWorkflow));
+    Long workflowId = stopPointWorkflow.getId();
+    assertThrows(AtlasClientException.class, () -> service.abortTerminationWorkflow(workflowId, abortingTerminationWorkflow));
 
     //then
     boolean logFound = listAppender.list.stream()

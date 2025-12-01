@@ -76,8 +76,13 @@ class TthDossierServiceTest {
         .dossierStatus(DossierStatus.ADDED)
         .boDeadlineToAnswer(LocalDate.now().plusDays(7))
         .build());
+    dossier.setDossierQuestions(List.of(TthDossierQuestion.builder()
+        .tthDossier(dossier)
+        .question("Kann der Takt erhöht werden?")
+        .build()));
 
     assertThat(dossier.getId()).isNotNull();
+    assertThat(dossier.getDossierQuestions()).hasSize(1);
     verify(timetableHearingStatementClient).updateStatements(any());
   }
 
@@ -127,14 +132,10 @@ class TthDossierServiceTest {
     assertThat(dossier.getId()).isNotNull();
 
     // when
-    TthDossierQuestion question = TthDossierQuestion.builder()
-        .question("Wie soll mit dem Takt verfahren werden?")
-        .build();
-    TthDossier tthDossier = tthDossierService.sendDossierToBo(dossier.getId(), question);
+    tthDossierService.sendDossierToBo(dossier.getId());
 
     // then
     verify(tthDossierNotificationService).notifyBoAboutNewQuestion(any());
-    assertThat(tthDossier.getDossierQuestions()).hasSize(1);
   }
 
   @Test

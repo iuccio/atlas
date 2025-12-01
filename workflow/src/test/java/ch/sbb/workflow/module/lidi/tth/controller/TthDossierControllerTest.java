@@ -10,8 +10,10 @@ import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierQuestionModel;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
 import ch.sbb.workflow.module.lidi.tth.service.TthDossierService;
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,12 +43,15 @@ class TthDossierControllerTest {
 
   @Test
   void shouldCreateDossier() {
-    when(tthDossierService.createDossier(any())).thenReturn(TthDossier.builder().id(1L).topic(TOPIC).build());
+    String question = "Ist es möglich?";
+    when(tthDossierService.createDossier(any())).thenReturn(TthDossier.builder().id(1L).topic(TOPIC).dossierQuestions(List.of(
+        TthDossierQuestion.builder().question(question).build())).build());
 
     TthDossierModel model = TthDossierModel.builder()
         .topic(TOPIC)
         .boContactMail("uerli@bernmobil.ch")
-        .boDeadlineToAnswer(LocalDate.now().plusDays(1))
+        .boDeadlineToAnswer(LocalDate.now().plusDays(1)).questions(List.of(TthDossierQuestionModel.builder()
+            .question(question).build()))
         .build();
     TthDossierModel dossier = tthDossierController.createDossier(model);
 
@@ -66,12 +71,9 @@ class TthDossierControllerTest {
 
   @Test
   void shouldSendDossierToBo() {
-    TthDossierQuestionModel model = TthDossierQuestionModel.builder()
-        .question("Wie soll mit dem Takt verfahren werden?")
-        .build();
-    tthDossierController.sendDossierToBo(1L, model);
+    tthDossierController.sendDossierToBo(1L);
 
-    verify(tthDossierService).sendDossierToBo(eq(1L), any());
+    verify(tthDossierService).sendDossierToBo(1L);
   }
 
   @Test

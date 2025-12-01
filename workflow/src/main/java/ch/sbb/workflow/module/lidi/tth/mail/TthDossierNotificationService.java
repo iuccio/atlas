@@ -2,7 +2,7 @@ package ch.sbb.workflow.module.lidi.tth.mail;
 
 import ch.sbb.atlas.kafka.model.mail.MailNotification;
 import ch.sbb.workflow.mail.MailProducerService;
-import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,19 +13,19 @@ public class TthDossierNotificationService {
 
   private final MailProducerService mailProducerService;
 
-  public void notifyBoAboutNewQuestion(TthDossierQuestion question) {
+  public void notifyBoAboutNewQuestion(TthDossier dossier) {
     // Send actual Mail with ATLAS-3232
     MailNotification mailNotification = MailNotification.builder()
-        .to(List.of(question.getTthDossier().getBoContactMail()))
+        .to(List.of(dossier.getBoContactMail()))
         .build();
     mailProducerService.produceMailNotification(mailNotification);
   }
 
-  public void notifyCantonAboutNewAnswer(TthDossierQuestion question) {
+  public void notifyCantonAboutNewAnswer(TthDossier dossier) {
     // Send actual Mail with ATLAS-3232
     MailNotification mailNotification = MailNotification.builder()
         .to(List.of()) // Dossier editor mail vom UserAdministration via Azure lesen
-        .content(question.getQuestion())
+        .content(dossier.getDossierQuestions().getFirst().getQuestion())
         .build();
     mailProducerService.produceMailNotification(mailNotification);
   }
