@@ -1,15 +1,17 @@
 package ch.sbb.workflow.module.lidi.tth.mapper;
 
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierQuestionModel;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class TthDossierQuestionMapper {
 
-  public static TthDossierQuestion toEntity(TthDossierQuestionModel model) {
+  public static TthDossierQuestion toEntity(TthDossierQuestionModel model, TthDossier dossier) {
     return TthDossierQuestion.builder()
         .id(model.getId())
+        .tthDossier(dossier)
         .question(model.getQuestion())
         .answerToCanton(model.getAnswerToCanton())
         .build();

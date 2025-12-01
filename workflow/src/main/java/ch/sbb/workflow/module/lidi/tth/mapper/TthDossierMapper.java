@@ -13,7 +13,7 @@ import lombok.experimental.UtilityClass;
 public class TthDossierMapper {
 
   public static TthDossier toEntity(TthDossierModel model) {
-    return TthDossier.builder()
+    TthDossier dossier = TthDossier.builder()
         .id(model.getId())
         .topic(model.getTopic())
         .internalComment(model.getInternalComment())
@@ -22,6 +22,9 @@ public class TthDossierMapper {
         .boContactMail(model.getBoContactMail())
         .boDeadlineToAnswer(model.getBoDeadlineToAnswer())
         .build();
+
+    dossier.setDossierQuestions(model.getQuestions().stream().map(i -> TthDossierQuestionMapper.toEntity(i, dossier)).toList());
+    return dossier;
   }
 
   public static TthDossierModel toModel(TthDossier entity) {
@@ -66,13 +69,12 @@ public class TthDossierMapper {
 
   private static StatementStatus mapDossierStatusToStatementStatus(TthDossier dossier, DossierStatus newStatus) {
     return switch (newStatus) {
-      case ADDED -> StatementStatus.IN_REVIEW;
       case CANCELED -> StatementStatus.RECEIVED;
       case ACCEPTED -> StatementStatus.ACCEPTED;
       case REJECTED -> StatementStatus.REJECTED;
       case MOVED -> StatementStatus.MOVED;
       case DISSOLVED -> mapDossierStatusToStatementStatus(dossier, dossier.getDossierStatus());
-      default -> throw new IllegalArgumentException("Unsupported DossierStatus " + newStatus);
+      default -> StatementStatus.IN_REVIEW;
     };
   }
 
