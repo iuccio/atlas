@@ -75,7 +75,7 @@ class SectorServiceTest {
     sectorService.updateSector(sectorVersion, edited);
 
     // then
-    assertThat(sectorService.getSector("ch:1:sloid:sector:1")).hasSize(1);
+    assertThat(sectorService.findBySid4ptOrderByValidFrom("ch:1:sloid:sector:1")).hasSize(1);
   }
 
   @Test
@@ -96,7 +96,7 @@ class SectorServiceTest {
   }
 
   @Test
-  void shouldGetSectorVersionByIdWhenExists() {
+  void shouldFindBySloidOrderByValidFromVersionByIdWhenExists() {
     // Given
     SectorVersion saved = sectorVersionRepository.save(SectorTestData.getBasicSectorVersion());
     // When
@@ -107,7 +107,7 @@ class SectorServiceTest {
   }
 
   @Test
-  void shouldThrowWhenGetSectorVersionByIdNotFound() {
+  void shouldThrowWhenFindBySloidOrderByValidFromVersionByIdNotFound() {
     // Given
     Long nonexistentId = 999L;
     // When
@@ -252,7 +252,7 @@ class SectorServiceTest {
   }
 
   @Test
-  void shouldFindAllVersionsAndGetSectorModels() {
+  void shouldFindAllVersionsAndFindBySid4ptOrderByValidFromModels() {
     String sloid = "ch:1:sector:multi";
 
     SectorVersion v1 = SectorTestData.getBasicSectorVersion().toBuilder()
@@ -269,7 +269,7 @@ class SectorServiceTest {
     sectorVersionRepository.saveAll(List.of(v2, v1));
 
     // When
-    List<SectorVersion> entities = sectorService.getSector(sloid);
+    List<SectorVersion> entities = sectorService.findBySid4ptOrderByValidFrom(sloid);
     // Then
     assertThat(entities).extracting(SectorVersion::getDesignation)
         .containsExactly("v1", "v2");
@@ -294,7 +294,7 @@ class SectorServiceTest {
 
     // When
     // Then
-    assertThatThrownBy(() -> sectorService.getSector("abc"))
+    assertThatThrownBy(() -> sectorService.findBySid4ptOrderByValidFrom("abc"))
         .isInstanceOf(SloidNotFoundException.class);
   }
 

@@ -26,7 +26,7 @@ public class SectorApiV1Controller implements SectorApiV1 {
 
   @Override
   public List<ReadSectorVersionModel> getSector(String sloid) {
-    return sectorService.getSector(sloid).stream().map(SectorMapper::toModel).toList();
+    return sectorService.findBySid4ptOrderByValidFrom(sloid).stream().map(SectorMapper::toModel).toList();
   }
 
   @Override
@@ -39,7 +39,7 @@ public class SectorApiV1Controller implements SectorApiV1 {
     SectorVersion sectorVersion = SectorMapper.toEntity(createSectorVersionModel);
     trafficPointElementService.doesTrafficPointExist(sectorVersion.getTrafficPointSloid());
     TrafficPointElementVersion trafficPointElementVersion =
-        trafficPointElementService.findBySloidOrderByValidFrom(sectorVersion.getTrafficPointSloid()).getFirst();
+        trafficPointElementService.findBySid4ptOrderByValidFrom(sectorVersion.getTrafficPointSloid()).getFirst();
 
     List<ServicePointVersion> servicePointVersions = servicePointService.findAllByNumberOrderByValidFrom(
         trafficPointElementVersion.getServicePointNumber());
@@ -54,14 +54,14 @@ public class SectorApiV1Controller implements SectorApiV1 {
 
     trafficPointElementService.doesTrafficPointExist(sectorVersionToUpdate.getTrafficPointSloid());
     TrafficPointElementVersion trafficPointElementVersion =
-        trafficPointElementService.findBySloidOrderByValidFrom(sectorVersionToUpdate.getTrafficPointSloid()).getFirst();
+        trafficPointElementService.findBySid4ptOrderByValidFrom(sectorVersionToUpdate.getTrafficPointSloid()).getFirst();
 
     List<ServicePointVersion> servicePointVersions = servicePointService.findAllByNumberOrderByValidFrom(
         trafficPointElementVersion.getServicePointNumber());
 
     sectorService.update(sectorVersionToUpdate, editedVersion, servicePointVersions);
 
-    List<SectorVersion> updatedSector = sectorService.getSector(sectorVersionToUpdate.getSloid());
+    List<SectorVersion> updatedSector = sectorService.findBySid4ptOrderByValidFrom(sectorVersionToUpdate.getSloid());
 
     return updatedSector
         .stream()

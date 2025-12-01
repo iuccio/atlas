@@ -8,6 +8,7 @@ import ch.sbb.atlas.location.LocationService;
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SloidNotFoundException;
+import ch.sbb.atlas.revoke.service.RevokeService;
 import ch.sbb.atlas.service.OverviewDisplayBuilder;
 import ch.sbb.atlas.servicepointdirectory.exception.SloidsNotEqualException;
 import ch.sbb.atlas.servicepointdirectory.module.sector.entity.SectorVersion;
@@ -39,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SectorGroupService {
+public class SectorGroupService extends RevokeService<SectorGroupVersion> {
 
   private final SectorGroupVersionRepository sectorGroupVersionRepository;
   private final TrafficPointElementService trafficPointElementService;
@@ -153,7 +154,8 @@ public class SectorGroupService {
     editedVersion.setSloid(currentVersion.getSloid());
     editedVersion.setTrafficPointSloid(currentVersion.getTrafficPointSloid());
 
-    List<SectorGroupVersion> currentVersions = findAllBySloidOrderByValidFrom(currentVersion.getSloid());
+    List<SectorGroupVersion> currentVersions = findBySid4ptOrderByValidFrom(
+        currentVersion.getSloid());
 
     sectorValidationService.validateValidity(editedVersion);
 
@@ -212,14 +214,18 @@ public class SectorGroupService {
   }
 
   @Transactional
-  public void revoke(String sloid) {
-    List<SectorGroupVersion> sectorGroup = findAllBySloidOrderByValidFrom(sloid);
+  public void revokeSectorGroup(String sloid) {
+    revoke(sloid);
+  }
 
-    SectorGroupVersion lastVersion = sectorGroup.getLast();
-    lastVersion.setValidTo(lastVersion.getValidFrom());
-
-    sectorGroup.forEach(sectorGroupVersion -> sectorGroupVersion.setStatus(Status.REVOKED));
+  @Override
+  protected void saveAll(List<SectorGroupVersion> sectorGroup) {
     sectorGroupVersionRepository.saveAll(sectorGroup);
+  }
+
+  @Override
+  protected List<SectorGroupVersion> findBySid4ptOrderByValidFrom(String sloid) {
+    return findAllBySloidOrderByValidFrom(sloid);
   }
 
 }

@@ -1,12 +1,12 @@
 # Atlas
 
+:construction: **At this point we do not accept opensource contributions or issues.** :construction:
+
 ATLAS is the SKI business application for public transport in Switzerland.
 
 It enables modular digitization of SKI business processes, which are checked, optimized, standardized and then digitized using workflows. This enables more efficient collaboration between the BAV, infrastructure operators, transport companies and SKI.
 
 Thanks to the modular structure implemented using state-of-the-art technologies, the platform can be expanded with additional business processes within a short period of time and cost-effectively in the coming years.
-
-:construction: **At this point we do not accept opensource contributions or issues.** :construction:
 
 <!-- toc -->
 

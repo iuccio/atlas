@@ -48,4 +48,11 @@ describe('TrafficPointElementInternalService', () => {
     );
   });
 
+  it('should revoke sector', () => {
+    service.revokeTrafficPoint('ch:1:sloid:7000:1');
+
+    expect(apiService.post).toHaveBeenCalledOnceWith(
+      '/service-point-directory/internal/traffic-point-elements/ch%3A1%3Asloid%3A7000%3A1/revoke');
+  });
+
 });

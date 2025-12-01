@@ -46,7 +46,7 @@ class TransportCompanyRelationServiceTest {
   @Test
   void shouldSaveTransportCompanyRelation() {
     when(transportCompanyService.existsById(5L)).thenReturn(true);
-    when(businessOrganisationService.findBusinessOrganisationVersions(
+    when(businessOrganisationService.findBySid4ptOrderByValidFrom(
         "ch:1:sboid:100500")).thenReturn(
         Collections.singletonList(Mockito.mock(BusinessOrganisationVersion.class)));
 
@@ -68,7 +68,7 @@ class TransportCompanyRelationServiceTest {
   @Test
   void shouldThrowExceptionWhenTransportCompanyNotExisting() {
     when(transportCompanyService.existsById(5L)).thenReturn(false);
-    when(businessOrganisationService.findBusinessOrganisationVersions(
+    when(businessOrganisationService.findBySid4ptOrderByValidFrom(
         "ch:1:sboid:100500")).thenReturn(
         Collections.singletonList(Mockito.mock(BusinessOrganisationVersion.class)));
 
@@ -90,7 +90,7 @@ class TransportCompanyRelationServiceTest {
   @Test
   void shouldThrowExceptionWhenSboidNotExists() {
     when(transportCompanyService.existsById(5L)).thenReturn(true);
-    when(businessOrganisationService.findBusinessOrganisationVersions(
+    when(businessOrganisationService.findBySid4ptOrderByValidFrom(
         "ch:1:sboid:100500")).thenReturn(
         Collections.emptyList());
 

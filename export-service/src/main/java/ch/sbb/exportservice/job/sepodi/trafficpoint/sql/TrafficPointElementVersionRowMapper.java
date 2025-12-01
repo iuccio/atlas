@@ -1,6 +1,7 @@
 package ch.sbb.exportservice.job.sepodi.trafficpoint.sql;
 
 import ch.sbb.atlas.api.servicepoint.SpatialReference;
+import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.servicepoint.ServicePointNumber;
 import ch.sbb.atlas.servicepoint.enumeration.TrafficPointElementType;
 import ch.sbb.exportservice.job.sepodi.BaseSepodiRowMapper;
@@ -20,6 +21,7 @@ public class TrafficPointElementVersionRowMapper extends BaseSepodiRowMapper imp
     ServicePointNumber servicePointNumber = ServicePointNumber.ofNumberWithoutCheckDigit(rs.getInt("service_point_number"));
     TrafficPointElementVersion.TrafficPointElementVersionBuilder<?, ?> builder = TrafficPointElementVersion.builder();
     builder.id(rs.getLong("id"));
+    builder.status((Status.valueOf(rs.getString("status"))));
     builder.sloid(rs.getString("sloid"));
     builder.designation(rs.getString("designation"));
     builder.designationOperational(rs.getString("designation_operational"));

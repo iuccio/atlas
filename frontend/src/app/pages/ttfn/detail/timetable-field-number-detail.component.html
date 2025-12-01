@@ -58,7 +58,6 @@
 
         <div class="col-12 d-flex gap-4">
           <atlas-text-field
-            class="flex-50"
             [fieldExamples]="[
               { label: 'FORM.FOR_EXAMPLE', translate: true },
               { label: ' 30.003 | ', translate: false },
@@ -70,12 +69,12 @@
             ]"
             [formGroup]="form"
             [required]="true"
+            class="flex-50"
             controlName="number"
             fieldLabel="TTFN.NUMBER"
           >
           </atlas-text-field>
           <atlas-text-field
-            class="flex-50"
             [fieldExamples]="[
               { label: 'FORM.FOR_EXAMPLE', translate: true },
               { label: ' 30.003 | ', translate: false },
@@ -87,6 +86,7 @@
             ]"
             [formGroup]="form"
             [required]="false"
+            class="flex-50"
             controlName="swissTimetableFieldNumber"
             fieldLabel="TTFN.SWISS_TIMETABLE_FIELD_NUMBER"
           >
@@ -95,7 +95,6 @@
 
         <div class="col-12 d-flex gap-4">
           <atlas-text-field
-            class="flex-grow-1"
             [fieldExamples]="[
               { label: 'FORM.FOR_EXAMPLE', translate: true },
               {
@@ -110,12 +109,12 @@
             ]"
             [formGroup]="form"
             [required]="true"
+            class="flex-grow-1"
             controlName="descriptionOutwardLine1"
             fieldLabel="TTFN.DESCRIPTION_OUTWARD"
           >
           </atlas-text-field>
           <atlas-text-field
-            class="flex-grow-1"
             [fieldExamples]="[
               { label: 'FORM.FOR_EXAMPLE', translate: true },
               {
@@ -130,6 +129,7 @@
             ]"
             [formGroup]="form"
             [required]="false"
+            class="flex-grow-1"
             controlName="descriptionReturnLine1"
             fieldLabel="TTFN.DESCRIPTION_RETURN"
           >
@@ -183,11 +183,11 @@
         </div>
 
         <means-of-transport-picker
-          [formGroup]="form"
-          controlName="meanOfTransport"
           [disabled]="form.disabled"
+          [formGroup]="form"
           [meansOfTransportToShow]="allowableMeansOfTransport"
           [multiSelectMode]="false"
+          controlName="meanOfTransport"
         ></means-of-transport-picker>
 
         <span class="font-bold-2xl d-block mt-4">{{
@@ -261,17 +261,12 @@
             wrapperStyleClass="ms-3"
           ></atlas-button>
         }
-
-        <atlas-button
-          (buttonClicked)="revoke()"
-          applicationType="TTFN"
-          [disabled]="form.enabled || selectedVersion.status === 'REVOKED'"
-          buttonDataCy="revoke-item"
-          buttonText="COMMON.REVOKE"
-          buttonType="revoke"
-          wrapperStyleClass="ms-3"
-        >
-        </atlas-button>
+        @if (form.disabled && !isNew && selectedVersion.status !== 'REVOKED') {
+          <atlas-revoke-button
+            (revokeClicked)="revoke()"
+            applicationType="TTFN"
+          ></atlas-revoke-button>
+        }
         <atlas-button
           (buttonClicked)="delete()"
           [disabled]="form.enabled"

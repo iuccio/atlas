@@ -1,12 +1,14 @@
 package ch.sbb.atlas.servicepointdirectory.module.trafficpoint.entity;
 
 import ch.sbb.atlas.api.AtlasFieldLengths;
+import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.entity.BaseEntity;
 import ch.sbb.atlas.servicepoint.ServicePointNumber;
 import ch.sbb.atlas.servicepoint.converter.ServicePointNumberConverter;
 import ch.sbb.atlas.servicepoint.enumeration.TrafficPointElementType;
 import ch.sbb.atlas.servicepointdirectory.module.geodata.entity.GeolocationBaseEntity;
 import ch.sbb.atlas.servicepointdirectory.module.geodata.entity.TrafficPointElementGeolocation;
+import ch.sbb.atlas.revoke.Revokable;
 import ch.sbb.atlas.validation.DatesValidator;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionableProperty;
@@ -51,7 +53,7 @@ import lombok.experimental.SuperBuilder;
 @Entity(name = "traffic_point_element_version")
 @AtlasVersionable
 public class TrafficPointElementVersion extends BaseEntity implements Versionable,
-    DatesValidator {
+    DatesValidator, Revokable {
 
   private static final String VERSION_SEQ = "traffic_point_element_version_seq";
 
@@ -60,6 +62,10 @@ public class TrafficPointElementVersion extends BaseEntity implements Versionabl
   @SequenceGenerator(name = VERSION_SEQ, sequenceName = VERSION_SEQ, allocationSize = 1,
       initialValue = 1000)
   private Long id;
+
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private Status status;
 
   @Size(max = AtlasFieldLengths.LENGTH_40)
   @AtlasVersionableProperty

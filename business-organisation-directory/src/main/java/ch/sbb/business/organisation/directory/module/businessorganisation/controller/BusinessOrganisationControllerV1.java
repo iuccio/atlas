@@ -73,7 +73,7 @@ public class BusinessOrganisationControllerV1 implements BusinessOrganisationApi
   @Override
   public List<BusinessOrganisationVersionModel> getVersions(String sboid) {
     List<BusinessOrganisationVersionModel> organisationVersionModels =
-        service.findBusinessOrganisationVersions(sboid).stream()
+        service.findBySid4ptOrderByValidFrom(sboid).stream()
             .map(BusinessOrganisationVersionMapper::toModel)
             .toList();
     if (organisationVersionModels.isEmpty()) {

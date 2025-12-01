@@ -134,6 +134,7 @@ create table traffic_point_element_version
         primary key,
     sloid                        varchar(500)     not null,
     parent_sloid                 varchar(500),
+    status                       varchar(50)      not null,
     designation                  varchar(50),
     designation_operational      varchar(50),
     traffic_point_element_type   varchar(50),

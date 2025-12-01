@@ -34,4 +34,8 @@ export class TrafficPointElementInternalService {
   public getTrafficPointsOfServicePointValidToday(servicePointNumber: number): Observable<Array<ReadTrafficPointElementVersion>> {
     return this.atlasApiService.get(`${this.BASE_PATH}/actual-date/${encodeURIComponent(String(servicePointNumber))}`);
   }
+
+  public revokeTrafficPoint(sectorSloid: string): Observable<void> {
+    return this.atlasApiService.post(`${this.BASE_PATH}/${encodeURIComponent(sectorSloid)}/revoke`);
+  }
 }

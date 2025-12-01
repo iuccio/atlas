@@ -3,6 +3,7 @@ package ch.sbb.atlas.servicepointdirectory.module.trafficpoint.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.sbb.atlas.api.servicepoint.SpatialReference;
+import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.atlas.servicepoint.ServicePointNumber;
 import ch.sbb.atlas.servicepoint.enumeration.TrafficPointElementType;
@@ -38,6 +39,7 @@ class TrafficPointElementVersionRepositoryTest {
     // given
     TrafficPointElementVersion trafficPointElementVersion = TrafficPointElementVersion
         .builder()
+        .status(Status.VALIDATED)
         .designation("Bezeichnung")
         .designationOperational("Betriebliche Bezeich")
         .servicePointNumber(ServicePointNumber.ofNumberWithoutCheckDigit(8507000))
@@ -61,6 +63,7 @@ class TrafficPointElementVersionRepositoryTest {
     // given
     TrafficPointElementVersion trafficPointElementVersion = TrafficPointElementVersion
         .builder()
+        .status(Status.VALIDATED)
         .designation("Bezeichnung")
         .designationOperational("Betriebliche Bezeich")
         .servicePointNumber(ServicePointNumber.ofNumberWithoutCheckDigit(8507000))
@@ -93,6 +96,7 @@ class TrafficPointElementVersionRepositoryTest {
 
     TrafficPointElementVersion trafficPointElementVersion = TrafficPointElementVersion
         .builder()
+        .status(Status.VALIDATED)
         .designation("Bezeichnung")
         .designationOperational("Betriebliche Bezeich")
         .servicePointNumber(ServicePointNumber.ofNumberWithoutCheckDigit(8507000))
@@ -149,6 +153,7 @@ class TrafficPointElementVersionRepositoryTest {
     TrafficPointElementVersion trafficPointElementVersion = TrafficPointElementVersion
         .builder()
         .designation("Bezeichnung")
+        .status(Status.VALIDATED)
         .designationOperational("Betriebliche Bezeich")
         .trafficPointElementType(TrafficPointElementType.BOARDING_PLATFORM)
         .servicePointNumber(ServicePointNumber.ofNumberWithoutCheckDigit(8507000))

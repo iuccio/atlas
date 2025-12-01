@@ -49,7 +49,7 @@ class TimetableFieldNumberServiceScenario5Test extends BaseTimetableFieldNumberS
 
     //when
     timetableFieldNumberService.updateVersion(version3, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version1.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version1.getTtfnid());
 
     //then
     assertThat(result).hasSize(6);

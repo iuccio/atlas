@@ -28,7 +28,8 @@
     "ENTITY_NOT_FOUND": "Objekt mit {{field}} {{value}} wurde nicht gefunden.",
     "VERSIONING": "Diese Versionierungs-Änderung ist vom System nicht unterstützt. Wenden Sie sich bitte an die Fachstelle atlas.",
     "GAPS_NOT_ALLOWED": "Eine Lücke in diesem Objekt ist nicht zulässig. Wenden Sie sich bitte an die Fachstelle atlas.",
-    "CORRELATION_ID": "Bei anhaltenden Problemen wenden Sie sich mit folgender Identifikationsnummer an die Fachstelle atlas: {{correlationId}}"
+    "CORRELATION_ID": "Bei anhaltenden Problemen wenden Sie sich mit folgender Identifikationsnummer an die Fachstelle atlas: {{correlationId}}",
+    "TERMINATION_NOT_ALLOWED_WITH_VERSION_IN_REVIEW": "Die Terminierung ist nicht möglich, da sich eine Version in einer Anhörung befindet."
   },
   "COMMON": {
     "COPY_CLIPBOARD_SUCCESS": "Das Kopieren war erfolgreich.",
@@ -1248,7 +1249,8 @@
       "COMPASS_DIRECTION": "Kompassrichtung [°]",
       "NOTIFICATION": {
         "ADD_SUCCESS": "Die Haltekante wurde erfolgreich hinzugefügt.",
-        "EDIT_SUCCESS": "Die Haltekante wurde erfolgreich gespeichert."
+        "EDIT_SUCCESS": "Die Haltekante wurde erfolgreich gespeichert.",
+        "REVOKE_SUCCESS": "Die Haltekante wurde erfolgreich als Fehlerfassung gekennzeichnet."
       },
       "VALIDITY_CONFIRMATION": {
         "TITLE": "Gültigkeit",

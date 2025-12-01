@@ -34,6 +34,10 @@ import {
 import { DetailFormComponent } from '../../../../core/leave-guard/leave-dirty-form-guard.service';
 import { AtlasButtonComponent } from '../../../../core/components/button/atlas-button.component';
 import { UserDetailInfoComponent } from '../../../../core/components/user-edit-info/user-detail-info.component';
+import {
+  Revokable,
+  RevokeButton,
+} from '../../../../core/form-components/revoke-button/revoke-button';
 
 @Component({
   templateUrl: './business-organisation-detail.component.html',
@@ -54,10 +58,11 @@ import { UserDetailInfoComponent } from '../../../../core/components/user-edit-i
     DetailFooterComponent,
     AtlasButtonComponent,
     UserDetailInfoComponent,
+    RevokeButton,
   ],
 })
 export class BusinessOrganisationDetailComponent
-  implements OnInit, DetailFormComponent, DetailWithCancelEdit
+  implements Revokable, OnInit, DetailFormComponent, DetailWithCancelEdit
 {
   BUSINESS_TYPES = Object.values(BusinessType);
   versions!: BusinessOrganisationVersion[];
@@ -97,18 +102,6 @@ export class BusinessOrganisationDetailComponent
         );
       this.selectedVersionIndex = this.versions.indexOf(this.selectedVersion);
       this.initSelectedVersion();
-    }
-  }
-
-  private initSelectedVersion() {
-    this.showVersionSwitch = VersionsHandlingService.hasMultipleVersions(
-      this.versions
-    );
-    this.form = BusinessOrganisationDetailFormGroupBuilder.getFormGroup(
-      this.selectedVersion
-    );
-    if (!this.isNew) {
-      this.form.disable();
     }
   }
 
@@ -191,40 +184,20 @@ export class BusinessOrganisationDetailComponent
       });
   }
 
-  private handleError() {
-    return () => {
-      this.form.enable();
-      return EMPTY;
-    };
-  }
-
   revoke(): void {
-    this.dialogService
-      .confirm({
-        title: 'DIALOG.WARNING',
-        message: 'DIALOG.REVOKE',
-        cancelText: 'DIALOG.BACK',
-        confirmText: 'DIALOG.CONFIRM_REVOKE',
-      })
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          if (this.selectedVersion.sboid) {
-            this.businessOrganisationInternalService
-              .revokeBusinessOrganisation(this.selectedVersion.sboid)
-              .subscribe(() => {
-                this.notificationService.success(
-                  'BODI.BUSINESS_ORGANISATION.NOTIFICATION.REVOKE_SUCCESS'
-                );
-                this.router
-                  .navigate([
-                    Pages.BODI.path,
-                    Pages.BUSINESS_ORGANISATIONS.path,
-                    this.selectedVersion.sboid,
-                  ])
-                  .then(() => this.ngOnInit());
-              });
-          }
-        }
+    this.businessOrganisationInternalService
+      .revokeBusinessOrganisation(this.selectedVersion.sboid!)
+      .subscribe(() => {
+        this.notificationService.success(
+          'BODI.BUSINESS_ORGANISATION.NOTIFICATION.REVOKE_SUCCESS'
+        );
+        this.router
+          .navigate([
+            Pages.BODI.path,
+            Pages.BUSINESS_ORGANISATIONS.path,
+            this.selectedVersion.sboid,
+          ])
+          .then(() => this.ngOnInit());
       });
   }
 
@@ -254,5 +227,24 @@ export class BusinessOrganisationDetailComponent
 
   back() {
     this.router.navigate(['..'], { relativeTo: this.activatedRoute }).then();
+  }
+
+  private initSelectedVersion() {
+    this.showVersionSwitch = VersionsHandlingService.hasMultipleVersions(
+      this.versions
+    );
+    this.form = BusinessOrganisationDetailFormGroupBuilder.getFormGroup(
+      this.selectedVersion
+    );
+    if (!this.isNew) {
+      this.form.disable();
+    }
+  }
+
+  private handleError() {
+    return () => {
+      this.form.enable();
+      return EMPTY;
+    };
   }
 }

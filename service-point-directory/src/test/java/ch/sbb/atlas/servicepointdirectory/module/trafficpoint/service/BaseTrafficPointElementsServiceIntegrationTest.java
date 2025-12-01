@@ -1,5 +1,6 @@
 package ch.sbb.atlas.servicepointdirectory.module.trafficpoint.service;
 
+import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.atlas.servicepoint.ServicePointNumber;
 import ch.sbb.atlas.servicepoint.enumeration.TrafficPointElementType;
@@ -55,6 +56,7 @@ abstract class BaseTrafficPointElementsServiceIntegrationTest {
         .designation("Bezeichnung")
         .designationOperational("Betriebliche Bezeich")
         .compassDirection(274.0)
+        .status(Status.VALIDATED)
         .sloid(SLOID)
         .validFrom(LocalDate.of(2025, 1, 1))
         .validTo(LocalDate.of(2025, 12, 31))
@@ -70,6 +72,7 @@ abstract class BaseTrafficPointElementsServiceIntegrationTest {
         .designation("Bezeichnung")
         .designationOperational("Betriebliche Bezeich")
         .compassDirection(275.0)
+        .status(Status.VALIDATED)
         .sloid(SLOID)
         .validFrom(LocalDate.of(2026, 1, 1))
         .validTo(LocalDate.of(2026, 12, 31))
@@ -85,6 +88,7 @@ abstract class BaseTrafficPointElementsServiceIntegrationTest {
         .servicePointNumber(SERVICE_POINT_NUMBER)
         .trafficPointElementType(TrafficPointElementType.BOARDING_PLATFORM)
         .designation("Bezeichnung")
+        .status(Status.VALIDATED)
         .designationOperational("Betriebliche Bezeich")
         .compassDirection(271.0)
         .sloid(SLOID)
@@ -101,6 +105,7 @@ abstract class BaseTrafficPointElementsServiceIntegrationTest {
         .servicePointNumber(SERVICE_POINT_NUMBER)
         .trafficPointElementType(TrafficPointElementType.BOARDING_PLATFORM)
         .designation("Bezeichnung")
+        .status(Status.VALIDATED)
         .designationOperational("Betriebliche Bezeich")
         .compassDirection(273.0)
         .sloid(SLOID)
@@ -117,6 +122,7 @@ abstract class BaseTrafficPointElementsServiceIntegrationTest {
         .servicePointNumber(SERVICE_POINT_NUMBER)
         .trafficPointElementType(TrafficPointElementType.BOARDING_PLATFORM)
         .designation("Bezeichnung")
+        .status(Status.VALIDATED)
         .designationOperational("Betriebliche Bezeich")
         .compassDirection(272.0)
         .sloid(SLOID)
