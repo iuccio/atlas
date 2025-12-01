@@ -35,6 +35,7 @@ public class TrafficPointElementVersionJsonProcessor extends BaseSepodiProcessor
         .parentSloid(version.getParentSloid())
         .trafficPointElementGeolocation(geolocation)
         .servicePointNumber(version.getServicePointNumber())
+        .status(version.getStatus())
         .build();
   }
 

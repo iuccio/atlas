@@ -175,14 +175,14 @@ class TimetableFieldNumberVersionRepositoryTest {
                 .build())));
     versionRepository.save(secondVersion);
 
-    List<TimetableFieldNumberVersion> allVersionsVersioned = versionRepository.getAllVersionsVersioned(ttfnid);
+    List<TimetableFieldNumberVersion> allVersionsVersioned = versionRepository.findBySid4ptOrderByValidFrom(ttfnid);
     assertThat(allVersionsVersioned).hasSize(2);
 
     //when
     versionRepository.deleteAll(allVersionsVersioned);
 
     //then
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(ttfnid);
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(ttfnid);
     assertThat(result).isEmpty();
   }
 }

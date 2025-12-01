@@ -28,7 +28,8 @@
     "ENTITY_NOT_FOUND": "Impossibile trovare l’oggetto con {{field}} {{value}}.",
     "VERSIONING": "Questa modifica nel controllo delle versioni non è supportata dal sistema. Contattare il servizio specializzato atlas.",
     "GAPS_NOT_ALLOWED": "Questo oggetto non può contenere spazi vuoti. Contattare il servizio specializzato atlas.",
-    "CORRELATION_ID": "Se i problemi persistono, contattare il reparto atlas con il seguente numero di identificazione: {{correlationId}}"
+    "CORRELATION_ID": "Se i problemi persistono, contattare il reparto atlas con il seguente numero di identificazione: {{correlationId}}",
+    "TERMINATION_NOT_ALLOWED_WITH_VERSION_IN_REVIEW": "La terminazione non è possibile in quanto una versione è attualmente in fase di udienza."
   },
   "COMMON": {
     "COPY_CLIPBOARD_SUCCESS": "I dati sono stati copiati con successo.",
@@ -1248,7 +1249,8 @@
       "COMPASS_DIRECTION": "Orientamento [°]",
       "NOTIFICATION": {
         "ADD_SUCCESS": "Il bordo di contenimento è stato aggiunto con successo.",
-        "EDIT_SUCCESS": "Il bordo di contenimento è stato salvato con successo."
+        "EDIT_SUCCESS": "Il bordo di contenimento è stato salvato con successo.",
+        "REVOKE_SUCCESS": "Il bordo di contenimento è stato contrassegnato con successo come versione di errore."
       },
       "VALIDITY_CONFIRMATION": {
         "TITLE": "Validità ",

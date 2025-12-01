@@ -39,4 +39,9 @@ public class TrafficPointElementApiInternalController implements TrafficPointEle
         .map(TrafficPointElementVersionMapper::toModel).toList();
   }
 
+  @Override
+  public void revokeTrafficPoint(String sloid) {
+    trafficPointElementService.revokeTrafficPoint(sloid);
+  }
+
 }

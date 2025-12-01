@@ -41,6 +41,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ServicePointService } from '../../../../api/service/sepodi/service-point.service';
 import { TrafficPointElementService } from '../../../../api/service/sepodi/traffic-point-element.service';
 import { TrafficPointElementInternalService } from '../../../../api/service/sepodi/traffic-point-element-internal.service';
+import { RevokeButton } from '../../../../core/form-components/revoke-button/revoke-button';
 
 interface AreaOption {
   sloid: string | undefined;
@@ -70,20 +71,16 @@ const NUMBER_COLONS_AREA = 0;
     DetailFooterComponent,
     AtlasButtonComponent,
     TranslatePipe,
+    RevokeButton,
   ],
 })
 export class TrafficPointElementsDetailComponent
   implements OnInit, DetailFormComponent
 {
-  readonly extractSloid = (option: AreaOption) => option.sloid;
-  readonly displayExtractor = (option: AreaOption) => option.displayText;
-
   trafficPointVersions!: ReadTrafficPointElementVersion[];
   selectedVersion!: ReadTrafficPointElementVersion;
-
   showVersionSwitch = false;
   selectedVersionIndex!: number;
-
   form!: FormGroup<TrafficPointElementDetailFormGroup>;
   isNew = false;
   isSwitchVersionDisabled = false;
@@ -94,7 +91,6 @@ export class TrafficPointElementsDetailComponent
   servicePointBusinessOrganisations: string[] = [];
   isTrafficPointArea = false;
   numberColons!: number;
-
   private _savedGeographyForm?: FormGroup<GeographyFormGroup>;
 
   constructor(
@@ -110,6 +106,10 @@ export class TrafficPointElementsDetailComponent
     private readonly validityService: ValidityService
   ) {}
 
+  readonly extractSloid = (option: AreaOption) => option.sloid;
+
+  readonly displayExtractor = (option: AreaOption) => option.displayText;
+
   ngOnInit() {
     this.numberColons = this.isTrafficPointArea
       ? NUMBER_COLONS_AREA
@@ -122,6 +122,154 @@ export class TrafficPointElementsDetailComponent
         this.route.parent!.snapshot.params['servicePointNumber'];
       this.initTrafficPoint();
     });
+  }
+
+  backToTrafficPointElements(destination: string) {
+    this.router
+      .navigate([
+        Pages.SEPODI.path,
+        Pages.SERVICE_POINTS.path,
+        this.servicePointNumber,
+        destination,
+      ])
+      .then();
+  }
+
+  confirmCancel() {
+    if (this.isTrafficPointArea) {
+      this.backToTrafficPointElements(Pages.TRAFFIC_POINT_ELEMENTS_AREA.path);
+    } else {
+      this.backToTrafficPointElements(
+        Pages.TRAFFIC_POINT_ELEMENTS_PLATFORM.path
+      );
+    }
+  }
+
+  switchVersion(newIndex: number) {
+    this.selectedVersionIndex = newIndex;
+    this.selectedVersion = this.trafficPointVersions[newIndex];
+    this.initSelectedVersion();
+  }
+
+  toggleEdit() {
+    if (this.form.enabled) {
+      this.showConfirmationDialog();
+    } else {
+      this.isSwitchVersionDisabled = true;
+      this.validityService.initValidity(this.form);
+      this.form.enable({ emitEvent: false });
+    }
+  }
+
+  save() {
+    ValidationService.validateForm(this.form);
+    if (this.form.valid) {
+      this.confirmValidityOverServicePoint().subscribe((confirmed) => {
+        if (confirmed) {
+          const trafficPointElementVersion = this.form
+            .value as unknown as CreateTrafficPointElementVersion;
+
+          if (this.isTrafficPointArea) {
+            trafficPointElementVersion.trafficPointElementType =
+              TrafficPointElementType.BoardingArea;
+          } else {
+            trafficPointElementVersion.trafficPointElementType =
+              TrafficPointElementType.BoardingPlatform;
+          }
+
+          trafficPointElementVersion.numberWithoutCheckDigit =
+            this.servicePointNumber;
+          if (this.isNew) {
+            this.create(trafficPointElementVersion);
+            this.disableForm();
+          } else {
+            this.validityService.updateValidity(this.form);
+            this.validityService.validateAndDisableCustom(
+              () =>
+                this.update(
+                  this.selectedVersion.id!,
+                  trafficPointElementVersion
+                ),
+              () => this.disableForm()
+            );
+          }
+        }
+      });
+    }
+  }
+
+  disableForm() {
+    this.form.disable();
+    this._savedGeographyForm = undefined;
+  }
+
+  update(
+    id: number,
+    trafficPointElementVersion: CreateTrafficPointElementVersion
+  ) {
+    this.trafficPointElementService
+      .updateTrafficPoint(id, trafficPointElementVersion)
+      .pipe(catchError(this.handleError()))
+      .subscribe(() => {
+        this.notificationService.success(
+          this.isTrafficPointArea
+            ? 'SEPODI.BOARDING_AREAS.NOTIFICATION.EDIT_SUCCESS'
+            : 'SEPODI.TRAFFIC_POINT_ELEMENTS.NOTIFICATION.EDIT_SUCCESS'
+        );
+        this.router
+          .navigate(['..', this.selectedVersion.sloid], {
+            relativeTo: this.route,
+          })
+          .then();
+        this.isSwitchVersionDisabled = false;
+      });
+  }
+
+  geographyEnabled() {
+    if (this.form && !this.form.controls.trafficPointElementGeolocation) {
+      const groupToAdd =
+        this._savedGeographyForm ?? GeographyFormGroupBuilder.buildFormGroup();
+      TrafficPointElementFormGroupBuilder.addGroupToForm(
+        this.form,
+        'trafficPointElementGeolocation',
+        groupToAdd
+      );
+      this.form.markAsDirty();
+    }
+  }
+
+  geographyDisabled() {
+    if (this.form.controls.trafficPointElementGeolocation) {
+      this._savedGeographyForm =
+        this.form.controls.trafficPointElementGeolocation;
+      TrafficPointElementFormGroupBuilder.removeGroupFromForm(
+        this.form,
+        'trafficPointElementGeolocation'
+      );
+      this.form.markAsDirty();
+    }
+  }
+
+  doRevoke = (): Observable<void> => {
+    return this.trafficPointElementInternalService.revokeTrafficPoint(
+      this.selectedVersion.sloid!
+    );
+  };
+
+  revoke() {
+    this.trafficPointElementInternalService
+      .revokeTrafficPoint(this.selectedVersion.sloid!)
+      .pipe(catchError(this.handleError()))
+      .subscribe(() => {
+        this.notificationService.success(
+          'SEPODI.TRAFFIC_POINT_ELEMENTS.NOTIFICATION.REVOKE_SUCCESS'
+        );
+        this.router
+          .navigate(['..', this.selectedVersion.sloid], {
+            relativeTo: this.route,
+          })
+          .then(() => this.ngOnInit());
+      });
   }
 
   private initTrafficPoint() {
@@ -186,33 +334,6 @@ export class TrafficPointElementsDetailComponent
     }
   }
 
-  backToTrafficPointElements(destination: string) {
-    this.router
-      .navigate([
-        Pages.SEPODI.path,
-        Pages.SERVICE_POINTS.path,
-        this.servicePointNumber,
-        destination,
-      ])
-      .then();
-  }
-
-  confirmCancel() {
-    if (this.isTrafficPointArea) {
-      this.backToTrafficPointElements(Pages.TRAFFIC_POINT_ELEMENTS_AREA.path);
-    } else {
-      this.backToTrafficPointElements(
-        Pages.TRAFFIC_POINT_ELEMENTS_PLATFORM.path
-      );
-    }
-  }
-
-  switchVersion(newIndex: number) {
-    this.selectedVersionIndex = newIndex;
-    this.selectedVersion = this.trafficPointVersions[newIndex];
-    this.initSelectedVersion();
-  }
-
   private initSelectedVersion() {
     this.showVersionSwitch = VersionsHandlingService.hasMultipleVersions(
       this.trafficPointVersions
@@ -226,16 +347,6 @@ export class TrafficPointElementsDetailComponent
     this.trafficPointMapService.displayCurrentTrafficPoint(
       this.selectedVersion.trafficPointElementGeolocation?.wgs84
     );
-  }
-
-  toggleEdit() {
-    if (this.form.enabled) {
-      this.showConfirmationDialog();
-    } else {
-      this.isSwitchVersionDisabled = true;
-      this.validityService.initValidity(this.form);
-      this.form.enable({ emitEvent: false });
-    }
   }
 
   private showConfirmationDialog() {
@@ -259,48 +370,6 @@ export class TrafficPointElementsDetailComponent
       });
     }
     return of(true);
-  }
-
-  save() {
-    ValidationService.validateForm(this.form);
-    if (this.form.valid) {
-      this.confirmValidityOverServicePoint().subscribe((confirmed) => {
-        if (confirmed) {
-          const trafficPointElementVersion = this.form
-            .value as unknown as CreateTrafficPointElementVersion;
-
-          if (this.isTrafficPointArea) {
-            trafficPointElementVersion.trafficPointElementType =
-              TrafficPointElementType.BoardingArea;
-          } else {
-            trafficPointElementVersion.trafficPointElementType =
-              TrafficPointElementType.BoardingPlatform;
-          }
-
-          trafficPointElementVersion.numberWithoutCheckDigit =
-            this.servicePointNumber;
-          if (this.isNew) {
-            this.create(trafficPointElementVersion);
-            this.disableForm();
-          } else {
-            this.validityService.updateValidity(this.form);
-            this.validityService.validateAndDisableCustom(
-              () =>
-                this.update(
-                  this.selectedVersion.id!,
-                  trafficPointElementVersion
-                ),
-              () => this.disableForm()
-            );
-          }
-        }
-      });
-    }
-  }
-
-  disableForm() {
-    this.form.disable();
-    this._savedGeographyForm = undefined;
   }
 
   private confirmValidityOverServicePoint(): Observable<boolean> {
@@ -330,57 +399,10 @@ export class TrafficPointElementsDetailComponent
       });
   }
 
-  update(
-    id: number,
-    trafficPointElementVersion: CreateTrafficPointElementVersion
-  ) {
-    this.trafficPointElementService
-      .updateTrafficPoint(id, trafficPointElementVersion)
-      .pipe(catchError(this.handleError()))
-      .subscribe(() => {
-        this.notificationService.success(
-          this.isTrafficPointArea
-            ? 'SEPODI.BOARDING_AREAS.NOTIFICATION.EDIT_SUCCESS'
-            : 'SEPODI.TRAFFIC_POINT_ELEMENTS.NOTIFICATION.EDIT_SUCCESS'
-        );
-        this.router
-          .navigate(['..', this.selectedVersion.sloid], {
-            relativeTo: this.route,
-          })
-          .then();
-        this.isSwitchVersionDisabled = false;
-      });
-  }
-
   private handleError() {
     return () => {
       this.form.enable();
       return EMPTY;
     };
-  }
-
-  geographyEnabled() {
-    if (this.form && !this.form.controls.trafficPointElementGeolocation) {
-      const groupToAdd =
-        this._savedGeographyForm ?? GeographyFormGroupBuilder.buildFormGroup();
-      TrafficPointElementFormGroupBuilder.addGroupToForm(
-        this.form,
-        'trafficPointElementGeolocation',
-        groupToAdd
-      );
-      this.form.markAsDirty();
-    }
-  }
-
-  geographyDisabled() {
-    if (this.form.controls.trafficPointElementGeolocation) {
-      this._savedGeographyForm =
-        this.form.controls.trafficPointElementGeolocation;
-      TrafficPointElementFormGroupBuilder.removeGroupFromForm(
-        this.form,
-        'trafficPointElementGeolocation'
-      );
-      this.form.markAsDirty();
-    }
   }
 }

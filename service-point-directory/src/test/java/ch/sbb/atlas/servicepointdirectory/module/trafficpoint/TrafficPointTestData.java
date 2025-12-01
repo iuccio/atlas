@@ -12,6 +12,7 @@ import ch.sbb.atlas.servicepoint.enumeration.TrafficPointElementType;
 import ch.sbb.atlas.servicepointdirectory.module.geodata.entity.TrafficPointElementGeolocation;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.entity.ServicePointVersion;
 import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.entity.TrafficPointElementVersion;
+import ch.sbb.atlas.servicepointdirectory.module.trafficpoint.entity.TrafficPointElementVersion.TrafficPointElementVersionBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,11 +25,17 @@ public class TrafficPointTestData {
 
   public static TrafficPointElementVersion getBasicTrafficPoint() {
     TrafficPointElementGeolocation geolocation = getTrafficPointGeolocationBernMittelland();
+    TrafficPointElementVersion trafficPointElementVersion = getBasicTrafficPointBuilder().build();
+    geolocation.setTrafficPointElementVersion(trafficPointElementVersion);
+    trafficPointElementVersion.setTrafficPointElementGeolocation(geolocation);
+    return trafficPointElementVersion;
+  }
 
-    TrafficPointElementVersion trafficPointElementVersion = TrafficPointElementVersion.builder()
-        .trafficPointElementGeolocation(geolocation)
+  public static TrafficPointElementVersionBuilder<?, ?> getBasicTrafficPointBuilder() {
+    return TrafficPointElementVersion.builder()
         .servicePointNumber(ServicePointNumber.ofNumberWithoutCheckDigit(8589108))
         .sloid("ch:1:sloid:89108:123:123")
+        .status(Status.VALIDATED)
         .parentSloid("ch:1:sloid:89108:123:123")
         .trafficPointElementType(TrafficPointElementType.BOARDING_PLATFORM)
         .validFrom(LocalDate.of(2022, 1, 1))
@@ -36,11 +43,7 @@ public class TrafficPointTestData {
         .creationDate(LocalDateTime.of(LocalDate.of(2021, 3, 22), LocalTime.of(9, 26, 29)))
         .creator("fs45117")
         .editionDate(LocalDateTime.of(LocalDate.of(2022, 2, 23), LocalTime.of(17, 10, 10)))
-        .editor("fs45117")
-        .build();
-
-    geolocation.setTrafficPointElementVersion(trafficPointElementVersion);
-    return trafficPointElementVersion;
+        .editor("fs45117");
   }
 
   public static TrafficPointElementVersion getWylerEggPlatform() {
@@ -51,6 +54,7 @@ public class TrafficPointTestData {
         .servicePointNumber(ServicePointNumber.ofNumberWithoutCheckDigit(WYLEREGG_NUMBER))
         .sloid("ch:1:sloid:89008:123:123")
         .parentSloid("ch:1:sloid:89008:123:123")
+        .status(Status.VALIDATED)
         .trafficPointElementType(TrafficPointElementType.BOARDING_PLATFORM)
         .validFrom(LocalDate.of(2022, 1, 1))
         .validTo(LocalDate.of(2024, 1, 1))
@@ -99,6 +103,7 @@ public class TrafficPointTestData {
         .trafficPointElementGeolocation(trafficPointElementGeolocation)
         .sloid("ch:1:sloid:1400015:0:310240")
         .parentSloid("ch:1:sloid:1400015:310240")
+        .status(Status.VALIDATED)
         .compassDirection(277.0)
         .trafficPointElementType(TrafficPointElementType.BOARDING_PLATFORM)
         .validFrom(LocalDate.of(2020, 1, 6))

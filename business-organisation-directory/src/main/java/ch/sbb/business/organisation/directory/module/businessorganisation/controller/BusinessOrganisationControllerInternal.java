@@ -46,7 +46,7 @@ public class BusinessOrganisationControllerInternal implements BusinessOrganisat
       BusinessOrganisationVersionModel newVersion) {
     BusinessOrganisationVersion versionToUpdate = service.findById(id);
     service.updateBusinessOrganisationVersion(versionToUpdate, BusinessOrganisationVersionMapper.toEntity(newVersion));
-    return service.findBusinessOrganisationVersions(versionToUpdate.getSboid())
+    return service.findBySid4ptOrderByValidFrom(versionToUpdate.getSboid())
         .stream()
         .map(BusinessOrganisationVersionMapper::toModel)
         .toList();
@@ -54,7 +54,7 @@ public class BusinessOrganisationControllerInternal implements BusinessOrganisat
 
   @Override
   public void deleteBusinessOrganisation(String sboid) {
-    List<BusinessOrganisationVersion> versions = service.findBusinessOrganisationVersions(sboid);
+    List<BusinessOrganisationVersion> versions = service.findBySid4ptOrderByValidFrom(sboid);
     if (versions.isEmpty()) {
       throw new SboidNotFoundException(sboid);
     }

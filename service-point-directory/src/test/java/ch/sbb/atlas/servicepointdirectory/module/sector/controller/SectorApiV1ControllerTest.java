@@ -95,7 +95,7 @@ class SectorApiV1ControllerTest extends BaseControllerApiTest {
     doReturn("ch:1:sloid:sector:1:0:1").when(locationService).generateSloid(SloidType.SECTOR,
         toCreate.getTrafficPointSloid());
 
-    when(trafficPointElementService.findBySloidOrderByValidFrom(toCreate.getTrafficPointSloid()))
+    when(trafficPointElementService.findBySid4ptOrderByValidFrom(toCreate.getTrafficPointSloid()))
         .thenReturn(List.of(TrafficPointTestData.getBasicTrafficPoint()));
 
     when(servicePointService.findAllByNumberOrderByValidFrom(any()))
@@ -119,7 +119,7 @@ class SectorApiV1ControllerTest extends BaseControllerApiTest {
     doReturn("ch:1:sloid:sector:1:0:1").when(locationService).generateSloid(SloidType.SECTOR,
         toCreate.getTrafficPointSloid());
 
-    when(trafficPointElementService.findBySloidOrderByValidFrom(toCreate.getTrafficPointSloid()))
+    when(trafficPointElementService.findBySid4ptOrderByValidFrom(toCreate.getTrafficPointSloid()))
         .thenReturn(List.of(TrafficPointTestData.getBasicTrafficPoint()));
 
     when(servicePointService.findAllByNumberOrderByValidFrom(any()))
@@ -161,7 +161,7 @@ class SectorApiV1ControllerTest extends BaseControllerApiTest {
         .edgeHeight(initial.getEdgeHeight())
         .build();
 
-    when(trafficPointElementService.findBySloidOrderByValidFrom(initial.getTrafficPointSloid()))
+    when(trafficPointElementService.findBySid4ptOrderByValidFrom(initial.getTrafficPointSloid()))
         .thenReturn(List.of(TrafficPointTestData.getBasicTrafficPoint()));
 
     when(servicePointService.findAllByNumberOrderByValidFrom(any()))

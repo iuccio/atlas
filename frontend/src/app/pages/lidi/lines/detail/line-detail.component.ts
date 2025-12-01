@@ -44,6 +44,10 @@ import { AtlasButtonComponent } from '../../../../core/components/button/atlas-b
 import { TranslatePipe } from '@ngx-translate/core';
 import { LineService } from '../../../../api/service/lidi/line.service';
 import { LineInternalService } from '../../../../api/service/lidi/line-internal.service';
+import {
+  Revokable,
+  RevokeButton,
+} from '../../../../core/form-components/revoke-button/revoke-button';
 
 @Component({
   templateUrl: './line-detail.component.html',
@@ -64,33 +68,41 @@ import { LineInternalService } from '../../../../api/service/lidi/line-internal.
     DetailFooterComponent,
     AtlasButtonComponent,
     TranslatePipe,
+    RevokeButton,
   ],
 })
-export class LineDetailComponent implements OnInit, OnDestroy {
-  private readonly onDestroy$ = new Subject<boolean>();
+export class LineDetailComponent implements Revokable, OnInit, OnDestroy {
   readonly eventSubject = new Subject<boolean>();
-
   selectedVersionIndex!: number;
   selectedVersion!: LineVersionV2;
   versions!: Array<LineVersionV2>;
-
   form!: FormGroup<LineDetailFormGroup>;
+  isNew = false;
+  showVersionSwitch = false;
+  showWorkflow = false;
+  maxValidity!: DateRange;
+  boSboidRestriction: string[] = [];
+  isShowLineSnapshotHistory = false;
+  private readonly onDestroy$ = new Subject<boolean>();
   private initForm!: FormGroup<LineDetailFormGroup>;
-
   private isValidFromShortened!: boolean;
   private isValidToShortened!: boolean;
 
-  isNew = false;
-
-  showVersionSwitch = false;
-  showWorkflow = false;
-
-  maxValidity!: DateRange;
-  boSboidRestriction: string[] = [];
-
-  isShowLineSnapshotHistory = false;
+  constructor(
+    private readonly router: Router,
+    private readonly lineService: LineService,
+    private readonly lineInternalService: LineInternalService,
+    private readonly notificationService: NotificationService,
+    private readonly dialogService: DialogService,
+    private readonly permissionService: PermissionService,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly validityService: ValidityService,
+    private readonly detailHelperService: DetailDialogHelperService,
+    private readonly dialog: MatDialog
+  ) {}
 
   private _lineType!: LineType;
+
   get lineType(): LineType {
     return this._lineType;
   }
@@ -108,19 +120,6 @@ export class LineDetailComponent implements OnInit, OnDestroy {
   set isLineConcessionTypeRequired(isRequired) {
     this._isLineConcessionTypeRequired = isRequired;
   }
-
-  constructor(
-    private readonly router: Router,
-    private readonly lineService: LineService,
-    private readonly lineInternalService: LineInternalService,
-    private readonly notificationService: NotificationService,
-    private readonly dialogService: DialogService,
-    private readonly permissionService: PermissionService,
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly validityService: ValidityService,
-    private readonly detailHelperService: DetailDialogHelperService,
-    private readonly dialog: MatDialog
-  ) {}
 
   ngOnInit() {
     this.versions = this.activatedRoute.snapshot.data.lineDetail;
@@ -152,21 +151,6 @@ export class LineDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.onDestroy$.next(true);
     this.onDestroy$.complete();
-  }
-
-  private initSelectedVersion() {
-    this.showVersionSwitch = VersionsHandlingService.hasMultipleVersions(
-      this.versions
-    );
-    this.form = LineFormGroupBuilder.buildFormGroup(this.selectedVersion);
-    if (!this.isNew) {
-      this.form.disable();
-
-      this.showWorkflow =
-        this.selectedVersion.lineType === LineType.Orderly &&
-        (this.selectedVersion.status === Status.Draft ||
-          this.selectedVersion.status === Status.InReview);
-    }
   }
 
   initBoSboidRestriction() {
@@ -218,31 +202,6 @@ export class LineDetailComponent implements OnInit, OnDestroy {
       this.selectedVersion.status !== 'IN_REVIEW' ||
       this.permissionService.isAtLeastSupervisor(ApplicationType.Lidi)
     );
-  }
-
-  private subscribeToConditionalValidation() {
-    this.form.controls.lineType.valueChanges.subscribe(() => {
-      this.conditionalValidation();
-    });
-  }
-
-  private conditionalValidation() {
-    if (this.form.controls.lineType.value !== LineType.Orderly) {
-      this.isLineConcessionTypeRequired = false;
-      this.form.controls.lineConcessionType.clearValidators();
-      this.form.controls.lineConcessionType.updateValueAndValidity();
-      this.form.controls.swissLineNumber.clearValidators();
-      this.form.controls.swissLineNumber.updateValueAndValidity();
-    } else {
-      this.isLineConcessionTypeRequired = true;
-      this.form.controls.lineConcessionType.setValidators([
-        Validators.required,
-      ]);
-      this.form.controls.lineConcessionType.updateValueAndValidity();
-      this.form.controls.swissLineNumber.setValidators([Validators.required]);
-      this.form.controls.swissLineNumber.updateValueAndValidity();
-    }
-    this.form.updateValueAndValidity();
   }
 
   save() {
@@ -372,34 +331,22 @@ export class LineDetailComponent implements OnInit, OnDestroy {
   }
 
   revoke(): void {
-    this.dialogService
-      .confirm({
-        title: 'DIALOG.WARNING',
-        message: 'DIALOG.REVOKE',
-        cancelText: 'DIALOG.BACK',
-        confirmText: 'DIALOG.CONFIRM_REVOKE',
-      })
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          if (this.selectedVersion.slnid) {
-            this.lineInternalService
-              .revokeLine(this.selectedVersion.slnid)
-              .subscribe(() => {
-                this.notificationService.success(
-                  'LIDI.LINE.NOTIFICATION.REVOKE_SUCCESS'
-                );
-                this.router
-                  .navigate([
-                    Pages.LIDI.path,
-                    Pages.LINES.path,
-                    this.selectedVersion.slnid,
-                  ])
-                  .then(() => this.ngOnInit());
-              });
-          }
-        }
-      });
+    if (this.selectedVersion.slnid) {
+      this.lineInternalService
+        .revokeLine(this.selectedVersion.slnid)
+        .subscribe(() => {
+          this.notificationService.success(
+            'LIDI.LINE.NOTIFICATION.REVOKE_SUCCESS'
+          );
+          this.router
+            .navigate([
+              Pages.LIDI.path,
+              Pages.LINES.path,
+              this.selectedVersion.slnid,
+            ])
+            .then(() => this.ngOnInit());
+        });
+    }
   }
 
   delete(): void {
@@ -513,6 +460,46 @@ export class LineDetailComponent implements OnInit, OnDestroy {
     this.selectedVersionIndex = newIndex;
     this.selectedVersion = this.versions[newIndex];
     this.initSelectedVersion();
+  }
+
+  private initSelectedVersion() {
+    this.showVersionSwitch = VersionsHandlingService.hasMultipleVersions(
+      this.versions
+    );
+    this.form = LineFormGroupBuilder.buildFormGroup(this.selectedVersion);
+    if (!this.isNew) {
+      this.form.disable();
+
+      this.showWorkflow =
+        this.selectedVersion.lineType === LineType.Orderly &&
+        (this.selectedVersion.status === Status.Draft ||
+          this.selectedVersion.status === Status.InReview);
+    }
+  }
+
+  private subscribeToConditionalValidation() {
+    this.form.controls.lineType.valueChanges.subscribe(() => {
+      this.conditionalValidation();
+    });
+  }
+
+  private conditionalValidation() {
+    if (this.form.controls.lineType.value !== LineType.Orderly) {
+      this.isLineConcessionTypeRequired = false;
+      this.form.controls.lineConcessionType.clearValidators();
+      this.form.controls.lineConcessionType.updateValueAndValidity();
+      this.form.controls.swissLineNumber.clearValidators();
+      this.form.controls.swissLineNumber.updateValueAndValidity();
+    } else {
+      this.isLineConcessionTypeRequired = true;
+      this.form.controls.lineConcessionType.setValidators([
+        Validators.required,
+      ]);
+      this.form.controls.lineConcessionType.updateValueAndValidity();
+      this.form.controls.swissLineNumber.setValidators([Validators.required]);
+      this.form.controls.swissLineNumber.updateValueAndValidity();
+    }
+    this.form.updateValueAndValidity();
   }
 
   private handleError() {

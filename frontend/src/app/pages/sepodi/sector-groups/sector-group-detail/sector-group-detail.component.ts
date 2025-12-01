@@ -49,8 +49,8 @@ import { AtlasLabelFieldComponent } from '@atlas/form';
 import { AtlasFieldErrorComponent } from '../../../../core/form-components/atlas-field-error/atlas-field-error.component';
 import { ReadSectorGroupVersion } from '../../../../api/model/readSectorGroupVersion';
 import { UpdateSectorGroupVersion } from '../../../../api/model/updateSectorGroupVersion';
-import { DialogService } from '../../../../core/components/dialog/dialog.service';
 import { SectorGroupInternalService } from '../../../../api/service/sepodi/sector-group-internal.service';
+import { RevokeButton } from '../../../../core/form-components/revoke-button/revoke-button';
 
 @Component({
   selector: 'app-sector-group-detail',
@@ -70,6 +70,7 @@ import { SectorGroupInternalService } from '../../../../api/service/sepodi/secto
     SelectComponent,
     AtlasLabelFieldComponent,
     AtlasFieldErrorComponent,
+    RevokeButton,
   ],
   templateUrl: './sector-group-detail.component.html',
   styleUrls: ['./sector-group-detail.component.scss'],
@@ -90,7 +91,6 @@ export class SectorGroupDetailComponent
     SectorGroupInternalService
   );
   private readonly sectorInternalService = inject(SectorInternalService);
-  private readonly dialogService = inject(DialogService);
 
   tableColumns: TableColumn<ReadSectorVersion>[] = [
     { headerTitle: 'SEPODI.SECTORS.DESIGNATION', value: 'designation' },
@@ -101,6 +101,11 @@ export class SectorGroupDetailComponent
       formatAsDate: true,
     },
     { headerTitle: 'COMMON.VALID_TO', value: 'validTo', formatAsDate: true },
+    {
+      headerTitle: 'COMMON.STATUS',
+      value: 'status',
+      translate: { withPrefix: 'COMMON.STATUS_TYPES.' },
+    },
   ];
   tableFilterConfig!: TableFilter<unknown>[][];
 
@@ -306,29 +311,18 @@ export class SectorGroupDetailComponent
   }
 
   revoke() {
-    this.dialogService
-      .confirm({
-        title: 'DIALOG.WARNING',
-        message: 'DIALOG.REVOKE',
-        cancelText: 'DIALOG.BACK',
-        confirmText: 'DIALOG.CONFIRM_REVOKE',
-      })
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          this.sectorGroupInternalService
-            .revokeSectorGroup(this.selectedVersion.sloid!)
-            .pipe(catchError(this.handleError()))
-            .subscribe(() => {
-              this.notificationService.success(
-                'SEPODI.SECTOR_GROUPS.NOTIFICATION.REVOKE_SUCCESS'
-              );
-              this.router
-                .navigate(['..', this.selectedVersion.sloid], {
-                  relativeTo: this.route,
-                })
-                .then(() => this.ngOnInit());
-            });
-        }
+    this.sectorGroupInternalService
+      .revokeSectorGroup(this.selectedVersion.sloid!)
+      .pipe(catchError(this.handleError()))
+      .subscribe(() => {
+        this.notificationService.success(
+          'SEPODI.SECTOR_GROUPS.NOTIFICATION.REVOKE_SUCCESS'
+        );
+        this.router
+          .navigate(['..', this.selectedVersion.sloid], {
+            relativeTo: this.route,
+          })
+          .then(() => this.ngOnInit());
       });
   }
 }

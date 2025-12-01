@@ -3,6 +3,7 @@ package ch.sbb.line.directory.module.subline.service;
 import ch.sbb.atlas.model.DateRange;
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
+import ch.sbb.atlas.revoke.service.RevokeService;
 import ch.sbb.atlas.service.OverviewDisplayBuilder;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.service.VersionableService;
@@ -28,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class SublineService {
+public class SublineService extends RevokeService<SublineVersion> {
 
   private final SublineVersionRepository sublineVersionRepository;
   private final LineVersionRepository lineVersionRepository;
@@ -55,7 +56,7 @@ public class SublineService {
   }
 
   public List<SublineVersion> findSubline(String slnid) {
-    return sublineVersionRepository.findAllBySlnidOrderByValidFrom(slnid);
+    return findBySid4ptOrderByValidFrom(slnid);
   }
 
   public Optional<SublineVersion> findById(Long id) {
@@ -66,14 +67,21 @@ public class SublineService {
     sublineVersion.setStatus(Status.VALIDATED);
     sublineValidationService.validatePreconditionSublineBusinessRules(sublineVersion);
     validateSublineValidity(sublineVersion);
-    SublineVersion savedVersion = sublineVersionRepository.saveAndFlush(sublineVersion);
-    return savedVersion;
+    return sublineVersionRepository.saveAndFlush(sublineVersion);
   }
 
   public void revokeSubline(String slnid) {
-    List<SublineVersion> sublineVersions = sublineVersionRepository.findAllBySlnidOrderByValidFrom(slnid);
-    sublineVersions.forEach(sublineVersion -> sublineVersion.setStatus(Status.REVOKED));
+    revoke(slnid);
+  }
+
+  @Override
+  protected void saveAll(List<SublineVersion> sublineVersions) {
     sublineVersionRepository.saveAll(sublineVersions);
+  }
+
+  @Override
+  public List<SublineVersion> findBySid4ptOrderByValidFrom(String slnid) {
+    return sublineVersionRepository.findAllBySlnidOrderByValidFrom(slnid);
   }
 
   void deleteById(Long id) {
@@ -85,8 +93,7 @@ public class SublineService {
   }
 
   public void deleteAll(String slnid) {
-    List<SublineVersion> sublineVersions = sublineVersionRepository.findAllBySlnidOrderByValidFrom(
-        slnid);
+    List<SublineVersion> sublineVersions = findBySid4ptOrderByValidFrom(slnid);
     if (sublineVersions.isEmpty()) {
       throw new SlnidNotFoundException(slnid);
     }
@@ -103,8 +110,7 @@ public class SublineService {
     editedVersion.setSublineType(currentVersion.getSublineType());
     editedVersion.setMainlineSlnid(currentVersion.getMainlineSlnid());
 
-    List<SublineVersion> currentVersions = sublineVersionRepository.findAllBySlnidOrderByValidFrom(
-        currentVersion.getSlnid());
+    List<SublineVersion> currentVersions = findBySid4ptOrderByValidFrom(currentVersion.getSlnid());
 
     List<VersionedObject> versionedObjects = versionableService.versioningObjectsDeletingNullProperties(currentVersion,
         editedVersion, currentVersions);

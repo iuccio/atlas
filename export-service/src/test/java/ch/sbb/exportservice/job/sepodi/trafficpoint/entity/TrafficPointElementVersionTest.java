@@ -22,7 +22,7 @@ class TrafficPointElementVersionTest {
             If this test fail please make sure the entire ATLAS application works properly: import, export, ...
             """,
         TrafficPointElementVersion.class);
-    assertThat(result.get()).as(errorDescription).isEqualTo(42);
+    assertThat(result.get()).as(errorDescription).isEqualTo(44);
   }
 
 }

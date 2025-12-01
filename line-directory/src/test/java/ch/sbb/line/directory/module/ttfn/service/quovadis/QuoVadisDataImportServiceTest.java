@@ -1,7 +1,6 @@
 package ch.sbb.line.directory.module.ttfn.service.quovadis;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -14,7 +13,6 @@ import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberVersionR
 import ch.sbb.line.directory.module.ttfn.service.quovadis.QuoVadisDataMapper.TimetableFieldNumberV2;
 import ch.sbb.line.directory.shared.businessorganisation.entity.SharedBusinessOrganisationVersion;
 import ch.sbb.line.directory.shared.businessorganisation.repository.SharedBusinessOrganisationVersionRepository;
-import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,7 +78,7 @@ class QuoVadisDataImportServiceTest {
     quoVadisDataImportService.performDataMigration(data);
 
     // then
-    List<TimetableFieldNumberVersion> versionsAfterMigration = timetableFieldNumberVersionRepository.getAllVersionsVersioned(
+    List<TimetableFieldNumberVersion> versionsAfterMigration = timetableFieldNumberVersionRepository.findBySid4ptOrderByValidFrom(
         ttfnid);
     assertThat(versionsAfterMigration).hasSize(2);
 

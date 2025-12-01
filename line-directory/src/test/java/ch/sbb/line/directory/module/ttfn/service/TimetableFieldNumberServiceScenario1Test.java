@@ -49,7 +49,7 @@ class TimetableFieldNumberServiceScenario1Test extends BaseTimetableFieldNumberS
 
     //when
     timetableFieldNumberService.updateVersion(version2, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version2.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version2.getTtfnid());
 
     //then
     assertThat(result).isNotNull().hasSize(2);
@@ -108,7 +108,7 @@ class TimetableFieldNumberServiceScenario1Test extends BaseTimetableFieldNumberS
 
     //when
     timetableFieldNumberService.updateVersion(version2, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version2.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version2.getTtfnid());
 
     //then
     assertThat(result).isNotNull().hasSize(2);
@@ -161,7 +161,7 @@ class TimetableFieldNumberServiceScenario1Test extends BaseTimetableFieldNumberS
 
     //when
     timetableFieldNumberService.updateVersion(version2, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version2.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version2.getTtfnid());
 
     //then
     assertThat(result).isNotNull().hasSize(3);
@@ -219,7 +219,7 @@ class TimetableFieldNumberServiceScenario1Test extends BaseTimetableFieldNumberS
 
     //when
     timetableFieldNumberService.updateVersion(version1, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version1.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version1.getTtfnid());
 
     //then
     assertThat(result).isNotNull().hasSize(3);
@@ -285,7 +285,7 @@ class TimetableFieldNumberServiceScenario1Test extends BaseTimetableFieldNumberS
 
     //when
     timetableFieldNumberService.updateVersion(version2, editedVersion);
-    List<TimetableFieldNumberVersion> result = versionRepository.getAllVersionsVersioned(version1.getTtfnid());
+    List<TimetableFieldNumberVersion> result = versionRepository.findBySid4ptOrderByValidFrom(version1.getTtfnid());
 
     //then
     assertThat(result).isNotNull().hasSize(5);

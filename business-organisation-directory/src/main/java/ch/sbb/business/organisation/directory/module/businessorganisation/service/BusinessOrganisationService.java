@@ -3,15 +3,16 @@ package ch.sbb.business.organisation.directory.module.businessorganisation.servi
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.redact.Redacted;
+import ch.sbb.atlas.revoke.service.RevokeService;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.service.VersionableService;
+import ch.sbb.business.organisation.directory.distributor.BusinessOrganisationDistributor;
 import ch.sbb.business.organisation.directory.module.businessorganisation.entity.BusinessOrganisation;
 import ch.sbb.business.organisation.directory.module.businessorganisation.entity.BusinessOrganisationVersion;
 import ch.sbb.business.organisation.directory.module.businessorganisation.model.BusinessOrganisationSearchRestrictions;
 import ch.sbb.business.organisation.directory.module.businessorganisation.model.BusinessOrganisationVersionSearchRestrictions;
 import ch.sbb.business.organisation.directory.module.businessorganisation.repository.BusinessOrganisationRepository;
 import ch.sbb.business.organisation.directory.module.businessorganisation.repository.BusinessOrganisationVersionRepository;
-import ch.sbb.business.organisation.directory.distributor.BusinessOrganisationDistributor;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.StaleObjectStateException;
@@ -22,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class BusinessOrganisationService {
+public class BusinessOrganisationService extends RevokeService<BusinessOrganisationVersion> {
 
   private final BusinessOrganisationVersionRepository versionRepository;
   private final BusinessOrganisationRepository repository;
@@ -56,8 +57,9 @@ public class BusinessOrganisationService {
     return savedVersion;
   }
 
+  @Override
   @Redacted
-  public List<BusinessOrganisationVersion> findBusinessOrganisationVersions(String sboid) {
+  public List<BusinessOrganisationVersion> findBySid4ptOrderByValidFrom(String sboid) {
     return versionRepository.findAllBySboidOrderByValidFrom(sboid);
   }
 
@@ -94,12 +96,12 @@ public class BusinessOrganisationService {
   }
 
   public List<BusinessOrganisationVersion> revokeBusinessOrganisation(String sboid) {
-    List<BusinessOrganisationVersion> versions = findBusinessOrganisationVersions(sboid);
-    versions.forEach(version -> {
-      version.setStatus(Status.REVOKED);
-      businessOrganisationDistributor.saveToDistributedServices(version);
-    });
-    return versions;
+    return revoke(sboid);
+  }
+
+  @Override
+  protected void saveAll(List<BusinessOrganisationVersion> versions) {
+    versionRepository.saveAll(versions);
   }
 
   public void syncAllBusinessOrganisations() {

@@ -53,6 +53,7 @@ import {
 import { TranslationSortingService } from '../../../../core/translation/translation-sorting.service';
 import { ServicePointService } from '../../../../api/service/sepodi/service-point.service';
 import { ServicePointInternalService } from '../../../../api/service/sepodi/service-point-internal.service';
+import { RevokeButton } from '../../../../core/form-components/revoke-button/revoke-button';
 
 export type StopPointTypeNotUnknown = Exclude<StopPointType, 'UNKNOWN'>;
 export const stopPointTypesWithoutUnknown: StopPointTypeNotUnknown[] =
@@ -77,6 +78,7 @@ export const stopPointTypesWithoutUnknown: StopPointTypeNotUnknown[] =
     TranslatePipe,
     PrmRecordingObligationComponent,
     StopPointTerminationInfoComponent,
+    RevokeButton,
   ],
 })
 export class ServicePointDetailComponent
@@ -417,29 +419,18 @@ export class ServicePointDetailComponent
   }
 
   revoke() {
-    this.dialogService
-      .confirm({
-        title: 'DIALOG.WARNING',
-        message: 'DIALOG.REVOKE',
-        cancelText: 'DIALOG.BACK',
-        confirmText: 'DIALOG.CONFIRM_REVOKE',
-      })
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          this.servicePointInternalService
-            .revokeServicePoint(this.selectedVersion!.number.number)
-            .pipe(catchError(this.handleError))
-            .subscribe(() => {
-              this.notificationService.success(
-                'SEPODI.SERVICE_POINTS.NOTIFICATION.REVOKE_SUCCESS'
-              );
-              this.router
-                .navigate(['..', this.selectedVersion!.number.number], {
-                  relativeTo: this.route,
-                })
-                .then(() => this.mapService.refreshMap());
-            });
-        }
+    this.servicePointInternalService
+      .revokeServicePoint(this.selectedVersion!.number.number)
+      .pipe(catchError(this.handleError))
+      .subscribe(() => {
+        this.notificationService.success(
+          'SEPODI.SERVICE_POINTS.NOTIFICATION.REVOKE_SUCCESS'
+        );
+        this.router
+          .navigate(['..', this.selectedVersion!.number.number], {
+            relativeTo: this.route,
+          })
+          .then(() => this.mapService.refreshMap());
       });
   }
 
@@ -460,12 +451,11 @@ export class ServicePointDetailComponent
               this.notificationService.success(
                 'SEPODI.SERVICE_POINTS.NOTIFICATION.VALIDATE_SUCCESS'
               );
-              this.router.navigate(
-                ['..', this.selectedVersion!.number.number],
-                {
+              this.router
+                .navigate(['..', this.selectedVersion!.number.number], {
                   relativeTo: this.route,
-                }
-              );
+                })
+                .then();
             });
         }
       });

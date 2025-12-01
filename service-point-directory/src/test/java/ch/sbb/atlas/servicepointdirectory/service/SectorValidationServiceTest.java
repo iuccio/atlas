@@ -59,7 +59,7 @@ class SectorValidationServiceTest {
         .designation("test")
         .build();
 
-    when(trafficPointElementService.findBySloidOrderByValidFrom(any())).thenReturn(
+    when(trafficPointElementService.findBySid4ptOrderByValidFrom(any())).thenReturn(
         List.of(TrafficPointTestData.getBasicTrafficPoint()));
 
     assertDoesNotThrow(() -> sectorValidationService.validateValidity(sectorGroupVersion));
@@ -74,7 +74,7 @@ class SectorValidationServiceTest {
         .designation("test")
         .build();
 
-    when(trafficPointElementService.findBySloidOrderByValidFrom(any())).thenReturn(
+    when(trafficPointElementService.findBySid4ptOrderByValidFrom(any())).thenReturn(
         List.of(TrafficPointTestData.getBasicTrafficPoint()));
 
     assertThrows(SectorValidityException.class, () -> sectorValidationService.validateValidity(sectorGroupVersion));

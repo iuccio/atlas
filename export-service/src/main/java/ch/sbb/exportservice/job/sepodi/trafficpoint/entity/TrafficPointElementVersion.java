@@ -1,5 +1,6 @@
 package ch.sbb.exportservice.job.sepodi.trafficpoint.entity;
 
+import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.servicepoint.ServicePointNumber;
 import ch.sbb.atlas.servicepoint.enumeration.TrafficPointElementType;
 import ch.sbb.exportservice.job.BaseEntity;
@@ -39,6 +40,8 @@ public class TrafficPointElementVersion extends BaseEntity {
   private ServicePointNumber servicePointNumber;
 
   private String sloid;
+
+  private Status status;
 
   private SharedBusinessOrganisation servicePointSharedBusinessOrganisation;
 

@@ -384,43 +384,43 @@ insert into traffic_point_element_version (id, sloid, parent_sloid, designation,
                                            length, boarding_area_height, compass_direction,
                                            service_point_number, valid_from, valid_to,
                                            traffic_point_geolocation_id, creation_date, creator,
-                                           edition_date, editor, version)
+                                           edition_date, editor, version, status)
 values (1000, 'ch:1:sloid:77559:0:2', null, null, '2', 'BOARDING_PLATFORM', 18.000, 2.00, null, 1205887, '2022-03-01',
         '2099-12-31',
-        1000, '2022-03-03 07:56:42.000000', 'fs45117', '2022-05-03 11:50:46.000000', 'e536178', 0);
+        1000, '2022-03-03 07:56:42.000000', 'fs45117', '2022-05-03 11:50:46.000000', 'e536178', 0, 'VALIDATED');
 insert into traffic_point_element_version (id, sloid, parent_sloid, designation,
                                            designation_operational, traffic_point_element_type,
                                            length, boarding_area_height, compass_direction,
                                            service_point_number, valid_from, valid_to,
                                            traffic_point_geolocation_id, creation_date, creator,
-                                           edition_date, editor, version)
+                                           edition_date, editor, version, status)
 values (1001, 'ch:1:sloid:88253:0:1', null, null, '1', 'BOARDING_PLATFORM', null, null, 57.00, 9411114, '2020-07-03',
         '2099-12-31',
-        1001, '2020-07-03 08:12:08.000000', 'fs45117', '2020-07-03 08:22:43.000000', 'fs45117', 0);
+        1001, '2020-07-03 08:12:08.000000', 'fs45117', '2020-07-03 08:22:43.000000', 'fs45117', 0, 'VALIDATED');
 insert into traffic_point_element_version (id, sloid, parent_sloid, designation,
                                            designation_operational, traffic_point_element_type,
                                            length, boarding_area_height, compass_direction,
                                            service_point_number, valid_from, valid_to,
                                            traffic_point_geolocation_id, creation_date, creator,
-                                           edition_date, editor, version)
+                                           edition_date, editor, version, status)
 values (1002, 'ch:1:sloid:6602:0:7110', null, null, 'EINSIEG1', 'BOARDING_PLATFORM', null, null, null, 8506602, '2021-12-12',
-        '2023-04-25', 1002, '2023-04-27 06:26:01.000000', 'fs45117', '2023-04-27 06:27:26.000000', 'fs45117', 0);
+        '2023-04-25', 1002, '2023-04-27 06:26:01.000000', 'fs45117', '2023-04-27 06:27:26.000000', 'fs45117', 0,'VALIDATED');
 insert into traffic_point_element_version (id, sloid, parent_sloid, designation,
                                            designation_operational, traffic_point_element_type,
                                            length, boarding_area_height, compass_direction,
                                            service_point_number, valid_from, valid_to,
                                            traffic_point_geolocation_id, creation_date, creator,
-                                           edition_date, editor, version)
+                                           edition_date, editor, version, status)
 values (1003, 'ch:1:sloid:71449:0:523431', null, null, '177MAUS1', 'BOARDING_PLATFORM', null, null, null, 1205887, '2021-12-12',
-        '2023-03-26', 1003, '2023-03-03 08:11:46.000000', 'ue02112', '2023-04-27 10:27:18.000000', 'fs45117', 0);
+        '2023-03-26', 1003, '2023-03-03 08:11:46.000000', 'ue02112', '2023-04-27 10:27:18.000000', 'fs45117', 0,'VALIDATED');
 insert into traffic_point_element_version (id, sloid, parent_sloid, designation,
                                            designation_operational, traffic_point_element_type,
                                            length, boarding_area_height, compass_direction,
                                            service_point_number, valid_from, valid_to,
                                            traffic_point_geolocation_id, creation_date, creator,
-                                           edition_date, editor, version)
+                                           edition_date, editor, version, status)
 values (1004, 'ch:1:sloid:3020:1', null, 'Perron 1', null, 'BOARDING_AREA', null, null, null, 1205886, '2020-05-07', '2099-12-31',
-        null, '2020-05-18 12:43:34.000000', 'fs45117', '2020-05-18 12:43:34.000000', 'fs45117', 0);
+        null, '2020-05-18 12:43:34.000000', 'fs45117', '2020-05-18 12:43:34.000000', 'fs45117', 0, 'VALIDATED');
 
 -- loading points
 insert into loading_point_version (id,

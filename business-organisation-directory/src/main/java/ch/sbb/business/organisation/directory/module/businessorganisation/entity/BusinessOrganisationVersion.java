@@ -5,6 +5,7 @@ import ch.sbb.atlas.api.bodi.enumeration.BusinessType;
 import ch.sbb.atlas.model.entity.BaseVersion;
 import ch.sbb.atlas.model.entity.BusinessIdGeneration;
 import ch.sbb.atlas.redact.Redacted;
+import ch.sbb.atlas.revoke.Revokable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionable;
 import ch.sbb.atlas.versioning.annotation.AtlasVersionableProperty;
 import ch.sbb.atlas.versioning.model.Versionable;
@@ -41,7 +42,7 @@ import lombok.experimental.SuperBuilder;
 @Entity(name = "business_organisation_version")
 @AtlasVersionable
 @Redacted
-public class BusinessOrganisationVersion extends BaseVersion implements Versionable {
+public class BusinessOrganisationVersion extends BaseVersion implements Versionable, Revokable {
 
   private static final String BUSINESS_ORGANISATION_VERSION_SEQ = "business_organisation_version_seq";
 
