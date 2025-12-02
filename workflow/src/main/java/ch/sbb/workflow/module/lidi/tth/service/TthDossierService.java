@@ -65,11 +65,12 @@ public class TthDossierService {
     TthDossier currentDossier = getDossierById(dossierId);
     checkDossierIsInEditableStatus(currentDossier);
 
+    updateRemovedStatements(currentDossier, dossier);
+
     dossier.setDossierStatus(currentDossier.getDossierStatus());
     TthDossier updatedDossier = dossierRepository.saveAndFlush(dossier);
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(updatedDossier));
 
-    updateRemovedStatements(currentDossier, dossier);
     return updatedDossier;
   }
 

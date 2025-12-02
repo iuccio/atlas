@@ -204,7 +204,8 @@ public class TimetableHearingStatementService {
         StatementSenderMapperV2.toEntity(timetableHearingStatementModel.getStatementSender()));
 
     updateResponsibleTransportCompanies(timetableHearingStatementModel, timetableHearingStatementInDb);
-    timetableHearingStatementInDb.setResponsibleTransportCompaniesDisplay(timetableHearingStatementInDb.getTransportCompaniesCommaSeparated());
+    timetableHearingStatementInDb.setResponsibleTransportCompaniesDisplay(
+        timetableHearingStatementInDb.getTransportCompaniesCommaSeparated());
 
     return timetableHearingStatementInDb;
   }
@@ -291,7 +292,14 @@ public class TimetableHearingStatementService {
 
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin"
       + ".ApplicationType).TIMETABLE_HEARING, #statement)")
-  public void updateStatementFromDossier(TimetableHearingStatement statement, BatchUpdateTimetableHearingStatementsModel updateModel) {
+  public void updateStatementFromDossier(TimetableHearingStatement statement,
+      BatchUpdateTimetableHearingStatementsModel updateModel) {
+    if (statement.isPartOfDossier()
+        && updateModel.getDossierId() != null
+        && !statement.getDossierId().equals(updateModel.getDossierId())) {
+      throw new StatementPartOfDossierException();
+    }
+
     statement.setStatementStatus(updateModel.getStatementStatus());
     statement.setDossierId(updateModel.getDossierId());
     statement.setDossierContactMail(updateModel.getDossierContactMail());

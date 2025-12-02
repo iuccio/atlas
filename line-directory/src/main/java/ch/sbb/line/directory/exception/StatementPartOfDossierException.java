@@ -18,7 +18,7 @@ public class StatementPartOfDossierException extends AtlasException {
   @Override
   public ErrorResponse getErrorResponse() {
     return ErrorResponse.builder()
-        .status(HttpStatus.FORBIDDEN.value())
+        .status(HttpStatus.PRECONDITION_FAILED.value())
         .message(MESSAGE)
         .error(MESSAGE)
         .details(new TreeSet<>(getErrorDetails()))
