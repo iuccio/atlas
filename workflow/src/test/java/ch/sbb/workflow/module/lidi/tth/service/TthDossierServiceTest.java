@@ -3,9 +3,12 @@ package ch.sbb.workflow.module.lidi.tth.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
+import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
+import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
@@ -17,6 +20,8 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -34,6 +39,9 @@ class TthDossierServiceTest {
 
   @MockitoBean
   private TthDossierNotificationService tthDossierNotificationService;
+
+  @Captor
+  private ArgumentCaptor<BatchUpdateTimetableHearingStatementsModel> batchUpdateCaptor;
 
   private TthDossier exampleDossier;
 
@@ -161,5 +169,43 @@ class TthDossierServiceTest {
     assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
         () -> tthDossierService.updateDossier(dossierId, exampleDossier)
     );
+  }
+
+  @Test
+  void shouldUpdateDossierRemovingStatement() {
+    // when
+    List<Long> statementIds = List.of(87L);
+    TthDossier dossier = exampleDossier.toBuilder().statementIds(statementIds).build();
+    TthDossier updatedDossier = tthDossierService.updateDossier(exampleDossier.getId(), dossier);
+
+    // then
+    assertThat(updatedDossier.getDossierStatus()).isEqualTo(DossierStatus.ADDED);
+    assertThat(updatedDossier.getStatementIds()).hasSameElementsAs(statementIds);
+
+    verify(timetableHearingStatementClient, times(2)).updateStatements(batchUpdateCaptor.capture());
+
+    List<BatchUpdateTimetableHearingStatementsModel> expectedUpdates = List.of(
+        // First update removing current statements by deleting dossierId and setting status back to RECEIVED
+        BatchUpdateTimetableHearingStatementsModel.builder()
+            .ids(List.of(132L, 145L))
+            .statementStatus(StatementStatus.RECEIVED)
+            .dossierId(null)
+            .dossierContactMail(null)
+            .publicComment(exampleDossier.getPublicComment())
+            .internalComment(exampleDossier.getInternalComment())
+            .topic(exampleDossier.getTopic())
+            .build(),
+        // Second update adding new statements by adding dossierId and setting status back to IN_REVIEW
+        BatchUpdateTimetableHearingStatementsModel.builder()
+            .ids(statementIds)
+            .statementStatus(StatementStatus.IN_REVIEW)
+            .dossierId(updatedDossier.getId())
+            .dossierContactMail("bern@mobil.be")
+            .publicComment(exampleDossier.getPublicComment())
+            .internalComment(exampleDossier.getInternalComment())
+            .topic(exampleDossier.getTopic())
+            .build()
+    );
+    assertThat(batchUpdateCaptor.getAllValues()).usingRecursiveComparison().isEqualTo(expectedUpdates);
   }
 }
