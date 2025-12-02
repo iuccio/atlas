@@ -27,7 +27,6 @@ import { TimetableFieldNumberService } from '../../../api/service/lidi/timetable
 const version: TimetableFieldNumberVersion = {
   id: 1,
   ttfnid: 'ttfnid',
-  swissTimetableFieldNumber: 'asdf',
   status: 'VALIDATED',
   validFrom: new Date('2021-06-01'),
   validTo: new Date('2029-06-01'),
@@ -259,20 +258,6 @@ describe('TimetableFieldNumberDetailComponent Detail page add new version', () =
     const validToErrors = validTo.errors;
     expect(validToErrors).toBeDefined();
     expect(validToErrors?.date_range_error).toBeDefined();
-  });
-
-  describe('Validation swissTimeTableFieldNumber', () => {
-    it('should not be greater then 255', () => {
-      const swissTimeTableFieldNumber: AbstractControl =
-        fixture.componentInstance.form.controls['swissTimetableFieldNumber'];
-      swissTimeTableFieldNumber.setValue(loremIpsum256Chars);
-      swissTimeTableFieldNumber.markAsTouched();
-
-      const validationErrors = swissTimeTableFieldNumber.errors;
-
-      expect(validationErrors).toBeDefined();
-      expect(validationErrors?.maxlength).toBeDefined();
-    });
   });
 
   describe('Validation businessOrganisation', () => {

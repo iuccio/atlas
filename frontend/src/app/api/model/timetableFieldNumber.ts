@@ -12,10 +12,6 @@ import { Status } from './status';
 
 export interface TimetableFieldNumber { 
     /**
-     * Timetable field number
-     */
-    swissTimetableFieldNumber?: string;
-    /**
      * Number
      */
     number: string;
