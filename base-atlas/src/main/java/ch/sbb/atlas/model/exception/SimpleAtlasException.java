@@ -13,12 +13,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class SimpleAtlasException extends AtlasException {
 
-  private ErrorResponse errorResponse;
+  private final ErrorResponse errorResponse;
 
   public static SimpleAtlasException build(HttpStatus httpStatus, String message) {
     return build(httpStatus.value(), message);
