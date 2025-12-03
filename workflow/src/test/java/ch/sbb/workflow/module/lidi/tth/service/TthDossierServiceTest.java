@@ -110,6 +110,7 @@ class TthDossierServiceTest {
   @Test
   void shouldDissolveDossier() {
     // when
+    exampleDossier.setDossierStatus(DossierStatus.ACCEPTED);
     tthDossierService.completeDossier(exampleDossier, DossierStatus.DISSOLVED);
 
     // then

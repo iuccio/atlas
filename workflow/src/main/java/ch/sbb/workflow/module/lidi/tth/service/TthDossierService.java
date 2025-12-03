@@ -50,7 +50,7 @@ public class TthDossierService {
   @Transactional
   public void completeDossier(TthDossier dossier, DossierStatus status) {
     checkDossierIsInEditableStatus(dossier);
-    if (!status.isAllowedForComleteTransition()) {
+    if (!status.isAllowedForCompleteTransition()) {
       throw SimpleAtlasException.builder()
           .status(HttpStatus.BAD_REQUEST)
           .messageAndError("DossierStatus " + status + " is not completable")

@@ -25,7 +25,7 @@ public enum DossierStatus {
   private static final Set<DossierStatus> EDITABLE_DOSSIERS = Collections.unmodifiableSet(
       EnumSet.of(ADDED, DOSSIER_CANTON_CHECK, ACCEPTED, REJECTED, MOVED));
 
-  public boolean isAllowedForComleteTransition() {
+  public boolean isAllowedForCompleteTransition() {
     return ALLOWED_STATUSES_FOR_COMPLETE.contains(this);
   }
 
