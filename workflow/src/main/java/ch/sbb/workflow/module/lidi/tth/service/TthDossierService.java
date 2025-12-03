@@ -51,7 +51,10 @@ public class TthDossierService {
   public void completeDossier(TthDossier dossier, DossierStatus status) {
     checkDossierIsInEditableStatus(dossier);
     if (!status.isAllowedForComleteTransition()) {
-      throw SimpleAtlasException.build(HttpStatus.BAD_REQUEST, "DossierStatus " + status + " is not completable");
+      throw SimpleAtlasException.builder()
+          .status(HttpStatus.BAD_REQUEST)
+          .messageAndError("DossierStatus " + status + " is not completable")
+          .build();
     }
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier, status));
 
@@ -94,8 +97,11 @@ public class TthDossierService {
 
   private static void checkDossierIsInEditableStatus(TthDossier dossier) {
     if (!dossier.getDossierStatus().isDossierEditable()) {
-      throw SimpleAtlasException.build(HttpStatus.PRECONDITION_FAILED,
-          "Dossier is not updatable in status " + dossier.getDossierStatus()).withDisplayCode("TTH.DOSSIER_NOT_EDITABLE");
+      throw SimpleAtlasException.builder()
+          .status(HttpStatus.PRECONDITION_FAILED)
+          .messageAndError("Dossier is not updatable in status " + dossier.getDossierStatus())
+          .displayCode("TTH.DOSSIER_NOT_EDITABLE")
+          .build();
     }
   }
 }
