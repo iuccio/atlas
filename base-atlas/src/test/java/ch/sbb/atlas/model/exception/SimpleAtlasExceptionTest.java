@@ -16,7 +16,10 @@ class SimpleAtlasExceptionTest {
   @Test
   void shouldBuildSimpleExceptionWithMessage() {
     String message = "Some error";
-    SimpleAtlasException someError = SimpleAtlasException.build(HttpStatus.BAD_REQUEST, message);
+    SimpleAtlasException someError = SimpleAtlasException.builder()
+        .status(HttpStatus.BAD_REQUEST)
+        .message(message).error(message)
+        .build();
 
     ErrorResponse expected = ErrorResponse.builder()
         .status(400)
@@ -32,7 +35,12 @@ class SimpleAtlasExceptionTest {
   void shouldBuildSimpleExceptionWithMessageAndDisplayCode() {
     String message = "Some error";
     String displayCode = "TTH.DOSSIER_NOT_EDITABLE";
-    SimpleAtlasException someError = SimpleAtlasException.build(HttpStatus.BAD_REQUEST, message).withDisplayCode(displayCode);
+    SimpleAtlasException someError = SimpleAtlasException.builder()
+        .status(HttpStatus.BAD_REQUEST)
+        .message(message)
+        .error(message)
+        .displayCode(displayCode)
+        .build();
 
     ErrorResponse expected = ErrorResponse.builder()
         .status(400)
