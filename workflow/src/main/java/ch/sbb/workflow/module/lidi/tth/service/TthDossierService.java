@@ -1,13 +1,11 @@
 package ch.sbb.workflow.module.lidi.tth.service;
 
-import static ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.ALLOWED_STATUSES_FOR_COMPLETE;
-import static ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.UNEDITABLE_DOSSIERS;
-
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
+import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
 import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
@@ -15,6 +13,7 @@ import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,8 +50,8 @@ public class TthDossierService {
   @Transactional
   public void completeDossier(TthDossier dossier, DossierStatus status) {
     checkDossierIsInEditableStatus(dossier);
-    if (!ALLOWED_STATUSES_FOR_COMPLETE.contains(status)) {
-      throw new IllegalArgumentException("DossierStatus " + status + " is not completable");
+    if (!status.isAllowedForComleteTransition()) {
+      throw SimpleAtlasException.build(HttpStatus.BAD_REQUEST, "DossierStatus " + status + " is not completable");
     }
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier, status));
 
@@ -94,8 +93,9 @@ public class TthDossierService {
   }
 
   private static void checkDossierIsInEditableStatus(TthDossier dossier) {
-    if (UNEDITABLE_DOSSIERS.contains(dossier.getDossierStatus())) {
-      throw new IllegalStateException("Dossier is not updatable in status " + dossier.getDossierStatus());
+    if (!dossier.getDossierStatus().isDossierEditable()) {
+      throw SimpleAtlasException.build(HttpStatus.PRECONDITION_FAILED,
+          "Dossier is not updatable in status " + dossier.getDossierStatus()).withDisplayCode("TTH.DOSSIER_NOT_EDITABLE");
     }
   }
 }

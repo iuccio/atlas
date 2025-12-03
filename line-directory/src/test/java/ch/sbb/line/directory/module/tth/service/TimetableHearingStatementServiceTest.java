@@ -18,7 +18,7 @@ import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.atlas.model.exception.NotFoundException.FileNotFoundException;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
-import ch.sbb.line.directory.exception.StatementPartOfDossierException;
+import ch.sbb.line.directory.module.tth.exception.StatementPartOfDossierException;
 import ch.sbb.line.directory.exception.TtfnidNotFoundException;
 import ch.sbb.line.directory.helper.PdfFiles;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumberVersion;
