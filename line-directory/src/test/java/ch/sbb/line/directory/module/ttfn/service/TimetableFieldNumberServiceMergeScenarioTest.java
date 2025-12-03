@@ -312,7 +312,7 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(nbOfMergedElements).isEqualTo(1);
 
     List<TimetableFieldNumberVersion> allVersionsAscByValidFrom = versionRepository.findAll(Sort.by(Direction.ASC, "validFrom"));
-    assertThat(allVersionsAscByValidFrom.size()).isEqualTo(3);
+    assertThat(allVersionsAscByValidFrom).hasSize(3);
     assertThat(allVersionsAscByValidFrom.getFirst().getNumber()).isEqualTo("80.099.1");
     assertThat(allVersionsAscByValidFrom.getFirst().getValidFrom()).isEqualTo(LocalDate.of(2020, 1, 1));
     assertThat(allVersionsAscByValidFrom.getFirst().getValidTo()).isEqualTo(LocalDate.of(2021, 12, 31));
