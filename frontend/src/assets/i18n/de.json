@@ -385,8 +385,7 @@
     "NUMBER": "Fahrplanfeldnummer",
     "TTFNID": "Fahrplanfeldnummer-ID",
     "CONFLICT": {
-      "NUMBER": "Die Fahrplanfeldnummer {{number}} ist bereits von {{validFrom}} bis {{validTo}} durch {{ttfnid}} vergeben.",
-      "SWISS_NUMBER": "Die CH-Fahrplanfeldnummer {{swissTimetableFieldNumber}} ist bereits von {{validFrom}} bis {{validTo}} durch {{ttfnid}} vergeben."
+      "NUMBER": "Die Fahrplanfeldnummer {{number}} ist bereits von {{validFrom}} bis {{validTo}} durch {{ttfnid}} vergeben."
     },
     "NOTIFICATION": {
       "ADD_SUCCESS": "Die Fahrplanfeldnummer wurde erfolgreich hinzugefügt.",

@@ -17,11 +17,11 @@ public class TimetableFieldNumberValidationService {
   private final SharedBusinessOrganisationService sharedBusinessOrganisationService;
 
   public void validatePreSave(TimetableFieldNumberVersion newVersion) {
-    validateNoOverlapsOnNumberAndSttfn(newVersion);
+    validateNoOverlapsOnNumber(newVersion);
     sharedBusinessOrganisationService.validateSboidExists(newVersion.getBusinessOrganisation());
   }
 
-  private void validateNoOverlapsOnNumberAndSttfn(TimetableFieldNumberVersion newVersion) {
+  private void validateNoOverlapsOnNumber(TimetableFieldNumberVersion newVersion) {
     List<TimetableFieldNumberVersion> overlappingVersions = getOverlapsOnNumber(newVersion);
     if (!overlappingVersions.isEmpty()) {
       throw new TimetableFieldNumberConflictException(newVersion, overlappingVersions);

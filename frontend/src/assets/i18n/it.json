@@ -385,8 +385,7 @@
     "NUMBER": "Numero del quadro d’orario",
     "TTFNID": "ID numero del quadro d’orario",
     "CONFLICT": {
-      "NUMBER": "Il numero del quadro d’orario {{number}} è già assegnato dal {{validFrom}} al {{validTo}} da {{ttfnid}}.",
-      "SWISS_NUMBER": "Il numero del quadro d’orario CH {{swissTimetableFieldNumber}} è già assegnato nel periodo dal {{validFrom}} al {{validTo}} da {{ttfnid}}."
+      "NUMBER": "Il numero del quadro d’orario {{number}} è già assegnato dal {{validFrom}} al {{validTo}} da {{ttfnid}}."
     },
     "NOTIFICATION": {
       "ADD_SUCCESS": "Numero del quadro d’orario è aggiunto con successo.",

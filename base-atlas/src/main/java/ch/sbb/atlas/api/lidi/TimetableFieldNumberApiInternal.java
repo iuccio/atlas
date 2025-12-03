@@ -47,4 +47,8 @@ public interface TimetableFieldNumberApiInternal {
   @PostMapping("/import-quovadis")
   void importQuoVadisData(MultipartFile file);
 
+  // todo: remove after maintenance execution after prod release of ATLAS-3254
+  @Secured(Role.SECURED_FOR_ATLAS_ADMIN)
+  @PostMapping("merge-all-versions")
+  int mergeAllVersions();
 }
