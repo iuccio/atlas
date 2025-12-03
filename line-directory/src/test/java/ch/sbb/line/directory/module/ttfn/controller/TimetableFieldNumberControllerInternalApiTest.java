@@ -1,6 +1,5 @@
 package ch.sbb.line.directory.module.ttfn.controller;
 
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -8,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ch.sbb.atlas.amazon.service.AmazonService;
 import ch.sbb.atlas.api.lidi.enumaration.TtfnMeanOfTransport;
-import ch.sbb.atlas.api.model.BaseVersionModel;
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.controller.BaseControllerApiTest;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumber;
@@ -95,5 +93,18 @@ class TimetableFieldNumberControllerInternalApiTest extends BaseControllerApiTes
         .andExpect(jsonPath("$.status").value(400))
         .andExpect(jsonPath("$.message")
             .value("Supplied sort field nam not found on TimetableFieldNumber"));
+  }
+
+  @Test
+  void shouldCallMergeAllVersionsOnEndpointTrigger() throws Exception {
+    // given
+    Mockito.doReturn(1).when(timetableFieldNumberService).mergeAllVersions();
+
+    // when & then
+    mvc.perform(post("/internal/field-numbers/merge-all-versions"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").value(1));
+
+    Mockito.verify(timetableFieldNumberService).mergeAllVersions();
   }
 }
