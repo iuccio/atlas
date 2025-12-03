@@ -4,8 +4,11 @@ import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
+import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
+import java.util.Set;
 import lombok.experimental.UtilityClass;
+import org.springframework.http.HttpStatus;
 
 @UtilityClass
 public class TthDossierMapper {
@@ -72,8 +75,11 @@ public class TthDossierMapper {
       case REJECTED -> StatementStatus.REJECTED;
       case MOVED -> StatementStatus.MOVED;
       case DISSOLVED -> {
-        if (dossier.getDossierStatus() == DossierStatus.DISSOLVED) {
-          throw new IllegalStateException("Dossier is already in DISSOLVED status");
+        if (!Set.of(DossierStatus.ACCEPTED, DossierStatus.REJECTED, DossierStatus.MOVED).contains(dossier.getDossierStatus())) {
+          throw SimpleAtlasException.builder()
+              .status(HttpStatus.BAD_REQUEST)
+              .messageAndError("DossierStatus " + dossier.getDossierStatus() + " has to be either of ACCEPTED, REJECTED or MOVED")
+              .build();
         }
         yield mapDossierStatusToStatementStatus(dossier, dossier.getDossierStatus());
       }
