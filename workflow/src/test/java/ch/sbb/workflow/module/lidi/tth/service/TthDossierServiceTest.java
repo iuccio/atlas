@@ -11,6 +11,7 @@ import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.controller.IntegrationTest;
+import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
 import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
@@ -120,7 +121,7 @@ class TthDossierServiceTest {
 
   @Test
   void shouldNotCompleteToAdded() {
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
+    assertThatExceptionOfType(SimpleAtlasException.class).isThrownBy(
         () -> tthDossierService.completeDossier(exampleDossier, DossierStatus.ADDED));
   }
 
@@ -166,7 +167,7 @@ class TthDossierServiceTest {
     exampleDossier = tthDossierRepository.saveAndFlush(exampleDossier);
 
     Long dossierId = exampleDossier.getId();
-    assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
+    assertThatExceptionOfType(SimpleAtlasException.class).isThrownBy(
         () -> tthDossierService.updateDossier(dossierId, exampleDossier)
     );
   }

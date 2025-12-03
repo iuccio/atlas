@@ -1,7 +1,5 @@
 package ch.sbb.workflow.module.lidi.tth.mapper;
 
-import static ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.UNEDITABLE_STATEMENTS;
-
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
@@ -60,7 +58,7 @@ public class TthDossierMapper {
         .topic(dossier.getTopic())
         .statementStatus(mapDossierStatusToStatementStatus(dossier, newStatus))
         .build();
-    if (UNEDITABLE_STATEMENTS.contains(newStatus)) {
+    if (newStatus.forbidsUpdatesOnStatements()) {
       batchUpdate.setDossierId(dossier.getId());
       batchUpdate.setDossierContactMail(dossier.getBoContactMail());
     }
@@ -73,7 +71,12 @@ public class TthDossierMapper {
       case ACCEPTED -> StatementStatus.ACCEPTED;
       case REJECTED -> StatementStatus.REJECTED;
       case MOVED -> StatementStatus.MOVED;
-      case DISSOLVED -> mapDossierStatusToStatementStatus(dossier, dossier.getDossierStatus());
+      case DISSOLVED -> {
+        if (dossier.getDossierStatus() == DossierStatus.DISSOLVED) {
+          throw new IllegalStateException("Dossier is already in DISSOLVED status");
+        }
+        yield mapDossierStatusToStatementStatus(dossier, dossier.getDossierStatus());
+      }
       default -> StatementStatus.IN_REVIEW;
     };
   }

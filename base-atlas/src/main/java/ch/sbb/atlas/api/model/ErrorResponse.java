@@ -154,6 +154,11 @@ public class ErrorResponse {
         return this;
       }
 
+      public DisplayInfoBuilder with(List<Parameter> parameters) {
+        this.parameters.addAll(parameters);
+        return this;
+      }
+
       public DisplayInfoBuilder with(String key, String value) {
         this.parameters.add(new Parameter(key, value));
         return this;

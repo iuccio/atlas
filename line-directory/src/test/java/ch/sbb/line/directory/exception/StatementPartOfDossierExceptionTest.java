@@ -2,6 +2,7 @@ package ch.sbb.line.directory.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ch.sbb.line.directory.module.tth.exception.StatementPartOfDossierException;
 import org.junit.jupiter.api.Test;
 
 class StatementPartOfDossierExceptionTest {

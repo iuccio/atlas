@@ -18,10 +18,22 @@ public enum DossierStatus {
 
   ;
 
-  public static final Set<DossierStatus> ALLOWED_STATUSES_FOR_COMPLETE = Collections.unmodifiableSet(
-      EnumSet.of(CANCELED, ACCEPTED, REJECTED, MOVED, DISSOLVED));
-  public static final Set<DossierStatus> UNEDITABLE_STATEMENTS = Collections.unmodifiableSet(
+  private static final Set<DossierStatus> UNEDITABLE_STATEMENTS = Collections.unmodifiableSet(
       EnumSet.of(ADDED, DOSSIER_BO_CHECK, DOSSIER_CANTON_CHECK, ACCEPTED, REJECTED, MOVED));
-  public static final Set<DossierStatus> UNEDITABLE_DOSSIERS = Collections.unmodifiableSet(
-      EnumSet.of(DOSSIER_BO_CHECK, DISSOLVED, CANCELED));
+  private static final Set<DossierStatus> ALLOWED_STATUSES_FOR_COMPLETE = Collections.unmodifiableSet(
+      EnumSet.of(CANCELED, ACCEPTED, REJECTED, MOVED, DISSOLVED));
+  private static final Set<DossierStatus> EDITABLE_DOSSIERS = Collections.unmodifiableSet(
+      EnumSet.of(ADDED, DOSSIER_CANTON_CHECK, ACCEPTED, REJECTED, MOVED));
+
+  public boolean isAllowedForComleteTransition() {
+    return ALLOWED_STATUSES_FOR_COMPLETE.contains(this);
+  }
+
+  public boolean isDossierEditable() {
+    return EDITABLE_DOSSIERS.contains(this);
+  }
+
+  public boolean forbidsUpdatesOnStatements() {
+    return UNEDITABLE_STATEMENTS.contains(this);
+  }
 }

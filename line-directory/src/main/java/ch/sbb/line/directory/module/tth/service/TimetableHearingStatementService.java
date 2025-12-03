@@ -12,7 +12,7 @@ import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.exception.NotFoundException.FileNotFoundException;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.pdf.sanitize.PdfCdr;
-import ch.sbb.line.directory.exception.StatementPartOfDossierException;
+import ch.sbb.line.directory.module.tth.exception.StatementPartOfDossierException;
 import ch.sbb.line.directory.exception.TtfnidNotFoundException;
 import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberRepository;
 import ch.sbb.line.directory.module.tth.entity.StatementDocument;
@@ -294,9 +294,7 @@ public class TimetableHearingStatementService {
       + ".ApplicationType).TIMETABLE_HEARING, #statement)")
   public void updateStatementFromDossier(TimetableHearingStatement statement,
       BatchUpdateTimetableHearingStatementsModel updateModel) {
-    if (statement.isPartOfDossier()
-        && updateModel.getDossierId() != null
-        && !statement.getDossierId().equals(updateModel.getDossierId())) {
+    if (isStatementAlreadyPartOfAnotherDossier(statement, updateModel)) {
       throw new StatementPartOfDossierException();
     }
 
@@ -307,5 +305,11 @@ public class TimetableHearingStatementService {
     statement.setInternalComment(updateModel.getInternalComment());
     statement.setTopic(updateModel.getTopic());
     timetableHearingStatementRepository.save(statement);
+  }
+
+  private static boolean isStatementAlreadyPartOfAnotherDossier(TimetableHearingStatement statement, BatchUpdateTimetableHearingStatementsModel updateModel) {
+    return statement.isPartOfDossier()
+        && updateModel.getDossierId() != null
+        && !statement.getDossierId().equals(updateModel.getDossierId());
   }
 }
