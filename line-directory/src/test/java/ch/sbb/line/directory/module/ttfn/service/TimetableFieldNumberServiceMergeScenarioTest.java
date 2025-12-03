@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNumberServiceTest {
 
@@ -292,5 +294,35 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(thirdTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(thirdTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(thirdTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
+  }
+
+  // todo: remove after maintenance execution after prod release of ATLAS-3254
+  @Test
+  void shouldMergeAllVersionsCorrectlyWithoutEditedVersion() {
+    // given
+    version2.setNumber(NUMBER);
+    version3.setNumber(NUMBER);
+    version4.setNumber(NUMBER);
+    versionRepository.saveAll(List.of(version1, version2, version3, version4, version5));
+
+    // when
+    int nbOfMergedElements = timetableFieldNumberService.mergeAllVersions();
+
+    // then
+    assertThat(nbOfMergedElements).isEqualTo(1);
+
+    List<TimetableFieldNumberVersion> allVersionsAscByValidFrom = versionRepository.findAll(Sort.by(Direction.ASC, "validFrom"));
+    assertThat(allVersionsAscByValidFrom.size()).isEqualTo(3);
+    assertThat(allVersionsAscByValidFrom.getFirst().getNumber()).isEqualTo("80.099.1");
+    assertThat(allVersionsAscByValidFrom.getFirst().getValidFrom()).isEqualTo(LocalDate.of(2020, 1, 1));
+    assertThat(allVersionsAscByValidFrom.getFirst().getValidTo()).isEqualTo(LocalDate.of(2021, 12, 31));
+
+    assertThat(allVersionsAscByValidFrom.get(1).getNumber()).isEqualTo("10.099");
+    assertThat(allVersionsAscByValidFrom.get(1).getValidFrom()).isEqualTo(LocalDate.of(2022, 1, 1));
+    assertThat(allVersionsAscByValidFrom.get(1).getValidTo()).isEqualTo(LocalDate.of(2025, 12, 31));
+
+    assertThat(allVersionsAscByValidFrom.get(2).getNumber()).isEqualTo("80.099.5");
+    assertThat(allVersionsAscByValidFrom.get(2).getValidFrom()).isEqualTo(LocalDate.of(2026, 1, 1));
+    assertThat(allVersionsAscByValidFrom.get(2).getValidTo()).isEqualTo(LocalDate.of(2026, 12, 31));
   }
 }

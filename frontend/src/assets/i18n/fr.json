@@ -385,8 +385,7 @@
     "NUMBER": "Numéro du tableau-horaire",
     "TTFNID": "ID du tableau-horaire",
     "CONFLICT": {
-      "NUMBER": "Le numéro de tableau-horaire {{number}} est déjà attribué de {{validFrom}} à {{validTo}} par {{ttfnid}}.",
-      "SWISS_NUMBER": "Le numéro de tableau-horaire CH {{swissTimetableFieldNumber}} est déjà attribué de {{validFrom}} à {{validTo}} par {{ttfnid}}."
+      "NUMBER": "Le numéro de tableau-horaire {{number}} est déjà attribué de {{validFrom}} à {{validTo}} par {{ttfnid}}."
     },
     "NOTIFICATION": {
       "ADD_SUCCESS": "Le numéro de tableau-horaire a été ajouté avec succès.",
