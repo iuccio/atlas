@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
@@ -45,6 +46,7 @@ class TthDossierServiceTest {
   private ArgumentCaptor<BatchUpdateTimetableHearingStatementsModel> batchUpdateCaptor;
 
   private TthDossier exampleDossier;
+  private TthDossierQuestion question;
 
   @BeforeEach
   void setUp() {
@@ -57,6 +59,11 @@ class TthDossierServiceTest {
         .statementIds(List.of(132L, 145L))
         .boDeadlineToAnswer(LocalDate.now().plusDays(7))
         .build();
+    question = TthDossierQuestion.builder()
+        .tthDossier(dossier)
+        .question("Kann der Takt erhöht werden?")
+        .build();
+    dossier.setDossierQuestions(List.of(question));
     exampleDossier = tthDossierRepository.saveAndFlush(dossier);
   }
 
@@ -209,5 +216,32 @@ class TthDossierServiceTest {
             .build()
     );
     assertThat(batchUpdateCaptor.getAllValues()).usingRecursiveComparison().isEqualTo(expectedUpdates);
+  }
+
+  @Test
+  void shouldAnswerQuestionAsBo() {
+    tthDossierService.sendDossierToBo(exampleDossier.getId());
+
+    // when
+    String boAnswer = "Joa das geht schon.";
+    tthDossierService.answerQuestion(question.getId(), boAnswer);
+
+    // then
+    TthDossier tthDossier = tthDossierService.getDossierById(exampleDossier.getId());
+
+    assertThat(tthDossier.getDossierStatus()).isEqualTo(DossierStatus.DOSSIER_CANTON_CHECK);
+
+    assertThat(tthDossier.getDossierQuestions()).hasSize(1);
+    assertThat(tthDossier.getDossierQuestions().getFirst().getAnswerToCanton()).isEqualTo(boAnswer);
+
+    verifyNoInteractions(timetableHearingStatementClient);
+  }
+
+  @Test
+  void shouldNotBeAbleToAnswerQuestionInOtherStatus() {
+    Long questionId = question.getId();
+    assertThatExceptionOfType(SimpleAtlasException.class)
+        .isThrownBy(() -> tthDossierService.answerQuestion(questionId, "Joa das geht schon."))
+        .withMessage("Dossier is not in status DOSSIER_BO_CHECK");
   }
 }
