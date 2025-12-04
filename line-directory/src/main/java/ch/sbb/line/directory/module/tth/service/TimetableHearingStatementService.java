@@ -7,10 +7,12 @@ import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementDocumentModel
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementModelV2;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementResponsibleTransportCompanyModel;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
+import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.exception.NotFoundException.FileNotFoundException;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.pdf.sanitize.PdfCdr;
+import ch.sbb.line.directory.module.tth.exception.StatementPartOfDossierException;
 import ch.sbb.line.directory.exception.TtfnidNotFoundException;
 import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberRepository;
 import ch.sbb.line.directory.module.tth.entity.StatementDocument;
@@ -99,6 +101,7 @@ public class TimetableHearingStatementService {
       + ".ApplicationType).TIMETABLE_HEARING, #existingStatement)")
   public TimetableHearingStatement updateHearingStatement(TimetableHearingStatement existingStatement,
       TimetableHearingStatementModelV2 timetableHearingStatementModel, List<MultipartFile> documents) {
+    checkThatStatementIsNotPartOfDossier(existingStatement);
     checkThatTimetableHearingYearExists(timetableHearingStatementModel.getTimetableYear());
 
     TimetableHearingStatement timetableHearingStatementInDb = timetableHearingStatementRepository.getReferenceById(
@@ -201,7 +204,8 @@ public class TimetableHearingStatementService {
         StatementSenderMapperV2.toEntity(timetableHearingStatementModel.getStatementSender()));
 
     updateResponsibleTransportCompanies(timetableHearingStatementModel, timetableHearingStatementInDb);
-    timetableHearingStatementInDb.setResponsibleTransportCompaniesDisplay(timetableHearingStatementInDb.getTransportCompaniesCommaSeparated());
+    timetableHearingStatementInDb.setResponsibleTransportCompaniesDisplay(
+        timetableHearingStatementInDb.getTransportCompaniesCommaSeparated());
 
     return timetableHearingStatementInDb;
   }
@@ -239,7 +243,12 @@ public class TimetableHearingStatementService {
         !timetableFieldNumberRepository.existsByTtfnid(statement.getTtfnid())) {
       throw new TtfnidNotFoundException(statement.getTtfnid());
     }
+  }
 
+  private void checkThatStatementIsNotPartOfDossier(TimetableHearingStatement statement) {
+    if (statement.isPartOfDossier()) {
+      throw new StatementPartOfDossierException();
+    }
   }
 
   private void addFilesToStatement(List<File> documents, TimetableHearingStatement statement) {
@@ -262,6 +271,7 @@ public class TimetableHearingStatementService {
       + ".ApplicationType).TIMETABLE_HEARING, #statement)")
   public void updateHearingStatementStatus(TimetableHearingStatement statement, StatementStatus statementStatus,
       String justification) {
+    checkThatStatementIsNotPartOfDossier(statement);
     statement.setStatementStatus(statementStatus);
     if (justification != null) {
       statement.setPublicComment(justification);
@@ -272,6 +282,7 @@ public class TimetableHearingStatementService {
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin"
       + ".ApplicationType).TIMETABLE_HEARING, #statement)")
   public void updateHearingCanton(TimetableHearingStatement statement, SwissCanton swissCanton, String comment) {
+    checkThatStatementIsNotPartOfDossier(statement);
     statement.setSwissCanton(swissCanton);
     if (comment != null) {
       statement.setCantonTransferComment(comment);
@@ -281,11 +292,24 @@ public class TimetableHearingStatementService {
 
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin"
       + ".ApplicationType).TIMETABLE_HEARING, #statement)")
-  public void updateStatement(TimetableHearingStatement statement, StatementStatus statementStatus, Long dossierId,
-      String dossierContactMail) {
-    statement.setStatementStatus(statementStatus);
-    statement.setDossierId(dossierId);
-    statement.setDossierContactMail(dossierContactMail);
+  public void updateStatementFromDossier(TimetableHearingStatement statement,
+      BatchUpdateTimetableHearingStatementsModel updateModel) {
+    if (isStatementAlreadyPartOfAnotherDossier(statement, updateModel)) {
+      throw new StatementPartOfDossierException();
+    }
+
+    statement.setStatementStatus(updateModel.getStatementStatus());
+    statement.setDossierId(updateModel.getDossierId());
+    statement.setDossierContactMail(updateModel.getDossierContactMail());
+    statement.setPublicComment(updateModel.getPublicComment());
+    statement.setInternalComment(updateModel.getInternalComment());
+    statement.setTopic(updateModel.getTopic());
     timetableHearingStatementRepository.save(statement);
+  }
+
+  private static boolean isStatementAlreadyPartOfAnotherDossier(TimetableHearingStatement statement, BatchUpdateTimetableHearingStatementsModel updateModel) {
+    return statement.isPartOfDossier()
+        && updateModel.getDossierId() != null
+        && !statement.getDossierId().equals(updateModel.getDossierId());
   }
 }

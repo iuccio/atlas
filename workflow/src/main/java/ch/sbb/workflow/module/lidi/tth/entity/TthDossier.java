@@ -49,7 +49,7 @@ public class TthDossier extends BaseWorkflowEntity implements StatementDossierLi
   private Long id;
 
   @NotBlank
-  @Size(max = AtlasFieldLengths.LENGTH_500)
+  @Size(max = AtlasFieldLengths.LENGTH_255)
   private String topic;
 
   @NotNull

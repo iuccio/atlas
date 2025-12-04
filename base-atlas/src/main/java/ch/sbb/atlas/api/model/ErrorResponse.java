@@ -4,6 +4,8 @@ import ch.sbb.atlas.api.AtlasApiConstants;
 import ch.sbb.atlas.service.UserService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serial;
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -26,8 +28,11 @@ import org.springframework.lang.NonNull;
 
 @Slf4j
 @Data
+@NoArgsConstructor
 @Schema(name = "ErrorResponse")
-public class ErrorResponse {
+public class ErrorResponse implements Serializable {
+
+  @Serial private static final long serialVersionUID = 1;
 
   public static final int VERSIONING_NO_CHANGES_HTTP_STATUS = 520;
   private static final String VALID_FROM_KEY = "validFrom";
@@ -47,7 +52,7 @@ public class ErrorResponse {
   private SortedSet<Detail> details;
 
   @Builder
-  private ErrorResponse(int status, String message, String error, SortedSet<Detail> details) {
+  public ErrorResponse(int status, String message, String error, SortedSet<Detail> details) {
     this.status = status;
     this.message = message;
     this.error = error;
@@ -73,7 +78,9 @@ public class ErrorResponse {
   @Data
   @SuperBuilder
   @Schema(name = "ErrorDetail")
-  public static class Detail implements Comparable<Detail> {
+  public static class Detail implements Comparable<Detail>, Serializable {
+
+    @Serial private static final long serialVersionUID = 1;
 
     @Schema(description = "Errormessage in english for API purposes", example = "Resource not found")
     @NotNull
@@ -129,7 +136,9 @@ public class ErrorResponse {
   @ToString
   @Getter
   @EqualsAndHashCode
-  public static class DisplayInfo {
+  public static class DisplayInfo implements Serializable {
+
+    @Serial private static final long serialVersionUID = 1;
 
     @Schema(description = "Errorcode for UI", example = "LIDI.LINE.CONFLICT")
     @NotNull
@@ -150,6 +159,11 @@ public class ErrorResponse {
 
       public DisplayInfoBuilder code(String code) {
         this.code = code;
+        return this;
+      }
+
+      public DisplayInfoBuilder with(List<Parameter> parameters) {
+        this.parameters.addAll(parameters);
         return this;
       }
 
@@ -175,7 +189,9 @@ public class ErrorResponse {
   @ToString
   @Getter
   @EqualsAndHashCode
-  public static class Parameter {
+  public static class Parameter implements Serializable {
+
+    @Serial private static final long serialVersionUID = 1;
 
     private String key;
     private String value;
