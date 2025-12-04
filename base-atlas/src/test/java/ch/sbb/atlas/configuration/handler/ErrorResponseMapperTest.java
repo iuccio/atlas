@@ -1,21 +1,21 @@
 package ch.sbb.atlas.configuration.handler;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import ch.sbb.atlas.api.model.ErrorResponse;
 import ch.sbb.atlas.api.servicepoint.UpdateServicePointVersionModel;
+import ch.sbb.atlas.model.BaseValidatorTest;
 import ch.sbb.atlas.model.exception.SloidNotFoundException;
 import ch.sbb.atlas.servicepoint.enumeration.StopPointType;
 import ch.sbb.atlas.versioning.exception.VersioningNoChangesException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.access.AccessDeniedException;
 
-class ErrorResponseMapperTest {
+class ErrorResponseMapperTest extends BaseValidatorTest {
 
   @Test
   void shouldMapAtlasExceptionToErrorResponse() {
@@ -45,7 +45,6 @@ class ErrorResponseMapperTest {
         .validTo(LocalDate.of(2022, 12, 31))
         .build();
 
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     return new ConstraintViolationException(validator.validate(servicePointVersionModel));
   }
 
@@ -56,4 +55,28 @@ class ErrorResponseMapperTest {
     assertThat(errorResponse.getDetails().first().getDisplayInfo().getCode()).isEqualTo("ERROR.NOTALLOWED");
   }
 
+  @Test
+  void shouldBeAbleToConvertJsonIntoErrorResponse() throws JsonProcessingException {
+    ObjectMapper mapper = new ObjectMapper();
+    String responseBody = """
+            {
+            "status": 403,
+            "message": "Statement is assigned to a dossier. Updates are not allowed!",
+            "error": "Statement is assigned to a dossier. Updates are not allowed!",
+            "details": [
+                {
+                    "message": "Statement is assigned to a dossier. Updates are not allowed!",
+                    "field": "dossierId",
+                    "displayInfo": {
+                        "code": "TTH.STATEMENT.PART_OF_DOSSIER",
+                        "parameters": []
+                    }
+                }
+            ]
+        }""";
+
+    ErrorResponse errorResponse = mapper.readValue(responseBody, ErrorResponse.class);
+    assertThat(errorResponse).isNotNull();
+    assertThat(errorResponse.getDetails()).hasSize(1);
+  }
 }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
+import ch.sbb.atlas.model.BaseValidatorTest;
 import ch.sbb.line.directory.module.tth.entity.StatementDocument;
 import ch.sbb.line.directory.module.tth.entity.StatementSender;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
@@ -16,9 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-class TimetableHearingStatementTest {
-
-  private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+class TimetableHearingStatementTest extends BaseValidatorTest {
 
   @Test
   void shouldAcceptValidStatement() {
@@ -63,6 +62,7 @@ class TimetableHearingStatementTest {
 
     // then
     assertThat(constraintViolations).isEmpty();
+    assertThat(statement.isPartOfDossier()).isFalse();
   }
 
   @Test

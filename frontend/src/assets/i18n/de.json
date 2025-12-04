@@ -1056,7 +1056,8 @@
         "CANCEL": "Zurück",
         "CONFIRM": "Kanton editieren"
       },
-      "STATEMENT_TRANSFER_COUNTRY": "Diese Stellungnahme wurde vom Kanton {{oldSwissCanton}} übertragen."
+      "STATEMENT_TRANSFER_COUNTRY": "Diese Stellungnahme wurde vom Kanton {{oldSwissCanton}} übertragen.",
+      "PART_OF_DOSSIER": "Die Stellungnahme ist Teil eines Dossiers. Deshalb kann sie nicht editiert werden."
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Fahrplanjahr schliessen",

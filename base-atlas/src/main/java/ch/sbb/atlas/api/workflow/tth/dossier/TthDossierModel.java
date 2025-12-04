@@ -5,6 +5,7 @@ import ch.sbb.atlas.api.AtlasFieldLengths;
 import ch.sbb.atlas.api.model.AuditableVersionModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -33,7 +34,7 @@ public class TthDossierModel extends AuditableVersionModel implements StatementD
 
   @Schema(description = "Topic of the dossier", example = "Increase frequency on line S1 during peak hours")
   @NotBlank
-  @Size(max = AtlasFieldLengths.LENGTH_500)
+  @Size(max = AtlasFieldLengths.LENGTH_255)
   private String topic;
 
   @Schema(description = "Status of the dossier")
@@ -53,7 +54,7 @@ public class TthDossierModel extends AuditableVersionModel implements StatementD
   @NotEmpty
   private List<Long> statementIds;
 
-  @Schema(description = "Mail of the business partner at the transport company")
+  @Schema(description = "Mail of the business partner at the transport company", example = "urs@tu.ch")
   @NotBlank
   @Pattern(regexp = AtlasCharacterSetsRegex.EMAIL_ADDRESS)
   @Size(max = AtlasFieldLengths.LENGTH_255)
@@ -63,8 +64,9 @@ public class TthDossierModel extends AuditableVersionModel implements StatementD
   @NotNull
   private LocalDate boDeadlineToAnswer;
 
+  @NotEmpty
   @Builder.Default
   @Schema(description = "Questions for the BO to answer")
-  private List<TthDossierQuestionModel> questions = new ArrayList<>();
+  private List<@Valid TthDossierQuestionModel> questions = new ArrayList<>();
 
 }

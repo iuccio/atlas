@@ -5,7 +5,7 @@ import ch.sbb.atlas.model.exception.AtlasException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class SePoDiClientException extends AtlasException {
+public class AtlasClientException extends AtlasException {
 
   private final transient ErrorResponse errorResponse;
 

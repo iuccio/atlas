@@ -205,15 +205,10 @@ public class TimetableHearingStatementControllerInternal implements TimetableHea
 
   @Override
   public void updateStatements(BatchUpdateTimetableHearingStatementsModel batchUpdateModel) {
-    List<TimetableHearingStatement> timetableHearingStatements =
-        timetableHearingStatementService.getTimetableHearingStatementsByIds(batchUpdateModel.getIds());
-    if (!timetableHearingStatements.stream().map(TimetableHearingStatement::getId).collect(Collectors.toSet())
-        .containsAll(batchUpdateModel.getIds())) {
-      throw new IllegalStateException("Not all statements could be found for the given ids");
-    }
-    timetableHearingStatements.forEach(
-        timetableHearingStatement -> timetableHearingStatementService.updateStatement(timetableHearingStatement,
-            batchUpdateModel.getStatementStatus(), batchUpdateModel.getDossierId(), batchUpdateModel.getDossierContactMail()));
+    batchUpdateModel.getIds().forEach(id -> {
+      TimetableHearingStatement statement = timetableHearingStatementService.getTimetableHearingStatementsById(id);
+      timetableHearingStatementService.updateStatementFromDossier(statement, batchUpdateModel);
+    });
   }
 
 }
