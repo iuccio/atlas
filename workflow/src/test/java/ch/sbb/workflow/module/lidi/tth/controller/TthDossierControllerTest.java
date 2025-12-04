@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ch.sbb.atlas.api.workflow.tth.dossier.BoAnswerModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierQuestionModel;
@@ -84,5 +85,13 @@ class TthDossierControllerTest {
     tthDossierController.updateDossier(1L, TthDossierModel.builder().topic(TOPIC).build());
 
     verify(tthDossierService).updateDossier(eq(1L), any());
+  }
+
+  @Test
+  void shouldAnswerQuestion() {
+    String answerToCanton = "Nein, leider nicht";
+    tthDossierController.answerQuestion(1L, BoAnswerModel.builder().answerToCanton(answerToCanton).build());
+
+    verify(tthDossierService).answerQuestion(1L, answerToCanton);
   }
 }
