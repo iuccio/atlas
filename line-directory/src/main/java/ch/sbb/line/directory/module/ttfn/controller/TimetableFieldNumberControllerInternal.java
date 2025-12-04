@@ -15,6 +15,7 @@ import ch.sbb.line.directory.module.ttfn.service.TimetableFieldNumberService;
 import ch.sbb.line.directory.module.ttfn.service.quovadis.QuoVadisDataImportService;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -84,7 +85,7 @@ public class TimetableFieldNumberControllerInternal implements TimetableFieldNum
 
   // todo: remove after maintenance execution after prod release of ATLAS-3254
   @Override
-  public int mergeAllVersions() {
-    return timetableFieldNumberService.mergeAllVersions();
+  public void mergeAllVersions() {
+    CompletableFuture.runAsync(timetableFieldNumberService::mergeAllVersions);
   }
 }

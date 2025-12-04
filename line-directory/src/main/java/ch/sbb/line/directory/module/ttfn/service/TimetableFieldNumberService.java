@@ -38,7 +38,7 @@ public class TimetableFieldNumberService extends RevokeService<TimetableFieldNum
   private final VersionableService versionableService;
 
   // todo: remove after maintenance execution after prod release of ATLAS-3254
-  public int mergeAllVersions() {
+  public void mergeAllVersions() {
     List<TimetableFieldNumberVersion> allVersions = versionRepository.findAll();
     Map<String, List<TimetableFieldNumberVersion>> versionsGroupedByTtfnId = allVersions.stream()
         .sorted(Comparator.comparing(TimetableFieldNumberVersion::getValidFrom))
@@ -63,7 +63,7 @@ public class TimetableFieldNumberService extends RevokeService<TimetableFieldNum
         log.info("No merging of versions necessary for element: {}", ttfnid);
       }
     });
-    return mergedElements.get();
+    log.info("Number of merged elements: {}", mergedElements.get());
   }
 
   public List<TimetableFieldNumberVersion> getAllVersionsVersioned(String ttfnId) {

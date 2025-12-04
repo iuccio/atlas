@@ -306,11 +306,9 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     versionRepository.saveAll(List.of(version1, version2, version3, version4, version5));
 
     // when
-    int nbOfMergedElements = timetableFieldNumberService.mergeAllVersions();
+    timetableFieldNumberService.mergeAllVersions();
 
     // then
-    assertThat(nbOfMergedElements).isEqualTo(1);
-
     List<TimetableFieldNumberVersion> allVersionsAscByValidFrom = versionRepository.findAll(Sort.by(Direction.ASC, "validFrom"));
     assertThat(allVersionsAscByValidFrom).hasSize(3);
     assertThat(allVersionsAscByValidFrom.getFirst().getNumber()).isEqualTo("80.099.1");

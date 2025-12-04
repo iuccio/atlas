@@ -98,12 +98,11 @@ class TimetableFieldNumberControllerInternalApiTest extends BaseControllerApiTes
   @Test
   void shouldCallMergeAllVersionsOnEndpointTrigger() throws Exception {
     // given
-    Mockito.doReturn(1).when(timetableFieldNumberService).mergeAllVersions();
+    Mockito.doNothing().when(timetableFieldNumberService).mergeAllVersions();
 
     // when & then
     mvc.perform(post("/internal/field-numbers/merge-all-versions"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$").value(1));
+        .andExpect(status().isOk());
 
     Mockito.verify(timetableFieldNumberService).mergeAllVersions();
   }
