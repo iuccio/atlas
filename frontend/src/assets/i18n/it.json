@@ -1055,7 +1055,13 @@
         "CONFIRM": "Modifica Cantone"
       },
       "STATEMENT_TRANSFER_COUNTRY": "Questo parere è stato trasmesso dal Cantone {{oldSwissCanton}}.",
-      "PART_OF_DOSSIER": "La presa di posizione fa parte di un dossier. Pertanto non può essere modificata."
+      "PART_OF_DOSSIER": "La presa di posizione fa parte di un dossier. Pertanto non può essere modificata.",
+      "TOPIC": "Tema:",
+      "STATEMENT_TEXT": "Testo di accompagnamento",
+      "ANONIMYZE_BUTTON": "Rendi anonimo il testo",
+      "SHOW_ORIGINAL_TEXT": "Mostra il testo originale",
+      "HIDE_ORIGINAL_TEXT": "Nascondi il testo originale",
+      "STATEMENT_ANONYMOUS": "Inoltro a terzi - Dichiarazione sulla protezione dei dati: il testo allegato non contiene dati personali. Tra questi rientrano, ad esempio, numeri di telefono, indirizzi e-mail, nome e cognome e indirizzi."
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Chiusura dell'anno di calendario",

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import {
   ApplicationRole,
   ApplicationType,
@@ -49,7 +49,7 @@ import { LoadingSpinnerService } from '../../../core/components/loading-spinner/
 import { ScrollToTopDirective } from '../../../core/scroll-to-top/scroll-to-top.directive';
 import { DetailPageContainerComponent } from '../../../core/components/detail-page-container/detail-page-container.component';
 import { DetailPageContentComponent } from '../../../core/components/detail-page-content/detail-page-content.component';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 import { UserDetailInfoComponent } from '../../../core/components/user-edit-info/user-detail-info.component';
 import { SelectComponent } from '../../../core/form-components/select/select.component';
 import { TimetableFieldNumberSelectComponent } from '../../../core/form-components/ttfn-select/timetable-field-number-select.component';
@@ -66,6 +66,7 @@ import { AtlasButtonComponent } from '../../../core/components/button/atlas-butt
 import { DetailFooterComponent } from '../../../core/components/detail-footer/detail-footer.component';
 import { DisplayCantonPipe } from '../../../core/cantons/display-canton.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
+import { StatementText } from './statement-text/statement-text';
 
 @Component({
   selector: 'app-statement-detail',
@@ -76,7 +77,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     DetailPageContainerComponent,
     DetailPageContentComponent,
     ReactiveFormsModule,
-    NgIf,
     UserDetailInfoComponent,
     SelectComponent,
     TimetableFieldNumberSelectComponent,
@@ -87,7 +87,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     AtlasClipboardComponent,
     CommentComponent,
     AtlasLabelFieldComponent,
-    NgFor,
     FileComponent,
     FileUploadComponent,
     AtlasButtonComponent,
@@ -95,10 +94,13 @@ import { TranslatePipe } from '@ngx-translate/core';
     DisplayCantonPipe,
     AsyncPipe,
     TranslatePipe,
+    NgOptimizedImage,
+    StatementText,
   ],
   providers: [OpenStatementInMailService, TranslatePipe],
 })
 export class StatementDetailComponent implements OnInit, DetailFormComponent {
+  @ViewChild(StatementText) statementText!: StatementText;
   YEAR_OPTIONS: number[] = [];
   CANTON_OPTIONS: Canton[] = [];
   STATUS_OPTIONS: StatementStatus[] = [];
@@ -305,6 +307,9 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
         Validators.required,
         AtlasFieldLengthValidator.statement,
       ]),
+      anonymousStatement: new FormControl(statement?.anonymousStatement, [
+        AtlasFieldLengthValidator.statement,
+      ]),
       statementAnonymous: new FormControl(statement?.statementAnonymous),
       publicComment: new FormControl(statement?.publicComment, [
         AtlasFieldLengthValidator.statement,
@@ -436,6 +441,7 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
     if (!this.isNew || this.isHearingStatusArchived) {
       this.form.disable();
     }
+    this.statementText?.ngOnInit();
   }
 
   private duplicateStatement() {
@@ -492,6 +498,7 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
       .updateHearingStatement(id, statement, this.uploadedFiles)
       .pipe(takeUntil(this.ngUnsubscribe), catchError(this.handleError()))
       .subscribe((statement) => {
+        this.statementText.ngOnInit();
         this.loadingSpinnerService.loading.next(false);
         this.notificationService.success(
           'TTH.STATEMENT.NOTIFICATION.EDIT_SUCCESS'

@@ -11,35 +11,74 @@
             }}
           </h1>
 
-          <app-user-detail-info
-            *ngIf="statement"
-            [record]="statement!"
-            [short]="true"
-          ></app-user-detail-info>
-
-          <p *ngIf="statement?.oldSwissCanton">
-            {{
-              'TTH.STATEMENT.STATEMENT_TRANSFER_COUNTRY'
-                | translate
-                  : {
-                      oldSwissCanton:
-                        (statement?.oldSwissCanton! | displayCanton),
-                    }
-            }}
-          </p>
-
-          <div
-            *ngIf="statement && statement.cantonTransferComment"
-            class="d-flex flex-row col-12 mb-5"
-          >
-            <div class="d-flex flex-column col-12">
-              <br />
-              <span class="font-bold-lg">
-                {{ 'TTH.STATEMENT.CANTON_TRANSFER_COMMENT' | translate }}
-              </span>
-              <span>{{ statement.cantonTransferComment }}</span>
+          <div class="d-flex flex-column col-8 mt-3">
+            <div class="label-input-row">
+              <app-atlas-label-field fieldLabel="TTH.STATEMENT.TOPIC"/>
+              <div class="col-12">
+                <atlas-text-field [formGroup]="form" controlName="topic">
+                </atlas-text-field>
+              </div>
             </div>
           </div>
+          <div class="d-flex flex-row col-12 mb-3 mt-4">
+            <div class="d-flex flex-column col-8">
+              <ttfn-select
+                [formGroup]="form"
+                [validOn]="ttfnValidOn"
+                controlName="ttfnid"
+                data-cy="ttfnid"
+                (ttfnSelectionChanged)="ttfnSelectionChanged($event)"
+                [required]="false"
+              ></ttfn-select>
+            </div>
+          </div>
+          <div class="d-flex flex-row col-12">
+            <div class="d-flex flex-column col-12">
+              <atlas-text-field
+                [fieldExamples]="[
+                  { label: 'FORM.FOR_EXAMPLE', translate: true },
+                  { label: 'Wiesenbach', translate: false },
+                  { label: ' |', translate: false },
+                  {
+                    label: 'FORM.MAX_CHARS',
+                    translate: true,
+                    arg: { key: 'numberOfChars', value: '255' },
+                  },
+                ]"
+                [formGroup]="form"
+                controlName="stopPlace"
+                fieldLabel="TTH.STATEMENT.STOP_POINT"
+                infoIconTitle="TTH.STATEMENT.STOP_POINT_INFO"
+              >
+              </atlas-text-field>
+            </div>
+          </div>
+
+          <atlas-statement-text [form]="form" [isNew]="isNew"></atlas-statement-text>
+
+          @if (statement?.oldSwissCanton) {
+            <p>
+              {{
+                'TTH.STATEMENT.STATEMENT_TRANSFER_COUNTRY'
+                  | translate
+                  : {
+                    oldSwissCanton:
+                      (statement?.oldSwissCanton! | displayCanton),
+                  }
+              }}
+            </p>
+          }
+          @if (statement && statement.cantonTransferComment) {
+            <div class="d-flex flex-row col-12 mb-5">
+              <div class="d-flex flex-column col-12">
+                <br/>
+                <span class="font-bold-lg">
+                  {{ 'TTH.STATEMENT.CANTON_TRANSFER_COMMENT' | translate }}
+                </span>
+                <span>{{ statement.cantonTransferComment }}</span>
+              </div>
+            </div>
+          }
 
           <div class="d-flex flex-row col-12 mb-4 mt-5">
             <div class="d-flex flex-column col-6 pe-3">
@@ -72,26 +111,13 @@
                     alt="canton-logo"
                     class="pe-1"
                     height="28"
-                    src="assets/images/cantons/{{
+                    ngSrc="assets/images/cantons/{{
                       canton.short.toUpperCase()
                     }}.svg"
                     width="28"
                   />
                 </ng-template>
               </atlas-select>
-            </div>
-          </div>
-
-          <div class="d-flex flex-row col-12 mb-4 mt-5">
-            <div class="d-flex flex-column col-12">
-              <ttfn-select
-                [formGroup]="form"
-                [validOn]="ttfnValidOn"
-                controlName="ttfnid"
-                data-cy="ttfnid"
-                (ttfnSelectionChanged)="ttfnSelectionChanged($event)"
-                [required]="false"
-              ></ttfn-select>
             </div>
           </div>
 
@@ -109,28 +135,6 @@
             {{ 'TTH.STATEMENT.ROUTE' | translate }}
             <atlas-spacer [divider]="true" height="40px"></atlas-spacer>
           </h1>
-
-          <div class="d-flex flex-row col-12 mb-4">
-            <div class="d-flex flex-column col-12">
-              <atlas-text-field
-                [fieldExamples]="[
-                  { label: 'FORM.FOR_EXAMPLE', translate: true },
-                  { label: 'Wiesenbach', translate: false },
-                  { label: ' |', translate: false },
-                  {
-                    label: 'FORM.MAX_CHARS',
-                    translate: true,
-                    arg: { key: 'numberOfChars', value: '255' },
-                  },
-                ]"
-                [formGroup]="form"
-                controlName="stopPlace"
-                fieldLabel="TTH.STATEMENT.STOP_POINT"
-                infoIconTitle="TTH.STATEMENT.STOP_POINT_INFO"
-              >
-              </atlas-text-field>
-            </div>
-          </div>
 
           <h1 class="font-bold-2xl pt-5">
             {{ 'TTH.STATEMENT.STATEMENT' | translate }}
@@ -223,73 +227,66 @@
             </div>
           </div>
 
-          <div class="d-flex flex-row col-12 mb-4">
-            <div class="d-flex flex-column col-12">
-              <form-comment
-                [formGroup]="form"
-                [required]="true"
-                controlName="statement"
-                info="TTH.STATEMENT.STATEMENT_INFO"
-                label="TTH.STATEMENT.STATEMENT"
-                maxChars="5000"
-              >
-              </form-comment>
+          @if (form.value.documents && form.value.documents.length > 0) {
+            <div class="mb-3">
+              <app-atlas-label-field
+                fieldLabel="TTH.STATEMENT.ATTACHMENTS"
+              ></app-atlas-label-field>
+              @for (document of form.value.documents; track document) {
+                <ng-container>
+                  <atlas-file
+                    (downloadFile)="downloadFile($event.name)"
+                    (fileDeleted)="removeDocument($event.name)"
+                    [deleteEnabled]="form.enabled"
+                    [downloadEnabled]="true"
+                    [file]="{
+                      name: document.fileName,
+                      size: document.fileSize,
+                    }"
+                  ></atlas-file>
+                </ng-container>
+              }
             </div>
-          </div>
+          }
 
-          <div
-            *ngIf="form.value.documents && form.value.documents.length > 0"
-            class="mb-3"
-          >
-            <app-atlas-label-field
-              fieldLabel="TTH.STATEMENT.ATTACHMENTS"
-            ></app-atlas-label-field>
-            <ng-container *ngFor="let document of form.value.documents">
-              <atlas-file
-                (downloadFile)="downloadFile($event.name)"
-                (fileDeleted)="removeDocument($event.name)"
-                [deleteEnabled]="form.enabled"
-                [downloadEnabled]="true"
-                [file]="{ name: document.fileName, size: document.fileSize }"
-              ></atlas-file>
+          @if (form.enabled) {
+            <ng-container>
+              <div class="font-regular-sm mb-2">
+                {{ 'TTH.STATEMENT.ATTACHMENT_INFO' | translate }}
+              </div>
+              <atlas-file-upload
+                [(uploadedFiles)]="uploadedFiles"
+                [alreadySavedFileNames]="alreadySavedDocuments"
+                [maxFileCount]="3 - (form.value.documents?.length ?? 0)"
+                [maxFileSize]="20 * 1024 * 1024"
+                acceptedFileExtension=".pdf"
+                [acceptedFileType]="['application/pdf']"
+              ></atlas-file-upload>
             </ng-container>
-          </div>
+          }
 
-          <ng-container *ngIf="form.enabled">
-            <div class="font-regular-sm mb-2">
-              {{ 'TTH.STATEMENT.ATTACHMENT_INFO' | translate }}
-            </div>
-            <atlas-file-upload
-              [(uploadedFiles)]="uploadedFiles"
-              [alreadySavedFileNames]="alreadySavedDocuments"
-              [maxFileCount]="3 - (form.value.documents?.length ?? 0)"
-              [maxFileSize]="20 * 1024 * 1024"
-              acceptedFileExtension=".pdf"
-              [acceptedFileType]="['application/pdf']"
-            ></atlas-file-upload>
-          </ng-container>
+          @if (form.disabled) {
+            <ng-container>
+              <h1 class="font-bold-2xl pt-5">
+                {{ 'TTH.STATEMENT.CLARIFICATION' | translate }}
+                <atlas-spacer [divider]="true" height="30px"></atlas-spacer>
+              </h1>
 
-          <ng-container *ngIf="form.disabled">
-            <h1 class="font-bold-2xl pt-5">
-              {{ 'TTH.STATEMENT.CLARIFICATION' | translate }}
-              <atlas-spacer [divider]="true" height="30px"></atlas-spacer>
-            </h1>
-
-            <div class="mb-3 font-regular-sm">
-              {{ 'TTH.STATEMENT.CLARIFICATION_INFO' | translate }}
-            </div>
-            <atlas-button
-              (click)="openAsMail()"
-              buttonDataCy="open-in-mail"
-              buttonText="TTH.STATEMENT.CLARIFICATION_MAIL"
-              buttonType="create"
-            >
-              <ng-template #rightIcon>
-                <i class="ps-2 bi bi-envelope"></i>
-              </ng-template>
-            </atlas-button>
-          </ng-container>
-
+              <div class="mb-3 font-regular-sm">
+                {{ 'TTH.STATEMENT.CLARIFICATION_INFO' | translate }}
+              </div>
+              <atlas-button
+                (click)="openAsMail()"
+                buttonDataCy="open-in-mail"
+                buttonText="TTH.STATEMENT.CLARIFICATION_MAIL"
+                buttonType="create"
+              >
+                <ng-template #rightIcon>
+                  <i class="ps-2 bi bi-envelope"></i>
+                </ng-template>
+              </atlas-button>
+            </ng-container>
+          }
           <h1 class="font-bold-2xl pt-5">
             {{ 'TTH.STATEMENT.STATUS_JUSTIFICATION' | translate }}
             <atlas-spacer [divider]="true" height="40px"></atlas-spacer>
@@ -323,6 +320,12 @@
             </div>
           </div>
         </ng-container>
+        @if (statement) {
+          <app-user-detail-info
+            [record]="statement!"
+            [short]="true"
+          ></app-user-detail-info>
+        }
       </div>
     </atlas-detail-page-content>
 
@@ -347,22 +350,21 @@
         wrapperStyleClass="me-3"
       >
       </atlas-button>
-      <atlas-button
-        (buttonClicked)="toggleEdit()"
-        *ngIf="
-          !isHearingStatusArchived &&
-          !form.enabled &&
-          (isStatementEditable | async) === true
-        "
-        [canton]="cantonShort"
-        applicationType="TIMETABLE_HEARING"
-        buttonDataCy="edit"
-        buttonStyleClass="atlas-primary-btn"
-        buttonText="COMMON.EDIT"
-        buttonType="cantonWritePermission"
-        wrapperStyleClass="me-3"
-      >
-      </atlas-button>
+      @if (!isHearingStatusArchived &&
+      !form.enabled &&
+      (isStatementEditable | async) === true) {
+        <atlas-button
+          (buttonClicked)="toggleEdit()"
+          [canton]="cantonShort"
+          applicationType="TIMETABLE_HEARING"
+          buttonDataCy="edit"
+          buttonStyleClass="atlas-primary-btn"
+          buttonText="COMMON.EDIT"
+          buttonType="cantonWritePermission"
+          wrapperStyleClass="me-3"
+        >
+        </atlas-button>
+      }
       <atlas-button
         (buttonClicked)="next()"
         [footerEdit]="form.enabled"

@@ -1055,7 +1055,13 @@
         "CONFIRM": "Modifier le canton"
       },
       "STATEMENT_TRANSFER_COUNTRY": "Cet pris de position a été transmis par le canton {{oldSwissCanton}}.",
-      "PART_OF_DOSSIER": "La prise de position fait partie intégrante d’un dossier. Elle ne peut donc pas être éditée."
+      "PART_OF_DOSSIER": "La prise de position fait partie intégrante d’un dossier. Elle ne peut donc pas être éditée.",
+      "TOPIC": "Thème:",
+      "STATEMENT_TEXT": "Texte d'accompagnement",
+      "ANONIMYZE_BUTTON": "Texte anonymisé",
+      "SHOW_ORIGINAL_TEXT": "Afficher le texte original",
+      "HIDE_ORIGINAL_TEXT": "Masquer le texte original",
+      "STATEMENT_ANONYMOUS": "Transmission à des tiers – Confirmation relative à la protection des données : Le texte ci-joint ne contient aucune donnée personnelle. Cela inclut, par exemple, les numéros de téléphone, les adresses électroniques, les nom et prénom, et les adresses postales."
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Clôture de l'année horaire",
