@@ -19,6 +19,7 @@ export interface StatementDetailFormGroup {
   oldSwissCanton: FormControl<SwissCanton | null | undefined>;
   stopPlace: FormControl<string | null | undefined>;
   statement: FormControl<string | null | undefined>;
+  anonymousStatement: FormControl<string | null | undefined>;
   statementAnonymous: FormControl<boolean | null | undefined>;
   statementSender: FormGroup<StatementSenderFormGroup>;
   publicComment: FormControl<string | null | undefined>;

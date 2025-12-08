@@ -12,11 +12,11 @@ import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.exception.NotFoundException.FileNotFoundException;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.pdf.sanitize.PdfCdr;
-import ch.sbb.line.directory.module.tth.exception.StatementPartOfDossierException;
 import ch.sbb.line.directory.exception.TtfnidNotFoundException;
 import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberRepository;
 import ch.sbb.line.directory.module.tth.entity.StatementDocument;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
+import ch.sbb.line.directory.module.tth.exception.StatementPartOfDossierException;
 import ch.sbb.line.directory.module.tth.mapper.ResponsibleTransportCompanyMapper;
 import ch.sbb.line.directory.module.tth.mapper.StatementSenderMapperV2;
 import ch.sbb.line.directory.module.tth.mapper.TimetableHearingStatementMapperV2;
@@ -202,6 +202,9 @@ public class TimetableHearingStatementService {
     timetableHearingStatementInDb.setCantonTransferComment(timetableHearingStatementModel.getCantonTransferComment());
     timetableHearingStatementInDb.setStatementSender(
         StatementSenderMapperV2.toEntity(timetableHearingStatementModel.getStatementSender()));
+    timetableHearingStatementInDb.setTopic(timetableHearingStatementModel.getTopic());
+    timetableHearingStatementInDb.setStatementAnonymous(timetableHearingStatementModel.isStatementAnonymous());
+    timetableHearingStatementInDb.setAnonymousStatement(timetableHearingStatementModel.getAnonymousStatement());
 
     updateResponsibleTransportCompanies(timetableHearingStatementModel, timetableHearingStatementInDb);
     timetableHearingStatementInDb.setResponsibleTransportCompaniesDisplay(

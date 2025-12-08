@@ -1055,7 +1055,13 @@
         "CONFIRM": "Kanton editieren"
       },
       "STATEMENT_TRANSFER_COUNTRY": "Diese Stellungnahme wurde vom Kanton {{oldSwissCanton}} übertragen.",
-      "PART_OF_DOSSIER": "Die Stellungnahme ist Teil eines Dossiers. Deshalb kann sie nicht editiert werden."
+      "PART_OF_DOSSIER": "Die Stellungnahme ist Teil eines Dossiers. Deshalb kann sie nicht editiert werden.",
+      "TOPIC": "Thema:",
+      "STATEMENT_TEXT": "Begleittext",
+      "ANONIMYZE_BUTTON": "Text anonymisieren",
+      "SHOW_ORIGINAL_TEXT": "Originaltext anzeigen",
+      "HIDE_ORIGINAL_TEXT": "Originaltext ausblenden",
+      "STATEMENT_ANONYMOUS": "Weiterleitung an Dritte - Bestätigung Datenschutz: Der Begleittext enthält keine persönlichen Daten. Dazu zählen etwa Telefonnummern, E-Mail-Adressen, Vor- und Nachnamen sowie Adressen."
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Fahrplanjahr schliessen",
