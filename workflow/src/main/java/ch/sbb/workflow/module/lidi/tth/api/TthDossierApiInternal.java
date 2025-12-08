@@ -1,6 +1,7 @@
 package ch.sbb.workflow.module.lidi.tth.api;
 
 import ch.sbb.atlas.api.AtlasApiConstants;
+import ch.sbb.atlas.api.workflow.tth.dossier.BoAnswerModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +27,9 @@ public interface TthDossierApiInternal {
 
   @PostMapping("{dossierId}/send-to-bo")
   void sendDossierToBo(@PathVariable Long dossierId);
+
+  @PostMapping("/answer/{questionId}")
+  void answerQuestion(@PathVariable Long questionId, @Valid @RequestBody BoAnswerModel boAnswer);
 
   @PostMapping("{dossierId}/complete/{status}")
   void completeDossier(@PathVariable Long dossierId, @PathVariable DossierStatus status);
