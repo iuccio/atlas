@@ -5,6 +5,7 @@ import ch.sbb.atlas.api.user.administration.CantonPermissionRestrictionModel;
 import ch.sbb.atlas.api.user.administration.CountryPermissionRestrictionModel;
 import ch.sbb.atlas.api.user.administration.PermissionRestrictionModel;
 import ch.sbb.atlas.api.user.administration.SboidPermissionRestrictionModel;
+import ch.sbb.atlas.api.user.administration.TransportCompanyDossierAnswerPermissionRestrictionModel;
 import ch.sbb.atlas.api.user.administration.workflow.InfoPlusTerminationVotePermissionRestrictionModel;
 import ch.sbb.atlas.api.user.administration.workflow.NovaTerminationVotePermissionRestrictionModel;
 import ch.sbb.atlas.user.administration.module.clientcredential.entity.ClientCredentialPermission;
@@ -23,6 +24,7 @@ public class PermissionRestrictionMapper {
       case BULK_IMPORT -> new BulkImportPermissionRestrictionModel();
       case NOVA_TERMINATION_VOTE -> new NovaTerminationVotePermissionRestrictionModel();
       case INFO_PLUS_TERMINATION_VOTE -> new InfoPlusTerminationVotePermissionRestrictionModel();
+      case TRANSPORT_COMPANY_DOSSIER_ANSWER -> new TransportCompanyDossierAnswerPermissionRestrictionModel();
     };
     restrictionModel.setValueAsString(permissionRestriction.getRestriction());
     return restrictionModel;
