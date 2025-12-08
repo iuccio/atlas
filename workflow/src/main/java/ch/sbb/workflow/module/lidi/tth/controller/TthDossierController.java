@@ -1,5 +1,6 @@
 package ch.sbb.workflow.module.lidi.tth.controller;
 
+import ch.sbb.atlas.api.workflow.tth.dossier.BoAnswerModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
 import ch.sbb.workflow.module.lidi.tth.api.TthDossierApiInternal;
@@ -28,6 +29,11 @@ public class TthDossierController implements TthDossierApiInternal {
   @Override
   public void sendDossierToBo(Long dossierId) {
     tthDossierService.sendDossierToBo(dossierId);
+  }
+
+  @Override
+  public void answerQuestion(Long questionId, BoAnswerModel boAnswer) {
+    tthDossierService.answerQuestion(questionId, boAnswer.getAnswerToCanton());
   }
 
   @Override

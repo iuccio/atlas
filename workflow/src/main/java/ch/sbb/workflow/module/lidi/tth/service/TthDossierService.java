@@ -7,8 +7,10 @@ import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
 import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
 import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
+import ch.sbb.workflow.module.lidi.tth.repository.TthDossierQuestionRepository;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TthDossierService {
 
   private final TthDossierRepository dossierRepository;
+  private final TthDossierQuestionRepository questionRepository;
   private final TimetableHearingStatementClient timetableHearingStatementClient;
   private final TthDossierNotificationService notificationService;
 
@@ -103,5 +106,24 @@ public class TthDossierService {
           .displayCode("TTH.DOSSIER_NOT_EDITABLE")
           .build();
     }
+  }
+
+  @Transactional
+  public void answerQuestion(Long questionId, String boAnswer) {
+    TthDossierQuestion question = questionRepository.findById(questionId).orElseThrow(() -> new IdNotFoundException(questionId));
+    TthDossier tthDossier = question.getTthDossier();
+
+    if (tthDossier.getDossierStatus() != DossierStatus.DOSSIER_BO_CHECK) {
+      throw SimpleAtlasException.builder()
+          .status(HttpStatus.PRECONDITION_FAILED)
+          .messageAndError("Dossier is not in status DOSSIER_BO_CHECK")
+          .displayCode("TTH.DOSSIER_NOT_IN_BO_CHECK_STATUS")
+          .build();
+    }
+
+    question.setAnswerToCanton(boAnswer);
+    tthDossier.setDossierStatus(DossierStatus.DOSSIER_CANTON_CHECK);
+    questionRepository.save(question);
+    dossierRepository.save(tthDossier);
   }
 }
