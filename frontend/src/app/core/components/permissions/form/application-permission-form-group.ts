@@ -30,6 +30,7 @@ export interface PermissionRestriction {
   bulkImportRestriction?: FormControl<boolean | null | undefined>;
   infoPlusTerminationVote?: FormControl<boolean | null | undefined>;
   novaTerminationVote?: FormControl<boolean | null | undefined>;
+  transportCompanyDossierAnswer?: FormControl<boolean | null | undefined>;
 }
 
 export class ApplicationPermissionFormGroupBuilder {
@@ -76,6 +77,13 @@ export class ApplicationPermissionFormGroupBuilder {
       permission.permissionRestrictions.some(
         (i) =>
           i.type === PermissionRestrictionType.NovaTerminationVote &&
+          i.valueAsString == 'true'
+      )
+    );
+    formGroup.controls.permissions.controls.transportCompanyDossierAnswer?.setValue(
+      permission.permissionRestrictions.some(
+        (i) =>
+          i.type === PermissionRestrictionType.TransportCompanyDossierAnswer &&
           i.valueAsString == 'true'
       )
     );

@@ -9,7 +9,7 @@
  */
 
 
-export type PermissionRestrictionType = 'BUSINESS_ORGANISATION' | 'CANTON' | 'COUNTRY' | 'BULK_IMPORT' | 'INFO_PLUS_TERMINATION_VOTE' | 'NOVA_TERMINATION_VOTE';
+export type PermissionRestrictionType = 'BUSINESS_ORGANISATION' | 'CANTON' | 'COUNTRY' | 'BULK_IMPORT' | 'INFO_PLUS_TERMINATION_VOTE' | 'NOVA_TERMINATION_VOTE' | 'TRANSPORT_COMPANY_DOSSIER_ANSWER';
 
 export const PermissionRestrictionType = {
 
@@ -23,6 +23,8 @@ export const PermissionRestrictionType = {
 
     InfoPlusTerminationVote: 'INFO_PLUS_TERMINATION_VOTE' as PermissionRestrictionType,
 
-    NovaTerminationVote: 'NOVA_TERMINATION_VOTE' as PermissionRestrictionType
+    NovaTerminationVote: 'NOVA_TERMINATION_VOTE' as PermissionRestrictionType,
+
+    TransportCompanyDossierAnswer: 'TRANSPORT_COMPANY_DOSSIER_ANSWER' as PermissionRestrictionType
 };
 

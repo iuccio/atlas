@@ -18,6 +18,9 @@ export interface BatchUpdateTimetableHearingStatements {
     statementStatus?: StatementStatus;
     dossierId?: number;
     dossierContactMail?: string;
+    publicComment?: string;
+    internalComment?: string;
+    topic?: string;
 }
 export namespace BatchUpdateTimetableHearingStatements {
 }

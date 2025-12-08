@@ -28,7 +28,8 @@ import lombok.experimental.SuperBuilder;
     @Type(value = CountryPermissionRestrictionModel.class, name = "COUNTRY"),
     @Type(value = BulkImportPermissionRestrictionModel.class, name = "BULK_IMPORT"),
     @Type(value = NovaTerminationVotePermissionRestrictionModel.class, name = "NOVA_TERMINATION_VOTE"),
-    @Type(value = InfoPlusTerminationVotePermissionRestrictionModel.class, name = "INFO_PLUS_TERMINATION_VOTE")
+    @Type(value = InfoPlusTerminationVotePermissionRestrictionModel.class, name = "INFO_PLUS_TERMINATION_VOTE"),
+    @Type(value = TransportCompanyDossierAnswerPermissionRestrictionModel.class, name = "TRANSPORT_COMPANY_DOSSIER_ANSWER")
 })
 public abstract class PermissionRestrictionModel {
 

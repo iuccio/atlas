@@ -272,13 +272,25 @@ export class ApplicationPermissionComponent implements OnInit {
     );
   }
 
+  get showTransportCompanyDossierAnswer() {
+    return (
+      this.currentRoleConfig.permissions.specialPermissions.includes(
+        PermissionRestrictionType.TransportCompanyDossierAnswer
+      ) &&
+      (this.showAllSpecialPermissions ||
+        this.permissionsForm.controls.transportCompanyDossierAnswer?.value)
+    );
+  }
+
   get showSpecialPermissions() {
+    console.log('Checking showSpecialPermissions ', this.currentRoleConfig);
     return (
       this.currentRoleConfig.permissions.specialPermissions.length > 0 &&
       (this.showAllSpecialPermissions ||
         this.showBulkImport ||
         this.showNovaTerminationVote ||
-        this.showInfoPlusTerminationVote)
+        this.showInfoPlusTerminationVote ||
+        this.showTransportCompanyDossierAnswer)
     );
   }
 
@@ -293,6 +305,14 @@ export class ApplicationPermissionComponent implements OnInit {
   onInfoPlusToggle(value: boolean) {
     if (value) {
       this.form.controls.permissions.controls.novaTerminationVote?.setValue(
+        false
+      );
+    }
+  }
+
+  onTransportCompanyDossierToggle(value: boolean) {
+    if (value) {
+      this.form.controls.permissions.controls.transportCompanyDossierAnswer?.setValue(
         false
       );
     }
