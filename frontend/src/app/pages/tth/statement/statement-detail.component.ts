@@ -66,7 +66,7 @@ import { AtlasButtonComponent } from '../../../core/components/button/atlas-butt
 import { DetailFooterComponent } from '../../../core/components/detail-footer/detail-footer.component';
 import { DisplayCantonPipe } from '../../../core/cantons/display-canton.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
-import { StatementText } from './statement-text/statement-text';
+import { StatementTextComponent } from './statement-text/statement-text.component';
 
 @Component({
   selector: 'app-statement-detail',
@@ -95,12 +95,12 @@ import { StatementText } from './statement-text/statement-text';
     AsyncPipe,
     TranslatePipe,
     NgOptimizedImage,
-    StatementText,
+    StatementTextComponent,
   ],
   providers: [OpenStatementInMailService, TranslatePipe],
 })
 export class StatementDetailComponent implements OnInit, DetailFormComponent {
-  @ViewChild(StatementText) statementText!: StatementText;
+  @ViewChild(StatementTextComponent) statementText!: StatementTextComponent;
   YEAR_OPTIONS: number[] = [];
   CANTON_OPTIONS: Canton[] = [];
   STATUS_OPTIONS: StatementStatus[] = [];
@@ -441,7 +441,7 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
     if (!this.isNew || this.isHearingStatusArchived) {
       this.form.disable();
     }
-    this.statementText?.ngOnInit();
+    this.statementText?.resetForm(this.form);
   }
 
   private duplicateStatement() {

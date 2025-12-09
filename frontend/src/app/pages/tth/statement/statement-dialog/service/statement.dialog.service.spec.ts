@@ -37,6 +37,7 @@ const form = new FormGroup<StatementDetailFormGroup>({
   documents: new FormBuilder().array([]),
   etagVersion: new FormControl(),
   editor: new FormControl(),
+  anonymousStatement: new FormControl(),
 });
 
 describe('StatementDialogService', () => {
