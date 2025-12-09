@@ -349,6 +349,7 @@
     "ROLE": "Rolle",
     "NOVA": "NOVA Termination",
     "INFO_PLUS": "Info+ Termination",
+    "TRANSPORT_COMPANY": "Stellungnahmenredakteur",
     "ADD_BUSINESS_ORGANISATION": "Geschäftsorganisation hinzufügen",
     "DELETE_BUSINESS_ORGANISATION": "Geschäftsorganisation entfernen",
     "SELECTED_USER_HAS_ALREADY_PERMISSIONS": "Gewählter Benutzer ist bereits hinterlegt",

@@ -16,6 +16,7 @@ import {
   RoleConfig,
 } from '../application-permission/application-permission.config';
 import { PermissionPermissionRestrictionsInner } from '../../../../api/model/permissionPermissionRestrictionsInner';
+import { TransportCompanyDossierAnswerPermissionRestrictionModel } from '../../../../api/model/transportCompanyDossierAnswerPermissionRestrictionModel';
 
 export interface ApplicationPermission {
   application: FormControl<ApplicationType | null | undefined>;
@@ -101,6 +102,7 @@ export class ApplicationPermissionFormGroupBuilder {
         bulkImportRestriction: new FormControl(),
         novaTerminationVote: new FormControl(),
         infoPlusTerminationVote: new FormControl(),
+        transportCompanyDossierAnswer: new FormControl(),
       }),
     });
   }
@@ -125,6 +127,8 @@ export class ApplicationPermissionFormGroupBuilder {
       form,
       roleConfig
     );
+    const transportCompanyDossierAnswer =
+      this.getTransportCompanyDossierAnswerRestriction(form, roleConfig);
 
     const permissionRestrictions: PermissionPermissionRestrictionsInner[] = [];
     permissionRestrictions.push(...sboidRestrictions);
@@ -138,6 +142,9 @@ export class ApplicationPermissionFormGroupBuilder {
     }
     if (novaTerminationVoteRestriction) {
       permissionRestrictions.push(novaTerminationVoteRestriction);
+    }
+    if (transportCompanyDossierAnswer) {
+      permissionRestrictions.push(transportCompanyDossierAnswer);
     }
     return {
       role: role,
@@ -271,6 +278,28 @@ export class ApplicationPermissionFormGroupBuilder {
           valueAsString: infoPlusTerminationVote.toString(),
         };
       return infoPlusTerminationVoteRestriction;
+    }
+    return undefined;
+  }
+
+  private static getTransportCompanyDossierAnswerRestriction(
+    form: FormGroup<ApplicationPermission>,
+    roleConfig: RoleConfig
+  ) {
+    if (
+      roleConfig.permissions.specialPermissions.includes(
+        PermissionRestrictionType.TransportCompanyDossierAnswer
+      )
+    ) {
+      const transportCompanyDossierAnswer =
+        form.controls.permissions.controls.transportCompanyDossierAnswer
+          ?.value ?? false;
+      const transportCompanyDossierAnswerRestriction: TransportCompanyDossierAnswerPermissionRestrictionModel =
+        {
+          type: PermissionRestrictionType.TransportCompanyDossierAnswer,
+          valueAsString: transportCompanyDossierAnswer.toString(),
+        };
+      return transportCompanyDossierAnswerRestriction;
     }
     return undefined;
   }
