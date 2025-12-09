@@ -1,6 +1,7 @@
 package ch.sbb.line.directory.module.tth.entity;
 
 import ch.sbb.atlas.api.AtlasFieldLengths;
+import ch.sbb.atlas.redact.Redacted;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.FetchType;
@@ -21,19 +22,24 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @ToString
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Embeddable
+@Redacted
 public class StatementSender {
 
+  @Redacted
   @Size(max = AtlasFieldLengths.LENGTH_100)
   private String firstName;
 
+  @Redacted
   @Size(max = AtlasFieldLengths.LENGTH_100)
   private String lastName;
 
+  @Redacted
   @Size(max = AtlasFieldLengths.LENGTH_100)
   private String organisation;
 
+  @Redacted
   @Size(max = AtlasFieldLengths.LENGTH_100)
   private String street;
 
@@ -41,9 +47,11 @@ public class StatementSender {
   @Max(99999)
   private Integer zip;
 
+  @Redacted
   @Size(max = AtlasFieldLengths.LENGTH_50)
   private String city;
 
+  @Redacted
   @NotEmpty
   @Size(min = 1, max = AtlasFieldLengths.LENGTH_10)
   @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)

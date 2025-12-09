@@ -35,7 +35,7 @@ public class RedactAspect {
     return redactResult(resultObject);
   }
 
-  Object redactResult(Object resultObject) {
+  public static Object redactResult(Object resultObject) {
     if (resultObject instanceof Page<?> page) {
       List<Object> redactedPage = page.getContent().stream().map(pageItem -> new ObjectRedactor(pageItem).accept()).toList();
       return new PageImpl<>(redactedPage, page.getPageable(), page.getTotalElements());

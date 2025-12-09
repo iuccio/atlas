@@ -21,6 +21,7 @@ import ch.sbb.line.directory.module.tth.mapper.ResponsibleTransportCompanyMapper
 import ch.sbb.line.directory.module.tth.mapper.StatementSenderMapperV2;
 import ch.sbb.line.directory.module.tth.mapper.TimetableHearingStatementMapperV2;
 import ch.sbb.line.directory.module.tth.model.TimetableHearingStatementSearchRestrictions;
+import ch.sbb.line.directory.module.tth.redact.TthRedacted;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingStatementRepository;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingYearRepository;
 import ch.sbb.line.directory.shared.transportcompany.entity.SharedTransportCompany;
@@ -60,6 +61,7 @@ public class TimetableHearingStatementService {
     return timetableHearingStatementRepository.findAll(searchRestrictions.getSpecification(), searchRestrictions.getPageable());
   }
 
+  @TthRedacted
   public TimetableHearingStatement getTimetableHearingStatementById(Long id) {
     return timetableHearingStatementRepository.findById(id)
         .orElseThrow(() -> new IdNotFoundException(id));
