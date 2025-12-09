@@ -24,9 +24,8 @@ export default defineConfig({
     inlineAssets: true,
     saveAllAttempts: false,
     debug: true,
-    saveJson: true
+    saveJson: true,
   },
-
   env: {
     resolution: 'high',
   },
@@ -42,6 +41,6 @@ export default defineConfig({
       return config;
     },
     baseUrl: 'http://localhost:4200',
-    scrollBehavior: 'center'
+    scrollBehavior: 'center',
   },
 });

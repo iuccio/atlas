@@ -381,13 +381,11 @@
     "NEW": "Inserire nuovo numero del quadro d’orario",
     "DETAIL_TIMETABLE_INFORMATION": "Informazioni sugli orari",
     "NEW_TIMETABLE_INFORMATION": "Informazioni sul nuovo orario",
-    "SWISS_TIMETABLE_FIELD_NUMBER": "Numero del quadro d’orario CH",
     "BUSINESS_ORGANISATION": "Organizzazione aziendale",
     "NUMBER": "Numero del quadro d’orario",
     "TTFNID": "ID numero del quadro d’orario",
     "CONFLICT": {
-      "NUMBER": "Il numero del quadro d’orario {{number}} è già assegnato dal {{validFrom}} al {{validTo}} da {{ttfnid}}.",
-      "SWISS_NUMBER": "Il numero del quadro d’orario CH {{swissTimetableFieldNumber}} è già assegnato nel periodo dal {{validFrom}} al {{validTo}} da {{ttfnid}}."
+      "NUMBER": "Il numero del quadro d’orario {{number}} è già assegnato dal {{validFrom}} al {{validTo}} da {{ttfnid}}."
     },
     "NOTIFICATION": {
       "ADD_SUCCESS": "Numero del quadro d’orario è aggiunto con successo.",

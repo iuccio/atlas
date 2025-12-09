@@ -34,7 +34,7 @@ public interface TimetableFieldNumberApiV1 {
   @PutMapping("/versions/{id}")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200"),
-      @ApiResponse(responseCode = "409", description = "Number or SwissTimeTableFieldNumber are already taken", content =
+      @ApiResponse(responseCode = "409", description = "Number is already taken", content =
       @Content(schema = @Schema(implementation = ErrorResponse.class))),
       @ApiResponse(responseCode = "412", description = ENTITY_ALREADY_UPDATED, content =
       @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -51,9 +51,8 @@ public interface TimetableFieldNumberApiV1 {
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201"),
-      @ApiResponse(responseCode = "409", description = "Number or SwissTimeTableFieldNumber are already taken", content =
+      @ApiResponse(responseCode = "409", description = "Number is already taken", content =
       @Content(schema = @Schema(implementation = ErrorResponse.class)))
   })
   TimetableFieldNumberVersionModel createVersion(@RequestBody @Valid @CreateIdCheck TimetableFieldNumberVersionModel newVersion);
-
 }

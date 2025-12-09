@@ -23,7 +23,6 @@ public class TimetableFieldNumberCsvModel {
   private String validFrom;
   private String validTo;
   private Status status;
-  private String swissTimetableFieldNumber;
   private String number;
   private String businessOrganisation;
   private String descriptionOutwardLine1;
@@ -36,5 +35,4 @@ public class TimetableFieldNumberCsvModel {
   private String lineRelations;
   private String creationTime;
   private String editionTime;
-
 }

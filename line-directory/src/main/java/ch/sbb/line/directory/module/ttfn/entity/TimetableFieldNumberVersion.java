@@ -108,10 +108,6 @@ public class TimetableFieldNumberVersion extends BaseVersion implements Versiona
   @Pattern(regexp = AtlasCharacterSetsRegex.TTFN_NUMBER)
   private String number;
 
-  @AtlasVersionableProperty
-  @Size(min = 1, max = AtlasFieldLengths.LENGTH_50)
-  private String swissTimetableFieldNumber;
-
   @Column(columnDefinition = "TIMESTAMP")
   @NotNull
   private LocalDate validFrom;

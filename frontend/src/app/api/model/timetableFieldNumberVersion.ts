@@ -67,10 +67,6 @@ export interface TimetableFieldNumberVersion {
      */
     number: string;
     /**
-     * Timetable field number
-     */
-    swissTimetableFieldNumber?: string;
-    /**
      * Date - valid from
      */
     validFrom: Date;

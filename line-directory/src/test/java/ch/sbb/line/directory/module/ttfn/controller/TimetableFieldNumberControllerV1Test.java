@@ -36,7 +36,6 @@ class TimetableFieldNumberControllerV1Test {
         .descriptionReturnLine1("FPFN Description")
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("BEX")
-        .swissTimetableFieldNumber("b0.BEX")
         .validFrom(LocalDate.of(2020, 12, 12))
         .validTo(LocalDate.of(2099, 12, 12))
         .build();
@@ -64,5 +63,4 @@ class TimetableFieldNumberControllerV1Test {
             "version")
         .isEqualTo(timetableFieldNumberVersionModel);
   }
-
 }

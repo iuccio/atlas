@@ -1,7 +1,7 @@
 ==== Version {version}
 
 * Timetable Field Numbers*
-** _swissTimetableFieldNumber_ and _number_ has to be unique at any point in time.
+** _number_ has to be unique at any point in time.
 * Lines*
 ** _swissLineNumber_ has to be unique at any point in time.
 * Sublines*

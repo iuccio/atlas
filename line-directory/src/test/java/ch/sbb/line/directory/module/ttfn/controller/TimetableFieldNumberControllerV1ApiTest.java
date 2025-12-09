@@ -49,7 +49,6 @@ class TimetableFieldNumberControllerV1ApiTest extends BaseControllerApiTest {
           .meanOfTransport(TtfnMeanOfTransport.TRAIN)
           .number("10.100")
           .status(Status.VALIDATED)
-          .swissTimetableFieldNumber("b0.100")
           .validFrom(LocalDate.of(2020, 1, 1))
           .validTo(LocalDate.of(2020, 12, 31))
           .businessOrganisation("sbb")
@@ -73,7 +72,6 @@ class TimetableFieldNumberControllerV1ApiTest extends BaseControllerApiTest {
             .validTo(LocalDate.of(2000, 12, 31))
             .validFrom(LocalDate.of(2000, 1, 1))
             .businessOrganisation("sbb")
-            .swissTimetableFieldNumber("swissLineNumber")
             .number("123")
             .descriptionOutwardLine1("description")
             .descriptionReturnLine1("description")
@@ -96,7 +94,6 @@ class TimetableFieldNumberControllerV1ApiTest extends BaseControllerApiTest {
             .validTo(LocalDate.of(2000, 12, 31))
             .validFrom(LocalDate.of(2000, 1, 1))
             .businessOrganisation("sbb")
-            .swissTimetableFieldNumber("swissLineNumber")
             .number("123")
             .descriptionOutwardLine1("description")
             .descriptionReturnLine1("description")
@@ -157,7 +154,6 @@ class TimetableFieldNumberControllerV1ApiTest extends BaseControllerApiTest {
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("10.100")
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber("b0.100")
         .validFrom(LocalDate.of(2021, 1, 1))
         .validTo(LocalDate.of(2021, 12, 31))
         .businessOrganisation("BLS")
@@ -174,7 +170,6 @@ class TimetableFieldNumberControllerV1ApiTest extends BaseControllerApiTest {
         .meanOfTransport(version.getMeanOfTransport())
         .number(version.getNumber())
         .status(version.getStatus())
-        .swissTimetableFieldNumber(version.getSwissTimetableFieldNumber())
         .businessOrganisation(version.getBusinessOrganisation())
         .creationDate(version.getCreationDate())
         .editionDate(version.getEditionDate())
@@ -236,5 +231,4 @@ class TimetableFieldNumberControllerV1ApiTest extends BaseControllerApiTest {
         .contentType(MediaType.APPLICATION_JSON)
         .content(mapper.writeValueAsString(timetableFieldNumberVersionModel));
   }
-
 }

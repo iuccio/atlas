@@ -58,7 +58,6 @@ public class  QuoVadisDataImportService {
         TimetableFieldNumberVersion currentVersion = currentTtfn.getLast();
 
         TimetableFieldNumberVersion editedVersion = QuoVadisToAtlasMapper.toEntity(timetableFieldNumber);
-        editedVersion.setSwissTimetableFieldNumber(currentVersion.getSwissTimetableFieldNumber());
         editedVersion.setBusinessOrganisation(currentVersion.getBusinessOrganisation());
 
         editedVersion.setVersion(currentVersion.getVersion());

@@ -381,13 +381,11 @@
     "NEW": "Neues Fahrplanfeld erfassen",
     "DETAIL_TIMETABLE_INFORMATION": "Angaben zum Fahrplanfeld",
     "NEW_TIMETABLE_INFORMATION": "Angaben zum neuen Fahrplanfeld",
-    "SWISS_TIMETABLE_FIELD_NUMBER": "CH-Fahrplanfeldnummer",
     "BUSINESS_ORGANISATION": "Geschäftsorganisation",
     "NUMBER": "Fahrplanfeldnummer",
     "TTFNID": "Fahrplanfeldnummer-ID",
     "CONFLICT": {
-      "NUMBER": "Die Fahrplanfeldnummer {{number}} ist bereits von {{validFrom}} bis {{validTo}} durch {{ttfnid}} vergeben.",
-      "SWISS_NUMBER": "Die CH-Fahrplanfeldnummer {{swissTimetableFieldNumber}} ist bereits von {{validFrom}} bis {{validTo}} durch {{ttfnid}} vergeben."
+      "NUMBER": "Die Fahrplanfeldnummer {{number}} ist bereits von {{validFrom}} bis {{validTo}} durch {{ttfnid}} vergeben."
     },
     "NOTIFICATION": {
       "ADD_SUCCESS": "Die Fahrplanfeldnummer wurde erfolgreich hinzugefügt.",

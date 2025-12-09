@@ -18,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 abstract class BaseTimetableFieldNumberServiceTest {
 
-  protected static final String SWISS_TIMETABLE_FIELD_NUMBER = "b0.80.099";
-
   @MockitoBean
   private TimetableFieldNumberValidationService timetableFieldNumberValidationService;
 
@@ -56,7 +54,6 @@ abstract class BaseTimetableFieldNumberServiceTest {
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("80.099.1")
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber(SWISS_TIMETABLE_FIELD_NUMBER)
         .validFrom(LocalDate.of(2020, 1, 1))
         .validTo(LocalDate.of(2021, 12, 31))
         .businessOrganisation("sbb");
@@ -69,7 +66,6 @@ abstract class BaseTimetableFieldNumberServiceTest {
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("80.099.2")
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber(SWISS_TIMETABLE_FIELD_NUMBER)
         .validFrom(LocalDate.of(2022, 1, 1))
         .validTo(LocalDate.of(2023, 12, 31))
         .businessOrganisation("sbb");
@@ -82,7 +78,6 @@ abstract class BaseTimetableFieldNumberServiceTest {
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("80.099.3")
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber(SWISS_TIMETABLE_FIELD_NUMBER)
         .validFrom(LocalDate.of(2024, 1, 1))
         .validTo(LocalDate.of(2024, 12, 31))
         .businessOrganisation("sbb");
@@ -95,7 +90,6 @@ abstract class BaseTimetableFieldNumberServiceTest {
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("80.099.4")
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber(SWISS_TIMETABLE_FIELD_NUMBER)
         .validFrom(LocalDate.of(2025, 1, 1))
         .validTo(LocalDate.of(2025, 12, 31))
         .businessOrganisation("sbb");
@@ -108,7 +102,6 @@ abstract class BaseTimetableFieldNumberServiceTest {
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("80.099.5")
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber(SWISS_TIMETABLE_FIELD_NUMBER)
         .validFrom(LocalDate.of(2026, 1, 1))
         .validTo(LocalDate.of(2026, 12, 31))
         .businessOrganisation("sbb");

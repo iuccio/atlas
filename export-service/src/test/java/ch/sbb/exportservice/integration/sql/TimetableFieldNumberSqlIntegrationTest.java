@@ -35,7 +35,6 @@ class TimetableFieldNumberSqlIntegrationTest extends BaseLiDiSqlIntegrationTest 
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("number")
         .ttfnid("ch:1:ttfnid:123")
-        .swissTimetableFieldNumber("sttfn")
         .status(Status.VALIDATED)
         .validFrom(LocalDate.of(2020, 1, 1))
         .validTo(LocalDate.of(2020, 12, 31))
@@ -66,7 +65,6 @@ class TimetableFieldNumberSqlIntegrationTest extends BaseLiDiSqlIntegrationTest 
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("number")
         .ttfnid("ch:1:ttfnid:123")
-        .swissTimetableFieldNumber("sttfn")
         .status(Status.VALIDATED)
         .validFrom(LocalDate.now())
         .validTo(LocalDate.now())
@@ -98,7 +96,6 @@ class TimetableFieldNumberSqlIntegrationTest extends BaseLiDiSqlIntegrationTest 
         .meanOfTransport(TtfnMeanOfTransport.TRAIN)
         .number("number")
         .ttfnid("ch:1:ttfnid:123")
-        .swissTimetableFieldNumber("sttfn")
         .status(Status.VALIDATED)
         .validFrom(timetableYearsDateRange.getFrom().minusYears(1))
         .validTo(timetableYearsDateRange.getTo().minusYears(1))
@@ -130,5 +127,4 @@ class TimetableFieldNumberSqlIntegrationTest extends BaseLiDiSqlIntegrationTest 
     connection.close();
     return result;
   }
-
 }

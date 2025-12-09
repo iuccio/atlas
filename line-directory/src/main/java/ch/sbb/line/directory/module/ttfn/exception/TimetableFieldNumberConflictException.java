@@ -40,27 +40,7 @@ public class TimetableFieldNumberConflictException extends AtlasException {
         .filter(version -> Objects.equals(version.getNumber(), newVersion.getNumber()))
         .forEach(version -> details.add(toNumberOverlapDetail(version)));
 
-    overlappingVersions.stream()
-        .filter(version -> version.getSwissTimetableFieldNumber()
-            .equalsIgnoreCase(
-                newVersion.getSwissTimetableFieldNumber()))
-        .forEach(version -> details.add(
-            toSwissTimetableFieldNumberOverlapDetail(version)));
-
     return details;
-  }
-
-  private Detail toSwissTimetableFieldNumberOverlapDetail(TimetableFieldNumberVersion version) {
-    return ValidFromDetail.builder()
-        .field(Fields.swissTimetableFieldNumber)
-        .message(
-            "SwissTimetableFieldNumber {0} already taken from {1} to {2} by {3}")
-        .displayInfo(DisplayInfo.builder().code(CODE_PREFIX + "SWISS_NUMBER")
-            .with(Fields.swissTimetableFieldNumber, newVersion.getSwissTimetableFieldNumber())
-            .with(Fields.validFrom, version.getValidFrom())
-            .with(Fields.validTo, version.getValidTo())
-            .with(Fields.ttfnid, version.getTtfnid())
-            .build()).build();
   }
 
   private Detail toNumberOverlapDetail(TimetableFieldNumberVersion version) {

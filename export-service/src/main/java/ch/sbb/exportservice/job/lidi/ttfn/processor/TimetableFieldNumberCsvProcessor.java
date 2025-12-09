@@ -19,7 +19,6 @@ public class TimetableFieldNumberCsvProcessor implements ItemProcessor<Timetable
         .validFrom(DATE_FORMATTER.format(timetableFieldNumber.getValidFrom()))
         .validTo(DATE_FORMATTER.format(timetableFieldNumber.getValidTo()))
         .status(timetableFieldNumber.getStatus())
-        .swissTimetableFieldNumber(timetableFieldNumber.getSwissTimetableFieldNumber())
         .number(timetableFieldNumber.getNumber())
         .businessOrganisation(timetableFieldNumber.getBusinessOrganisation())
         .descriptionOutwardLine1(timetableFieldNumber.getDescriptionOutwardLine1())
@@ -34,5 +33,4 @@ public class TimetableFieldNumberCsvProcessor implements ItemProcessor<Timetable
         .editionTime(LOCAL_DATE_FORMATTER.format(timetableFieldNumber.getEditionDate()))
         .build();
   }
-
 }

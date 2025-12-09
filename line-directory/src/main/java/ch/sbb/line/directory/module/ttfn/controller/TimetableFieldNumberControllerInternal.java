@@ -11,8 +11,8 @@ import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumber;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumberVersion;
 import ch.sbb.line.directory.module.ttfn.mapper.TimetableFieldNumberMapper;
 import ch.sbb.line.directory.module.ttfn.search.TimetableFieldNumberSearchRestrictions;
-import ch.sbb.line.directory.module.ttfn.service.quovadis.QuoVadisDataImportService;
 import ch.sbb.line.directory.module.ttfn.service.TimetableFieldNumberService;
+import ch.sbb.line.directory.module.ttfn.service.quovadis.QuoVadisDataImportService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -80,5 +80,11 @@ public class TimetableFieldNumberControllerInternal implements TimetableFieldNum
   @Override
   public void importQuoVadisData(MultipartFile file) {
     quoVadisDataImportService.importDataFromQuoVadis(fileService.getFileFromMultipart(file));
+  }
+
+  // todo: remove after maintenance execution after prod release of ATLAS-3254
+  @Override
+  public void mergeAllVersions() {
+    timetableFieldNumberService.mergeAllVersions();
   }
 }
