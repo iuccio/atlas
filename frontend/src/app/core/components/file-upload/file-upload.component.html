@@ -1,36 +1,53 @@
 <div
   class="file-upload-container d-flex flex-column align-items-center"
-  atlas-file-drop
+  atlasFileDrop
   (filesDropped)="onFilesDropped($event)"
   (click)="maxFileCount !== uploadedFiles.length && selectFilesFromSystem()"
 >
-  <div class="file-upload-description">{{ 'COMMON.FILEUPLOAD.DROPZONE' | translate }}</div>
-  <div class="file-upload-description">{{ 'COMMON.FILEUPLOAD.OR' | translate }}</div>
+  <div class="file-upload-description">
+    {{ 'COMMON.FILEUPLOAD.DROPZONE' | translate }}
+  </div>
+  <div class="file-upload-description">
+    {{ 'COMMON.FILEUPLOAD.OR' | translate }}
+  </div>
 
   <div class="d-flex justify-content-center gap-3">
-    <atlas-button
-      *ngIf="isDownloadButtonVisible"
-      (buttonClicked)="downloadExcel()"
-      [disabled]="isDownloadButtonDisabled"
-      buttonDataCy="download-csv"
-      buttonText="BULK_IMPORT.BUTTON.DOWNLOAD"
-      buttonType="create"
-      [attr.title]="isDownloadButtonDisabled ? ( 'BULK_IMPORT.BUTTON.DISABLED_MESSAGE' | translate ) : ''"
-      (click)="$event.stopPropagation()"
-    >
-      <ng-template #rightIcon>
-        <download-icon [readonly]="true" [disabled]="isDownloadButtonDisabled" class="ps-2"></download-icon>
-      </ng-template>
-    </atlas-button>
+    @if (isDownloadButtonVisible) {
+      <atlas-button
+        (buttonClicked)="downloadExcel()"
+        [disabled]="isDownloadButtonDisabled"
+        buttonDataCy="download-csv"
+        buttonText="BULK_IMPORT.BUTTON.DOWNLOAD"
+        buttonType="create"
+        [attr.title]="
+          isDownloadButtonDisabled
+            ? ('BULK_IMPORT.BUTTON.DISABLED_MESSAGE' | translate)
+            : ''
+        "
+        (click)="$event.stopPropagation()"
+      >
+        <ng-template #rightIcon>
+          <atlas-download-icon
+            [readonly]="true"
+            [disabled]="isDownloadButtonDisabled"
+            class="ps-2"
+          ></atlas-download-icon>
+        </ng-template>
+      </atlas-button>
+    }
 
     <atlas-button
-      [buttonText]="maxFileCount > 1 ? ('COMMON.FILEUPLOAD.SELECT_FILES' | translate) : ('COMMON.FILEUPLOAD.SELECT_FILE' | translate)"
+      [buttonText]="
+        maxFileCount > 1
+          ? ('COMMON.FILEUPLOAD.SELECT_FILES' | translate)
+          : ('COMMON.FILEUPLOAD.SELECT_FILE' | translate)
+      "
       buttonType="create"
       wrapperStyleClass="mb-3"
       [disabled]="maxFileCount === uploadedFiles.length"
     >
       <ng-template #rightIcon>
-        <upload-icon class="ps-2"></upload-icon>
+        <atlas-upload-icon class="ps-2"></atlas-upload-icon>
       </ng-template>
     </atlas-button>
   </div>
@@ -43,26 +60,30 @@
     style="display: none"
     (change)="onFileInputChanged($event)"
   />
-  <ng-container *ngFor="let file of uploadedFiles">
+  @for (file of uploadedFiles; track file) {
     <atlas-file
       [file]="file"
       [ngStyle]="{ width: '100%' }"
       [deleteEnabled]="true"
       (fileDeleted)="fileDeleted($event)"
     ></atlas-file>
-  </ng-container>
+  }
 
-  <div *ngIf="errorFiles" class="errors">
-    <div *ngFor="let errorFile of errorFiles">
-      {{
-        errorFile.errorMessage
-          | translate
-            : {
-                filename: errorFile.file.name,
-                maxFileCount: errorFile.maxFileCount,
-                maxsize: maxFileSize | fileSize
-              }
-      }}
+  @if (errorFiles) {
+    <div class="errors">
+      @for (errorFile of errorFiles; track errorFile) {
+        <div>
+          {{
+            errorFile.errorMessage
+              | translate
+                : {
+                    filename: errorFile.file.name,
+                    maxFileCount: errorFile.maxFileCount,
+                    maxsize: maxFileSize | fileSize,
+                  }
+          }}
+        </div>
+      }
     </div>
-  </div>
+  }
 </div>

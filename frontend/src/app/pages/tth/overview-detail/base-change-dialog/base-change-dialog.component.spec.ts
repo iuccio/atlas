@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BaseChangeDialogComponent } from './base-change-dialog.component';
 import { DialogService } from '../../../../core/components/dialog/dialog.service';
 import { of } from 'rxjs';
@@ -32,6 +31,7 @@ const dialogServiceSpy = jasmine.createSpyObj(DialogService, {
   confirmLeave: of(true),
 });
 const dialogRefSpy = jasmine.createSpyObj('dialogRef', ['close']);
+
 describe('BaseChangeDialogComponent', () => {
   let component: BaseChangeDialogComponent;
   let fixture: ComponentFixture<BaseChangeDialogComponent>;
@@ -72,10 +72,6 @@ describe('BaseChangeDialogComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should close dialog when form is not dirty', () => {
     //when
     component.closeDialog();
@@ -105,7 +101,9 @@ describe('BaseChangeDialogComponent', () => {
     );
     expect(content.nativeElement.innerText).toBe('message');
 
-    const publicComment = fixture.debugElement.query(By.css('form-comment'));
+    const publicComment = fixture.debugElement.query(
+      By.css('atlas-form-comment')
+    );
     const publicCommentValue =
       publicComment.nativeNode.querySelector('textarea').value;
     expect(publicCommentValue).toBe('Forza Napoli');

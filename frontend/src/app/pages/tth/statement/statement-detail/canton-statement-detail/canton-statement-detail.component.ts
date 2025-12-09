@@ -51,7 +51,7 @@ import { StatementDetailBaseComponent } from '../statement-detail-base.component
 import { TimetableHearingYearInternalService } from '../../../../../api/service/lidi/timetable-hearing-year-internal.service';
 
 @Component({
-  selector: 'app-statement-detail',
+  selector: 'atlas-statement-detail',
   templateUrl: './canton-statement-detail.component.html',
   styleUrls: ['./canton-statement-detail.component.scss'],
   imports: [

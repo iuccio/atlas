@@ -28,7 +28,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 @Component({
-  selector: 'app-switch-version',
+  selector: 'atlas-switch-version',
   template: '<h1>version switch mock</h1>',
 })
 export class MockSwitchVersionComponent {
@@ -40,7 +40,7 @@ export class MockSwitchVersionComponent {
 }
 
 @Component({
-  selector: 'form-info-icon',
+  selector: 'atlas-form-info-icon',
   template: '',
 })
 export class MockInfoIconComponent {
@@ -48,7 +48,7 @@ export class MockInfoIconComponent {
 }
 
 @Component({
-  selector: 'bo-select',
+  selector: 'atlas-bo-select',
   template: '<p>Mock Business Organisation Select Component</p>',
 })
 export class MockBoSelectComponent {
@@ -60,7 +60,7 @@ export class MockBoSelectComponent {
 }
 
 @Component({
-  selector: 'tu-select',
+  selector: 'atlas-tu-select',
   template: '<p>Mock TU Select Component</p>',
 })
 export class MockTuSelectComponent {
@@ -75,7 +75,7 @@ export class MockTuSelectComponent {
 }
 
 @Component({
-  selector: 'ttfn-select',
+  selector: 'atlas-ttfn-select',
   template: '<p>Mock TTFN Select Component</p>',
 })
 export class MockTimetableFieldNumberSelectComponent {
@@ -89,8 +89,6 @@ export class MockTimetableFieldNumberSelectComponent {
 
   @Output() selectedTimetableFieldNumberChanged = new EventEmitter();
   @Output() ttfnSelectionChanged = new EventEmitter<TimetableFieldNumber>();
-
-  timetableFieldNumbers: Observable<TimetableFieldNumber[]> = of([]);
 }
 
 @Component({
@@ -121,7 +119,7 @@ export class MockSelectComponent {
 }
 
 @Component({
-  selector: 'app-table',
+  selector: 'atlas-table',
   template: '<p>Mock Table Component</p>',
 })
 export class MockTableComponent<DATATYPE> {
@@ -165,7 +163,7 @@ export class MockAtlasButtonComponent {
 }
 
 @Component({
-  selector: 'app-user-detail-info [record]',
+  selector: 'atlas-user-detail-info [record]',
   template: '',
 })
 export class MockUserDetailInfoComponent {
@@ -173,7 +171,7 @@ export class MockUserDetailInfoComponent {
 }
 
 @Component({
-  selector: 'app-atlas-field-error',
+  selector: 'atlas-field-error',
   template: '',
 })
 export class MockAtlasFieldErrorComponent {
@@ -184,6 +182,7 @@ export class MockAtlasFieldErrorComponent {
 }
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'mat-paginator',
   template: '',
 })
@@ -195,7 +194,7 @@ export class MockMatPaginatorComponent {
 }
 
 @Component({
-  selector: 'app-atlas-label-field',
+  selector: 'atlas-label-field',
   template: '',
 })
 export class MockAtlasLabelFieldComponent {
@@ -207,7 +206,7 @@ export class MockAtlasLabelFieldComponent {
 }
 
 @Component({
-  selector: 'app-navigation-sepodi-prm',
+  selector: 'atlas-navigation-sepodi-prm',
   template: '<h1>MockNavigationSepodiPrmComponent</h1>',
 })
 export class MockNavigationSepodiPrmComponent {
@@ -218,7 +217,7 @@ export class MockNavigationSepodiPrmComponent {
 }
 
 @Component({
-  selector: 'prm-recording-obligation',
+  selector: 'atlas-prm-recording-obligation',
   template: '<h1>MockPrmRecordingObligationComponent</h1>',
 })
 export class MockPrmRecordingObligationComponent {

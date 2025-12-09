@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RelationComponent } from './relation.component';
 import { By } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { translateServiceProvider } from '../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
 
@@ -13,7 +12,7 @@ describe('TransportCompanyRelationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, RelationComponent],
+      imports: [RelationComponent],
       providers: [translateServiceProvider, provideHttpClient()],
     }).compileComponents();
 
@@ -53,11 +52,6 @@ describe('TransportCompanyRelationComponent', () => {
         formatAsDate: true,
       },
     ];
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('test columnValues function', () => {

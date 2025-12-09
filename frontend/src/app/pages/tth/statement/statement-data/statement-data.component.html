@@ -8,7 +8,7 @@
 
 <div class="d-flex flex-column col-8 mt-3 mb-5">
   <div class="label-input-row">
-    <app-atlas-label-field fieldLabel="TTH.STATEMENT.TOPIC" />
+    <atlas-label-field fieldLabel="TTH.STATEMENT.TOPIC" />
     <div class="col-8">
       <atlas-text-field [formGroup]="form()" controlName="topic">
       </atlas-text-field>
@@ -17,38 +17,38 @@
 </div>
 <div class="d-flex flex-row col-12 mb-4">
   <div class="d-flex flex-column col-12">
-    <tu-select
+    <atlas-tu-select
       [formGroup]="form()"
       controlName="responsibleTransportCompanies"
       data-cy="responsibleTransportCompanies"
-    ></tu-select>
+    ></atlas-tu-select>
   </div>
 </div>
 <div class="d-flex flex-row col-12 mb-3 mt-4">
   <div class="d-flex flex-column col-12">
-    <ttfn-select
+    <atlas-ttfn-select
       [formGroup]="form()"
       [validOn]="ttfnValidOn()"
       controlName="ttfnid"
       data-cy="ttfnid"
       (ttfnSelectionChanged)="ttfnSelectionChanged($event)"
       [required]="false"
-    ></ttfn-select>
+    ></atlas-ttfn-select>
   </div>
 </div>
 <div class="d-flex flex-row col-12">
   <div class="d-flex flex-column col-12">
     <atlas-text-field
       [fieldExamples]="[
-                  { label: 'FORM.FOR_EXAMPLE', translate: true },
-                  { label: ' Wiesenbach', translate: false },
-                  { label: ' | ', translate: false },
-                  {
-                    label: 'FORM.MAX_CHARS',
-                    translate: true,
-                    arg: { key: 'numberOfChars', value: '255' },
-                  },
-                ]"
+        { label: 'FORM.FOR_EXAMPLE', translate: true },
+        { label: ' Wiesenbach', translate: false },
+        { label: ' | ', translate: false },
+        {
+          label: 'FORM.MAX_CHARS',
+          translate: true,
+          arg: { key: 'numberOfChars', value: '255' },
+        },
+      ]"
       [formGroup]="form()"
       controlName="stopPlace"
       fieldLabel="TTH.STATEMENT.STOP_POINT"

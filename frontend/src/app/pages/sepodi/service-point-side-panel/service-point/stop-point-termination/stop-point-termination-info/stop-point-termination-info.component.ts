@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Pages } from '../../../../../pages';
 
 @Component({
-  selector: 'app-stop-point-termination-info',
+  selector: 'atlas-stop-point-termination-info',
   imports: [TranslatePipe],
   providers: [TranslatePipe],
   styleUrls: ['./stop-point-termination-info.component.scss'],

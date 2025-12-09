@@ -19,7 +19,7 @@ import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
 
 @Component({
-  selector: 'form-search-select',
+  selector: 'atlas-form-search-select',
   templateUrl: './search-select.component.html',
   imports: [
     ReactiveFormsModule,

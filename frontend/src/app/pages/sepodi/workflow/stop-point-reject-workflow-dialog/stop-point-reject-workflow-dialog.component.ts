@@ -15,14 +15,14 @@ import { DetailDialogHelperService } from '../../../../core/detail/detail-dialog
 import { DialogCloseComponent } from '../../../../core/components/dialog/close/dialog-close.component';
 import { DialogContentComponent } from '../../../../core/components/dialog/content/dialog-content.component';
 import { TextFieldComponent } from '../../../../core/form-components/text-field/text-field.component';
-import { CommentComponent } from '../../../../core/form-components/comment/comment.component';
 import { DialogFooterComponent } from '../../../../core/components/dialog/footer/dialog-footer.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { UserAdministrationService } from '../../../../api/service/user-administration/user-administration.service';
 import { StopPointWorkflowService } from '../../../../api/service/workflow/stop-point-workflow.service';
+import { CommentComponent } from '../../../../core/form-components/comment/comment.component';
 
 @Component({
-  selector: 'app-stop-point-reject-workflow-dialog',
+  selector: 'atlas-stop-point-reject-workflow-dialog',
   templateUrl: './stop-point-reject-workflow-dialog.component.html',
   styleUrl: './stop-point-reject-workflow-dialog.component.scss',
   imports: [
@@ -30,9 +30,9 @@ import { StopPointWorkflowService } from '../../../../api/service/workflow/stop-
     DialogContentComponent,
     ReactiveFormsModule,
     TextFieldComponent,
-    CommentComponent,
     DialogFooterComponent,
     TranslatePipe,
+    CommentComponent,
   ],
   providers: [TranslatePipe],
 })

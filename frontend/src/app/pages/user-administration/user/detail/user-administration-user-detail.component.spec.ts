@@ -11,13 +11,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 
 @Component({
-  selector: 'app-user-administration-create',
+  selector: 'atlas-user-administration-create',
   template: '',
 })
 class MockAppUserAdministrationCreateComponent {}
 
 @Component({
-  selector: 'Create new scratch file from selection',
+  selector: 'atlas-user-administration-user-edit',
   template: '',
 })
 class MockUserAdministrationUserEditComponent {}

@@ -1,7 +1,7 @@
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
-@Directive({ selector: '[infoLink]' })
+@Directive({ selector: '[atlasInfoLink]' })
 export class InfoLinkDirective {
   @Input() infoLinkTranslationKey = '';
 

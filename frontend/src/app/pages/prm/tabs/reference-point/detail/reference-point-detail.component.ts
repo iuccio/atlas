@@ -12,7 +12,7 @@ import { EMPTY, Observable, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PrmTabDetailBaseComponent } from '../../../shared/prm-tab-detail-base.component';
 import { DetailPageContainerComponent } from '../../../../../core/components/detail-page-container/detail-page-container.component';
-import { NgIf } from '@angular/common';
+
 import { DateRangeTextComponent } from '../../../../../core/versioning/date-range-text/date-range-text.component';
 import { DetailPageContentComponent } from '../../../../../core/components/detail-page-content/detail-page-content.component';
 import { SloidComponent } from '../../../../../core/form-components/sloid/sloid.component';
@@ -27,12 +27,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ReferencePointService } from '../../../../../api/service/prm/reference-point/reference-point.service';
 
 @Component({
-  selector: 'app-reference-point',
+  selector: 'atlas-reference-point',
   templateUrl: './reference-point-detail.component.html',
   providers: [ValidityService],
   imports: [
     DetailPageContainerComponent,
-    NgIf,
     DateRangeTextComponent,
     DetailPageContentComponent,
     SloidComponent,

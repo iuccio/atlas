@@ -19,7 +19,7 @@ import { BoSelectionDisplayPipe } from './bo-selection-display.pipe';
 import { BusinessOrganisationService } from '../../../api/service/bodi/business-organisation.service';
 
 @Component({
-  selector: 'bo-select',
+  selector: 'atlas-bo-select',
   templateUrl: './business-organisation-select.component.html',
   imports: [
     SearchSelectComponent,

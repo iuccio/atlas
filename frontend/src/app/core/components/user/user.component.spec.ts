@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { UserComponent } from './user.component';
 import { AuthService } from '../../auth/auth.service';
 import { By } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   adminUserServiceMock,
   authServiceSpy,
@@ -18,7 +16,7 @@ describe('UserComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, UserComponent],
+      imports: [UserComponent],
       providers: [
         translateServiceProvider,
         provideHttpClient(),
@@ -33,7 +31,6 @@ describe('UserComponent', () => {
     component = fixture.componentInstance;
 
     component.init();
-    fixture.detectChanges();
   });
 
   describe('Component Rendering', () => {
@@ -42,6 +39,7 @@ describe('UserComponent', () => {
     });
 
     it('should render username on the title', () => {
+      fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('button').title).toContain(
         'Test'
       );
@@ -49,9 +47,9 @@ describe('UserComponent', () => {
 
     it('should logout', () => {
       // Open user menu
+      fixture.detectChanges();
       const usermenuOpenButton = fixture.debugElement.query(By.css('button'));
       usermenuOpenButton.nativeElement.click();
-      fixture.detectChanges();
 
       // Logout
       const logoutButton = fixture.debugElement.query(By.css('#logout'));

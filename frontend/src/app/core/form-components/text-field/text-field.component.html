@@ -1,11 +1,11 @@
 @if (fieldLabel) {
-  <app-atlas-label-field
+  <atlas-label-field
     [fieldExamples]="fieldExamples"
     [required]="required"
     fieldLabel="{{ fieldLabel }}"
     infoIconLink="{{ infoIconLink }}"
     infoIconTitle="{{ infoIconTitle }}"
-  ></app-atlas-label-field>
+  ></atlas-label-field>
 }
 <form [formGroup]="formGroup">
   <div [class]="{ 'text-field-wrapper': paddingBottom }">
@@ -21,17 +21,17 @@
         type="text"
         placeholder="{{ placeholder | translate }}"
         [attr.data-cy]="controlName"
-        emptyToNull
+        atlasEmptyToNull
       />
       <ng-container
         #customChildInputPostfixTemplate
         *ngTemplateOutlet="customChildInputPostfixTemplate"
       ></ng-container>
     </div>
-    <app-atlas-field-error
-      [customError]="customError"
-      [form]="formGroup"
-      controlName="{{ controlName }}"
-    ></app-atlas-field-error>
+    @let ctrl = formGroup.get(controlName);
+    <atlas-field-error
+      [control]="ctrl"
+      [ctrlErrors]="ctrl?.errors"
+    ></atlas-field-error>
   </div>
 </form>

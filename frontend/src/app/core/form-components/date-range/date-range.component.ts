@@ -7,21 +7,21 @@ import {
   MatDatepicker,
   MatDatepickerInput,
 } from '@angular/material/datepicker';
-import { DateIconComponent } from '../date-icon/date-icon.component';
 import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { DateIconComponent } from '../date-icon/date-icon.component';
 
 @Component({
-  selector: 'form-date-range',
+  selector: 'atlas-form-date-range',
   templateUrl: './date-range.component.html',
   styleUrls: ['../text-field/text-field.component.scss'],
   imports: [
     ReactiveFormsModule,
     AtlasLabelFieldComponent,
     MatDatepickerInput,
-    DateIconComponent,
     MatDatepicker,
     AtlasFieldErrorComponent,
+    DateIconComponent,
   ],
   providers: [TranslatePipe],
 })

@@ -27,20 +27,18 @@ import {
   MatRowDef,
   MatTable,
 } from '@angular/material/table';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-switch-version',
+  selector: 'atlas-switch-version',
   templateUrl: './switch-version.component.html',
   styleUrls: ['./switch-version.component.scss'],
   imports: [
     MatTable,
-    NgFor,
     MatColumnDef,
     MatHeaderCellDef,
     MatHeaderCell,
     MatCellDef,
-    NgIf,
     MatCell,
     MatHeaderRowDef,
     MatHeaderRow,

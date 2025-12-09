@@ -23,7 +23,7 @@ import { ClientCredentialAdministrationService } from '../../../../../api/servic
 import { ClientCredentialCreate } from '../../../../../api/model/clientCredentialCreate';
 
 @Component({
-  selector: 'app-client-credential-administration-create',
+  selector: 'atlas-client-credential-administration-create',
   templateUrl: './user-administration-client-create.component.html',
   imports: [
     ScrollToTopDirective,

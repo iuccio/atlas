@@ -78,7 +78,7 @@
       [completed]="isStepThreeCompl$ | async"
       [label]="'WORKFLOW.DECISION.DECISION' | translate"
     >
-      <decision-form [form]="decision"></decision-form>
+      <atlas-decision-form [form]="decision"></atlas-decision-form>
 
       <div class="d-flex justify-content-center mt-4">
         <button class="atlas-primary-btn me-3" (click)="cancel()">
@@ -92,4 +92,4 @@
   </mat-stepper>
 </atlas-dialog-content>
 
-<app-loading-spinner [isLoading]="loading"></app-loading-spinner>
+<atlas-loading-spinner [isLoading]="loading"></atlas-loading-spinner>

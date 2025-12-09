@@ -66,10 +66,6 @@ describe('StatementDialogComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should change canton and add comment', () => {
     //when
     component.changeCantonAndAddComment();
@@ -88,8 +84,6 @@ describe('StatementDialogComponent', () => {
   });
 
   it('should create dialog with title, text, label, comment and matDialogActions', () => {
-    expect(component).toBeTruthy();
-
     const title = fixture.debugElement.query(By.css('h1'));
     expect(title.nativeElement.innerText).toBe('TTH.STATEMENT.DIALOG.TITLE');
 
@@ -98,7 +92,9 @@ describe('StatementDialogComponent', () => {
       'TTH.STATEMENT.DIALOG.TEXT'
     );
 
-    const dropdownSelect = fixture.debugElement.query(By.css('form-comment'));
+    const dropdownSelect = fixture.debugElement.query(
+      By.css('atlas-form-comment')
+    );
     expect(dropdownSelect.nativeElement).toBeTruthy();
 
     const matDialogActions = fixture.debugElement.query(

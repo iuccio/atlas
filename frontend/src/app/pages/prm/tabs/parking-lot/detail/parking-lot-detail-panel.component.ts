@@ -13,7 +13,7 @@ import { DetailWithRelationTabComponent } from '../../relation/tab/detail-with-r
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-parking-lot-detail-panel',
+  selector: 'atlas-parking-lot-detail-panel',
   templateUrl: './parking-lot-detail-panel.component.html',
   imports: [
     DetailPageContainerComponent,

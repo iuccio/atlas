@@ -7,7 +7,7 @@ import { UserSelectFormatPipe } from './user-select-format.pipe';
 import { UserAdministrationService } from '../../../../api/service/user-administration/user-administration.service';
 
 @Component({
-  selector: 'app-user-select',
+  selector: 'atlas-user-select',
   templateUrl: './user-select.component.html',
   imports: [SearchSelectComponent, ReactiveFormsModule, UserSelectFormatPipe],
 })

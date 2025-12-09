@@ -1,66 +1,22 @@
-import { Component, Input } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { AtlasFieldCustomError } from './atlas-field-custom-error';
+import { Component, computed, inject, input } from '@angular/core';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { ValidationService } from '../../validation/validation.service';
-import { NgFor, NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-atlas-field-error',
+  selector: 'atlas-field-error',
   templateUrl: './atlas-field-error.component.html',
   styleUrls: ['./atlas-field-error.component.scss'],
-  imports: [NgIf, NgFor, TranslatePipe],
+  imports: [TranslatePipe],
 })
 export class AtlasFieldErrorComponent {
-  @Input() controlName!: string;
-  @Input() form: FormGroup = new FormGroup({});
-  @Input() control!: FormControl;
-  @Input() customError!: AtlasFieldCustomError;
+  readonly control = input.required<AbstractControl | null>();
+  readonly ctrlErrors = input<ValidationErrors | null>();
+  protected readonly errors = computed(() => this.getErrors(this.ctrlErrors()));
 
-  constructor(private validationService: ValidationService) {}
+  private readonly validationService = inject(ValidationService);
 
-  get errors() {
-    if (this.control) {
-      return this.validationService.getValidation(this.control.errors || null);
-    } else {
-      if (this.controlName) {
-        return this.getValidationErrorsByControlName(this.controlName);
-      } else {
-        const validationErrors = this.form.errors;
-        if (validationErrors) {
-          return this.validationService.getValidation(validationErrors);
-        }
-      }
-    }
-    return null;
-  }
-
-  private getValidationErrorsByControlName(controlName: string) {
-    const formField = this.form.get(controlName);
-    const validationErrors = this.getValidationErrors();
-    if (validationErrors) {
-      if (
-        (validationErrors['required'] && formField?.touched) ||
-        !validationErrors['required']
-      ) {
-        return this.validationService.getValidation(validationErrors);
-      }
-    }
-    return null;
-  }
-
-  get error() {
-    const validationErrors = this.getValidationErrors();
-    if (validationErrors) {
-      if (this.customError && validationErrors[this.customError.errorKey]) {
-        return this.customError.translationKey;
-      }
-    }
-    return null;
-  }
-
-  private getValidationErrors() {
-    const formField = this.form.get(this.controlName);
-    return formField?.errors;
+  private getErrors(ctrlErrors?: ValidationErrors | null) {
+    return this.validationService.getValidation(ctrlErrors ?? null);
   }
 }

@@ -29,7 +29,7 @@ import { DetailPageContentComponent } from '../../../../core/components/detail-p
 import { TextFieldComponent } from '../../../../core/form-components/text-field/text-field.component';
 import { CommentComponent } from '../../../../core/form-components/comment/comment.component';
 import { RelationComponent } from '../../../../core/components/relation/relation.component';
-import { NgIf } from '@angular/common';
+
 import { BusinessOrganisationSelectComponent } from '../../../../core/form-components/bo-select/business-organisation-select.component';
 import { DateRangeComponent } from '../../../../core/form-components/date-range/date-range.component';
 import { DetailFooterComponent } from '../../../../core/components/detail-footer/detail-footer.component';
@@ -50,14 +50,13 @@ import { BusinessOrganisationService } from '../../../../api/service/bodi/busine
     TextFieldComponent,
     CommentComponent,
     RelationComponent,
-    NgIf,
     BusinessOrganisationSelectComponent,
     DateRangeComponent,
     DetailFooterComponent,
     AtlasButtonComponent,
     BackButtonDirective,
-    TranslatePipe,
-  ],
+    TranslatePipe
+],
 })
 export class TransportCompanyDetailComponent
   implements OnInit, DetailFormComponent

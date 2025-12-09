@@ -23,22 +23,21 @@ import { ValidationService } from '../../validation/validation.service';
 import { Observable } from 'rxjs';
 import { DialogCloseComponent } from '../../components/dialog/close/dialog-close.component';
 import { DialogContentComponent } from '../../components/dialog/content/dialog-content.component';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { LineWorkflowFormComponent } from '../workflow-form/line-workflow-form.component';
 import { LineWorkflowCheckFormComponent } from '../workflow-check-form/line-workflow-check-form.component';
 import { DialogFooterComponent } from '../../components/dialog/footer/dialog-footer.component';
 import { UserAdministrationService } from '../../../api/service/user-administration/user-administration.service';
-import WorkflowTypeEnum = Workflow.WorkflowTypeEnum;
 import { LineWorkflowService } from '../../../api/service/workflow/line-workflow.service';
+import WorkflowTypeEnum = Workflow.WorkflowTypeEnum;
 
 @Component({
-  selector: 'app-workflow-dialog',
+  selector: 'atlas-workflow-dialog',
   templateUrl: './line-workflow-dialog.component.html',
   styleUrls: ['./line-workflow-dialog.component.scss'],
   imports: [
     DialogCloseComponent,
     DialogContentComponent,
-    NgIf,
     LineWorkflowFormComponent,
     ReactiveFormsModule,
     LineWorkflowCheckFormComponent,

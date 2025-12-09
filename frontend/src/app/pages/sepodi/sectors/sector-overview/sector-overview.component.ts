@@ -15,7 +15,7 @@ import { SectorPermissionService } from '../sector-permission.service';
 import { ReadSectorVersion } from '../../../../api/model/readSectorVersion';
 
 @Component({
-  selector: 'app-sector-overview',
+  selector: 'atlas-sector-overview',
   imports: [
     TranslatePipe,
     DetailPageContentComponent,

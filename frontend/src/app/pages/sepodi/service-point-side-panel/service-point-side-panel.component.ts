@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   ActivatedRoute,
-  RouterLinkActive,
   RouterLink,
+  RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
 import { ReadServicePointVersion } from '../../../api';
@@ -14,8 +14,8 @@ import { TrafficPointMapService } from '../map/traffic-point-map.service';
 import { Countries } from '../../../core/country/Countries';
 import { DetailPageContainerComponent } from '../../../core/components/detail-page-container/detail-page-container.component';
 import { DateRangeTextComponent } from '../../../core/versioning/date-range-text/date-range-text.component';
-import { MatTabNav, MatTabLink, MatTabNavPanel } from '@angular/material/tabs';
-import { NgFor } from '@angular/common';
+import { MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
+
 import { SplitServicePointNumberPipe } from '../../../core/search-service-point/split-service-point-number.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -47,14 +47,13 @@ export const FOREIGN_TABS = TABS.filter((i) =>
 );
 
 @Component({
-  selector: 'app-service-point-side-panel',
+  selector: 'atlas-service-point-side-panel',
   templateUrl: './service-point-side-panel.component.html',
   styleUrls: ['./service-point-side-panel.component.scss'],
   imports: [
     DetailPageContainerComponent,
     DateRangeTextComponent,
     MatTabNav,
-    NgFor,
     MatTabLink,
     RouterLinkActive,
     RouterLink,

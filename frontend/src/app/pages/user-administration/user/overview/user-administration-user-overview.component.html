@@ -1,4 +1,4 @@
-<app-table
+<atlas-table
   (editElementEvent)="openUser($event)"
   (tableChanged)="reloadTableWithCurrentSettings()"
   (tableInitialized)="reloadTableWithCurrentSettings()"
@@ -32,19 +32,19 @@
           >{{ 'USER_ADMIN.TABLE_HEADER' | translate }}
         </mat-label>
       </div>
-      <app-user-select
+      <atlas-user-select
         (selectionChange)="onUserFilterChanged($event)"
         [form]="userSearchForm"
-      ></app-user-select>
+      ></atlas-user-select>
     } @else if (selectedSearch === 'FILTER') {
       <div class="d-flex flex-row">
-        <bo-select
+        <atlas-bo-select
           (boSelectionChanged)="filterChanged()"
           [controlName]="boSearchCtrlName"
           [formGroup]="boForm"
           [formModus]="false"
           class="col-6 pe-1"
-        ></bo-select>
+        ></atlas-bo-select>
 
         <div class="d-flex flex-column col-6 ps-3">
           <atlas-select
@@ -90,5 +90,5 @@
       </div>
     }
   </div>
-</app-table>
+</atlas-table>
 <router-outlet></router-outlet>

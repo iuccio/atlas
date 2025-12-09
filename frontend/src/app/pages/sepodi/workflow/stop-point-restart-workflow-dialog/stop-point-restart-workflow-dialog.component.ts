@@ -22,7 +22,7 @@ import { UserAdministrationService } from '../../../../api/service/user-administ
 import { StopPointWorkflowService } from '../../../../api/service/workflow/stop-point-workflow.service';
 
 @Component({
-  selector: 'app-stop-point-restart-workflow-dialog',
+  selector: 'atlas-stop-point-restart-workflow-dialog',
   templateUrl: './stop-point-restart-workflow-dialog.component.html',
   styleUrls: ['./stop-point-restart-workflow-dialog.component.scss'],
   imports: [

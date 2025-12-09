@@ -1,36 +1,48 @@
 <atlas-detail-page-content>
-  <div class="font-bold-3xl mb-3" *ngIf="isNew">
-    {{ 'PRM.PARKING_LOTS.NEW' | translate }}
-  </div>
-  <div class="new-sloid d-flex flex-column" *ngIf="isNew">
-    <atlas-sloid
-      [formGroup]="form"
-      [givenPrefix]="servicePoint.sloid + ':'"
-      [numberColons]="0"
-    ></atlas-sloid>
-  </div>
-  <div class="col-12 d-flex mt-3 mb-5" *ngIf="showVersionSwitch">
-    <div class="d-flex flex-column col-8 pe-3">
-      <app-switch-version
-        (switchVersion)="switchVersion($event)"
-        [currentRecord]="selectedVersion"
-        [records]="versions"
-        [showStatus]="false"
-      ></app-switch-version>
+  @if (isNew) {
+    <div class="font-bold-3xl mb-3">
+      {{ 'PRM.PARKING_LOTS.NEW' | translate }}
     </div>
-  </div>
+  }
+  @if (isNew) {
+    <div class="new-sloid d-flex flex-column">
+      <atlas-sloid
+        [formGroup]="form"
+        [givenPrefix]="servicePoint.sloid + ':'"
+        [numberColons]="0"
+      ></atlas-sloid>
+    </div>
+  }
+  @if (showVersionSwitch) {
+    <div class="col-12 d-flex mt-3 mb-5">
+      <div class="d-flex flex-column col-8 pe-3">
+        <atlas-switch-version
+          (switchVersion)="switchVersion($event)"
+          [currentRecord]="selectedVersion"
+          [records]="versions"
+          [showStatus]="false"
+        ></atlas-switch-version>
+      </div>
+    </div>
+  }
 
-  <h2 class="font-bold-2xl color-gray-900" *ngIf="!isNew">
-    {{ 'PRM.PARKING_LOTS.DETAIL_INFORMATION' | translate }} -
-    {{ 'COMMON.VERSION' | translate }}
-    {{ selectedVersionIndex + 1 }}
-  </h2>
+  @if (!isNew) {
+    <h2 class="font-bold-2xl color-gray-900">
+      {{ 'PRM.PARKING_LOTS.DETAIL_INFORMATION' | translate }} -
+      {{ 'COMMON.VERSION' | translate }}
+      {{ selectedVersionIndex + 1 }}
+    </h2>
+  }
 
-  <app-parking-lot-form [form]="form"></app-parking-lot-form>
-  <div *ngIf="!isNew">
-    <mat-divider class="mt-4 mb-4"></mat-divider>
-    <app-user-detail-info [record]="selectedVersion"></app-user-detail-info>
-  </div>
+  <atlas-parking-lot-form [form]="form"></atlas-parking-lot-form>
+  @if (!isNew) {
+    <div>
+      <mat-divider class="mt-4 mb-4"></mat-divider>
+      <atlas-user-detail-info
+        [record]="selectedVersion"
+      ></atlas-user-detail-info>
+    </div>
+  }
 </atlas-detail-page-content>
 <atlas-detail-footer>
   <atlas-button
@@ -41,16 +53,17 @@
     buttonText="COMMON.BACK"
     buttonType="whiteFooterNonEdit"
   ></atlas-button>
-  <atlas-button
-    *ngIf="form.disabled"
-    (buttonClicked)="toggleEdit()"
-    applicationType="PRM"
-    [businessOrganisations]="businessOrganisations"
-    buttonDataCy="edit"
-    buttonText="COMMON.EDIT"
-    buttonType="edit-service-point-dependent"
-    wrapperStyleClass="ms-3"
-  ></atlas-button>
+  @if (form.disabled) {
+    <atlas-button
+      (buttonClicked)="toggleEdit()"
+      applicationType="PRM"
+      [businessOrganisations]="businessOrganisations"
+      buttonDataCy="edit"
+      buttonText="COMMON.EDIT"
+      buttonType="edit-service-point-dependent"
+      wrapperStyleClass="ms-3"
+    ></atlas-button>
+  }
   <atlas-button
     (buttonClicked)="toggleEdit()"
     [footerEdit]="form.enabled"

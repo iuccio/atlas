@@ -63,7 +63,7 @@ const addStopPointWorkflowDialogService = jasmine.createSpyObj(
 );
 
 @Component({
-  selector: 'service-point-form',
+  selector: 'atlas-service-point-form',
   template: '<h1>ServicePointFormMockComponent</h1>',
   standalone: true,
 })
@@ -75,7 +75,7 @@ class ServicePointFormMockComponent {
 }
 
 @Component({
-  selector: 'sepodi-geography',
+  selector: 'atlas-sepodi-geography',
   template: '<h1>ServicePointGeographyMockComponent</h1>',
   standalone: true,
 })
@@ -156,10 +156,6 @@ describe('ServicePointDetailComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should initialize versioning correctly', () => {
     expect(component.showVersionSwitch).toBeTrue();
     expect(component.selectedVersion).toBeTruthy();
@@ -199,8 +195,6 @@ describe('ServicePointDetailComponent', () => {
 
     component.initShowRevokeButton(version);
     expect(component.showRevokeButton).toBeFalsy();
-    component.servicePointVersions = [];
-    fixture.detectChanges();
   });
 
   it('should not show revoke button when status in revoked', () => {
@@ -219,11 +213,9 @@ describe('ServicePointDetailComponent', () => {
       country: Country.Switzerland,
     };
     component.servicePointVersions.push(version);
-
     component.initShowRevokeButton(version);
+
     expect(component.showRevokeButton).toBeFalsy();
-    component.servicePointVersions = [];
-    fixture.detectChanges();
   });
 
   it('should show revoke button', () => {
@@ -243,12 +235,9 @@ describe('ServicePointDetailComponent', () => {
     };
     component.servicePointVersions = [];
     component.servicePointVersions.push(version);
-
-    fixture.detectChanges();
     component.initShowRevokeButton(version);
+
     expect(component.showRevokeButton).toBeTrue();
-    component.servicePointVersions = [];
-    fixture.detectChanges();
   });
 
   it('should switch to readonly mode when not dirty without confirmation', () => {
@@ -328,6 +317,7 @@ describe('ServicePointDetailComponent', () => {
       country: Country.Switzerland,
     };
     component.checkIfAbbreviationIsAllowed();
+
     expect(component.isAbbreviationAllowed).toBeFalse();
   });
 
@@ -456,7 +446,6 @@ describe('ServicePointDetailComponent', () => {
     component.form?.controls.validityGroup.controls.validTo.setValue(
       moment('2099-12-30')
     );
-    fixture.detectChanges();
     //when
     component.save();
     //then

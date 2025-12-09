@@ -18,7 +18,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PrmTabsService } from './prm-tabs.service';
 import { DateRangeTextComponent } from '../../../core/versioning/date-range-text/date-range-text.component';
 import { MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
-import { NgFor } from '@angular/common';
+
 import { SplitServicePointNumberPipe } from '../../../core/search-service-point/split-service-point-number.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PrmRecordingObligationComponent } from '../../../core/prm-recording-obligation/prm-recording-obligation.component';
@@ -26,13 +26,12 @@ import { BusinessOrganisationService } from '../../../api/service/bodi/business-
 import { BoSelectionDisplayPipe } from '../../../core/form-components/bo-select/bo-selection-display.pipe';
 
 @Component({
-  selector: 'app-prm-panel',
+  selector: 'atlas-prm-panel',
   templateUrl: './prm-panel.component.html',
   styleUrls: ['./prm-panel.component.scss'],
   imports: [
     DateRangeTextComponent,
     MatTabNav,
-    NgFor,
     MatTabLink,
     RouterLinkActive,
     RouterLink,

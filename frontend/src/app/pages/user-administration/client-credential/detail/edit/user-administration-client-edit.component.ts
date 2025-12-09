@@ -17,7 +17,7 @@ import { ClientCredentialAdministrationService } from '../../../../../api/servic
 import { ConvertUserPermissionToRecordHelper } from '../../../../../core/components/permissions/helper/convert-user-permission-to-record-helper';
 
 @Component({
-  selector: 'app-client-credential-administration-edit',
+  selector: 'atlas-client-credential-administration-edit',
   templateUrl: './user-administration-client-edit.component.html',
   styleUrls: ['./user-administration-client-edit.component.scss'],
   imports: [

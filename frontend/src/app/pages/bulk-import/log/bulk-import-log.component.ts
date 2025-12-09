@@ -17,7 +17,7 @@ import { ParamsForTranslationPipe } from '../../../core/pipe/params-for-translat
 import { BulkImportService } from '../../../api/service/bulk/bulk-import.service';
 
 @Component({
-  selector: 'bulk-import-log',
+  selector: 'atlas-bulk-import-log',
   templateUrl: './bulk-import-log.component.html',
   styleUrl: 'bulk-import-log.component.scss',
   imports: [

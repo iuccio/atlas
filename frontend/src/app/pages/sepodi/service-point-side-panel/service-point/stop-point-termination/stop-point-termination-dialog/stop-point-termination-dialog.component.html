@@ -5,13 +5,13 @@
     <span class="font-bold-4xl">{{ data.title | translate }}</span>
   </div>
   <div class="d-flex flex-column col-12 mb-5">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       [required]="false"
       label="TERMINATION_WORKFLOW.DIALOG.COMMENT"
       controlName="workflowComment"
       maxChars="1500"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
 </atlas-dialog-content>
 

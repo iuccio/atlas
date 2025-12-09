@@ -9,7 +9,7 @@ import {
 } from '@angular/router';
 import { AtlasButtonComponent } from '../../../core/components/button/atlas-button.component';
 import { MatTabNav, MatTabLink, MatTabNavPanel } from '@angular/material/tabs';
-import { NgFor } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -17,14 +17,13 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [
     AtlasButtonComponent,
     MatTabNav,
-    NgFor,
     RouterLinkActive,
     MatTabLink,
     RouterLink,
     MatTabNavPanel,
     RouterOutlet,
-    TranslatePipe,
-  ],
+    TranslatePipe
+],
 })
 export class LidiOverviewComponent {
   TABS = [

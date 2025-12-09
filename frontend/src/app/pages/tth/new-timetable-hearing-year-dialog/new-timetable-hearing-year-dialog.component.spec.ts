@@ -103,14 +103,16 @@ describe('NewTimetableHearingYearDialogComponent', () => {
     );
 
     const dropdownLabel = fixture.debugElement.query(
-      By.css('app-atlas-label-field')
+      By.css('atlas-label-field')
     );
     expect(dropdownLabel.nativeElement).toBeTruthy();
 
     const dropdownSelect = fixture.debugElement.query(By.css('mat-select'));
     expect(dropdownSelect.nativeElement).toBeTruthy();
 
-    const formDateRange = fixture.debugElement.query(By.css('form-date-range'));
+    const formDateRange = fixture.debugElement.query(
+      By.css('atlas-form-date-range')
+    );
     expect(formDateRange.nativeElement).toBeTruthy();
 
     const matDialogActions = fixture.debugElement.query(

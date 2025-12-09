@@ -21,7 +21,7 @@ import { AtlasFieldErrorComponent } from '../../../../../../../core/form-compone
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-platform-reduced-form',
+  selector: 'atlas-platform-reduced-form',
   templateUrl: './platform-reduced-form.component.html',
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
   imports: [

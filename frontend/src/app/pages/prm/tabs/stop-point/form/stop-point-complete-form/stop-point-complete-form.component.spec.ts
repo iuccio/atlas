@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { StopPointCompleteFormComponent } from './stop-point-complete-form.component';
 import { AppTestingModule } from '../../../../../../app.testing.module';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -19,7 +18,6 @@ import { MeanOfTransport } from '../../../../../../api';
 import arrayContaining = jasmine.arrayContaining;
 
 describe('StopPointCompleteFormComponent', () => {
-  let component: StopPointCompleteFormComponent;
   let fixture: ComponentFixture<StopPointCompleteFormComponent>;
 
   const prmVariantInfoService = jasmine.createSpyObj('prmVariantInfoService', [
@@ -47,40 +45,39 @@ describe('StopPointCompleteFormComponent', () => {
         { provide: PrmVariantInfoService, useValue: prmVariantInfoService },
       ],
     });
+
     fixture = TestBed.createComponent(StopPointCompleteFormComponent);
-    component = fixture.componentInstance;
     fixture.componentInstance.form =
       StopPointFormGroupBuilder.buildEmptyWithReducedValidationFormGroup();
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   describe('should display complete fields', () => {
     it('should display meansOfTransport', () => {
       const meansOfTransport = fixture.debugElement.query(
-        By.css('means-of-transport-picker')
+        By.css('atlas-means-of-transport-picker')
       );
       expect(meansOfTransport.attributes['controlName']).toEqual(
         'meansOfTransport'
       );
     });
+
     it('should display interoperable', () => {
       const interoperable = fixture.debugElement.query(By.css('mat-checkbox'));
       expect(interoperable.attributes['formControlName']).toEqual(
         'interoperable'
       );
     });
+
     it('should display data-range', () => {
       expect(
-        fixture.debugElement.query(By.css('form-date-range'))
+        fixture.debugElement.query(By.css('atlas-form-date-range'))
       ).toBeDefined();
     });
+
     it('should display formComments', () => {
       const formComments = fixture.debugElement.queryAll(
-        By.css('form-comment')
+        By.css('atlas-form-comment')
       );
       const formCommentsControlName: string[] = [
         'freeText',
@@ -94,6 +91,7 @@ describe('StopPointCompleteFormComponent', () => {
         formComments.map((value) => value.attributes['controlName'])
       ).toEqual(arrayContaining(formCommentsControlName));
     });
+
     it('should display atlasSelects', () => {
       const atlasSelects = fixture.debugElement.queryAll(
         By.css('atlas-select')
@@ -116,6 +114,7 @@ describe('StopPointCompleteFormComponent', () => {
         atlasSelects.map((value) => value.attributes['controlName'])
       ).toEqual(arrayContaining(atlasSelectsControlName));
     });
+
     it('should display atlas-text-fields', () => {
       const atlasTextFields = fixture.debugElement.queryAll(
         By.css('atlas-text-field')

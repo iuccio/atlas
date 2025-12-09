@@ -1,4 +1,4 @@
-<div scrollToTop>
+<div atlasScrollToTop>
   <div class="user-info">
     <h2 class="font-bold-4xl">{{ user().lastName }} {{ user().firstName }}</h2>
     <div class="d-flex flex-column">
@@ -42,7 +42,7 @@
         (applicationChanged)="editMode = false"
       ></atlas-permission>
       <div class="mt-3">
-        <app-user-detail-info [record]="userRecord!"></app-user-detail-info>
+        <atlas-user-detail-info [record]="userRecord!"></atlas-user-detail-info>
       </div>
     </atlas-detail-page-content>
 
@@ -65,7 +65,11 @@
           {{ 'COMMON.SAVE' | translate }}
         </button>
       } @else {
-        <button backButton class="atlas-primary-btn" data-cy="backToOverview">
+        <button
+          atlasBackButton
+          class="atlas-primary-btn"
+          data-cy="backToOverview"
+        >
           {{ 'COMMON.BACK_TO_OVERVIEW' | translate }}
         </button>
         <button

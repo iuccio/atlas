@@ -1,16 +1,17 @@
 @if (showTabs) {
   <nav mat-tab-nav-bar class="tabs mt-5" data-cy="tabs" [tabPanel]="tabPanel">
-    <a
-      mat-tab-link
-      [disabled]="false"
-      class="font-bold-xl"
-      *ngFor="let tab of tabs"
-      [routerLink]="tab.link"
-      routerLinkActive="active-tab"
-      [attr.data-cy]="'tab-' + tab.link"
-    >
-      {{ tab.title | translate }}
-    </a>
+    @for (tab of tabs; track tab) {
+      <a
+        mat-tab-link
+        [disabled]="false"
+        class="font-bold-xl"
+        [routerLink]="tab.link"
+        routerLinkActive="active-tab"
+        [attr.data-cy]="'tab-' + tab.link"
+        >
+        {{ tab.title | translate }}
+      </a>
+    }
   </nav>
   <div class="tab-content">
     <mat-tab-nav-panel #tabPanel>

@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { DisplayDatePipe } from '../../pipe/display-date.pipe';
 
 @Component({
-  selector: 'date-range-text [dateRange]',
+  selector: 'atlas-date-range-text [dateRange]',
   templateUrl: './date-range-text.component.html',
   imports: [TranslatePipe, DisplayDatePipe],
   providers: [TranslatePipe],

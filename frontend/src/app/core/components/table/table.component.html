@@ -1,11 +1,11 @@
 <div class="overview-table pb-xl-5">
-  <app-loading-spinner [isLoading]="isLoading"></app-loading-spinner>
+  <atlas-loading-spinner [isLoading]="isLoading"></atlas-loading-spinner>
 
   @if (showTableFilter) {
-    <app-table-filter
+    <atlas-table-filter
       (searchEvent)="searchData()"
       [filterConfigurations]="tableFilterConfig"
-    ></app-table-filter>
+    ></atlas-table-filter>
   }
 
   <ng-content></ng-content>
@@ -52,7 +52,7 @@
             <td
               *matCellDef="let value"
               [mouseOverTitleValue]="value[column.value]"
-              [mouseOverTitle]="column.getTitle!"
+              [atlasMouseOverTitle]="column.getTitle!"
               class="table-cell bordered-cell"
               mat-cell
             >

@@ -1,296 +1,303 @@
 <div class="white-table-container-no-tabs">
-  <app-timetable-hearing-overview-tab-heading
+  <atlas-timetable-hearing-overview-tab-heading
     [cantonShort]="cantonShort"
     [foundTimetableHearingYear]="foundTimetableHearingYear"
     [hearingStatus]="hearingStatus"
     [noPlannedTimetableHearingYearFound]="noPlannedTimetableHearingYearFound"
     [noTimetableHearingYearFound]="noTimetableHearingYearFound"
-  ></app-timetable-hearing-overview-tab-heading>
+  ></atlas-timetable-hearing-overview-tab-heading>
   <div>
     <div class="d-flex flex-row col-12">
-      <div
-        *ngIf="!isHearingYearActive && !noTimetableHearingYearFound"
-        class="d-flex flex-column col-2 pe-3 pb-1"
-      >
-        <atlas-select
-          (selectChanged)="changeSelectedYearFromDropdown($event)"
-          [additionalLabelspace]="0"
-          [options]="YEAR_DROPDOWN_OPTIONS"
-          [value]="yearSelection"
-          dataCy="selectTthYear"
-          label="TTH.SELECT_YEAR"
-        >
-        </atlas-select>
-      </div>
-      <div
-        *ngIf="!noTimetableHearingYearFound"
-        class="d-flex flex-column col-3 pe-3 pb-2 mb-2"
-      >
-        <atlas-select
-          (selectChanged)="changeSelectedCantonFromDropdown($event)"
-          [additionalLabelspace]="0"
-          [disabled]="isCheckBoxModeActive"
-          [options]="CANTON_DROPDOWN_OPTIONS"
-          [value]="defaultDropdownCantonSelection"
-          dataCy="swissCanton"
-          label="TTH.SELECT_CANTON"
-          optionTranslateLabelPrefix="TTH.CANTON."
-        >
-          <ng-template #matOptionPrefix let-canton="option">
-            <img
-              alt="canton-logo"
-              class="pe-1"
-              height="28"
-              src="assets/images/cantons/{{ canton }}.svg"
-              width="28"
-            />
-          </ng-template>
-        </atlas-select>
-      </div>
-      <div
-        *ngIf="showDownloadCsvButton && !noTimetableHearingYearFound"
-        class="d-flex flex-column col-3"
-      >
-        <atlas-spacer height="15px"></atlas-spacer>
-        <atlas-button
-          (buttonClicked)="downloadCsv()"
-          [canton]="cantonShort"
-          [disabled]="isCheckBoxModeActive"
-          applicationType="TIMETABLE_HEARING"
-          buttonDataCy="download-csv"
-          buttonText="TTH.BUTTON.DOWNLOAD_CSV"
-          buttonType="cantonWritePermission"
-        >
-          <ng-template #rightIcon>
-            <download-icon
-              [readonly]="!isCheckBoxModeActive"
-              class="ps-2"
-            ></download-icon>
-          </ng-template>
-        </atlas-button>
-      </div>
-      <div
-        *ngIf="showManageTimetableHearingButton && !noTimetableHearingYearFound"
-        class="d-flex flex-column col-3 left-position"
-      >
-        <atlas-spacer height="15px"></atlas-spacer>
-        <atlas-button
-          (buttonClicked)="manageTimetableHearing()"
-          [disabled]="isCheckBoxModeActive"
-          applicationType="TIMETABLE_HEARING"
-          buttonDataCy="manageTimetableHearing"
-          buttonText="TTH.BUTTON.MANAGE_TIMETABLE_HEARING"
-          buttonType="manageTimetableHearing"
-          wrapperStyleClass="text-align-end"
-        >
-        </atlas-button>
-      </div>
-      <div
-        *ngIf="
-          showAddNewStatementButton &&
-          !noTimetableHearingYearFound &&
-          foundTimetableHearingYear.statementCreatableInternal
-        "
-        class="d-flex flex-column col-3 left-position"
-      >
-        <atlas-spacer height="15px"></atlas-spacer>
-        <atlas-button
-          (buttonClicked)="addNewStatement()"
-          [canton]="cantonShort"
-          [disabled]="isCheckBoxModeActive"
-          applicationType="TIMETABLE_HEARING"
-          buttonDataCy="addNewStatement"
-          buttonText="TTH.BUTTON.ADD_NEW_STATEMENT"
-          buttonType="cantonWritePermission"
-          wrapperStyleClass="text-align-end"
-        >
-        </atlas-button>
-      </div>
-      <div
-        *ngIf="showStartTimetableHearingButton && !noTimetableHearingYearFound"
-        class="d-flex flex-column col-3"
-      >
-        <atlas-spacer height="15px"></atlas-spacer>
-        <atlas-button
-          (buttonClicked)="startTimetableHearing()"
-          applicationType="TIMETABLE_HEARING"
-          buttonDataCy="startTimetableHearing"
-          buttonStyleClass="atlas-raised-button mat-mdc-raised-button"
-          buttonText="TTH.BUTTON.START_TIMETABLE_HEARING"
-          buttonType="supervisorButton"
-        >
-        </atlas-button>
-      </div>
-      <div
-        *ngIf="showAddNewTimetableHearingButton"
-        class="d-flex flex-column col-3 left-position"
-      >
-        <atlas-spacer height="15px"></atlas-spacer>
-        <atlas-button
-          (buttonClicked)="addNewTimetableHearing()"
-          applicationType="TIMETABLE_HEARING"
-          buttonDataCy="addNewTimetableHearing"
-          buttonStyleClass="atlas-raised-button mat-mdc-raised-button"
-          buttonText="TTH.BUTTON.ADD_NEW_TIMETABLE_HEARING"
-          buttonType="supervisorButton"
-          wrapperStyleClass="text-align-end"
-        >
-        </atlas-button>
-      </div>
-    </div>
-
-    <app-table
-      *ngIf="!noTimetableHearingYearFound && isTableColumnsInitialized"
-      (buttonClickEvent)="duplicate($event)"
-      (changeDropdownEvent)="changeSelectedStatus($event)"
-      (checkedBoxEvent)="checkedBoxEvent($event)"
-      (editElementEvent)="editStatement($event)"
-      (tableChanged)="getOverview($event)"
-      [checkBoxModeEnabled]="isCheckBoxModeActive"
-      [checkBoxSelection]="selectedCheckBox"
-      [tableColumns]="tableColumns"
-      [tableData]="timeTableHearingStatements"
-      [totalCount]="totalCount$"
-      [tableFilterConfig]="tableFilterConfig"
-      data-cy="tthTable"
-    >
-      <div
-        *ngIf="!noTimetableHearingYearFound"
-        class="d-flex flex-row col-12 mb-3 mt-5"
-      >
-        <div class="d-flex flex-column col-6 pt-2">
-          <div>
-            <span
-              *ngIf="isHearingYearActive && isSwissCanton"
-              class="font-bold-lg"
-            >
-              {{
-                'TTH.TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX'
-                  | translate: { totalCount: totalCount$ }
-              }}
-              {{ 'TTH.WHOLE_SWISS' | translate }}
-            </span>
-            <span
-              *ngIf="isHearingYearActive && !isSwissCanton"
-              class="font-bold-lg"
-            >
-              {{
-                'TTH.TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX'
-                  | translate: { totalCount: totalCount$ }
-              }}
-              {{ 'TTH.SWISS_CANTON' | translate }}
-              {{ 'TTH.CANTON.' + cantonShort.toUpperCase() | translate }}
-            </span>
-            <span *ngIf="!isHearingYearActive" class="font-bold-lg">{{
-              'TTH.TABLE_RESULT_HEADING'
-                | translate
-                  : {
-                      totalCount: totalCount$,
-                      year: foundTimetableHearingYear.timetableYear,
-                    }
-            }}</span>
-          </div>
-          <div *ngIf="showHearingDetail">
-            <span
-              >{{ foundTimetableHearingYear.hearingFrom | displayDate }}
-              {{ 'COMMON.TO' | translate }}
-              {{ foundTimetableHearingYear.hearingTo | displayDate }}</span
-            >
-          </div>
-        </div>
-        <div
-          *ngIf="
-            isCollectingActionEnabled &&
-            isHearingYearActive &&
-            !statusChangeCollectingActionsEnabled &&
-            !cantonDeliveryCollectingActionsEnabled
-          "
-          class="d-flex flex-column col-2 left-position"
-        >
+      @if (!isHearingYearActive && !noTimetableHearingYearFound) {
+        <div class="d-flex flex-column col-2 pe-3 pb-1">
           <atlas-select
-            (selectChanged)="collectingActions($event)"
-            *ngIf="showCollectingActionButton"
+            (selectChanged)="changeSelectedYearFromDropdown($event)"
             [additionalLabelspace]="0"
-            [disabled]="totalCount$ === 0 || !statementEditable"
-            [options]="COLLECTING_ACTION_DROPDOWN_OPTIONS"
-            dataCy="collect-action-type"
-            optionTranslateLabelPrefix="TTH.DROPDOWN.COLLECTING_ACTION.OPTION."
-            placeHolderLabel="TTH.DROPDOWN.COLLECTING_ACTION.PLACEHOLDER"
+            [options]="YEAR_DROPDOWN_OPTIONS"
+            [value]="yearSelection"
+            dataCy="selectTthYear"
+            label="TTH.SELECT_YEAR"
           >
-            <ng-template #matOptionPrefix let-action="option">
+          </atlas-select>
+        </div>
+      }
+
+      @if (!noTimetableHearingYearFound) {
+        <div class="d-flex flex-column col-3 pe-3 pb-2 mb-2">
+          <atlas-select
+            (selectChanged)="changeSelectedCantonFromDropdown($event)"
+            [additionalLabelspace]="0"
+            [disabled]="isCheckBoxModeActive"
+            [options]="CANTON_DROPDOWN_OPTIONS"
+            [value]="defaultDropdownCantonSelection"
+            dataCy="swissCanton"
+            label="TTH.SELECT_CANTON"
+            optionTranslateLabelPrefix="TTH.CANTON."
+          >
+            <ng-template #matOptionPrefix let-canton="option">
               <img
-                alt="{{ action }}"
-                class="pe-2"
-                height="24"
-                src="assets/images/collecting_action/{{
-                  action.toUpperCase()
-                }}.svg"
-                width="24"
+                alt="canton-logo"
+                class="pe-1"
+                height="28"
+                ngSrc="assets/images/cantons/{{ canton }}.svg"
+                width="28"
               />
             </ng-template>
           </atlas-select>
         </div>
-        <div
-          *ngIf="
-            statusChangeCollectingActionsEnabled ||
-            cantonDeliveryCollectingActionsEnabled
-          "
-          class="d-flex flex-row col-5 left-position"
-        >
-          <div class="d-flex flex-column col-6">
-            <atlas-button
-              (buttonClicked)="cancelCollectingAction()"
-              applicationType="LIDI"
-              buttonDataCy="cancel-collecting-action"
-              buttonText="TTH.BUTTON.CANCEL_COLLECTING_ACTION"
-              buttonType="defaultPrimary"
-            >
-              <ng-template #rightIcon>
-                <i class="bi bi-x-lg"></i>
-              </ng-template>
-            </atlas-button>
-          </div>
-          <div
-            *ngIf="statusChangeCollectingActionsEnabled"
-            class="d-flex flex-column col-6 mt-2"
+      }
+
+      @if (showDownloadCsvButton && !noTimetableHearingYearFound) {
+        <div class="d-flex flex-column col-3">
+          <atlas-spacer height="15px"></atlas-spacer>
+          <atlas-button
+            (buttonClicked)="downloadCsv()"
+            [canton]="cantonShort"
+            [disabled]="isCheckBoxModeActive"
+            applicationType="TIMETABLE_HEARING"
+            buttonDataCy="download-csv"
+            buttonText="TTH.BUTTON.DOWNLOAD_CSV"
+            buttonType="cantonWritePermission"
           >
-            <atlas-select
-              (selectChanged)="collectingStatusChangeAction($event)"
-              [additionalLabelspace]="0"
-              [disabled]="selectedItems.length === 0"
-              [options]="STATUS_OPTIONS"
-              dataCy="collect-status-change-action-type"
-              optionTranslateLabelPrefix="TTH.STATEMENT_STATUS."
-              placeHolderLabel="TTH.DROPDOWN.COLLECTING_STATUS_CHANGE_ACTION.PLACEHOLDER"
-            >
-            </atlas-select>
-          </div>
-          <div
-            *ngIf="cantonDeliveryCollectingActionsEnabled"
-            class="d-flex flex-column col-6 mt-2"
-          >
-            <atlas-select
-              (selectChanged)="collectingCantonDeliveryAction($event)"
-              [additionalLabelspace]="0"
-              [disabled]="selectedItems.length === 0"
-              [options]="CANTON_DROPDOWN_OPTIONS_WITHOUT_SWISS"
-              optionTranslateLabelPrefix="TTH.CANTON."
-              placeHolderLabel="TTH.DROPDOWN.COLLECTING_STATUS_CANTON_DELIVERY_CHANGE_ACTION.PLACEHOLDER"
-            >
-              <ng-template #matOptionPrefix let-canton="option">
-                <img
-                  alt="canton-logo"
-                  class="pe-1"
-                  height="28"
-                  src="assets/images/cantons/{{ canton }}.svg"
-                  width="28"
-                />
-              </ng-template>
-            </atlas-select>
-          </div>
+            <ng-template #rightIcon>
+              <atlas-download-icon
+                [readonly]="!isCheckBoxModeActive"
+                class="ps-2"
+              ></atlas-download-icon>
+            </ng-template>
+          </atlas-button>
         </div>
-      </div>
-    </app-table>
+      }
+
+      @if (showManageTimetableHearingButton && !noTimetableHearingYearFound) {
+        <div class="d-flex flex-column col-3 left-position">
+          <atlas-spacer height="15px"></atlas-spacer>
+          <atlas-button
+            (buttonClicked)="manageTimetableHearing()"
+            [disabled]="isCheckBoxModeActive"
+            applicationType="TIMETABLE_HEARING"
+            buttonDataCy="manageTimetableHearing"
+            buttonText="TTH.BUTTON.MANAGE_TIMETABLE_HEARING"
+            buttonType="manageTimetableHearing"
+            wrapperStyleClass="text-align-end"
+          >
+          </atlas-button>
+        </div>
+      }
+
+      @if (
+        showAddNewStatementButton &&
+        !noTimetableHearingYearFound &&
+        foundTimetableHearingYear.statementCreatableInternal
+      ) {
+        <div class="d-flex flex-column col-3 left-position">
+          <atlas-spacer height="15px"></atlas-spacer>
+          <atlas-button
+            (buttonClicked)="addNewStatement()"
+            [canton]="cantonShort"
+            [disabled]="isCheckBoxModeActive"
+            applicationType="TIMETABLE_HEARING"
+            buttonDataCy="addNewStatement"
+            buttonText="TTH.BUTTON.ADD_NEW_STATEMENT"
+            buttonType="cantonWritePermission"
+            wrapperStyleClass="text-align-end"
+          >
+          </atlas-button>
+        </div>
+      }
+
+      @if (showStartTimetableHearingButton && !noTimetableHearingYearFound) {
+        <div class="d-flex flex-column col-3">
+          <atlas-spacer height="15px"></atlas-spacer>
+          <atlas-button
+            (buttonClicked)="startTimetableHearing()"
+            applicationType="TIMETABLE_HEARING"
+            buttonDataCy="startTimetableHearing"
+            buttonStyleClass="atlas-raised-button mat-mdc-raised-button"
+            buttonText="TTH.BUTTON.START_TIMETABLE_HEARING"
+            buttonType="supervisorButton"
+          >
+          </atlas-button>
+        </div>
+      }
+
+      @if (showAddNewTimetableHearingButton) {
+        <div class="d-flex flex-column col-3 left-position">
+          <atlas-spacer height="15px"></atlas-spacer>
+          <atlas-button
+            (buttonClicked)="addNewTimetableHearing()"
+            applicationType="TIMETABLE_HEARING"
+            buttonDataCy="addNewTimetableHearing"
+            buttonStyleClass="atlas-raised-button mat-mdc-raised-button"
+            buttonText="TTH.BUTTON.ADD_NEW_TIMETABLE_HEARING"
+            buttonType="supervisorButton"
+            wrapperStyleClass="text-align-end"
+          >
+          </atlas-button>
+        </div>
+      }
+    </div>
+
+    @if (!noTimetableHearingYearFound && isTableColumnsInitialized) {
+      <atlas-table
+        (buttonClickEvent)="duplicate($event)"
+        (changeDropdownEvent)="changeSelectedStatus($event)"
+        (checkedBoxEvent)="checkedBoxEvent($event)"
+        (editElementEvent)="editStatement($event)"
+        (tableChanged)="getOverview($event)"
+        [checkBoxModeEnabled]="isCheckBoxModeActive"
+        [checkBoxSelection]="selectedCheckBox"
+        [tableColumns]="tableColumns"
+        [tableData]="timeTableHearingStatements"
+        [totalCount]="totalCount$"
+        [tableFilterConfig]="tableFilterConfig"
+        data-cy="tthTable"
+      >
+        @if (!noTimetableHearingYearFound) {
+          <div class="d-flex flex-row col-12 mb-3 mt-5">
+            <div class="d-flex flex-column col-6 pt-2">
+              <div>
+                @if (isHearingYearActive && isSwissCanton) {
+                  <span class="font-bold-lg">
+                    {{
+                      'TTH.TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX'
+                        | translate: { totalCount: totalCount$ }
+                    }}
+                    {{ 'TTH.WHOLE_SWISS' | translate }}
+                  </span>
+                }
+
+                @if (isHearingYearActive && !isSwissCanton) {
+                  <span class="font-bold-lg">
+                    {{
+                      'TTH.TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX'
+                        | translate: { totalCount: totalCount$ }
+                    }}
+                    {{ 'TTH.SWISS_CANTON' | translate }}
+                    {{ 'TTH.CANTON.' + cantonShort.toUpperCase() | translate }}
+                  </span>
+                }
+
+                @if (!isHearingYearActive) {
+                  <span class="font-bold-lg">{{
+                    'TTH.TABLE_RESULT_HEADING'
+                      | translate
+                        : {
+                            totalCount: totalCount$,
+                            year: foundTimetableHearingYear.timetableYear,
+                          }
+                  }}</span>
+                }
+              </div>
+
+              @if (showHearingDetail) {
+                <div>
+                  <span
+                    >{{ foundTimetableHearingYear.hearingFrom | displayDate }}
+                    {{ 'COMMON.TO' | translate }}
+                    {{
+                      foundTimetableHearingYear.hearingTo | displayDate
+                    }}</span
+                  >
+                </div>
+              }
+            </div>
+
+            @if (
+              isCollectingActionEnabled &&
+              isHearingYearActive &&
+              !statusChangeCollectingActionsEnabled &&
+              !cantonDeliveryCollectingActionsEnabled
+            ) {
+              <div class="d-flex flex-column col-2 left-position">
+                @if (showCollectingActionButton) {
+                  <atlas-select
+                    (selectChanged)="collectingActions($event)"
+                    [additionalLabelspace]="0"
+                    [disabled]="totalCount$ === 0 || !statementEditable"
+                    [options]="COLLECTING_ACTION_DROPDOWN_OPTIONS"
+                    dataCy="collect-action-type"
+                    optionTranslateLabelPrefix="TTH.DROPDOWN.COLLECTING_ACTION.OPTION."
+                    placeHolderLabel="TTH.DROPDOWN.COLLECTING_ACTION.PLACEHOLDER"
+                  >
+                    <ng-template #matOptionPrefix let-action="option">
+                      <img
+                        alt="{{ action }}"
+                        class="pe-2"
+                        height="24"
+                        src="assets/images/collecting_action/{{
+                          action.toUpperCase()
+                        }}.svg"
+                        width="24"
+                      />
+                    </ng-template>
+                  </atlas-select>
+                }
+              </div>
+            }
+
+            @if (
+              statusChangeCollectingActionsEnabled ||
+              cantonDeliveryCollectingActionsEnabled
+            ) {
+              <div class="d-flex flex-row col-5 left-position">
+                <div class="d-flex flex-column col-6">
+                  <atlas-button
+                    (buttonClicked)="cancelCollectingAction()"
+                    applicationType="LIDI"
+                    buttonDataCy="cancel-collecting-action"
+                    buttonText="TTH.BUTTON.CANCEL_COLLECTING_ACTION"
+                    buttonType="defaultPrimary"
+                  >
+                    <ng-template #rightIcon>
+                      <i class="bi bi-x-lg"></i>
+                    </ng-template>
+                  </atlas-button>
+                </div>
+
+                @if (statusChangeCollectingActionsEnabled) {
+                  <div class="d-flex flex-column col-6 mt-2">
+                    <atlas-select
+                      (selectChanged)="collectingStatusChangeAction($event)"
+                      [additionalLabelspace]="0"
+                      [disabled]="selectedItems.length === 0"
+                      [options]="STATUS_OPTIONS"
+                      dataCy="collect-status-change-action-type"
+                      optionTranslateLabelPrefix="TTH.STATEMENT_STATUS."
+                      placeHolderLabel="TTH.DROPDOWN.COLLECTING_STATUS_CHANGE_ACTION.PLACEHOLDER"
+                    >
+                    </atlas-select>
+                  </div>
+                }
+
+                @if (cantonDeliveryCollectingActionsEnabled) {
+                  <div class="d-flex flex-column col-6 mt-2">
+                    <atlas-select
+                      (selectChanged)="collectingCantonDeliveryAction($event)"
+                      [additionalLabelspace]="0"
+                      [disabled]="selectedItems.length === 0"
+                      [options]="CANTON_DROPDOWN_OPTIONS_WITHOUT_SWISS"
+                      optionTranslateLabelPrefix="TTH.CANTON."
+                      placeHolderLabel="TTH.DROPDOWN.COLLECTING_STATUS_CANTON_DELIVERY_CHANGE_ACTION.PLACEHOLDER"
+                    >
+                      <ng-template #matOptionPrefix let-canton="option">
+                        <img
+                          alt="canton-logo"
+                          class="pe-1"
+                          height="28"
+                          ngSrc="assets/images/cantons/{{ canton }}.svg"
+                          width="28"
+                        />
+                      </ng-template>
+                    </atlas-select>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </atlas-table>
+    }
     <router-outlet></router-outlet>
   </div>
 </div>

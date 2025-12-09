@@ -17,7 +17,7 @@ import { WhitespaceValidator } from '../../../../../../core/validation/whitespac
 import { StartTerminationStopPointAddWorkflow } from '../../../../../../api/model/startTerminationStopPointAddWorkflow';
 
 @Component({
-  selector: 'app-stop-point-termination-dialog',
+  selector: 'atlas-stop-point-termination-dialog',
   templateUrl: './stop-point-termination-dialog.component.html',
   imports: [
     DialogCloseComponent,

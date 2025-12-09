@@ -17,7 +17,7 @@ import { CommentComponent } from '../../../../../../../core/form-components/comm
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-contact-point-form',
+  selector: 'atlas-contact-point-form',
   templateUrl: './contact-point-form.component.html',
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
   imports: [

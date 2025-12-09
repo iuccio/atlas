@@ -11,8 +11,10 @@
       <i class="bi bi-trash" (click)="onDelete(); $event.stopPropagation()"></i>
     }
     @if (downloadEnabled) {
-      <i class="bi bi-download" (click)="download(); $event.stopPropagation()"></i>
+      <i
+        class="bi bi-download"
+        (click)="download(); $event.stopPropagation()"
+      ></i>
     }
   </div>
 </div>
-

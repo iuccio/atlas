@@ -17,7 +17,7 @@ import { MapIcon, MapIconsService } from './map-icons.service';
 import { PermissionService } from '../../../core/auth/permission/permission.service';
 import { UserService } from '../../../core/auth/user/user.service';
 import { SERVICE_POINT_MIN_ZOOM } from './map-style';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatIconButton } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -25,7 +25,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   selector: 'atlas-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  imports: [NgIf, MatIconButton, NgFor, NgClass, TranslatePipe],
+  imports: [MatIconButton, NgClass, TranslatePipe],
 })
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public isSidePanelOpen = false;

@@ -15,7 +15,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { UserAdministrationService } from '../../../../../api/service/user-administration/user-administration.service';
 
 @Component({
-  selector: 'app-user-administration-create',
+  selector: 'atlas-user-administration-create',
   templateUrl: './user-administration-user-create.component.html',
   imports: [
     ScrollToTopDirective,

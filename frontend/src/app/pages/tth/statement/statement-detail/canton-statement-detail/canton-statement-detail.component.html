@@ -1,4 +1,4 @@
-<div scrollToTop>
+<div atlasScrollToTop>
   <atlas-detail-page-container>
     <atlas-detail-page-content>
       <div class="statement-form">
@@ -11,16 +11,16 @@
 
           <atlas-statement-text [form]="form" [isNew]="isNew" />
 
-          <app-statement-personal-information
+          <atlas-statement-personal-information
             [form]="form"
             [statement]="statement!"
-          ></app-statement-personal-information>
+          ></atlas-statement-personal-information>
 
           @if (form.value.documents && form.value.documents.length > 0) {
             <div class="mb-3 mt-4">
-              <app-atlas-label-field
+              <atlas-label-field
                 fieldLabel="TTH.STATEMENT.ATTACHMENTS"
-              ></app-atlas-label-field>
+              ></atlas-label-field>
               @for (
                 document of form.controls.documents.controls;
                 track document
@@ -185,33 +185,33 @@
 
           <div class="d-flex flex-row col-12">
             <div class="d-flex flex-column col-12 mb-4">
-              <form-comment
+              <atlas-form-comment
                 [formGroup]="form"
                 controlName="internalComment"
                 label="TTH.STATEMENT.INTERNAL_COMMENT"
                 maxChars="5000"
               >
-              </form-comment>
+              </atlas-form-comment>
             </div>
           </div>
           <div class="d-flex flex-row col-12 mb-4">
             <div class="d-flex flex-column col-12">
-              <form-comment
+              <atlas-form-comment
                 [formGroup]="form"
                 controlName="publicComment"
                 label="TTH.STATEMENT.PUBLIC_COMMENT"
                 maxChars="5000"
               >
-              </form-comment>
+              </atlas-form-comment>
             </div>
           </div>
         </ng-container>
 
         @if (statement) {
-          <app-user-detail-info
+          <atlas-user-detail-info
             [record]="statement!"
             [short]="true"
-          ></app-user-detail-info>
+          ></atlas-user-detail-info>
         }
       </div>
     </atlas-detail-page-content>

@@ -17,7 +17,7 @@ import { DetailPageContentComponent } from '../../../../core/components/detail-p
 import { CommentComponent } from '../../../../core/form-components/comment/comment.component';
 import { DetailFooterComponent } from '../../../../core/components/detail-footer/detail-footer.component';
 import { AtlasButtonComponent } from '../../../../core/components/button/atlas-button.component';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { ServicePointService } from '../../../../api/service/sepodi/service-point.service';
 
@@ -31,7 +31,7 @@ export interface FotCommentFormGroup {
 }
 
 @Component({
-  selector: 'app-service-point-fot-comment',
+  selector: 'atlas-service-point-fot-comment',
   templateUrl: './fot-comment-detail.component.html',
   styleUrls: ['./fot-comment-detail.component.scss'],
   imports: [
@@ -40,7 +40,6 @@ export interface FotCommentFormGroup {
     CommentComponent,
     DetailFooterComponent,
     AtlasButtonComponent,
-    NgIf,
     TranslatePipe,
   ],
 })

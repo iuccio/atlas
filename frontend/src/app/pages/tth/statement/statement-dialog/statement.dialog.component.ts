@@ -17,7 +17,7 @@ import { AtlasButtonComponent } from '../../../../core/components/button/atlas-b
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-dialog',
+  selector: 'atlas-dialog',
   templateUrl: './statement.dialog.component.html',
   imports: [
     CommentComponent,

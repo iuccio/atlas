@@ -28,7 +28,7 @@ import { TerminationWorkflowStatus } from '../../../../../../api/model/terminati
 import TerminationDecisionPersonEnum = TerminationDecision.TerminationDecisionPersonEnum;
 
 @Component({
-  selector: 'termination-decision-detail-dialog',
+  selector: 'atlas-termination-decision-detail-dialog',
   templateUrl: './termination-decision-detail-dialog.component.html',
   styleUrls: [
     '../../../../../../core/form-components/text-field/text-field.component.scss',

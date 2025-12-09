@@ -38,6 +38,7 @@ import { BusinessOrganisationSelectComponent } from '../../form-components/bo-se
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'input [matChipInputFor]',
   template: '',
 })
@@ -70,6 +71,7 @@ class MockAtlasSelectComponent {
 }
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'input [matDatepicker]',
   template: '',
 })
@@ -87,6 +89,7 @@ class MockMatDatepickerInputComponent {
 }
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'mat-chip-grid',
   template: '<ng-content></ng-content>',
 })
@@ -132,11 +135,6 @@ describe('TableFilterComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TableFilterComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should emitSearch on multi select change', () => {

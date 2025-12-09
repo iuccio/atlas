@@ -202,11 +202,11 @@ describe('BusinessOrganisationDetailComponent for new BusinessOrganisationVersio
 
     fixture = TestBed.createComponent(BusinessOrganisationDetailComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
     router = TestBed.inject(Router);
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(component.isNew).toBeTrue();
   });
@@ -218,6 +218,7 @@ describe('BusinessOrganisationDetailComponent for new BusinessOrganisationVersio
         of(businessOrganisationVersion)
       );
 
+      component.ngOnInit();
       component.form.patchValue({
         organisationNumber: 1234,
         descriptionDe: 'asdf',
@@ -250,6 +251,7 @@ describe('BusinessOrganisationDetailComponent for new BusinessOrganisationVersio
       mockLinesService.createBusinessOrganisationVersion.and.returnValue(
         throwError(() => error)
       );
+      component.ngOnInit();
       component.save();
       fixture.detectChanges();
 

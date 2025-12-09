@@ -201,8 +201,7 @@ describe('RelationTabDetailComponent', () => {
   });
 
   it('should switch reference point', () => {
-    // triggers ngOnInit()
-    fixture.detectChanges();
+    component.ngOnInit();
     relationService.getRelationsBySloid.and.returnValue(of([relations[0]]));
 
     component.referencePointChanged({

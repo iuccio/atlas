@@ -7,7 +7,7 @@ import { ServicePointSearchType } from '../search-service-point/service-point-se
 import { AppTestingModule } from '../../app.testing.module';
 
 @Component({
-  selector: 'app-search-service-point',
+  selector: 'atlas-search-service-point',
   template: '<h1>SearchServicePointComponent</h1>',
   imports: [AppTestingModule],
 })

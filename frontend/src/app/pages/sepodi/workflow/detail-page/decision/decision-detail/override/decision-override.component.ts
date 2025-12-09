@@ -25,7 +25,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { StopPointWorkflowService } from '../../../../../../../api/service/workflow/stop-point-workflow.service';
 
 @Component({
-  selector: 'decision-override',
+  selector: 'atlas-decision-override',
   templateUrl: './decision-override.component.html',
   imports: [
     ReactiveFormsModule,

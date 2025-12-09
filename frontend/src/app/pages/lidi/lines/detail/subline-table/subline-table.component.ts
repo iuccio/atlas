@@ -11,7 +11,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { LineInternalService } from '../../../../../api/service/lidi/line-internal.service';
 
 @Component({
-  selector: 'app-subline-table',
+  selector: 'atlas-subline-table',
   templateUrl: './subline-table.component.html',
   imports: [TableComponent, TranslatePipe],
 })

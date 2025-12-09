@@ -1,32 +1,33 @@
 <div class="col-12 d-flex">
   <div class="col-6">
-    <means-of-transport-picker
+    <atlas-means-of-transport-picker
       [formGroup]="form"
       controlName="meansOfTransport"
       [disabled]="isNew || !form.enabled"
       [showInfo]="true"
       [meansOfTransportToShow]="meansOfTransportToShow"
-    ></means-of-transport-picker>
+    ></atlas-means-of-transport-picker>
   </div>
   <div class="col-6" [formGroup]="form">
     <mat-checkbox formControlName="interoperable" data-cy="interoperable">
       {{ 'PRM.STOP_POINTS.FORM.INTEROPERABLE' | translate }}
     </mat-checkbox>
-    <app-atlas-field-error
-      [form]="form"
-      controlName="interoperable"
-    ></app-atlas-field-error>
+    @let ctrl = form.get('interoperable');
+    <atlas-field-error
+      [control]="ctrl"
+      [ctrlErrors]="ctrl?.errors"
+    ></atlas-field-error>
   </div>
 </div>
 <div class="col-12 d-flex mt-4">
   <div class="d-flex flex-column col-6 pe-3">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       label="PRM.STOP_POINTS.FORM.FREE_TEXT"
       info="PRM.STOP_POINTS.FORM.FREE_TEXT_INFO"
       controlName="freeText"
       maxChars="2000"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
   <div class="d-flex flex-column col-6">
     <atlas-text-field
@@ -46,7 +47,7 @@
 </div>
 <div class="font-bold-2xl mt-3">{{ 'FORM.KEY_DATA' | translate }}</div>
 <div class="col-6 pb-3">
-  <form-date-range [formGroup]="form"></form-date-range>
+  <atlas-form-date-range [formGroup]="form"></atlas-form-date-range>
 </div>
 <div class="font-bold-2xl mt-3">
   {{ 'PRM.STOP_POINTS.FORM.ADDRESS_KEY_DATA' | translate }}
@@ -141,12 +142,12 @@
 </div>
 <div class="col-12 d-flex mt-4">
   <div class="d-flex flex-column col-6 pe-3">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       label="PRM.STOP_POINTS.FORM.ADDITIONAL_INFORMATION"
       controlName="additionalInformation"
       maxChars="2000"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
 </div>
 <div class="font-bold-2xl mt-3">
@@ -191,12 +192,12 @@
 </div>
 <div class="col-12 d-flex mt-4">
   <div class="d-flex flex-column col-6 pe-3">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       label="PRM.STOP_POINTS.FORM.INFO_TICKET_MACHINE"
       controlName="infoTicketMachine"
       maxChars="2000"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
 </div>
 
@@ -245,13 +246,13 @@
 </div>
 <div class="col-12 d-flex mt-4">
   <div class="d-flex flex-column col-6 pe-3">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       label="PRM.STOP_POINTS.FORM.ASSISTANCE_CONDITION"
       info="PRM.STOP_POINTS.FORM.ASSISTANCE_CONDITION_INFO"
       controlName="assistanceCondition"
       maxChars="2000"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
 </div>
 <div class="col-12 d-flex mt-5">
@@ -282,12 +283,12 @@
     </atlas-select>
   </div>
   <div class="d-flex flex-column col-6">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       label="PRM.STOP_POINTS.FORM.ALTERNATIVE_TRANSPORT_CONDITION"
       info="PRM.STOP_POINTS.FORM.ALTERNATIVE_TRANSPORT_CONDITION_INFO"
       controlName="alternativeTransportCondition"
       maxChars="2000"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
 </div>

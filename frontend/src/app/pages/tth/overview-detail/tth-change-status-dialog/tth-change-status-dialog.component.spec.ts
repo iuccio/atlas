@@ -105,7 +105,7 @@ describe('TthChangeStatusDialogComponent', () => {
     component.onClick();
 
     const baseDialog = fixture.debugElement.query(
-      By.css('app-base-change-dialog')
+      By.css('atlas-base-change-dialog')
     );
     expect(baseDialog).not.toBeNull();
     expect(baseDialog.attributes['controlName']).toBe('publicComment');

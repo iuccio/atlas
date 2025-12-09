@@ -24,7 +24,7 @@ import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'stop-point-termination-workflow-overview',
+  selector: 'atlas-stop-point-termination-workflow-overview',
   templateUrl: './stop-point-termination-workflow-overview.component.html',
   imports: [TableComponent, TranslatePipe, AsyncPipe],
 })

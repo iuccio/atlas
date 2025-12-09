@@ -17,7 +17,7 @@ import { ConvertUserPermissionToRecordHelper } from '../../../../../core/compone
 import { UserDetailInfoComponent } from '../../../../../core/components/user-edit-info/user-detail-info.component';
 
 @Component({
-  selector: 'app-user-administration-user-edit',
+  selector: 'atlas-user-administration-user-edit',
   templateUrl: './user-administration-user-edit.component.html',
   styleUrls: ['./user-administration-user-edit.component.scss'],
   imports: [

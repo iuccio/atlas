@@ -10,7 +10,7 @@ import { CommentComponent } from '../../../../../../core/form-components/comment
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'decision-form',
+  selector: 'atlas-decision-form',
   templateUrl: './decision-form.component.html',
   styleUrls: ['decision-form.component.scss'],
   imports: [

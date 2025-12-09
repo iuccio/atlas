@@ -1,7 +1,7 @@
 import { Directive, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-@Directive({ selector: '[backButton]' })
+@Directive({ selector: '[atlasBackButton]' })
 export class BackButtonDirective {
   constructor(
     private router: Router,
@@ -9,7 +9,7 @@ export class BackButtonDirective {
   ) {}
 
   @HostListener('click')
-  onClick(): void {
+  onClick() {
     this.router.navigate(['..'], { relativeTo: this.activatedRoute }).then();
   }
 }

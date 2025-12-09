@@ -13,7 +13,7 @@ import { DetailPageContainerComponent } from '../../../../core/components/detail
 import { DetailPageContentComponent } from '../../../../core/components/detail-page-content/detail-page-content.component';
 import { DateRangeTextComponent } from '../../../../core/versioning/date-range-text/date-range-text.component';
 import { LineWorkflowFormComponent } from '../../../../core/workflow/workflow-form/line-workflow-form.component';
-import { NgIf } from '@angular/common';
+
 import { LinkIconComponent } from '../../../../core/form-components/link-icon/link-icon.component';
 import { LineDetailFormComponent } from '../../lines/detail/line-detail-form/line-detail-form.component';
 import { UserDetailInfoComponent } from '../../../../core/components/user-edit-info/user-detail-info.component';
@@ -33,15 +33,14 @@ import { LineWorkflowService } from '../../../../api/service/workflow/line-workf
     DateRangeTextComponent,
     LineWorkflowFormComponent,
     ReactiveFormsModule,
-    NgIf,
     LinkIconComponent,
     LineDetailFormComponent,
     UserDetailInfoComponent,
     DetailFooterComponent,
     AtlasButtonComponent,
     BackButtonDirective,
-    TranslatePipe,
-  ],
+    TranslatePipe
+],
   providers: [TranslatePipe],
 })
 export class LineVersionSnapshotDetailComponent implements OnInit {

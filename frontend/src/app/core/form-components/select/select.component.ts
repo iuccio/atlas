@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptgroup, MatOption } from '@angular/material/core';
-import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
 import { AtlasSpacerComponent } from '../../components/spacer/atlas-spacer.component';
 import { MatSelect } from '@angular/material/select';
@@ -32,17 +32,15 @@ export interface SelectOptionGroup {
   styleUrls: ['./select.component.scss'],
   imports: [
     ReactiveFormsModule,
-    NgIf,
     AtlasLabelFieldComponent,
     AtlasSpacerComponent,
     MatSelect,
     MatOption,
-    NgFor,
     NgTemplateOutlet,
     MatOptgroup,
     AtlasFieldErrorComponent,
-    TranslatePipe,
-  ],
+    TranslatePipe
+],
   providers: [TranslatePipe],
 })
 /* eslint-disable  @typescript-eslint/no-explicit-any */

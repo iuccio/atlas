@@ -17,7 +17,7 @@
       {{ 'SEPODI.SECTOR_GROUPS.SECTOR_GROUPS' | translate }}
     </div>
 
-    <app-table
+    <atlas-table
       data-cy="sector-groups-table"
       [tableData]="sectorGroups"
       [totalCount]="totalSectorGroups"
@@ -26,7 +26,7 @@
       (editElementEvent)="editSectorGroup($event)"
       (tableChanged)="getSectorGroupOverview($event)"
       (tableInitialized)="getSectorGroupOverview($event)"
-    ></app-table>
+    ></atlas-table>
   </div>
 </atlas-detail-page-content>
 <atlas-detail-footer>

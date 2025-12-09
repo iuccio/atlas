@@ -1,14 +1,16 @@
 <form [formGroup]="form">
   <atlas-detail-page-content>
     <div class="detail-content">
-      <span class="font-bold-2xl">{{ 'SEPODI.SERVICE_POINTS.FOT_COMMENT' | translate }}</span>
+      <span class="font-bold-2xl">{{
+        'SEPODI.SERVICE_POINTS.FOT_COMMENT' | translate
+      }}</span>
       <div class="col-12 d-flex mt-3">
-        <form-comment
+        <atlas-form-comment
           [formGroup]="form"
           maxChars="2000"
           controlName="fotComment"
           [displayLabel]="false"
-        ></form-comment>
+        ></atlas-form-comment>
       </div>
     </div>
   </atlas-detail-page-content>
@@ -22,15 +24,16 @@
       [footerEdit]="form.enabled"
     >
     </atlas-button>
-    <atlas-button
-      *ngIf="form.disabled"
-      (buttonClicked)="toggleEdit()"
-      applicationType="SEPODI"
-      buttonDataCy="edit"
-      buttonText="COMMON.EDIT"
-      buttonType="supervisorButton"
-      wrapperStyleClass="ms-3"
-    ></atlas-button>
+    @if (form.disabled) {
+      <atlas-button
+        (buttonClicked)="toggleEdit()"
+        applicationType="SEPODI"
+        buttonDataCy="edit"
+        buttonText="COMMON.EDIT"
+        buttonType="supervisorButton"
+        wrapperStyleClass="ms-3"
+      ></atlas-button>
+    }
     <atlas-button
       [footerEdit]="form.enabled"
       (buttonClicked)="toggleEdit()"

@@ -51,7 +51,7 @@ import { TtfnMeanOfTransport } from '../../../api/model/ttfnMeanOfTransport';
 import { RevokeButton } from '../../../core/form-components/revoke-button/revoke-button';
 
 @Component({
-  selector: 'app-timetable-field-number-detail',
+  selector: 'atlas-timetable-field-number-detail',
   templateUrl: './timetable-field-number-detail.component.html',
   providers: [ValidityService],
   imports: [

@@ -1,7 +1,9 @@
 <atlas-dialog-close (clicked)="closeDialog()"></atlas-dialog-close>
 <atlas-dialog-content>
   <div class="mb-5 dialog-title">
-    <span class="font-bold-4xl">{{ 'WORKFLOW.BUTTON.RESTART' | translate }}</span>
+    <span class="font-bold-4xl">{{
+      'WORKFLOW.BUTTON.RESTART' | translate
+    }}</span>
   </div>
   <form [formGroup]="formGroup">
     <div class="col-12 px-5 mt-3">
@@ -57,20 +59,24 @@
         </atlas-text-field>
       </div>
       <div class="d-flex flex-column col-12 pb-3">
-        <form-comment
+        <atlas-form-comment
           [formGroup]="formGroup"
           label="WORKFLOW.START.COMMENT"
           [required]="true"
           controlName="motivationComment"
-        ></form-comment>
+        ></atlas-form-comment>
       </div>
     </div>
   </form>
 </atlas-dialog-content>
 
 <atlas-dialog-footer>
-  <button (click)="closeDialog()" class="atlas-primary-btn me-3" data-cy="dialog-cancel-button">
-   {{ 'DIALOG.CANCEL' | translate }}
+  <button
+    (click)="closeDialog()"
+    class="atlas-primary-btn me-3"
+    data-cy="dialog-cancel-button"
+  >
+    {{ 'DIALOG.CANCEL' | translate }}
   </button>
   <button
     (click)="restartWorkflow()"

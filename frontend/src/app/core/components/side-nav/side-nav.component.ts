@@ -4,23 +4,15 @@ import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PageService } from '../../pages/page.service';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { MatListItem } from '@angular/material/list';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-side-nav',
+  selector: 'atlas-side-nav',
   templateUrl: './side-nav.component.html',
   styleUrls: ['./side-nav.component.scss'],
-  imports: [
-    NgFor,
-    MatListItem,
-    RouterLink,
-    NgClass,
-    NgIf,
-    AsyncPipe,
-    TranslatePipe,
-  ],
+  imports: [MatListItem, RouterLink, NgClass, AsyncPipe, TranslatePipe],
   providers: [TranslatePipe],
 })
 export class SideNavComponent {
