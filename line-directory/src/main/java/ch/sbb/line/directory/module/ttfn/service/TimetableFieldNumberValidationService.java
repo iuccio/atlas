@@ -13,32 +13,27 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TimetableFieldNumberValidationService {
 
-
   private final TimetableFieldNumberVersionRepository versionRepository;
   private final SharedBusinessOrganisationService sharedBusinessOrganisationService;
 
   public void validatePreSave(TimetableFieldNumberVersion newVersion) {
-    validateNoOverlapsOnNumberAndSttfn(newVersion);
+    validateNoOverlapsOnNumber(newVersion);
     sharedBusinessOrganisationService.validateSboidExists(newVersion.getBusinessOrganisation());
   }
 
-  private void validateNoOverlapsOnNumberAndSttfn(TimetableFieldNumberVersion newVersion) {
-    List<TimetableFieldNumberVersion> overlappingVersions = getOverlapsOnNumberAndSttfn(newVersion);
+  private void validateNoOverlapsOnNumber(TimetableFieldNumberVersion newVersion) {
+    List<TimetableFieldNumberVersion> overlappingVersions = getOverlapsOnNumber(newVersion);
     if (!overlappingVersions.isEmpty()) {
       throw new TimetableFieldNumberConflictException(newVersion, overlappingVersions);
     }
   }
 
-  private List<TimetableFieldNumberVersion> getOverlapsOnNumberAndSttfn(TimetableFieldNumberVersion version) {
+  private List<TimetableFieldNumberVersion> getOverlapsOnNumber(TimetableFieldNumberVersion version) {
     String ttfnid = version.getTtfnid() == null ? "" : version.getTtfnid();
-    if (version.getSwissTimetableFieldNumber() == null) {
-      return versionRepository.findNumberOverlaps(version);
-    }
-    return versionRepository.getAllByNumberOrSwissTimetableFieldNumberWithValidityOverlap(
-            version.getNumber(), version.getSwissTimetableFieldNumber().toLowerCase(),
-            version.getValidFrom(), version.getValidTo(), ttfnid).stream()
+    return versionRepository.getAllByNumberWithValidityOverlap(
+            version.getNumber(), version.getValidFrom(), version.getValidTo(), ttfnid)
+        .stream()
         .filter(i -> i.getStatus() != Status.REVOKED)
         .toList();
   }
-
 }

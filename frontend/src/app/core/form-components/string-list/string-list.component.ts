@@ -3,16 +3,16 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
-  ValidatorFn,
   ReactiveFormsModule,
+  ValidatorFn,
 } from '@angular/forms';
 import { FieldExample } from '../text-field/field-example';
 import { concat, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TextFieldComponent } from '../text-field/text-field.component';
 import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
-import { NgClass, NgFor, NgIf, AsyncPipe } from '@angular/common';
-import { MatChipSet, MatChip, MatChipRemove } from '@angular/material/chips';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({

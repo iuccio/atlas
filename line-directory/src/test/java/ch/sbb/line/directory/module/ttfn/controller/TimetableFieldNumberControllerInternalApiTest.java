@@ -1,6 +1,5 @@
 package ch.sbb.line.directory.module.ttfn.controller;
 
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -8,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ch.sbb.atlas.amazon.service.AmazonService;
 import ch.sbb.atlas.api.lidi.enumaration.TtfnMeanOfTransport;
-import ch.sbb.atlas.api.model.BaseVersionModel;
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.controller.BaseControllerApiTest;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumber;
@@ -49,7 +47,6 @@ class TimetableFieldNumberControllerInternalApiTest extends BaseControllerApiTes
           .meanOfTransport(TtfnMeanOfTransport.TRAIN)
           .number("10.100")
           .status(Status.VALIDATED)
-          .swissTimetableFieldNumber("b0.100")
           .validFrom(LocalDate.of(2020, 1, 1))
           .validTo(LocalDate.of(2020, 12, 31))
           .businessOrganisation("sbb")
@@ -76,7 +73,7 @@ class TimetableFieldNumberControllerInternalApiTest extends BaseControllerApiTes
     mvc.perform(get("/internal/field-numbers")
             .queryParam("page", "0")
             .queryParam("size", "5")
-            .queryParam("sort", "swissTimetableFieldNumber,asc"))
+            .queryParam("sort", "number,asc"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.totalCount").value(1));
   }
@@ -98,4 +95,15 @@ class TimetableFieldNumberControllerInternalApiTest extends BaseControllerApiTes
             .value("Supplied sort field nam not found on TimetableFieldNumber"));
   }
 
+  @Test
+  void shouldCallMergeAllVersionsOnEndpointTrigger() throws Exception {
+    // given
+    Mockito.doNothing().when(timetableFieldNumberService).mergeAllVersions();
+
+    // when & then
+    mvc.perform(post("/internal/field-numbers/merge-all-versions"))
+        .andExpect(status().isOk());
+
+    Mockito.verify(timetableFieldNumberService).mergeAllVersions();
+  }
 }

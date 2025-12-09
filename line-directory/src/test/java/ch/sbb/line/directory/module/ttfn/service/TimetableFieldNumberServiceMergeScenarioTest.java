@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNumberServiceTest {
 
@@ -75,7 +77,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(firstTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
 
     // second merged with third
     TimetableFieldNumberVersion secondTemporalVersion = result.get(1);
@@ -86,7 +87,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(secondTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(secondTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(secondTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(secondTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
 
     // third version no changes
     TimetableFieldNumberVersion thirdTemporalVersion = result.get(2);
@@ -98,7 +98,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(thirdTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(thirdTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(thirdTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(thirdTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
   }
 
   /**
@@ -150,7 +149,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(firstTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
   }
 
   /**
@@ -208,7 +206,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(firstTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
 
     //second not touched
     TimetableFieldNumberVersion secondTemporalVersion = result.get(1);
@@ -219,7 +216,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(secondTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(secondTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(secondTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(secondTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
   }
 
   /**
@@ -278,7 +274,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(firstTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
 
     //second not touched
     TimetableFieldNumberVersion secondTemporalVersion = result.get(1);
@@ -289,7 +284,6 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(secondTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(secondTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(secondTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(secondTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
 
     //third not touched
     TimetableFieldNumberVersion thirdTemporalVersion = result.get(2);
@@ -300,7 +294,33 @@ class TimetableFieldNumberServiceMergeScenarioTest extends BaseTimetableFieldNum
     assertThat(thirdTemporalVersion.getNumber()).isEqualTo(NUMBER);
     assertThat(thirdTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
     assertThat(thirdTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
-    assertThat(thirdTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
   }
 
+  // todo: remove after maintenance execution after prod release of ATLAS-3254
+  @Test
+  void shouldMergeAllVersionsCorrectlyWithoutEditedVersion() {
+    // given
+    version2.setNumber(NUMBER);
+    version3.setNumber(NUMBER);
+    version4.setNumber(NUMBER);
+    versionRepository.saveAll(List.of(version1, version2, version3, version4, version5));
+
+    // when
+    timetableFieldNumberService.mergeAllVersions();
+
+    // then
+    List<TimetableFieldNumberVersion> allVersionsAscByValidFrom = versionRepository.findAll(Sort.by(Direction.ASC, "validFrom"));
+    assertThat(allVersionsAscByValidFrom).hasSize(3);
+    assertThat(allVersionsAscByValidFrom.getFirst().getNumber()).isEqualTo("80.099.1");
+    assertThat(allVersionsAscByValidFrom.getFirst().getValidFrom()).isEqualTo(LocalDate.of(2020, 1, 1));
+    assertThat(allVersionsAscByValidFrom.getFirst().getValidTo()).isEqualTo(LocalDate.of(2021, 12, 31));
+
+    assertThat(allVersionsAscByValidFrom.get(1).getNumber()).isEqualTo("10.099");
+    assertThat(allVersionsAscByValidFrom.get(1).getValidFrom()).isEqualTo(LocalDate.of(2022, 1, 1));
+    assertThat(allVersionsAscByValidFrom.get(1).getValidTo()).isEqualTo(LocalDate.of(2025, 12, 31));
+
+    assertThat(allVersionsAscByValidFrom.get(2).getNumber()).isEqualTo("80.099.5");
+    assertThat(allVersionsAscByValidFrom.get(2).getValidFrom()).isEqualTo(LocalDate.of(2026, 1, 1));
+    assertThat(allVersionsAscByValidFrom.get(2).getValidTo()).isEqualTo(LocalDate.of(2026, 12, 31));
+  }
 }

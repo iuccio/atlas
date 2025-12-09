@@ -144,7 +144,6 @@ class TimetableHearingStatementControllerV2ApiTest extends BaseControllerApiTest
 
     TimetableFieldNumberVersion timetableFieldNumber = TimetableFieldNumberVersion.builder()
         .ttfnid(TTFNID)
-        .swissTimetableFieldNumber("1234")
         .number("5678")
         .descriptionOutwardLine1("Description")
         .descriptionReturnLine1("Description")
@@ -250,5 +249,4 @@ class TimetableHearingStatementControllerV2ApiTest extends BaseControllerApiTest
     return new AtlasMockMultipartFile("statement", null,
         MediaType.APPLICATION_JSON_VALUE, statement);
   }
-
 }

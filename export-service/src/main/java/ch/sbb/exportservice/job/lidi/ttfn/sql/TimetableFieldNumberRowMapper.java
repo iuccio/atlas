@@ -19,7 +19,6 @@ public class TimetableFieldNumberRowMapper implements RowMapper<TimetableFieldNu
         .validFrom(rs.getDate("valid_from").toLocalDate())
         .validTo(rs.getDate("valid_to").toLocalDate())
         .status(Status.valueOf(rs.getString("status")))
-        .swissTimetableFieldNumber(rs.getString("swiss_timetable_field_number"))
         .number(rs.getString("number"))
         .businessOrganisation(rs.getString("business_organisation"))
         .descriptionOutwardLine1(rs.getString("description_outward_line_1"))
@@ -37,5 +36,4 @@ public class TimetableFieldNumberRowMapper implements RowMapper<TimetableFieldNu
         .version(rs.getInt("version"))
         .build();
   }
-
 }

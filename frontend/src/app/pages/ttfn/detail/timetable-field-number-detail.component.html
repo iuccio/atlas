@@ -56,42 +56,23 @@
           </h2>
         }
 
-        <div class="col-12 d-flex gap-4">
-          <atlas-text-field
-            [fieldExamples]="[
-              { label: 'FORM.FOR_EXAMPLE', translate: true },
-              { label: ' 30.003 | ', translate: false },
-              {
-                label: 'FORM.MAX_CHARS',
-                translate: true,
-                arg: { key: 'numberOfChars', value: '50' },
-              },
-            ]"
-            [formGroup]="form"
-            [required]="true"
-            class="flex-50"
-            controlName="number"
-            fieldLabel="TTFN.NUMBER"
-          >
-          </atlas-text-field>
-          <atlas-text-field
-            [fieldExamples]="[
-              { label: 'FORM.FOR_EXAMPLE', translate: true },
-              { label: ' 30.003 | ', translate: false },
-              {
-                label: 'FORM.MAX_CHARS',
-                translate: true,
-                arg: { key: 'numberOfChars', value: '50' },
-              },
-            ]"
-            [formGroup]="form"
-            [required]="false"
-            class="flex-50"
-            controlName="swissTimetableFieldNumber"
-            fieldLabel="TTFN.SWISS_TIMETABLE_FIELD_NUMBER"
-          >
-          </atlas-text-field>
-        </div>
+        <atlas-text-field
+          [fieldExamples]="[
+            { label: 'FORM.FOR_EXAMPLE', translate: true },
+            { label: ' 30.003 | ', translate: false },
+            {
+              label: 'FORM.MAX_CHARS',
+              translate: true,
+              arg: { key: 'numberOfChars', value: '50' },
+            },
+          ]"
+          [formGroup]="form"
+          [required]="true"
+          class="d-block w-50"
+          controlName="number"
+          fieldLabel="TTFN.NUMBER"
+        >
+        </atlas-text-field>
 
         <div class="col-12 d-flex gap-4">
           <atlas-text-field

@@ -70,7 +70,6 @@ create table timetable_field_number_version
     description_return_line_3    varchar(255),
     mean_of_transport            varchar(50),
     number                       varchar(50)      not null,
-    swiss_timetable_field_number varchar(50)      not null,
     status                       varchar(50)      not null,
     creation_date                timestamp        not null,
     creator                      varchar(50)      not null,

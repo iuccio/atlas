@@ -57,7 +57,6 @@ class TimetableFieldNumberServiceScenario11Test extends BaseTimetableFieldNumber
     assertThat(firstTemporalVersion.getLineRelations()).isEmpty();
     assertThat(firstTemporalVersion.getNumber()).isEqualTo("80.099.1");
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
 
     // second version updated
@@ -68,7 +67,6 @@ class TimetableFieldNumberServiceScenario11Test extends BaseTimetableFieldNumber
     assertThat(secondTemporalVersion.getLineRelations()).isEmpty();
     assertThat(secondTemporalVersion.getNumber()).isEqualTo("80.099.2");
     assertThat(secondTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
-    assertThat(secondTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
     assertThat(secondTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
   }
 
@@ -110,7 +108,6 @@ class TimetableFieldNumberServiceScenario11Test extends BaseTimetableFieldNumber
     assertThat(firstTemporalVersion.getLineRelations()).isEmpty();
     assertThat(firstTemporalVersion.getNumber()).isEqualTo("80.099.1");
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
 
     // second version updated
@@ -121,7 +118,6 @@ class TimetableFieldNumberServiceScenario11Test extends BaseTimetableFieldNumber
     assertThat(secondTemporalVersion.getLineRelations()).isEmpty();
     assertThat(secondTemporalVersion.getNumber()).isEqualTo("80.099.2");
     assertThat(secondTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
-    assertThat(secondTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
     assertThat(secondTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
 
     // third version updated
@@ -132,7 +128,6 @@ class TimetableFieldNumberServiceScenario11Test extends BaseTimetableFieldNumber
     assertThat(thirdTemporalVersion.getLineRelations()).isEmpty();
     assertThat(thirdTemporalVersion.getNumber()).isEqualTo("80.099.3");
     assertThat(thirdTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
-    assertThat(thirdTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
     assertThat(thirdTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
   }
 
@@ -174,7 +169,6 @@ class TimetableFieldNumberServiceScenario11Test extends BaseTimetableFieldNumber
     assertThat(firstTemporalVersion.getLineRelations()).isEmpty();
     assertThat(firstTemporalVersion.getNumber()).isEqualTo("80.099.1");
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
 
     // second version updated
@@ -185,7 +179,6 @@ class TimetableFieldNumberServiceScenario11Test extends BaseTimetableFieldNumber
     assertThat(secondTemporalVersion.getLineRelations()).isEmpty();
     assertThat(secondTemporalVersion.getNumber()).isEqualTo("80.099.2");
     assertThat(secondTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
-    assertThat(secondTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
     assertThat(secondTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
 
     // third version updated
@@ -196,7 +189,6 @@ class TimetableFieldNumberServiceScenario11Test extends BaseTimetableFieldNumber
     assertThat(thirdTemporalVersion.getLineRelations()).isEmpty();
     assertThat(thirdTemporalVersion.getNumber()).isEqualTo("80.099.3");
     assertThat(thirdTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
-    assertThat(thirdTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
     assertThat(thirdTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
   }
 
@@ -239,7 +231,6 @@ class TimetableFieldNumberServiceScenario11Test extends BaseTimetableFieldNumber
     assertThat(firstTemporalVersion.getLineRelations()).isEmpty();
     assertThat(firstTemporalVersion.getNumber()).isEqualTo("80.099.1");
     assertThat(firstTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
-    assertThat(firstTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
     assertThat(firstTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
 
     // second version updated
@@ -251,7 +242,6 @@ class TimetableFieldNumberServiceScenario11Test extends BaseTimetableFieldNumber
     assertThat(secondTemporalVersion.getLineRelations()).isEmpty();
     assertThat(secondTemporalVersion.getNumber()).isEqualTo("80.099.2");
     assertThat(secondTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
-    assertThat(secondTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
     assertThat(secondTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
 
     // third version updated
@@ -263,8 +253,6 @@ class TimetableFieldNumberServiceScenario11Test extends BaseTimetableFieldNumber
     assertThat(thirdTemporalVersion.getLineRelations()).isEmpty();
     assertThat(thirdTemporalVersion.getNumber()).isEqualTo("80.099.3");
     assertThat(thirdTemporalVersion.getStatus()).isEqualTo(Status.VALIDATED);
-    assertThat(thirdTemporalVersion.getSwissTimetableFieldNumber()).isEqualTo(SWISS_TIMETABLE_FIELD_NUMBER);
     assertThat(thirdTemporalVersion.getBusinessOrganisation()).isEqualTo("sbb");
   }
-
 }

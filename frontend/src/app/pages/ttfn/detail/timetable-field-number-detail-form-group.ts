@@ -12,9 +12,7 @@ import { SelectionValidator } from '../../../core/validation/min-selected/select
 import moment from 'moment/moment';
 import { DateRangeValidator } from '../../../core/validation/date-range/date-range-validator';
 
-export interface TimetableFieldNumberDetailFormGroup
-  extends BaseDetailFormGroup {
-  swissTimetableFieldNumber: FormControl<string | undefined>;
+export interface TimetableFieldNumberDetailFormGroup extends BaseDetailFormGroup {
   ttfnid: FormControl<string | null | undefined>;
   businessOrganisation: FormControl<string | undefined>;
   number: FormControl<string | undefined>;
@@ -41,16 +39,6 @@ export class TimetableFieldNumberDetailFormGroupBuilder {
   ): FormGroup<TimetableFieldNumberDetailFormGroup> {
     return new FormGroup<TimetableFieldNumberDetailFormGroup>(
       {
-        swissTimetableFieldNumber: new FormControl(
-          version?.swissTimetableFieldNumber,
-          {
-            nonNullable: true,
-            validators: [
-              AtlasFieldLengthValidator.length_50,
-              AtlasCharsetsValidator.sid4pt,
-            ],
-          }
-        ),
         ttfnid: new FormControl(version?.ttfnid),
         businessOrganisation: new FormControl(version?.businessOrganisation, {
           nonNullable: true,

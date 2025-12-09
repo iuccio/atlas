@@ -46,5 +46,4 @@ class TimetableFieldNumberServiceTest {
     //then
     verify(versionRepository).incrementVersion("ttfnid");
   }
-
 }

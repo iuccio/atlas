@@ -392,7 +392,6 @@ class TimetableHearingStatementServiceTest {
     assertThat(timetableHearingStatementRepository.findById(statement5Id).orElseThrow().getStatementStatus()).isEqualTo(
         StatementStatus.RECEIVED);
     assertThat(timetableHearingStatementRepository.findById(statement5Id).orElseThrow().getTimetableYear()).isEqualTo(YEAR + 1);
-
   }
 
   @Test
@@ -462,7 +461,6 @@ class TimetableHearingStatementServiceTest {
     timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
     TimetableFieldNumberVersion timetableFieldNumber = TimetableFieldNumberVersion.builder()
         .ttfnid("ch:1:ttfnid:2341234")
-        .swissTimetableFieldNumber("1234")
         .number("5678")
         .descriptionOutwardLine1("Description")
         .descriptionReturnLine1("Description")
@@ -515,7 +513,6 @@ class TimetableHearingStatementServiceTest {
     timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
     TimetableFieldNumberVersion timetableFieldNumber = TimetableFieldNumberVersion.builder()
         .ttfnid("ch:1:ttfnid:2341234")
-        .swissTimetableFieldNumber("1234")
         .number("5678")
         .descriptionOutwardLine1("Description")
         .descriptionReturnLine1("Description")
@@ -617,5 +614,4 @@ class TimetableHearingStatementServiceTest {
     hearingStatements = timetableHearingStatementService.getHearingStatements(searchRestrictions);
     assertThat(hearingStatements.getTotalElements()).isZero();
   }
-
 }

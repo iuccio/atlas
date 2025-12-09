@@ -56,7 +56,6 @@ class QuoVadisDataImportServiceTest {
         .descriptionOutwardLine1("Bern - Wohlen")
         .number(number)
         .status(Status.VALIDATED)
-        .swissTimetableFieldNumber("r.80.077.1")
         .validFrom(LocalDate.of(2020, 1, 1))
         .validTo(LocalDate.of(2099, 12, 31))
         .businessOrganisation("ch:1:sboid:123123")
@@ -113,5 +112,4 @@ class QuoVadisDataImportServiceTest {
     assertThat(versionsAfterMigration).hasSize(1);
     assertThat(versionsAfterMigration.getFirst().getTtfnid()).isNotNull();
   }
-
 }
