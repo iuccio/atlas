@@ -8,18 +8,18 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 // todo: remove after maintenance execution after prod release of ATLAS-3254
-@Configuration
-@EnableAsync
 @Profile("!integration-test")
+@EnableAsync
+@Configuration
 public class AsyncConfig {
 
   @Bean
   public DelegatingSecurityContextAsyncTaskExecutor taskExecutor() {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(10);
-    executor.setMaxPoolSize(10);
-    executor.setQueueCapacity(5);
     executor.setThreadNamePrefix("async-");
+    executor.setMaxPoolSize(5);
+    executor.setQueueCapacity(2);
+    executor.setCorePoolSize(5);
     executor.initialize();
     return new DelegatingSecurityContextAsyncTaskExecutor(executor);
   }
