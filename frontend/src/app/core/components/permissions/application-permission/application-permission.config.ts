@@ -99,7 +99,9 @@ export class ApplicationPermissionConfig {
           role: ApplicationRole.Reader,
           permissions: {
             restrictions: [],
-            specialPermissions: [],
+            specialPermissions: [
+              PermissionRestrictionType.TransportCompanyDossierAnswer,
+            ],
           },
         },
         {

@@ -283,7 +283,6 @@ export class ApplicationPermissionComponent implements OnInit {
   }
 
   get showSpecialPermissions() {
-    console.log('Checking showSpecialPermissions ', this.currentRoleConfig);
     return (
       this.currentRoleConfig.permissions.specialPermissions.length > 0 &&
       (this.showAllSpecialPermissions ||
@@ -311,10 +310,8 @@ export class ApplicationPermissionComponent implements OnInit {
   }
 
   onTransportCompanyDossierToggle(value: boolean) {
-    if (value) {
-      this.form.controls.permissions.controls.transportCompanyDossierAnswer?.setValue(
-        false
-      );
-    }
+    this.form.controls.permissions.controls.transportCompanyDossierAnswer?.setValue(
+      value
+    );
   }
 }

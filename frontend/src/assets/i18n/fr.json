@@ -349,6 +349,7 @@
     "ROLE": "Rouleau",
     "NOVA": "Terminaison NOVA",
     "INFO_PLUS": "Terminaison Info+",
+    "TRANSPORT_COMPANY": "Rédacteur des prises de position",
     "ADD_BUSINESS_ORGANISATION": "Ajouter une organisation commerciale",
     "DELETE_BUSINESS_ORGANISATION": "Supprimer l'organisation commerciale",
     "SELECTED_USER_HAS_ALREADY_PERMISSIONS": "L'utilisateur sélectionné est déjà enregistré",

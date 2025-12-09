@@ -126,4 +126,11 @@ public class TthDossierService {
     questionRepository.save(question);
     dossierRepository.save(tthDossier);
   }
+
+  private void checkPermissionForBoContactMail() {
+    //TODO get user by mail adress
+    //TODO get all permissions of user
+    //TODO check if user has permission "TRANSPORT_COMPANY_DOSSIER_ANSWER"
+    //TODO if not throw exception
+  }
 }
