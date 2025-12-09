@@ -31,7 +31,7 @@ export class StatementPersonalInformationComponent {
 
   get emails(): string {
     if (this.statement()?.statementSender.emails) {
-      return Array.from(this.statement()!.statementSender!.emails!).join('\n');
+      return Array.from(this.statement()!.statementSender.emails!).join('\n');
     }
     return '';
   }
