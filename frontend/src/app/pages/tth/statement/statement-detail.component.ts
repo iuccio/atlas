@@ -56,8 +56,6 @@ import { TimetableFieldNumberSelectComponent } from '../../../core/form-componen
 import { TransportCompanySelectComponent } from '../../../core/form-components/tu-select/transport-company-select.component';
 import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
 import { TextFieldComponent } from '../../../core/form-components/text-field/text-field.component';
-import { StringListComponent } from '../../../core/form-components/string-list/string-list.component';
-import { AtlasClipboardComponent } from '../../../core/form-components/atlas-clipboard/atlas-clipboard.component';
 import { CommentComponent } from '../../../core/form-components/comment/comment.component';
 import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
 import { FileComponent } from '../../../core/components/file-upload/file/file.component';
@@ -67,6 +65,7 @@ import { DetailFooterComponent } from '../../../core/components/detail-footer/de
 import { DisplayCantonPipe } from '../../../core/cantons/display-canton.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 import { StatementTextComponent } from './statement-text/statement-text.component';
+import { StatementPersonalInformationComponent } from './statement-personal-information/statement-personal-information.component';
 
 @Component({
   selector: 'app-statement-detail',
@@ -83,8 +82,6 @@ import { StatementTextComponent } from './statement-text/statement-text.componen
     TransportCompanySelectComponent,
     AtlasSpacerComponent,
     TextFieldComponent,
-    StringListComponent,
-    AtlasClipboardComponent,
     CommentComponent,
     AtlasLabelFieldComponent,
     FileComponent,
@@ -96,6 +93,7 @@ import { StatementTextComponent } from './statement-text/statement-text.componen
     TranslatePipe,
     NgOptimizedImage,
     StatementTextComponent,
+    StatementPersonalInformationComponent,
   ],
   providers: [OpenStatementInMailService, TranslatePipe],
 })
@@ -116,18 +114,6 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
   isInitializingComponent = true;
 
   loadingSpinnerService = inject(LoadingSpinnerService);
-
-  get emails(): string {
-    if (this.statement?.statementSender.emails) {
-      return Array.from(this.statement?.statementSender.emails).join('\n');
-    }
-    return '';
-  }
-
-  readonly emailValidator = [
-    AtlasCharsetsValidator.email,
-    AtlasFieldLengthValidator.length_100,
-  ];
 
   private ngUnsubscribe = new Subject<void>();
 

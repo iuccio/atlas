@@ -20,8 +20,31 @@
               </div>
             </div>
           </div>
+          <div class="d-flex flex-row col-12 mb-4 mt-4">
+            <div class="d-flex flex-column col-6 pe-3">
+              <atlas-select
+                [additionalLabelspace]="0"
+                [formGroup]="form"
+                [options]="YEAR_OPTIONS"
+                [required]="true"
+                controlName="timetableYear"
+                dataCy="detailSelectTthYear"
+                label="TTH.SELECT_YEAR"
+              >
+              </atlas-select>
+            </div>
+          </div>
+          <div class="d-flex flex-row col-12 mb-4">
+            <div class="d-flex flex-column col-12">
+              <tu-select
+                [formGroup]="form"
+                controlName="responsibleTransportCompanies"
+                data-cy="responsibleTransportCompanies"
+              ></tu-select>
+            </div>
+          </div>
           <div class="d-flex flex-row col-12 mb-3 mt-4">
-            <div class="d-flex flex-column col-8">
+            <div class="d-flex flex-column col-12">
               <ttfn-select
                 [formGroup]="form"
                 [validOn]="ttfnValidOn"
@@ -54,178 +77,10 @@
             </div>
           </div>
 
-          <atlas-statement-text [form]="form" [isNew]="isNew"></atlas-statement-text>
-
-          @if (statement?.oldSwissCanton) {
-            <p>
-              {{
-                'TTH.STATEMENT.STATEMENT_TRANSFER_COUNTRY'
-                  | translate
-                  : {
-                    oldSwissCanton:
-                      (statement?.oldSwissCanton! | displayCanton),
-                  }
-              }}
-            </p>
-          }
-          @if (statement && statement.cantonTransferComment) {
-            <div class="d-flex flex-row col-12 mb-5">
-              <div class="d-flex flex-column col-12">
-                <br/>
-                <span class="font-bold-lg">
-                  {{ 'TTH.STATEMENT.CANTON_TRANSFER_COMMENT' | translate }}
-                </span>
-                <span>{{ statement.cantonTransferComment }}</span>
-              </div>
-            </div>
-          }
-
-          <div class="d-flex flex-row col-12 mb-4 mt-5">
-            <div class="d-flex flex-column col-6 pe-3">
-              <atlas-select
-                [additionalLabelspace]="0"
-                [formGroup]="form"
-                [options]="YEAR_OPTIONS"
-                [required]="true"
-                controlName="timetableYear"
-                dataCy="detailSelectTthYear"
-                label="TTH.SELECT_YEAR"
-              >
-              </atlas-select>
-            </div>
-            <div class="d-flex flex-column col-6">
-              <atlas-select
-                [additionalLabelspace]="0"
-                [displayExtractor]="extractShort"
-                [formGroup]="form"
-                [options]="CANTON_OPTIONS"
-                [required]="true"
-                [valueExtractor]="extractEnumCanton"
-                controlName="swissCanton"
-                dataCy="swissCanton"
-                label="TTH.SELECT_CANTON"
-                optionTranslateLabelPrefix="TTH.CANTON."
-              >
-                <ng-template #matOptionPrefix let-canton="option">
-                  <img
-                    alt="canton-logo"
-                    class="pe-1"
-                    height="28"
-                    ngSrc="assets/images/cantons/{{
-                      canton.short.toUpperCase()
-                    }}.svg"
-                    width="28"
-                  />
-                </ng-template>
-              </atlas-select>
-            </div>
-          </div>
-
-          <div class="d-flex flex-row col-12 mb-4 mt-5">
-            <div class="d-flex flex-column col-12">
-              <tu-select
-                [formGroup]="form"
-                controlName="responsibleTransportCompanies"
-                data-cy="responsibleTransportCompanies"
-              ></tu-select>
-            </div>
-          </div>
-
-          <h1 class="font-bold-2xl pt-5">
-            {{ 'TTH.STATEMENT.ROUTE' | translate }}
-            <atlas-spacer [divider]="true" height="40px"></atlas-spacer>
-          </h1>
-
-          <h1 class="font-bold-2xl pt-5">
-            {{ 'TTH.STATEMENT.STATEMENT' | translate }}
-            <atlas-spacer [divider]="true" height="40px"></atlas-spacer>
-          </h1>
-
-          <div class="d-flex flex-row col-12 mb-4">
-            <div class="d-flex flex-column col-6 pe-3">
-              <atlas-text-field
-                [formGroup]="form.controls.statementSender"
-                controlName="firstName"
-                fieldLabel="TTH.STATEMENT.FIRST_NAME"
-              >
-              </atlas-text-field>
-            </div>
-            <div class="d-flex flex-column col-6">
-              <atlas-text-field
-                [formGroup]="form.controls.statementSender"
-                controlName="lastName"
-                fieldLabel="TTH.STATEMENT.LAST_NAME"
-              >
-              </atlas-text-field>
-            </div>
-          </div>
-
-          <div class="d-flex flex-row col-12 mb-4">
-            <div class="d-flex flex-column col-12">
-              <atlas-text-field
-                [formGroup]="form.controls.statementSender"
-                controlName="organisation"
-                fieldLabel="TTH.STATEMENT.ORGANISATION"
-              >
-              </atlas-text-field>
-            </div>
-          </div>
-
-          <div class="d-flex flex-row col-12 mb-4">
-            <div class="d-flex flex-column col-2 pe-3">
-              <atlas-text-field
-                [formGroup]="form.controls.statementSender"
-                controlName="zip"
-                fieldLabel="TTH.STATEMENT.ZIP"
-              >
-              </atlas-text-field>
-            </div>
-            <div class="d-flex flex-column col-5 pe-3">
-              <atlas-text-field
-                [formGroup]="form.controls.statementSender"
-                controlName="city"
-                fieldLabel="TTH.STATEMENT.CITY"
-              >
-              </atlas-text-field>
-            </div>
-            <div class="d-flex flex-column col-5">
-              <atlas-text-field
-                [formGroup]="form.controls.statementSender"
-                controlName="street"
-                fieldLabel="TTH.STATEMENT.STREET"
-              >
-              </atlas-text-field>
-            </div>
-          </div>
-
-          <div class="d-flex flex-row col-12 mb-4">
-            <div class="d-flex flex-column col-12">
-              <atlas-text-list
-                [formGroup]="form"
-                [formGroupEnabled]="form.enabled"
-                [itemValidator]="emailValidator"
-                fieldLabel="TTH.STATEMENT.E_MAIL"
-                [required]="true"
-                placeHolderText="TTH.STATEMENT.E_MAIL_ITEMS_LIMIT_REACHED"
-                [fieldExamples]="[
-                  {
-                    label: 'FORM.MAX_ITEMS',
-                    translate: true,
-                    arg: { key: 'numberOfItems', value: '10' },
-                  },
-                  { label: ' | ' },
-                  { label: 'TTH.STATEMENT.E_MAIL_TEXT' },
-                ]"
-                controlName="statementSender.emails"
-              >
-                <atlas-clipboard
-                  [value]="emails"
-                  [showMe]="form.disabled"
-                  class="ps-2 pt-2"
-                ></atlas-clipboard>
-              </atlas-text-list>
-            </div>
-          </div>
+          <atlas-statement-text
+            [form]="form"
+            [isNew]="isNew"
+          ></atlas-statement-text>
 
           @if (form.value.documents && form.value.documents.length > 0) {
             <div class="mb-3">
@@ -265,14 +120,84 @@
             </ng-container>
           }
 
+          <app-statement-personal-information
+            [form]="form"
+            [statement]="statement!"
+          ></app-statement-personal-information>
+
+          <div>
+            <span class="font-bold-xl">
+              {{ 'TTH.STATEMENT.STATEMENT_TRANSFER_CANTON' | translate }}
+            </span>
+            <atlas-spacer [divider]="true" height="10px"></atlas-spacer>
+            <span class="font-regular-base">
+              {{ 'TTH.STATEMENT.STATEMENT_TRANSFER_CANTON_INFO' | translate }}
+            </span>
+            <div class="d-flex flex-column col-6 mt-2">
+              <atlas-select
+                [additionalLabelspace]="0"
+                [displayExtractor]="extractShort"
+                [formGroup]="form"
+                [options]="CANTON_OPTIONS"
+                [required]="true"
+                [valueExtractor]="extractEnumCanton"
+                controlName="swissCanton"
+                dataCy="swissCanton"
+                label="TTH.SELECT_CANTON"
+                optionTranslateLabelPrefix="TTH.CANTON."
+              >
+                <ng-template #matOptionPrefix let-canton="option">
+                  <img
+                    alt="canton-logo"
+                    class="pe-1"
+                    height="28"
+                    ngSrc="assets/images/cantons/{{
+                      canton.short.toUpperCase()
+                    }}.svg"
+                    width="28"
+                  />
+                </ng-template>
+              </atlas-select>
+            </div>
+          </div>
+
+          @if (statement?.oldSwissCanton) {
+            <div class="mt-4">
+              <p>
+                {{
+                  'TTH.STATEMENT.STATEMENT_TRANSFER_COUNTRY'
+                    | translate
+                    : {
+                      oldSwissCanton:
+                        (statement?.oldSwissCanton! | displayCanton),
+                    }
+                }}
+              </p>
+            </div>
+          }
+          @if (statement && statement.cantonTransferComment) {
+            <div class="d-flex flex-row col-12">
+              <div class="d-flex flex-column col-12">
+                <span class="font-bold-lg">
+                  {{ 'TTH.STATEMENT.CANTON_TRANSFER_COMMENT' | translate }}
+                </span>
+                <span>{{ statement.cantonTransferComment }}</span>
+              </div>
+            </div>
+          }
+
           @if (form.disabled) {
             <ng-container>
-              <h1 class="font-bold-2xl pt-5">
-                {{ 'TTH.STATEMENT.CLARIFICATION' | translate }}
-                <atlas-spacer [divider]="true" height="30px"></atlas-spacer>
-              </h1>
-
-              <div class="mb-3 font-regular-sm">
+              <div class="pt-5">
+                <span class="font-bold-xl">
+                  {{ 'TTH.STATEMENT.CLARIFICATION' | translate }}
+                </span>
+                <span class="font-regular-lg">
+                  {{ 'TTH.STATEMENT.CLARIFICATION_POSTFIX' | translate }}
+                </span>
+                <atlas-spacer [divider]="true" height="10px"></atlas-spacer>
+              </div>
+              <div class="mb-3 font-regular-base">
                 {{ 'TTH.STATEMENT.CLARIFICATION_INFO' | translate }}
               </div>
               <atlas-button
@@ -287,9 +212,9 @@
               </atlas-button>
             </ng-container>
           }
-          <h1 class="font-bold-2xl pt-5">
+          <h1 class="font-bold-xl pt-5">
             {{ 'TTH.STATEMENT.STATUS_JUSTIFICATION' | translate }}
-            <atlas-spacer [divider]="true" height="40px"></atlas-spacer>
+            <atlas-spacer [divider]="true" height="20px"></atlas-spacer>
           </h1>
 
           <div class="d-flex flex-row col-12 mb-5">
@@ -308,8 +233,19 @@
             </div>
           </div>
 
+          <div class="d-flex flex-row col-12">
+            <div class="d-flex flex-column col-12 mb-4">
+              <form-comment
+                [formGroup]="form"
+                controlName="internalComment"
+                label="TTH.STATEMENT.INTERNAL_COMMENT"
+                maxChars="5000"
+              >
+              </form-comment>
+            </div>
+          </div>
           <div class="d-flex flex-row col-12 mb-5">
-            <div class="d-flex flex-column col-12">
+            <div class="d-flex flex-column col-12 mb-4">
               <form-comment
                 [formGroup]="form"
                 controlName="publicComment"
@@ -320,6 +256,7 @@
             </div>
           </div>
         </ng-container>
+
         @if (statement) {
           <app-user-detail-info
             [record]="statement!"
