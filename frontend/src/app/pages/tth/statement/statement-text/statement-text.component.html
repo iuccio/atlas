@@ -11,21 +11,21 @@
       </mat-checkbox>
     </div>
 
-    @if (showOriginalTextButton) {
+    @if (statementText.showOriginalTextButton) {
     <atlas-button
       buttonDataCy="showOriginalStatementText"
-      [buttonText]="originalTextButtonLabel"
+      [buttonText]="statementText.originalTextButtonLabel"
       buttonType="icon"
       (buttonClicked)="showOriginalText()"
       wrapperStyleClass="pt-1"
       buttonStyleClass="atlas-icon-btn font-bold-base"
     >
       <ng-template #rightIcon>
-        <i class="bi {{ originalTextButtonIcon }} h5"></i>
+        <i class="bi {{ statementText.originalTextButtonIcon }} h5"></i>
       </ng-template>
     </atlas-button>
     }
-    @if (showOriginalStatementText) {
+    @if (statementText.showOriginalStatementText) {
     <div class="pt-2 d-flex flex-column col-12">
       <form-comment
         [formGroup]="form()"
@@ -36,9 +36,9 @@
       </form-comment>
     </div>
     }
-    @if (!isCheckboxStatementAnonymous) {
+    @if (!statementText.checkboxStatementAnonymous) {
     <div class="mb-3 mt-3">
-      @if (!isAnonymizeStatementButtonActive) {
+      @if (!statementText.anonymizeStatementButtonActive) {
       <atlas-button
         [disabled]="form().disabled"
         (click)="anonymizeStatement()"
@@ -52,7 +52,7 @@
       </atlas-button>
       }
     </div>
-      @if (isAnonymizeStatementButtonActive) {
+      @if (statementText.anonymizeStatementButtonActive) {
     <div class="d-flex flex-column col-12">
       <form-comment
         [formGroup]="form()"
