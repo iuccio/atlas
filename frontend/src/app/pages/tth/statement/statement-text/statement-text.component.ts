@@ -67,12 +67,10 @@ export class StatementTextComponent implements OnInit {
       this.statementText.currentAnonymousStatement =
         this.form().getRawValue().anonymousStatement!;
       this.form().controls.anonymousStatement.setValue(null);
-    } else {
-      if (this.statementText.currentAnonymousStatement) {
-        this.form().controls.anonymousStatement.setValue(
-          this.statementText.currentAnonymousStatement
-        );
-      }
+    } else if (this.statementText.currentAnonymousStatement) {
+      this.form().controls.anonymousStatement.setValue(
+        this.statementText.currentAnonymousStatement
+      );
     }
   }
 
