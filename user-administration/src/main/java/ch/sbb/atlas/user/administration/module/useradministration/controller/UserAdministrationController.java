@@ -69,6 +69,16 @@ public class UserAdministrationController implements UserAdministrationApiV1 {
   }
 
   @Override
+  public UserModel getUserByMail(String mail) {
+    Optional<UserModel> userModel = graphApiService.searchUserByMail(mail)
+        .stream()
+        .findFirst();
+    UserModel user = userModel.orElseThrow(() -> new IllegalStateException("User is missing"));
+    user.setPermissions(getUserPermissionModels(user.getUserId()));
+    return user;
+  }
+
+  @Override
   public UserDisplayNameModel getUserDisplayName(String userId) {
     Optional<UserDisplayNameModel> clientCredentialAlias = getClientCredentialAlias(userId);
     if (clientCredentialAlias.isPresent()) {

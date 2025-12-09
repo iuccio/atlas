@@ -43,6 +43,20 @@ public class GraphApiService {
     });
   }
 
+  public List<UserModel> searchUserByMail(String mail) {
+    return getUsers(requestConfig -> {
+      Objects.requireNonNull(requestConfig.queryParameters);
+      Objects.requireNonNull(requestConfig.headers);
+
+      requestConfig.queryParameters.select = USER_PROPERTIES_TO_SELECT;
+      requestConfig.queryParameters.top = SEARCH_QUERY_LIMIT;
+      requestConfig.queryParameters.search = """
+          "mail:%s"
+          """.formatted(mail);
+      requestConfig.headers.add("ConsistencyLevel", "eventual");
+    });
+  }
+
   @Redacted
   public List<UserModel> resolveUsers(List<String> userIds) {
     List<UserModel> result = new ArrayList<>();
