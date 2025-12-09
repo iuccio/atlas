@@ -32,6 +32,7 @@ public class TimetableHearingStatementMapperV2 {
         .internalComment(statementModel.getInternalComment())
         .topic(statementModel.getTopic())
         .cantonTransferComment(statementModel.getCantonTransferComment())
+        .oldSwissCanton(statementModel.getOldSwissCanton())
         .version(statementModel.getEtagVersion())
         .build();
     timetableHearingStatement.setResponsibleTransportCompanies(
@@ -71,6 +72,7 @@ public class TimetableHearingStatementMapperV2 {
         .publicComment(statement.getPublicComment())
         .internalComment(statement.getInternalComment())
         .cantonTransferComment(statement.getCantonTransferComment())
+        .oldSwissCanton(statement.getOldSwissCanton())
         .topic(statement.getTopic())
         .dossierId(statement.getDossierId())
         .creationDate(statement.getCreationDate())

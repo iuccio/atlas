@@ -199,6 +199,7 @@ public class TimetableHearingStatementService {
     timetableHearingStatementInDb.setStopPlace(timetableHearingStatementModel.getStopPlace());
     timetableHearingStatementInDb.setStatement(timetableHearingStatementModel.getStatement());
     timetableHearingStatementInDb.setPublicComment(timetableHearingStatementModel.getPublicComment());
+    timetableHearingStatementInDb.setInternalComment(timetableHearingStatementModel.getInternalComment());
     timetableHearingStatementInDb.setCantonTransferComment(timetableHearingStatementModel.getCantonTransferComment());
     timetableHearingStatementInDb.setStatementSender(
         StatementSenderMapperV2.toEntity(timetableHearingStatementModel.getStatementSender()));
