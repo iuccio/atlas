@@ -1,9 +1,14 @@
 package ch.sbb.workflow.module.lidi.tth.service;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
+import ch.sbb.atlas.api.client.user.administration.UserAdministrationClient;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
+import ch.sbb.atlas.api.user.administration.PermissionModel;
+import ch.sbb.atlas.api.user.administration.UserModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
+import ch.sbb.atlas.kafka.model.user.admin.ApplicationType;
+import ch.sbb.atlas.kafka.model.user.admin.PermissionRestrictionType;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
@@ -27,6 +32,7 @@ public class TthDossierService {
   private final TthDossierQuestionRepository questionRepository;
   private final TimetableHearingStatementClient timetableHearingStatementClient;
   private final TthDossierNotificationService notificationService;
+  private final UserAdministrationClient userAdministrationClient;
 
   public TthDossier getDossierById(Long dossierId) {
     return dossierRepository.findById(dossierId).orElseThrow(() -> new IdNotFoundException(dossierId));
@@ -35,6 +41,7 @@ public class TthDossierService {
   @Transactional
   public TthDossier createDossier(TthDossier dossier) {
     dossier.setDossierStatus(DossierStatus.ADDED);
+    checkPermissionForBoContactMail(dossier.getBoContactMail());
     TthDossier tthDossier = dossierRepository.saveAndFlush(dossier);
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier));
     return tthDossier;
@@ -127,10 +134,23 @@ public class TthDossierService {
     dossierRepository.save(tthDossier);
   }
 
-  private void checkPermissionForBoContactMail() {
-    //TODO get user by mail adress
-    //TODO get all permissions of user
-    //TODO check if user has permission "TRANSPORT_COMPANY_DOSSIER_ANSWER"
-    //TODO if not throw exception
+  //TODO add test
+  private void checkPermissionForBoContactMail(String mail) {
+    UserModel user = userAdministrationClient.getUserByMail(mail);
+
+    PermissionModel permission =
+        user.getPermissions().stream()
+            .filter(permissionModel -> permissionModel.getApplication().equals(ApplicationType.TIMETABLE_HEARING)).toList()
+            .getFirst();
+
+    boolean hasPermission = permission.getPermissionRestrictions()
+        .stream()
+        .filter(i -> i.getType() == PermissionRestrictionType.TRANSPORT_COMPANY_DOSSIER_ANSWER)
+        .anyMatch(i -> Boolean.parseBoolean(i.getValueAsString()));
+
+    if (!hasPermission) {
+      //TODO add custom Exception
+      throw new RuntimeException();
+    }
   }
 }

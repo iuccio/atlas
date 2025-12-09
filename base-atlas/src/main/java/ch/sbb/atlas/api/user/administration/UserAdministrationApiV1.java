@@ -37,6 +37,10 @@ public interface UserAdministrationApiV1 {
   @Operation(description = "Retrieve User Information for a given user")
   UserModel getUser(@PathVariable String userId);
 
+  @GetMapping(BASE_PATH + "/information")
+  @Operation(description = "Retrieve User Information for a given user by mail")
+  UserModel getUserByMail(@RequestParam String mail);
+
   @GetMapping(BASE_PATH + "/{userId}/displayname")
   @Operation(description = "Retrieve Users DisplayName for a given user")
   UserDisplayNameModel getUserDisplayName(@PathVariable String userId);
@@ -53,7 +57,7 @@ public interface UserAdministrationApiV1 {
   @Operation(description = "Register a user")
   UserModel createUserPermission(@RequestBody @Valid UserPermissionCreateModel user);
 
-  @PutMapping(BASE_PATH+"/{userId}/{application}")
+  @PutMapping(BASE_PATH + "/{userId}/{application}")
   @Operation(description = "Update the permissions of a user")
   UserModel updateUserPermissions(
       @PathVariable String userId,
