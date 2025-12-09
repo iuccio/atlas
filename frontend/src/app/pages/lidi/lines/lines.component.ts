@@ -25,7 +25,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { LineInternalService } from '../../../api/service/lidi/line-internal.service';
 
 @Component({
-  selector: 'app-lidi-lines',
+  selector: 'atlas-lidi-lines',
   templateUrl: './lines.component.html',
   imports: [TableComponent, RouterOutlet, TranslatePipe],
 })

@@ -40,7 +40,7 @@ import { PermissionService } from '../../../core/auth/permission/permission.serv
 import { TimetableHearingStatementInternalService } from '../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
 import { OverviewTabHeadingComponent } from '../overview-tab/overview-tab-heading/overview-tab-heading.component';
-import { NgIf } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { SelectComponent } from '../../../core/form-components/select/select.component';
 import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
 import { AtlasButtonComponent } from '../../../core/components/button/atlas-button.component';
@@ -49,12 +49,11 @@ import { TableComponent } from '../../../core/components/table/table.component';
 import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
 
 @Component({
-  selector: 'app-timetable-hearing-overview-detail',
+  selector: 'atlas-timetable-hearing-overview-detail',
   templateUrl: './overview-detail.component.html',
   styleUrls: ['./overview-detail.component.scss'],
   imports: [
     OverviewTabHeadingComponent,
-    NgIf,
     SelectComponent,
     AtlasSpacerComponent,
     AtlasButtonComponent,
@@ -63,6 +62,7 @@ import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
     RouterOutlet,
     DisplayDatePipe,
     TranslatePipe,
+    NgOptimizedImage,
   ],
 })
 export class OverviewDetailComponent implements OnInit {

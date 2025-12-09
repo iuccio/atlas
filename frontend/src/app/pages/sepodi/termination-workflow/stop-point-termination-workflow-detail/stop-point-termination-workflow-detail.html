@@ -5,7 +5,7 @@
       }}
     </h1>
 
-    <app-stop-point-workflow-basic-info [stopPoint]="stopPoint" />
+    <atlas-stop-point-workflow-basic-info [stopPoint]="stopPoint" />
 
     <div>
       <h1 class="font-bold-2xl pt-4">
@@ -42,11 +42,11 @@
         TerminationWorkflowStatus.TerminationNotApprovedClosed].includes(workflow.status!))
         {
         <div class="d-flex flex-column col-6 mt-3">
-          <form-comment
+          <atlas-form-comment
             [formGroup]="form"
             label="TERMINATION_WORKFLOW.TERMINATION_ABORT_COMMENT"
             controlName="abortComment"
-          ></form-comment>
+          ></atlas-form-comment>
         </div>
         }
       </div>
@@ -75,11 +75,11 @@
           ></atlas-text-field>
         </div>
         <div class="d-flex flex-column col-12 mb-5">
-          <form-comment
+          <atlas-form-comment
             [formGroup]="form"
             label="SEPODI.SERVICE_POINTS.WORKFLOW.COMMENT"
             controlName="workflowComment"
-          ></form-comment>
+          ></atlas-form-comment>
         </div>
       </div>
     </div>
@@ -159,15 +159,15 @@
       <div class="font-bold-base">
         {{ 'SEPODI.SERVICE_POINTS.WORKFLOW.APPLICANT' | translate }}
       </div>
-      <app-user-detail-info
+      <atlas-user-detail-info
         [record]="workflow"
         [showEditor]="false"
-      ></app-user-detail-info>
+      ></atlas-user-detail-info>
     </div>
   </atlas-detail-page-content>
   <atlas-detail-footer>
     <atlas-button
-      backButton
+      atlasBackButton
       [footerEdit]="false"
       buttonDataCy="back-to-overview"
       buttonText="COMMON.BACK_TO_OVERVIEW"

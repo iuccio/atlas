@@ -5,7 +5,7 @@ import { User } from '../../core/auth/user/user';
 import { PermissionComponent } from '../../core/components/permissions/permission.component';
 
 @Component({
-  selector: 'app-user-profile',
+  selector: 'atlas-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
   imports: [TranslatePipe, PermissionComponent],

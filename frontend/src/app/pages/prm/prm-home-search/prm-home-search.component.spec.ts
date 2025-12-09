@@ -10,7 +10,7 @@ import { Component, Input } from '@angular/core';
 import { ServicePointSearchType } from '../../../core/search-service-point/service-point-search';
 
 @Component({
-  selector: 'app-search-service-point-panel',
+  selector: 'atlas-search-service-point-panel',
   template: '<h1>SearchServicePointMockComponent</h1>',
   imports: [AppTestingModule],
 })

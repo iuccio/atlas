@@ -15,7 +15,7 @@ import { AsyncPipe } from '@angular/common';
 import { AuthService } from './core/auth/auth.service';
 
 @Component({
-  selector: 'app-root',
+  selector: 'atlas-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   providers: [ServiceWorkerService],

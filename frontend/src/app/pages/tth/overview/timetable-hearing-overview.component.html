@@ -9,8 +9,10 @@
     </a>
   </div>
   <div class="card-container">
-    <a *ngFor="let canton of cantons" [routerLink]="canton.path">
-      <atlas-canton-card [canton]="canton"></atlas-canton-card>
-    </a>
+    @for (canton of cantons; track canton) {
+      <a [routerLink]="canton.path">
+        <atlas-canton-card [canton]="canton"></atlas-canton-card>
+      </a>
+    }
   </div>
 </div>

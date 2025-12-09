@@ -22,17 +22,18 @@
           **
         }
       </mat-radio-button>
-      <app-atlas-field-error
-        [form]="form"
-        controlName="judgement"
-      ></app-atlas-field-error>
+      @let ctrlJudgement = form.get('judgement');
+      <atlas-field-error
+        [control]="ctrlJudgement"
+        [ctrlErrors]="ctrlJudgement?.errors"
+      ></atlas-field-error>
     </mat-radio-group>
 
     @if (form.controls.judgement.value === 'YES') {
       <div class="d-flex flex-column pb-3">
-        <app-atlas-label-field
+        <atlas-label-field
           fieldLabel="TERMINATION_WORKFLOW.DECISION.TERMINATION_DATE"
-        ></app-atlas-label-field>
+        ></atlas-label-field>
 
         <div class="text-field-flex">
           <input
@@ -43,28 +44,29 @@
             formControlName="terminationDate"
           />
           <div>
-            <form-date-icon
+            <atlas-form-date-icon
               tabindex="0"
               (click)="terminationDatePicker.open()"
               (keydown.enter)="terminationDatePicker.open()"
               (keydown.space)="terminationDatePicker.open()"
               [enabled]="form.enabled"
-            ></form-date-icon>
+            ></atlas-form-date-icon>
             <mat-datepicker #terminationDatePicker></mat-datepicker>
           </div>
         </div>
-        <app-atlas-field-error
-          [form]="form"
-          controlName="terminationDate"
-        ></app-atlas-field-error>
+        @let ctrlTerminationDate = form.get('terminationDate');
+        <atlas-field-error
+          [control]="ctrlTerminationDate"
+          [ctrlErrors]="ctrlTerminationDate?.errors"
+        ></atlas-field-error>
       </div>
     }
 
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       [label]="'SEPODI.SERVICE_POINTS.WORKFLOW.COMMENT' | translate"
       controlName="motivation"
-    ></form-comment>
+    ></atlas-form-comment>
   </form>
 
   @if (!readOnly) {

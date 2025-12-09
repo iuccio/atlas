@@ -26,13 +26,13 @@
   </div>
 
   <div class="d-flex flex-column col-6">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       label="PRM.PLATFORMS.REDUCED.ADDITIONAL_INFORMATION"
       controlName="additionalInformation"
       maxChars="2000"
       info="PRM.PLATFORMS.REDUCED.ADDITIONAL_INFORMATION_INFO"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
 </div>
 
@@ -52,19 +52,22 @@
   </div>
 
   <div class="d-flex flex-column col-6 pe-3">
-      @if (meansOfTransport.includes(MeanOfTransport.Tram) || meansOfTransport.includes(MeanOfTransport.Bus)) {
-          <atlas-select
-                  [formGroup]="form"
-                  controlName="attentionField"
-                  dataCy="attentionField"
-                  label="PRM.PLATFORMS.REDUCED.ATTENTION_FIELD"
-                  infoIconTitle="PRM.PLATFORMS.REDUCED.ATTENTION_FIELD_INFO"
-                  optionTranslateLabelPrefix="PRM.ENUMS.STANDARD_ATTRIBUTE_TYPES."
-                  [options]="booleanOptionalAttributeTypes"
-                  [additionalLabelspace]="0"
-          >
-          </atlas-select>
-      }
+    @if (
+      meansOfTransport.includes(MeanOfTransport.Tram) ||
+      meansOfTransport.includes(MeanOfTransport.Bus)
+    ) {
+      <atlas-select
+        [formGroup]="form"
+        controlName="attentionField"
+        dataCy="attentionField"
+        label="PRM.PLATFORMS.REDUCED.ATTENTION_FIELD"
+        infoIconTitle="PRM.PLATFORMS.REDUCED.ATTENTION_FIELD_INFO"
+        optionTranslateLabelPrefix="PRM.ENUMS.STANDARD_ATTRIBUTE_TYPES."
+        [options]="booleanOptionalAttributeTypes"
+        [additionalLabelspace]="0"
+      >
+      </atlas-select>
+    }
   </div>
 </div>
 
@@ -89,16 +92,17 @@
   <div class="d-flex flex-column col-6 pt-5" [formGroup]="form">
     <mat-checkbox formControlName="partialElevation" data-cy="partialElevation">
       {{ 'PRM.PLATFORMS.REDUCED.PARTIAL_ELEVATION' | translate }}
-      <form-info-icon
+      <atlas-form-info-icon
         infoTitle="{{
           'PRM.PLATFORMS.REDUCED.PARTIAL_ELEVATION_INFO' | translate
         }}"
-      ></form-info-icon>
+      ></atlas-form-info-icon>
     </mat-checkbox>
-    <app-atlas-field-error
-      [form]="form"
-      controlName="partialElevation"
-    ></app-atlas-field-error>
+    @let ctrl = form.get('partialElevation');
+    <atlas-field-error
+      [control]="ctrl"
+      [ctrlErrors]="ctrl?.errors"
+    ></atlas-field-error>
   </div>
 </div>
 <div class="col-12 d-flex mt-4">

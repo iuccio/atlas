@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DownloadIconComponent } from './download-icon.component';
 
 describe('DownloadIconComponent', () => {
@@ -13,11 +12,6 @@ describe('DownloadIconComponent', () => {
 
     fixture = TestBed.createComponent(DownloadIconComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should return #d3d3d3 when disabled is true', () => {

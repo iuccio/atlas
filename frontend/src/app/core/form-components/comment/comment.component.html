@@ -1,19 +1,19 @@
 <div [formGroup]="formGroup" class="d-flex flex-column">
   @if (displayLabel) {
-  <app-atlas-label-field
-    [fieldExamples]="[
-      { label: subLabel, translate: true },
-      { label: ' | ', translate: false },
-      {
-        label: 'FORM.MAX_CHARS',
-        translate: true,
-        arg: { key: 'numberOfChars', value: maxChars },
-      },
-    ]"
-    [required]="required"
-    fieldLabel="{{ label }}"
-    infoIconTitle="{{ info }}"
-  ></app-atlas-label-field>
+    <atlas-label-field
+      [fieldExamples]="[
+        { label: subLabel, translate: true },
+        { label: ' | ', translate: false },
+        {
+          label: 'FORM.MAX_CHARS',
+          translate: true,
+          arg: { key: 'numberOfChars', value: maxChars },
+        },
+      ]"
+      [required]="required"
+      fieldLabel="{{ label }}"
+      infoIconTitle="{{ info }}"
+    ></atlas-label-field>
   }
   <textarea
     [attr.data-cy]="controlName"
@@ -22,8 +22,9 @@
     rows="7"
     [readonly]="readonly"
   ></textarea>
-  <app-atlas-field-error
-    [form]="formGroup"
-    controlName="{{ controlName }}"
-  ></app-atlas-field-error>
+  @let ctrl = formGroup.get(controlName);
+  <atlas-field-error
+    [control]="ctrl"
+    [ctrlErrors]="ctrl?.errors"
+  ></atlas-field-error>
 </div>

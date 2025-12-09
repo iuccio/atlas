@@ -1,4 +1,4 @@
-<div scrollToTop>
+<div atlasScrollToTop>
   <atlas-detail-page-container>
     <atlas-detail-page-content>
       <div class="detail-wrapper">
@@ -63,7 +63,7 @@
               >
                 <ng-template #customChildInputPostfixTemplate>
                   <a [attr.href]="prependHttp(form.value.url)" target="_blank" rel="noopener">
-                    <link-icon></link-icon>
+                    <atlas-link-icon></atlas-link-icon>
                   </a>
                 </ng-template>
               </atlas-text-field>
@@ -75,7 +75,7 @@
 
     <atlas-detail-footer>
       <atlas-button
-        backButton
+        atlasBackButton
         buttonDataCy="back-to-overview"
         buttonText="COMMON.BACK_TO_OVERVIEW"
         buttonType="whiteFooterNonEdit"

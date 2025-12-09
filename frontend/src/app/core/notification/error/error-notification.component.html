@@ -1,26 +1,33 @@
 <div class="snack-bar-error-container">
-  <div *ngIf="notificationService.showOnlyCode()" class="snack-bar-error-container-text">
-    <div class="data mb-3">
-      <ul *ngFor="let detail of data.details">
-        <li>
-          {{
-            detail.displayInfo.code
+  @if (notificationService.showOnlyCode()) {
+    <div class="snack-bar-error-container-text">
+      <div class="data mb-3">
+        @for (detail of data.details; track detail) {
+          <ul>
+            <li>
+              {{
+              detail.displayInfo.code
               | translate: notificationService.arrayParametersToObject(detail.displayInfo)
-          }}
-        </li>
-      </ul>
+              }}
+            </li>
+          </ul>
+        }
+      </div>
     </div>
-  </div>
-  <div
-    *ngIf="!notificationService.showOnlyCode()"
-    class="snack-bar-error-generic-text mt-3 mb-3 ms-3 me-3"
-  >
-    {{ notificationService.displayCode | translate }}
-  </div>
+  }
+  @if (!notificationService.showOnlyCode()) {
+    <div
+      class="snack-bar-error-generic-text mt-3 mb-3 ms-3 me-3"
+      >
+      {{ notificationService.displayCode | translate }}
+    </div>
+  }
   <div class="dismiss">
     <i (click)="snackBarRef.dismiss()" class="bi bi-x-circle"></i>
   </div>
 </div>
-<div *ngIf="notificationService.correlationId" class="data ms-3 me-3 mb-3">
-  {{ 'ERROR.CORRELATION_ID' | translate: { correlationId: notificationService.correlationId } }}
-</div>
+@if (notificationService.correlationId) {
+  <div class="data ms-3 me-3 mb-3">
+    {{ 'ERROR.CORRELATION_ID' | translate: { correlationId: notificationService.correlationId } }}
+  </div>
+}

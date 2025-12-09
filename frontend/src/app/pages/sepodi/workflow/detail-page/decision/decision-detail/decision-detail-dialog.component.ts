@@ -14,7 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { StopPointWorkflowService } from '../../../../../../api/service/workflow/stop-point-workflow.service';
 
 @Component({
-  selector: 'decision-detail-dialog',
+  selector: 'atlas-decision-detail-dialog',
   templateUrl: './decision-detail-dialog.component.html',
   imports: [
     DialogCloseComponent,

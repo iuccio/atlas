@@ -10,7 +10,7 @@ import {
 } from '../../../../../api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ErrorNotificationComponent } from '../../../../../core/notification/error/error-notification.component';
 import { InfoIconComponent } from '@atlas/form/info-icon/info-icon.component';
@@ -31,6 +31,8 @@ import {
 import { Component, Input } from '@angular/core';
 import { CreationEditionRecord } from '../../../../../core/components/user-edit-info/creation-edition-record';
 import { By } from '@angular/platform-browser';
+import { LoadingSpinnerService } from '../../../../../core/components/loading-spinner/loading-spinner.service';
+import { StatementShareService } from '../../../overview-detail/statement-share-service';
 import { FileUploadComponent } from '../../../../../core/components/file-upload/file-upload.component';
 import { FileSizePipe } from '../../../../../core/components/file-upload/file-size/file-size.pipe';
 import { FileComponent } from '../../../../../core/components/file-upload/file/file.component';
@@ -40,8 +42,7 @@ import { StringListComponent } from '../../../../../core/form-components/string-
 import { PermissionService } from '../../../../../core/auth/permission/permission.service';
 import { TimetableHearingStatementInternalService } from '../../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { TimetableHearingYearInternalService } from '../../../../../api/service/lidi/timetable-hearing-year-internal.service';
-import { LoadingSpinnerService } from '../../../../../core/components/loading-spinner/loading-spinner.service';
-import { StatementShareService } from '../../../overview-detail/statement-share-service';
+import { TimetableYearChangeInternalService } from '../../../../../api/service/lidi/timetable-year-change-internal.service';
 
 const existingStatement: TimetableHearingStatementV2 = {
   id: 1,
@@ -90,6 +91,12 @@ const mockTimetableHearingStatementsService = jasmine.createSpyObj(
     'getStatementDocument',
   ]
 );
+
+const timetableYearChangeInternalServiceSpy =
+  jasmine.createSpyObj<TimetableYearChangeInternalService>({
+    getTimetableYearChange: EMPTY,
+  });
+
 const alternation: TimetableHearingStatementAlternating = {
   timetableHearingStatement: existingStatement,
   pageable: {
@@ -117,7 +124,7 @@ mockTimetableHearingStatementsService.getStatementDocument.and.returnValue(
 );
 
 @Component({
-  selector: 'app-user-detail-info',
+  selector: 'atlas-user-detail-info',
   template: '<p>MockUserDetailInfoComponent</p>',
   imports: [AppTestingModule, FormModule],
 })
@@ -268,12 +275,12 @@ describe('StatementDetailComponent for existing statement', () => {
 });
 
 describe('test editButton', () => {
-  beforeEach(() => {
+  function setup(hearingStatus: HearingStatus) {
     const mockRoute = {
       snapshot: {
         data: {
           statement: existingStatement,
-          hearingStatus: HearingStatus.Active,
+          hearingStatus,
         },
         params: {
           canton: 'be',
@@ -295,14 +302,11 @@ describe('test editButton', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     router = TestBed.inject(Router);
-  });
+  }
 
   it('should not show edit button when HearingStatus is Archived', () => {
-    //given
-    component.hearingStatus = HearingStatus.Archived;
-    //when
-    fixture.detectChanges();
-    //then
+    setup(HearingStatus.Archived);
+
     const buttons = fixture.debugElement.queryAll(By.css('atlas-button'));
     const buttonsText = buttons.map(
       (button) => button.nativeElement.attributes['buttontext']?.value
@@ -311,6 +315,8 @@ describe('test editButton', () => {
   });
 
   it('should show edit button when HearingStatus is not Archived and statement is editable', () => {
+    setup(HearingStatus.Active);
+
     const buttons = fixture.debugElement.queryAll(By.css('atlas-button'));
     const buttonsText = buttons.map(
       (button) => button.nativeElement.attributes['buttontext']?.value
@@ -428,6 +434,10 @@ function setupTestBed(activatedRoute: {
       {
         provide: TimetableHearingStatementInternalService,
         useValue: mockTimetableHearingStatementsService,
+      },
+      {
+        provide: TimetableYearChangeInternalService,
+        useValue: timetableYearChangeInternalServiceSpy,
       },
       {
         provide: StatementShareService,

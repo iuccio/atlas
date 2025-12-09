@@ -7,18 +7,18 @@
         [statement]="statement!"
       />
       <div class="d-flex flex-column col-12">
-        <form-comment
+        <atlas-form-comment
           [formGroup]="form"
           label="TTH.STATEMENT.STATEMENT_TEXT"
           controlName="anonymousStatement"
         >
-        </form-comment>
+        </atlas-form-comment>
       </div>
       @if (anonymDocuments && anonymDocuments.length > 0) {
         <div class="mb-3 mt-4">
-          <app-atlas-label-field
+          <atlas-label-field
             fieldLabel="TTH.STATEMENT.ATTACHMENTS"
-          ></app-atlas-label-field>
+          ></atlas-label-field>
           @for (document of anonymDocuments; track document) {
             <atlas-file
               (downloadFile)="downloadFile($event.name)"

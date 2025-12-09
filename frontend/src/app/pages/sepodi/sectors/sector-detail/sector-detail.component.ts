@@ -47,7 +47,7 @@ import {
 } from '../../../../core/form-components/revoke-button/revoke-button';
 
 @Component({
-  selector: 'app-sector-detail',
+  selector: 'atlas-sector-detail',
   templateUrl: './sector-detail.component.html',
   styleUrls: ['./sector-detail.component.scss'],
   providers: [ValidityService],

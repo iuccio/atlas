@@ -25,7 +25,7 @@ import { TableComponent } from '../../../core/components/table/table.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-timetable-field-number-overview',
+  selector: 'atlas-timetable-field-number-overview',
   templateUrl: './timetable-field-number-overview.component.html',
   imports: [AtlasButtonComponent, TableComponent, RouterOutlet, TranslatePipe],
 })

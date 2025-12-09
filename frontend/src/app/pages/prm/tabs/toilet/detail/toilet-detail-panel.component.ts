@@ -10,7 +10,7 @@ import { DetailWithRelationTabComponent } from '../../relation/tab/detail-with-r
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-toilet-detail-panel',
+  selector: 'atlas-toilet-detail-panel',
   templateUrl: './toilet-detail-panel.component.html',
   imports: [
     DetailPageContainerComponent,

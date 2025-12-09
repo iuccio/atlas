@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { LineWorkflowCheckFormComponent } from './line-workflow-check-form.component';
 import { AppTestingModule } from '../../../app.testing.module';
 import { InfoIconComponent } from '@atlas/form/info-icon/info-icon.component';
@@ -7,13 +6,16 @@ import { CommentComponent } from '../../form-components/comment/comment.componen
 import { By } from '@angular/platform-browser';
 import { LineWorkflowFormComponent } from '../workflow-form/line-workflow-form.component';
 import { AtlasButtonComponent } from '../../components/button/atlas-button.component';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { AtlasFieldErrorComponent } from '../../form-components/atlas-field-error/atlas-field-error.component';
 import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
 import { TextFieldComponent } from '../../form-components/text-field/text-field.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PermissionService } from '../../auth/permission/permission.service';
 import { LineWorkflowService } from '../../../api/service/workflow/line-workflow.service';
+import { UserAdministrationService } from '../../../api/service/user-administration/user-administration.service';
+import { Workflow } from '../../../api';
+import SpyObj = jasmine.SpyObj;
 
 let isAtLeastSupervisor = true;
 const permissionServiceMock: Partial<PermissionService> = {
@@ -26,15 +28,22 @@ describe('LineWorkflowCheckFormComponent', () => {
   let component: LineWorkflowCheckFormComponent;
   let fixture: ComponentFixture<LineWorkflowCheckFormComponent>;
 
-  const workflowServiceSpy = jasmine.createSpyObj(LineWorkflowService, {
-    examinantCheck: of({}),
-  });
+  let workflowServiceSpy: SpyObj<LineWorkflowService>;
+  let userAdminServiceSpy: SpyObj<UserAdministrationService>;
 
   beforeEach(async () => {
+    workflowServiceSpy = jasmine.createSpyObj<LineWorkflowService>({
+      examinantCheck: of({} as Workflow),
+    });
+    userAdminServiceSpy = jasmine.createSpyObj<UserAdministrationService>({
+      getCurrentUser: EMPTY,
+    });
+
     await TestBed.configureTestingModule({
       providers: [
         { provide: PermissionService, useValue: permissionServiceMock },
         { provide: LineWorkflowService, useValue: workflowServiceSpy },
+        { provide: UserAdministrationService, useValue: userAdminServiceSpy },
         { provide: TranslatePipe },
       ],
       imports: [
@@ -49,19 +58,18 @@ describe('LineWorkflowCheckFormComponent', () => {
         TextFieldComponent,
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(LineWorkflowCheckFormComponent);
     component = fixture.componentInstance;
-
-    isAtLeastSupervisor = true;
-    fixture.detectChanges();
   });
 
   it('should show component for supervisor', () => {
     isAtLeastSupervisor = true;
+    fixture.detectChanges();
 
     expect(component).toBeTruthy();
     expect(
-      fixture.debugElement.query(By.css('app-workflow-form'))
+      fixture.debugElement.query(By.css('atlas-workflow-form'))
     ).toBeTruthy();
   });
 
@@ -69,7 +77,9 @@ describe('LineWorkflowCheckFormComponent', () => {
     isAtLeastSupervisor = false;
     fixture.detectChanges();
 
-    expect(fixture.debugElement.query(By.css('app-workflow-form'))).toBeFalsy();
+    expect(
+      fixture.debugElement.query(By.css('atlas-workflow-form'))
+    ).toBeFalsy();
   });
 
   it('should check workflow on button click', () => {

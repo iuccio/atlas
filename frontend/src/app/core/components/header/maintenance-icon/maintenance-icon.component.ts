@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'maintenance-icon',
+  selector: 'atlas-maintenance-icon',
   templateUrl: './maintenance-icon.component.html',
 })
 export class MaintenanceIconComponent {}

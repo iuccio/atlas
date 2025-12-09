@@ -1,16 +1,16 @@
 <div class="info-container">
   <p class="font-bold-xl">{{ 'PRM.INFO_BOX.HEADER' | translate }}</p>
-  <ng-container *ngFor="let attachment of attachments">
+  @for (attachment of attachments; track attachment) {
     <p class="font-regular-base">
       <a href="{{ attachment.url | translate }}" target="_blank" rel="noopener">{{
         attachment.label | translate
       }}</a>
     </p>
-  </ng-container>
+  }
 
   <p class="font-bold-xl pt-3">{{ 'PRM.INFO_BOX.ADDITIONAL_LINK_LABEL' | translate }}</p>
   <hr />
-  <ng-container *ngFor="let link of links">
+  @for (link of links; track link) {
     <p class="font-regular-base">
       <a class="no-text-decoration" href="{{ link.url | translate }}" target="_blank" rel="noopener"
         >{{ link.label | translate }}
@@ -18,5 +18,5 @@
       </a>
     </p>
     <hr />
-  </ng-container>
+  }
 </div>

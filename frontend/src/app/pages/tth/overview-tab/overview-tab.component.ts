@@ -10,21 +10,20 @@ import { OverviewToTabShareDataService } from './service/overview-to-tab-share-d
 import { Cantons } from '../../../core/cantons/Cantons';
 import { HearingOverviewTab } from './model/hearing-overview-tab';
 import { MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
-import { NgFor } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   templateUrl: './overview-tab.component.html',
   imports: [
     MatTabNav,
-    NgFor,
     RouterLinkActive,
     MatTabLink,
     RouterLink,
     MatTabNavPanel,
     RouterOutlet,
-    TranslatePipe,
-  ],
+    TranslatePipe
+],
 })
 export class OverviewTabComponent implements OnInit {
   TABS: HearingOverviewTab[] = [

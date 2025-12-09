@@ -16,7 +16,7 @@
       {{ 'SEPODI.SECTORS.SECTORS' | translate }}
     </div>
 
-    <app-table
+    <atlas-table
       data-cy="sectors-table"
       [tableData]="sectors"
       [totalCount]="totalSectors"
@@ -25,7 +25,7 @@
       (editElementEvent)="editSector($event)"
       (tableChanged)="getSectorOverview($event)"
       (tableInitialized)="getSectorOverview($event)"
-    ></app-table>
+    ></atlas-table>
   </div>
 </atlas-detail-page-content>
 <atlas-detail-footer>

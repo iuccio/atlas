@@ -11,7 +11,7 @@ import { concat, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TextFieldComponent } from '../text-field/text-field.component';
 import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -24,13 +24,11 @@ import { TranslatePipe } from '@ngx-translate/core';
     AtlasFieldErrorComponent,
     NgClass,
     MatChipSet,
-    NgFor,
     MatChip,
-    NgIf,
     MatChipRemove,
     AsyncPipe,
-    TranslatePipe,
-  ],
+    TranslatePipe
+],
 })
 export class StringListComponent implements OnChanges {
   @Input() formGroup?: FormGroup;

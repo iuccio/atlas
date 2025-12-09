@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'download-icon',
+  selector: 'atlas-download-icon',
   templateUrl: './download-icon.component.html',
 })
 export class DownloadIconComponent {

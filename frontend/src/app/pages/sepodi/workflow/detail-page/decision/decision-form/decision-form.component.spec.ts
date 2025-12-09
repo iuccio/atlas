@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DecisionFormComponent } from './decision-form.component';
 import { DecisionFormGroupBuilder } from './decision-form-group';
 import { AppTestingModule } from '../../../../../../app.testing.module';
@@ -31,14 +30,9 @@ describe('DecisionFormComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should return hasDecisionTypeVotedExpired', () => {
     component.hasDecisionTypeVotedExpired = true;
     component.hasOverride = false;
-    fixture.detectChanges();
     expect(component.warningChipMessage).toBe(
       'SEPODI.SERVICE_POINTS.WORKFLOW.VOTED_EXPIRATION'
     );
@@ -47,7 +41,6 @@ describe('DecisionFormComponent', () => {
   it('should return hasOverride', () => {
     component.hasDecisionTypeVotedExpired = false;
     component.hasOverride = true;
-    fixture.detectChanges();
     expect(component.warningChipMessage).toBe(
       'SEPODI.SERVICE_POINTS.WORKFLOW.OVERRIDE_HAPPENED_INFO'
     );

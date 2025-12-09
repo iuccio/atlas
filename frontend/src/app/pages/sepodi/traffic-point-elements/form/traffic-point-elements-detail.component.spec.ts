@@ -29,7 +29,10 @@ import { SloidComponent } from '../../../../core/form-components/sloid/sloid.com
 import { DialogService } from '../../../../core/components/dialog/dialog.service';
 import moment from 'moment/moment';
 import { BERN_WYLEREGG } from '../../../../../test/data/service-point';
-import { BERN_WYLEREGG_TRAFFIC_POINTS } from '../../../../../test/data/traffic-point-element';
+import {
+  BERN_WYLEREGG_TRAFFIC_POINTS,
+  BERN_WYLEREGG_TRAFFIC_POINTS_CONTAINER,
+} from '../../../../../test/data/traffic-point-element';
 import { UserDetailInfoComponent } from '../../../../core/components/user-edit-info/user-detail-info.component';
 import { DetailPageContainerComponent } from '../../../../core/components/detail-page-container/detail-page-container.component';
 import { DetailPageContentComponent } from '../../../../core/components/detail-page-content/detail-page-content.component';
@@ -40,8 +43,8 @@ import { TrafficPointElementService } from '../../../../api/service/sepodi/traff
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient } from '@angular/common/http';
 import { DateModule } from '../../../../core/module/date.module';
-import SpyObj = jasmine.SpyObj;
 import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
+import SpyObj = jasmine.SpyObj;
 
 const authService: Partial<AuthService> = {};
 const trafficPointMapService = jasmine.createSpyObj<TrafficPointMapService>([
@@ -76,7 +79,7 @@ describe('TrafficPointElementsDetailComponent', () => {
     ['updateTrafficPoint', 'createTrafficPoint']
   );
   const trafficPointInternalService = jasmine.createSpyObj({
-    getAreasOfServicePoint: of(BERN_WYLEREGG_TRAFFIC_POINTS),
+    getAreasOfServicePoint: of(BERN_WYLEREGG_TRAFFIC_POINTS_CONTAINER),
     revokeTrafficPoint: of(),
   });
 

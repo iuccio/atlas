@@ -1,6 +1,6 @@
 <h3 class="font-bold-lg">{{ 'LIDI.SUBLINE.SUBLINES' | translate }}</h3>
 @if (sublines.length > 0) {
-  <app-table
+  <atlas-table
     [tableData]="sublines"
     [tableColumns]="tableColumns"
     (editElementEvent)="rowClicked($event)"
@@ -12,7 +12,7 @@
     data-cy="subline-table"
     additionalTableStyleClass="scrollable-table"
   >
-  </app-table>
+  </atlas-table>
 } @else {
   {{ 'LIDI.NO_SUBLINES' | translate }}
 }

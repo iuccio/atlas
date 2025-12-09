@@ -6,7 +6,7 @@ import { InfoIconComponent } from '../info-icon/info-icon.component';
 import { InfoLinkDirective } from '../info-icon/info-link.directive';
 
 @Component({
-  selector: 'app-atlas-label-field',
+  selector: 'atlas-label-field',
   templateUrl: './atlas-label-field.component.html',
   imports: [NgClass, InfoIconComponent, InfoLinkDirective, TranslatePipe],
   providers: [TranslatePipe],

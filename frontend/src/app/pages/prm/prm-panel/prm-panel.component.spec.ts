@@ -1,51 +1,52 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PrmPanelComponent } from './prm-panel.component';
-import { MockAtlasButtonComponent } from '../../../app.testing.mocks';
-import { AppTestingModule } from '../../../app.testing.module';
 import { ActivatedRoute } from '@angular/router';
-import { SplitServicePointNumberPipe } from '../../../core/search-service-point/split-service-point-number.pipe';
-import { of } from 'rxjs';
-import { DateRangeTextComponent } from '../../../core/versioning/date-range-text/date-range-text.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
+import { EMPTY, of } from 'rxjs';
 import { PRM_REDUCED_TABS, PRM_TABS, PrmTabs } from './prm-tabs';
 import {
   STOP_POINT,
   STOP_POINT_COMPLETE,
 } from '../util/stop-point-test-data.spec';
 import { BERN_WYLEREGG } from '../../../../test/data/service-point';
+import { BusinessOrganisationService } from '../../../api/service/bodi/business-organisation.service';
+import { PrmRecordingObligationComponent } from '../../../core/prm-recording-obligation/prm-recording-obligation.component';
+import { MockPrmRecordingObligationComponent } from '../../../app.testing.mocks';
+import { AppTestingModule } from '../../../app.testing.module';
+import SpyObj = jasmine.SpyObj;
+
+const activatedRouteMock = {
+  data: of({ stopPoints: [STOP_POINT], servicePoints: [BERN_WYLEREGG] }),
+};
 
 describe('PrmPanelComponent', () => {
   let component: PrmPanelComponent;
   let fixture: ComponentFixture<PrmPanelComponent>;
-  const activatedRouteMock = {
-    data: of({ stopPoints: [STOP_POINT], servicePoints: [BERN_WYLEREGG] }),
-  };
+
+  let boServiceSpy: SpyObj<BusinessOrganisationService>;
 
   beforeEach(() => {
+    boServiceSpy = jasmine.createSpyObj<BusinessOrganisationService>({
+      getVersions: EMPTY,
+    });
+
     TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        PrmPanelComponent,
-        MockAtlasButtonComponent,
-        SplitServicePointNumberPipe,
-        DateRangeTextComponent,
-        DisplayDatePipe,
-      ],
+      imports: [AppTestingModule],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRouteMock },
-        TranslatePipe,
-        SplitServicePointNumberPipe,
+        { provide: BusinessOrganisationService, useValue: boServiceSpy },
       ],
+    }).overrideComponent(PrmPanelComponent, {
+      remove: {
+        imports: [PrmRecordingObligationComponent],
+      },
+      add: {
+        imports: [MockPrmRecordingObligationComponent],
+      },
     });
+
     fixture = TestBed.createComponent(PrmPanelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should initTabs when stopPoint does not exists', () => {

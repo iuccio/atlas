@@ -1,32 +1,49 @@
 <mat-toolbar class="home-header bg-color-gray-100">
-  <div data-cy="atlas-logo-home-link" class="logo-placeholder" [routerLink]="['/']">
-    <div class="logo"></div>
-    <div class="title">atlas</div>
+  <div
+    data-cy="atlas-logo-home-link"
+    class="d-flex justify-content-center align-items-center logo-placeholder"
+    [routerLink]="['/']"
+  >
+    <div class="d-flex flex-column align-items-center">
+      <img
+        ngSrc="assets/images/logo-atlas.svg"
+        priority
+        width="45"
+        height="45"
+        alt="Atlas Logo"
+      />
+      <span class="title">atlas</span>
+    </div>
   </div>
-  <div class="d-flex ms-3 header-container color-gray-900">
-    <span
-      data-cy="header-title"
-      class="font-bold-4xl"
-      *ngIf="headerTitle$ | async as translationKey"
-    >{{ translationKey | translate }}</span
-    >
+  <div class="d-flex flex-column header-container color-gray-900">
+    @if (headerTitle$ | async; as translationKey) {
+      <span data-cy="header-title" class="font-bold-4xl">{{
+        translationKey | translate
+      }}</span>
+    }
     <div class="font-regular-sm">
       <span>Version {{ version }}</span>
       <a href="{{ environmentReleaseNotesUrl }}" target="_blank" rel="noopener">
-        <form-info-icon infoTitle="Release Notes"></form-info-icon>
+        <atlas-form-info-icon infoTitle="Release Notes"></atlas-form-info-icon>
       </a>
-      <div *ngIf="isItWednesday" class="d-flex maintenance-info flex-row">
-        <maintenance-icon class="d-flex"></maintenance-icon>
-        <div class="d-flex ms-2 p-0 wrap">{{ 'COMMON.MAINTENANCE_WINDOW' | translate }}</div>
-      </div>
+      @if (isItWednesday) {
+        <div class="d-flex flex-row maintenance-info">
+          <atlas-maintenance-icon></atlas-maintenance-icon>
+          <span class="ms-2 wrap">{{
+            'COMMON.MAINTENANCE_WINDOW' | translate
+          }}</span>
+        </div>
+      }
     </div>
   </div>
-  <div class="d-flex ps-4 pe-3 environment-badge">
-      <span *ngIf="showLabel" [ngClass]="getEnvLabelClass()">
-        {{ environmentLabel }}
-      </span>
-  </div>
-  <span class="spacer"></span>
-  <app-language-switcher></app-language-switcher>
-  <app-user class="ms-4 me-5"></app-user>
+  @if (showLabel) {
+    <span
+      [ngClass]="getEnvLabelClass()"
+      class="environment-badge w-100 ms-4 me-3"
+    >
+      {{ environmentLabel }}
+    </span>
+  }
+  <atlas-language-switcher class="ms-auto"></atlas-language-switcher>
+  <atlas-user class="ms-4 me-5"></atlas-user>
 </mat-toolbar>

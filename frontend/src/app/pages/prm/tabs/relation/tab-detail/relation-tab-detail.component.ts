@@ -35,7 +35,7 @@ import { ValidityService } from '../../../../sepodi/validity/validity.service';
 import { DetailPageContentComponent } from '../../../../../core/components/detail-page-content/detail-page-content.component';
 import { SelectComponent } from '../../../../../core/form-components/select/select.component';
 import { AtlasSpacerComponent } from '../../../../../core/components/spacer/atlas-spacer.component';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { SwitchVersionComponent } from '../../../../../core/components/switch-version/switch-version.component';
 import { DateRangeComponent } from '../../../../../core/form-components/date-range/date-range.component';
 import { MatDivider } from '@angular/material/divider';
@@ -47,14 +47,13 @@ import { RelationService } from '../../../../../api/service/prm/relation/relatio
 import { ReferencePointInternalService } from '../../../../../api/service/prm/reference-point/reference-point-internal.service';
 
 @Component({
-  selector: 'app-relation-tab-detail',
+  selector: 'atlas-relation-tab-detail',
   templateUrl: './relation-tab-detail.component.html',
   providers: [ValidityService, TranslatePipe],
   imports: [
     DetailPageContentComponent,
     SelectComponent,
     AtlasSpacerComponent,
-    NgIf,
     SwitchVersionComponent,
     DateRangeComponent,
     ReactiveFormsModule,

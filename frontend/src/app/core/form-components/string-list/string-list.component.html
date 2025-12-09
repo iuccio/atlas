@@ -24,12 +24,15 @@
         </atlas-text-field>
       </div>
     </div>
-    <div class="d-flex">
-      <app-atlas-field-error
-        [form]="formGroup!"
-        [controlName]="controlName!"
-      ></app-atlas-field-error>
-    </div>
+    @if (formGroup && controlName) {
+      <div class="d-flex">
+        @let ctrl = formGroup.get(controlName);
+        <atlas-field-error
+          [control]="ctrl"
+          [ctrlErrors]="ctrl?.errors"
+        ></atlas-field-error>
+      </div>
+    }
   } @else {
     <span
       [ngClass]="required ? 'required-indicator' : ''"
@@ -42,16 +45,16 @@
       -
     }
     <mat-chip-set [disabled]="formGroup?.disabled">
-      <mat-chip
-        *ngFor="let value of strListCtrl.value; let i = index"
-        (removed)="removeItem(i)"
-        class="font-bold-sm"
-      >
-        {{ value }}
-        <button matChipRemove *ngIf="formGroup?.enabled">
-          <i class="bi bi-x-circle-fill"></i>
-        </button>
-      </mat-chip>
+      @for (value of strListCtrl.value; track value; let i = $index) {
+        <mat-chip (removed)="removeItem(i)" class="font-bold-sm">
+          {{ value }}
+          @if (formGroup?.enabled) {
+            <button matChipRemove>
+              <i class="bi bi-x-circle-fill"></i>
+            </button>
+          }
+        </mat-chip>
+      }
     </mat-chip-set>
     <ng-content></ng-content>
   </div>

@@ -1,24 +1,30 @@
 <atlas-detail-page-container>
   <atlas-detail-page-content>
     <h1 class="font-bold-4xl">
-      {{ 'SEPODI.SERVICE_POINTS.WORKFLOW.WORKFLOW' | translate }} {{ workflow.id }}
+      {{ 'SEPODI.SERVICE_POINTS.WORKFLOW.WORKFLOW' | translate }}
+      {{ workflow.id }}
     </h1>
-    <stop-point-workflow-detail-form
+    <atlas-stop-point-workflow-detail-form
       [form]="form"
       [stopPoint]="stopPoint"
       [oldDesignation]="oldDesignation"
       [currentWorkflow]="workflow"
-    ></stop-point-workflow-detail-form>
+    ></atlas-stop-point-workflow-detail-form>
 
     <div class="mt-5">
-      <div class="font-bold-base">{{ 'SEPODI.SERVICE_POINTS.WORKFLOW.APPLICANT' | translate }}</div>
-      <app-user-detail-info [record]="workflow" [showEditor]="false"></app-user-detail-info>
+      <div class="font-bold-base">
+        {{ 'SEPODI.SERVICE_POINTS.WORKFLOW.APPLICANT' | translate }}
+      </div>
+      <atlas-user-detail-info
+        [record]="workflow"
+        [showEditor]="false"
+      ></atlas-user-detail-info>
     </div>
   </atlas-detail-page-content>
 
   <atlas-detail-footer>
     <atlas-button
-      backButton
+      atlasBackButton
       [footerEdit]="form.enabled"
       buttonDataCy="back-to-overview"
       buttonText="COMMON.BACK_TO_OVERVIEW"
@@ -26,7 +32,7 @@
       wrapperStyleClass="me-3"
     >
     </atlas-button>
-    @if (isAtLeastSupervisor && workflow.status === WorkflowStatus.Added){
+    @if (isAtLeastSupervisor && workflow.status === WorkflowStatus.Added) {
       <atlas-button
         [footerEdit]="form.disabled"
         (buttonClicked)="toggleEdit()"
@@ -37,7 +43,7 @@
       >
       </atlas-button>
     }
-    @if (isAtLeastSupervisor && workflow.status === WorkflowStatus.Hearing){
+    @if (isAtLeastSupervisor && workflow.status === WorkflowStatus.Hearing) {
       <atlas-button
         [footerEdit]="form.disabled"
         (buttonClicked)="addExaminants()"

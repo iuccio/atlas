@@ -26,7 +26,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { StopPointWorkflowService } from '../../../../../api/service/workflow/stop-point-workflow.service';
 
 @Component({
-  selector: 'app-add-examinants',
+  selector: 'atlas-add-examinants',
   templateUrl: './add-examinants.component.html',
   styleUrls: ['./add-examinants.component.scss'],
   imports: [

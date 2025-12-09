@@ -1,15 +1,15 @@
 <form [formGroup]="formGroup">
   <div class="picker">
-    <app-atlas-label-field
+    <atlas-label-field
       [required]="true"
       fieldLabel="SEPODI.SERVICE_POINTS.MEANS_OF_TRANSPORT"
       infoIconTitle="{{
         showInfo ? 'PRM.STOP_POINTS.MEANS_OF_TRANSPORT_SUB_LABEL' : ''
       }}"
     >
-    </app-atlas-label-field>
+    </atlas-label-field>
     <div class="means-of-transport-wrapper mt-2">
-      <ng-container *ngFor="let mean of means">
+      @for (mean of means; track mean) {
         <button
           class="border-0 p-0"
           [disabled]="disabled"
@@ -31,12 +31,13 @@
             "
           />
         </button>
-      </ng-container>
+      }
     </div>
-    <app-atlas-field-error
-      [form]="formGroup"
-      controlName="{{ controlName }}"
-    ></app-atlas-field-error>
+    @let ctrl = formGroup.get(controlName);
+    <atlas-field-error
+      [control]="ctrl"
+      [ctrlErrors]="ctrl?.errors"
+    ></atlas-field-error>
     @if (showSectorWarning && sectorWarning) {
       <div class="sector-warning font-regular-sm mt-1">
         {{ 'SEPODI.SECTORS.MOT_CHANGE_WARNING' | translate }}

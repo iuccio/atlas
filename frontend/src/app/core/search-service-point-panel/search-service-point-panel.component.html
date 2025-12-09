@@ -1,17 +1,36 @@
-<div [ngClass]="showSearchPanel? 'search-container-opened' : 'search-container-closed'" class="search-container">
-  <span *ngIf="!showSearchPanel" class="ps-4 pt-2 search-plaintext">{{"COMMON.SEARCH.SEARCH_CRITERIA" | translate}}...</span>
-  <div class="container-sp-create-and-search" *ngIf="showSearchPanel">
-    <app-search-service-point [searchType]="searchType"></app-search-service-point>
-    <ng-content></ng-content>
-  </div>
+<div
+  [ngClass]="
+    showSearchPanel ? 'search-container-opened' : 'search-container-closed'
+  "
+  class="search-container"
+>
+  @if (!showSearchPanel) {
+    <span class="ps-4 pt-2 search-plaintext"
+      >{{ 'COMMON.SEARCH.SEARCH_CRITERIA' | translate }}...</span
+    >
+  }
+  @if (showSearchPanel) {
+    <div class="container-sp-create-and-search">
+      <atlas-search-service-point
+        [searchType]="searchType"
+      ></atlas-search-service-point>
+      <ng-content></ng-content>
+    </div>
+  }
   <div class="button-container">
     <atlas-button
       (buttonClicked)="toggle()"
       buttonType="icon"
-      wrapperStyleClass="{{ showSearchPanel ?   'pt-4' : 'pt-1' }} pe-3 pb-1"
+      wrapperStyleClass="{{ showSearchPanel ? 'pt-4' : 'pt-1' }} pe-3 pb-1"
     >
       <ng-template #rightIcon>
-        <i [ngClass]="showSearchPanel ? 'bi bi-arrow-up-circle' : 'bi bi-arrow-down-circle'"></i>
+        <i
+          [ngClass]="
+            showSearchPanel
+              ? 'bi bi-arrow-up-circle'
+              : 'bi bi-arrow-down-circle'
+          "
+        ></i>
       </ng-template>
     </atlas-button>
   </div>

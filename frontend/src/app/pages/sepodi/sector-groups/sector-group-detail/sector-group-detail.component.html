@@ -12,7 +12,9 @@
   @if (!isNew) {
     <div class="font-xl mb-2">
       <span data-cy="total-range">
-        <date-range-text [dateRange]="maxValidity"></date-range-text>
+        <atlas-date-range-text
+          [dateRange]="maxValidity"
+        ></atlas-date-range-text>
       </span>
     </div>
   }
@@ -45,13 +47,13 @@
     @if (!isNew) {
       <div class="col-12 d-flex flex-row mb-3 justify-content-between">
         <div class="d-flex flex-column col-9">
-          <app-switch-version
+          <atlas-switch-version
             (switchVersion)="switchVersion($event)"
             [currentRecord]="selectedVersion"
             [records]="sectorGroupVersions"
             [switchDisabled]="form.enabled"
             [showStatus]="true"
-          ></app-switch-version>
+          ></atlas-switch-version>
         </div>
       </div>
       <div class="col-12 d-flex flex-row justify-content-between">
@@ -59,7 +61,7 @@
           <h3 class="font-bold-lg">
             {{ 'SEPODI.SECTORS.SECTORS' | translate }}
           </h3>
-          <app-table
+          <atlas-table
             [tableData]="sectorVersions"
             [tableColumns]="tableColumns"
             (editElementEvent)="rowClicked($event)"
@@ -71,7 +73,7 @@
             data-cy="sector-table"
             additionalTableStyleClass="scrollable-table"
           >
-          </app-table>
+          </atlas-table>
         </div>
       </div>
 
@@ -130,18 +132,21 @@
             >
             </atlas-select>
           } @else {
-            <app-atlas-label-field
+            <atlas-label-field
               fieldLabel="SEPODI.SECTORS.SECTORS"
               [required]="true"
             >
-            </app-atlas-label-field>
+            </atlas-label-field>
             <div>
               {{ 'COMMON.NODATAFOUND' | translate }}
             </div>
-            <app-atlas-field-error
-              [form]="form"
-              [controlName]="'sectorSloids'"
-            ></app-atlas-field-error>
+            @if (form.controls.sectorSloids) {
+              @let ctrl = form.get('sectorSloids');
+              <atlas-field-error
+                [control]="ctrl"
+                [ctrlErrors]="ctrl?.errors"
+              ></atlas-field-error>
+            }
           }
         </div>
       }
@@ -149,7 +154,7 @@
 
     <div class="font-bold-2xl mt-5">{{ 'FORM.KEY_DATA' | translate }}</div>
     <div class="col-12 d-flex">
-      <form-date-range [formGroup]="form"></form-date-range>
+      <atlas-form-date-range [formGroup]="form"></atlas-form-date-range>
     </div>
 
     <div class="font-bold-2xl mt-5">
@@ -178,7 +183,9 @@
     @if (!isNew) {
       <div class="mb-3">
         <mat-divider class="mt-4 mb-4"></mat-divider>
-        <app-user-detail-info [record]="selectedVersion"></app-user-detail-info>
+        <atlas-user-detail-info
+          [record]="selectedVersion"
+        ></atlas-user-detail-info>
       </div>
     }
   </atlas-detail-page-content>

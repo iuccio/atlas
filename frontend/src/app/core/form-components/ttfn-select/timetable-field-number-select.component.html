@@ -1,4 +1,4 @@
-<form-search-select
+<atlas-form-search-select
   (changeTrigger)="ttfnSelectionChanged.emit($event)"
   (searchTrigger)="searchTimetableFieldNumber($event)"
   [bindValueInp]="valueExtraction"
@@ -8,7 +8,7 @@
   [items$]="timetableFieldNumbers"
 >
   <div class="d-flex flex-column">
-    <app-atlas-label-field
+    <atlas-label-field
       fieldLabel="TTFN.TTFN"
       [required]="required"
       [fieldExamples]="
@@ -26,7 +26,7 @@
             ]
           : []
       "
-    ></app-atlas-label-field>
+    ></atlas-label-field>
   </div>
 
   <ng-template #labelOptionTemplates let-item>
@@ -34,4 +34,4 @@
       {{ item | ttfnSelectDisplay }}
     </div>
   </ng-template>
-</form-search-select>
+</atlas-form-search-select>

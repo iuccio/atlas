@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { Pages } from '../../../pages/pages';
 
 @Component({
-  selector: 'app-user',
+  selector: 'atlas-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
   imports: [MatButton, MatMenuTrigger, MatMenu, TranslatePipe],

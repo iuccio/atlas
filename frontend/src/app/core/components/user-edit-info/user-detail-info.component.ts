@@ -7,16 +7,16 @@ import {
 import { catchError, forkJoin, Observable, of } from 'rxjs';
 import { CreationEditionRecord } from './creation-edition-record';
 import { map } from 'rxjs/operators';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { UserAdministrationService } from '../../../api/service/user-administration/user-administration.service';
 
 @Component({
-  selector: 'app-user-detail-info [record]',
+  selector: 'atlas-user-detail-info [record]',
   templateUrl: './user-detail-info.component.html',
   styleUrls: ['./user-detail-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, AsyncPipe, TranslatePipe],
+  imports: [AsyncPipe, TranslatePipe],
   providers: [TranslatePipe],
 })
 export class UserDetailInfoComponent {

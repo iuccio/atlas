@@ -14,7 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { CompanyService } from '../../../api/service/bodi/company.service';
 
 @Component({
-  selector: 'app-bodi-companies',
+  selector: 'atlas-bodi-companies',
   templateUrl: './companies.component.html',
   imports: [TableComponent, RouterOutlet, TranslatePipe],
 })

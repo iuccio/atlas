@@ -18,81 +18,85 @@
     }
   </div>
   <atlas-spacer height="30px"></atlas-spacer>
-  <ng-container *ngIf="relations$ | async as relations">
-    <div *ngIf="relations && currentRelation" class="col-8 mt-3 mb-3">
-      <app-switch-version
-        [records]="relations"
-        [currentRecord]="currentRelation"
-        [switchDisabled]="editing"
-        [showStatus]="false"
-        (switchVersion)="versionChanged(relations[$event], $event)"
-      ></app-switch-version>
-    </div>
-
+  @if (relations$ | async; as relations) {
+    @if (relations && currentRelation) {
+      <div class="col-8 mt-3 mb-3">
+        <atlas-switch-version
+          [records]="relations"
+          [currentRecord]="currentRelation"
+          [switchDisabled]="editing"
+          [showStatus]="false"
+          (switchVersion)="versionChanged(relations[$event], $event)"
+        ></atlas-switch-version>
+      </div>
+    }
     <h2 class="font-bold-2xl color-gray-900">
       {{ 'PRM.RELATIONS.RELATION' | translate }} -
       {{ 'COMMON.VERSION' | translate }}
       {{ selectedRelationVersion }}
     </h2>
-
     <div class="col-6 pb-3 mt-4">
       <h2 class="font-bold-2xl color-gray-900">
         {{ 'FORM.KEY_DATA' | translate }}
       </h2>
-      <form-date-range *ngIf="form" [formGroup]="form"></form-date-range>
+      @if (form) {
+        <atlas-form-date-range [formGroup]="form"></atlas-form-date-range>
+      }
     </div>
-
     <h2 class="font-bold-2xl color-gray-900 mt-3">
       {{ 'FORM.SUPPLEMENTARY_INFORMATION' | translate }}
     </h2>
-
     <div class="col-12 d-flex mt-4">
       <div class="d-flex flex-column col-4 pe-3">
-        <atlas-select
-          *ngIf="form"
-          [formGroup]="form"
-          [options]="stepFreeAccessOptions"
-          controlName="stepFreeAccess"
-          dataCy="stepFreeAccess"
-          label="PRM.RELATIONS.STEP_FREE_ACCESS"
-          optionTranslateLabelPrefix="PRM.ENUMS.STEP_FREE_ACCESS_TYPES."
-          [additionalLabelspace]="0"
-        >
-        </atlas-select>
+        @if (form) {
+          <atlas-select
+            [formGroup]="form"
+            [options]="stepFreeAccessOptions"
+            controlName="stepFreeAccess"
+            dataCy="stepFreeAccess"
+            label="PRM.RELATIONS.STEP_FREE_ACCESS"
+            optionTranslateLabelPrefix="PRM.ENUMS.STEP_FREE_ACCESS_TYPES."
+            [additionalLabelspace]="0"
+          >
+          </atlas-select>
+        }
       </div>
       <div class="d-flex flex-column col-4 pe-3">
-        <atlas-select
-          *ngIf="form"
-          [formGroup]="form"
-          [options]="tactileVisualMarkOptions"
-          controlName="tactileVisualMarks"
-          dataCy="tactileVisualMarks"
-          label="PRM.RELATIONS.TACTIL_VISUAL_MARKS"
-          optionTranslateLabelPrefix="PRM.ENUMS.TACTILE_VISUAL_MARK_TYPES."
-          [additionalLabelspace]="0"
-        >
-        </atlas-select>
+        @if (form) {
+          <atlas-select
+            [formGroup]="form"
+            [options]="tactileVisualMarkOptions"
+            controlName="tactileVisualMarks"
+            dataCy="tactileVisualMarks"
+            label="PRM.RELATIONS.TACTIL_VISUAL_MARKS"
+            optionTranslateLabelPrefix="PRM.ENUMS.TACTILE_VISUAL_MARK_TYPES."
+            [additionalLabelspace]="0"
+          >
+          </atlas-select>
+        }
       </div>
       <div class="d-flex flex-column col-4">
-        <atlas-select
-          *ngIf="form"
-          [formGroup]="form"
-          [options]="contrastingAreaOptions"
-          controlName="contrastingAreas"
-          dataCy="contrastingAreas"
-          label="PRM.RELATIONS.CONTRASTING_AREAS"
-          optionTranslateLabelPrefix="PRM.ENUMS.STANDARD_ATTRIBUTE_TYPES."
-          [additionalLabelspace]="0"
-        >
-        </atlas-select>
+        @if (form) {
+          <atlas-select
+            [formGroup]="form"
+            [options]="contrastingAreaOptions"
+            controlName="contrastingAreas"
+            dataCy="contrastingAreas"
+            label="PRM.RELATIONS.CONTRASTING_AREAS"
+            optionTranslateLabelPrefix="PRM.ENUMS.STANDARD_ATTRIBUTE_TYPES."
+            [additionalLabelspace]="0"
+          >
+          </atlas-select>
+        }
       </div>
     </div>
-
     @if (currentRelation) {
       <mat-divider class="mt-4 mb-4"></mat-divider>
-      <app-user-detail-info [record]="currentRelation"></app-user-detail-info>
+      <atlas-user-detail-info
+        [record]="currentRelation"
+      ></atlas-user-detail-info>
     }
-  </ng-container>
+  }
 </atlas-detail-page-content>
 <atlas-detail-footer>
   <atlas-button
@@ -103,16 +107,17 @@
     (buttonClicked)="back()"
   ></atlas-button>
   @if (currentRelation) {
-    <atlas-button
-      *ngIf="!editing"
-      (buttonClicked)="toggleEdit()"
-      applicationType="PRM"
-      [businessOrganisations]="businessOrganisations"
-      buttonDataCy="edit"
-      buttonText="COMMON.EDIT"
-      buttonType="edit-service-point-dependent"
-      wrapperStyleClass="ms-3"
-    ></atlas-button>
+    @if (!editing) {
+      <atlas-button
+        (buttonClicked)="toggleEdit()"
+        applicationType="PRM"
+        [businessOrganisations]="businessOrganisations"
+        buttonDataCy="edit"
+        buttonText="COMMON.EDIT"
+        buttonType="edit-service-point-dependent"
+        wrapperStyleClass="ms-3"
+      ></atlas-button>
+    }
   }
   <atlas-button
     (buttonClicked)="toggleEdit()"

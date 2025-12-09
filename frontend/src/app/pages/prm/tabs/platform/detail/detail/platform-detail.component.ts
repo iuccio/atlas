@@ -22,7 +22,7 @@ import { EMPTY, Observable, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PrmTabDetailBaseComponent } from '../../../../shared/prm-tab-detail-base.component';
 import { DetailPageContentComponent } from '../../../../../../core/components/detail-page-content/detail-page-content.component';
-import { NgIf } from '@angular/common';
+
 import { SwitchVersionComponent } from '../../../../../../core/components/switch-version/switch-version.component';
 import { NavigationSepodiPrmComponent } from '../../../../../../core/navigation-sepodi-prm/navigation-sepodi-prm.component';
 import { DateRangeComponent } from '../../../../../../core/form-components/date-range/date-range.component';
@@ -36,12 +36,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { PlatformService } from '../../../../../../api/service/prm/platform/platform.service';
 
 @Component({
-  selector: 'app-platforms',
+  selector: 'atlas-platforms',
   templateUrl: './platform-detail.component.html',
   providers: [ValidityService, TranslatePipe],
   imports: [
     DetailPageContentComponent,
-    NgIf,
     SwitchVersionComponent,
     NavigationSepodiPrmComponent,
     DateRangeComponent,

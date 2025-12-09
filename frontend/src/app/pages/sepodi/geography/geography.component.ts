@@ -23,7 +23,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InfoIconComponent } from '@atlas/form/info-icon/info-icon.component';
 import { AtlasSlideToggleComponent } from '../../../core/form-components/atlas-slide-toggle/atlas-slide-toggle.component';
-import { NgIf } from '@angular/common';
+
 import { TextFieldComponent } from '../../../core/form-components/text-field/text-field.component';
 import { RemoveCharsDirective } from '../../../core/form-components/text-field/remove-chars.directive';
 import { DecimalNumberPipe } from '../../../core/pipe/decimal-number.pipe';
@@ -34,12 +34,11 @@ export const LV95_MAX_DIGITS = 5;
 export const WGS84_MAX_DIGITS = 11;
 
 @Component({
-  selector: 'sepodi-geography',
+  selector: 'atlas-sepodi-geography',
   templateUrl: './geography.component.html',
   imports: [
     InfoIconComponent,
     AtlasSlideToggleComponent,
-    NgIf,
     ReactiveFormsModule,
     MatRadioGroup,
     MatRadioButton,

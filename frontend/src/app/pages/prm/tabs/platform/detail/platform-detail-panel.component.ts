@@ -10,20 +10,19 @@ import {
 } from '../../../../../api';
 import { PrmMeanOfTransportHelper } from '../../../util/prm-mean-of-transport-helper';
 import { DetailPageContainerComponent } from '../../../../../core/components/detail-page-container/detail-page-container.component';
-import { NgIf } from '@angular/common';
+
 import { DateRangeTextComponent } from '../../../../../core/versioning/date-range-text/date-range-text.component';
-import { DetailWithRelationTabComponent } from '../../relation/tab/detail-with-relation-tab.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { DetailWithRelationTabComponent } from '../../relation/tab/detail-with-relation-tab.component';
 
 @Component({
-  selector: 'app-platform-detail-panel',
+  selector: 'atlas-platform-detail-panel',
   templateUrl: './platform-detail-panel.component.html',
   imports: [
     DetailPageContainerComponent,
-    NgIf,
     DateRangeTextComponent,
-    DetailWithRelationTabComponent,
     TranslatePipe,
+    DetailWithRelationTabComponent,
   ],
 })
 export class PlatformDetailPanelComponent implements OnInit {

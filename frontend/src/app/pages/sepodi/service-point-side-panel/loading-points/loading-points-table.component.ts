@@ -15,7 +15,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { LoadingPointInternalService } from '../../../../api/service/sepodi/loading-point-internal.service';
 
 @Component({
-  selector: 'app-service-point-loading-points',
+  selector: 'atlas-service-point-loading-points',
   templateUrl: './loading-points-table.component.html',
   styleUrls: ['./loading-points-table.component.scss'],
   imports: [

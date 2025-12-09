@@ -13,7 +13,7 @@ import { DialogFooterComponent } from '../../../../../../core/components/dialog/
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-termination-abort-detail-dialog',
+  selector: 'atlas-termination-abort-detail-dialog',
   imports: [
     DialogCloseComponent,
     DialogContentComponent,

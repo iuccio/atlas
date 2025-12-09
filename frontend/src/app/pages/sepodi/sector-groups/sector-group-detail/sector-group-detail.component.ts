@@ -53,7 +53,7 @@ import { SectorGroupInternalService } from '../../../../api/service/sepodi/secto
 import { RevokeButton } from '../../../../core/form-components/revoke-button/revoke-button';
 
 @Component({
-  selector: 'app-sector-group-detail',
+  selector: 'atlas-sector-group-detail',
   imports: [
     AtlasButtonComponent,
     DateRangeComponent,

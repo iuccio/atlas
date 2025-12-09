@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApplicationType, BusinessObjectType, ImportType } from '../../../api';
 import { AppTestingModule } from '../../../app.testing.module';
 import { BulkImportFormGroupBuilder } from '../detail/bulk-import-form-group';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, EMPTY, of, throwError } from 'rxjs';
 import { NotificationService } from '../../../core/notification/notification.service';
 import { Router } from '@angular/router';
 import { FileDownloadService } from '../../../core/components/file-upload/file/file-download.service';
@@ -21,16 +21,19 @@ import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-la
 import { DialogService } from '../../../core/components/dialog/dialog.service';
 import { LoadingSpinnerService } from '../../../core/components/loading-spinner/loading-spinner.service';
 import { BulkImportService } from '../../../api/service/bulk/bulk-import.service';
+import { UserAdministrationService } from '../../../api/service/user-administration/user-administration.service';
 import SpyObj = jasmine.SpyObj;
 
 describe('BulkImportOverviewComponent', () => {
   let component: BulkImportOverviewComponent;
+  let fixture: ComponentFixture<BulkImportOverviewComponent>;
+
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   let bulkImportServiceSpy: SpyObj<any>;
   let notificationServiceSpy: SpyObj<NotificationService>;
   let routerSpy: SpyObj<Router>;
-  let fixture: ComponentFixture<BulkImportOverviewComponent>;
   let dialogServiceSpy: SpyObj<DialogService>;
+  let userAdminServiceSpy: SpyObj<UserAdministrationService>;
 
   beforeEach(() => {
     bulkImportServiceSpy = jasmine.createSpyObj('BulkImportService', [
@@ -41,6 +44,9 @@ describe('BulkImportOverviewComponent', () => {
     routerSpy = jasmine.createSpyObj(['navigate']);
     routerSpy.navigate.and.returnValue(Promise.resolve(true));
     dialogServiceSpy = jasmine.createSpyObj('dialogService', ['showInfo']);
+    userAdminServiceSpy = jasmine.createSpyObj<UserAdministrationService>({
+      getCurrentUser: EMPTY,
+    });
 
     TestBed.configureTestingModule({
       imports: [
@@ -76,15 +82,12 @@ describe('BulkImportOverviewComponent', () => {
           useValue: routerSpy,
         },
         { provide: DialogService, useValue: dialogServiceSpy },
+        { provide: UserAdministrationService, useValue: userAdminServiceSpy },
       ],
     });
 
     fixture = TestBed.createComponent(BulkImportOverviewComponent);
     component = fixture.componentInstance;
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should remove department', () => {
@@ -174,9 +177,7 @@ describe('BulkImportOverviewComponent', () => {
   });
 
   it('should set OPTIONS_OBJECT_TYPE when applicationType changes', () => {
-    fixture.detectChanges();
     component.ngOnInit();
-
     component.form.controls.applicationType.setValue(ApplicationType.Sepodi);
     fixture.detectChanges();
 

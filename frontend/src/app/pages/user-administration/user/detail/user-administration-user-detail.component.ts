@@ -9,7 +9,7 @@ import { UserPermissionGivenUserService } from './edit/user-permission-given-use
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-user-administration',
+  selector: 'atlas-user-administration',
   templateUrl: './user-administration-user-detail.component.html',
   imports: [
     UserAdministrationUserEditComponent,

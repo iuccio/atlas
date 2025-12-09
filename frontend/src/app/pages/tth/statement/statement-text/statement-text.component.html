@@ -1,6 +1,6 @@
 <ng-container [formGroup]="form()">
   <div class="flex-row mb-4">
-    <app-atlas-label-field fieldLabel="TTH.STATEMENT.STATEMENT_TEXT" />
+    <atlas-label-field fieldLabel="TTH.STATEMENT.STATEMENT_TEXT" />
     <div class="d-flex flex-row col-12 mt-2 mb-2">
       <mat-checkbox
         formControlName="statementAnonymous"
@@ -12,56 +12,57 @@
     </div>
 
     @if (statementText.showOriginalTextButton) {
-    <atlas-button
-      buttonDataCy="showOriginalStatementText"
-      [buttonText]="statementText.originalTextButtonLabel"
-      buttonType="icon"
-      (buttonClicked)="showOriginalText()"
-      wrapperStyleClass="pt-1"
-      buttonStyleClass="atlas-icon-btn font-bold-base"
-    >
-      <ng-template #rightIcon>
-        <i class="bi {{ statementText.originalTextButtonIcon }} h5"></i>
-      </ng-template>
-    </atlas-button>
-    }
-    @if (statementText.showOriginalStatementText) {
-    <div class="pt-2 d-flex flex-column col-12">
-      <form-comment
-        [formGroup]="form()"
-        [displayLabel]="true"
-        label=""
-        controlName="statement"
-      >
-      </form-comment>
-    </div>
-    }
-    @if (!statementText.checkboxStatementAnonymous) {
-    <div class="mb-3 mt-3">
-      @if (!statementText.anonymizeStatementButtonActive) {
       <atlas-button
-        [disabled]="form().disabled"
-        (click)="anonymizeStatement()"
-        buttonDataCy="anonymizeStatementButton"
-        buttonText="TTH.STATEMENT.ANONIMYZE_BUTTON"
-        buttonType="whiteFooterNonEdit"
+        buttonDataCy="showOriginalStatementText"
+        [buttonText]="statementText.originalTextButtonLabel"
+        buttonType="icon"
+        (buttonClicked)="showOriginalText()"
+        wrapperStyleClass="pt-1"
+        buttonStyleClass="atlas-icon-btn font-bold-base"
       >
         <ng-template #rightIcon>
-          <i class="ps-1 bi bi-card-text h5"></i>
+          <i class="bi {{ statementText.originalTextButtonIcon }} h5"></i>
         </ng-template>
       </atlas-button>
-      }
-    </div>
+    }
+    @if (statementText.showOriginalStatementText) {
+      <div class="pt-2 d-flex flex-column col-12">
+        <atlas-form-comment
+          [formGroup]="form()"
+          [displayLabel]="true"
+          label=""
+          controlName="statement"
+        >
+        </atlas-form-comment>
+      </div>
+    }
+    @if (!statementText.checkboxStatementAnonymous) {
+      <div class="mb-3 mt-3">
+        @if (!statementText.anonymizeStatementButtonActive) {
+          <atlas-button
+            [disabled]="form().disabled"
+            (click)="anonymizeStatement()"
+            buttonDataCy="anonymizeStatementButton"
+            buttonText="TTH.STATEMENT.ANONIMYZE_BUTTON"
+            buttonType="whiteFooterNonEdit"
+          >
+            <ng-template #rightIcon>
+              <i class="ps-1 bi bi-card-text h5"></i>
+            </ng-template>
+          </atlas-button>
+        }
+      </div>
       @if (statementText.anonymizeStatementButtonActive) {
-    <div class="d-flex flex-column col-12">
-      <form-comment
-        [formGroup]="form()"
-        [displayLabel]="true"
-        label=""
-        controlName="anonymousStatement"
-      >
-      </form-comment>
-    </div>
-    } }
+        <div class="d-flex flex-column col-12">
+          <atlas-form-comment
+            [formGroup]="form()"
+            [displayLabel]="true"
+            label=""
+            controlName="anonymousStatement"
+          >
+          </atlas-form-comment>
+        </div>
+      }
+    }
   </div>
 </ng-container>

@@ -21,19 +21,17 @@ import {
   MatRowDef,
   MatTable,
 } from '@angular/material/table';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-relation',
+  selector: 'atlas-relation',
   templateUrl: './relation.component.html',
   styleUrls: ['./relation.component.scss'],
   imports: [
-    NgIf,
     MatTable,
     MatSort,
     NgClass,
-    NgFor,
     MatColumnDef,
     MatHeaderCellDef,
     MatHeaderCell,

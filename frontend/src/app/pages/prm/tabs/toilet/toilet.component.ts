@@ -10,16 +10,16 @@ import { TableService } from '../../../../core/components/table/table.service';
 import { Pages } from '../../../pages';
 import { TablePagination } from '../../../../core/components/table/table-pagination';
 import { TableContentPaginationAndSorting } from '../../../../core/components/table/table-content-pagination-and-sorting';
-import { NgIf } from '@angular/common';
+
 import { AtlasButtonComponent } from '../../../../core/components/button/atlas-button.component';
 import { TableComponent } from '../../../../core/components/table/table.component';
 import { DetailFooterComponent } from '../../../../core/components/detail-footer/detail-footer.component';
 import { ToiletInternalService } from '../../../../api/service/prm/toilet/toilet-internal.service';
 
 @Component({
-  selector: 'app-toilet',
+  selector: 'atlas-toilet',
   templateUrl: './toilet.component.html',
-  imports: [NgIf, AtlasButtonComponent, TableComponent, DetailFooterComponent],
+  imports: [AtlasButtonComponent, TableComponent, DetailFooterComponent],
 })
 export class ToiletComponent
   extends BasePrmTabComponentService

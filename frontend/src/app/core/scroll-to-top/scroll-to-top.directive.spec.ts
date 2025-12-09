@@ -5,7 +5,7 @@ import { ScrollToTopDirective } from './scroll-to-top.directive';
 
 @Component({
   template: ` <div id="scrollbar-content-container" class="full-height">
-    <div scrollToTop id="some-child-component">Random Content</div>
+    <div atlasScrollToTop id="some-child-component">Random Content</div>
   </div>`,
   imports: [ScrollToTopDirective],
 })

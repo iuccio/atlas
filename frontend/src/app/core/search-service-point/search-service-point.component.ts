@@ -30,7 +30,7 @@ const SEARCH_SERVICE_POINT_PLACEHOLDER = 'SEPODI.SERVICE_POINTS.SERVICE_POINT';
 const SEARCH_STOP_POINT_PLACEHOLDER = 'SEPODI.SERVICE_POINTS.STOP_POINT';
 
 @Component({
-  selector: 'app-search-service-point',
+  selector: 'atlas-search-service-point',
   templateUrl: './search-service-point.component.html',
   styleUrls: ['./search-service-point.component.scss'],
   imports: [

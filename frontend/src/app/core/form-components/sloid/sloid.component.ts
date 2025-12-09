@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { AtlasCharsetsValidator } from '../../validation/charsets/atlas-charsets-validator';
 import { AtlasSlideToggleComponent } from '../atlas-slide-toggle/atlas-slide-toggle.component';
-import { NgIf } from '@angular/common';
+
 import { TextFieldComponent } from '../text-field/text-field.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -17,11 +17,10 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrls: ['./sloid.component.scss'],
   imports: [
     AtlasSlideToggleComponent,
-    NgIf,
     TextFieldComponent,
     ReactiveFormsModule,
-    TranslatePipe,
-  ],
+    TranslatePipe
+],
   providers: [TranslatePipe],
 })
 export class SloidComponent implements OnInit {

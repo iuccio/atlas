@@ -24,7 +24,7 @@ import { DialogService } from '../../../core/components/dialog/dialog.service';
 import { LoadingSpinnerService } from '../../../core/components/loading-spinner/loading-spinner.service';
 import { tap } from 'rxjs/operators';
 import { SelectComponent } from '../../../core/form-components/select/select.component';
-import { NgIf } from '@angular/common';
+
 import { MatCheckbox } from '@angular/material/checkbox';
 import { UserSelectComponent } from '../../user-administration/user/user-select/user-select.component';
 import { StringListComponent } from '../../../core/form-components/string-list/string-list.component';
@@ -84,14 +84,13 @@ const VALID_COMBINATIONS: [ApplicationType, BusinessObjectType, ImportType][] =
   imports: [
     ReactiveFormsModule,
     SelectComponent,
-    NgIf,
     MatCheckbox,
     UserSelectComponent,
     StringListComponent,
     FileUploadComponent,
     AtlasButtonComponent,
-    TranslatePipe,
-  ],
+    TranslatePipe
+],
   providers: [TranslatePipe],
 })
 export class BulkImportOverviewComponent implements OnInit {

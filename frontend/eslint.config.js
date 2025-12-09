@@ -37,12 +37,14 @@ module.exports = [{
   rules: {
     "@angular-eslint/directive-selector": ["error", {
       type: "attribute",
-      style: "camelCase"
+      style: "camelCase",
+      prefix: "atlas"
     }],
 
     "@angular-eslint/component-selector": ["error", {
       type: "element",
-      style: "kebab-case"
+      style: "kebab-case",
+      prefix: "atlas"
     }],
 
     "@typescript-eslint/no-non-null-assertion": "off",
