@@ -86,8 +86,6 @@ public interface TimetableHearingStatementApiInternal {
       @ParameterObject TimetableHearingStatementRequestParams statementRequestParams);
 
   @GetMapping(path = BASE_PATH + "/{id}")
-  @PreAuthorize("@cantonBasedUserAdministrationService"
-      + ".isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)")
   TimetableHearingStatementModelV2 getStatement(@PathVariable Long id);
 
   @GetMapping(path = BASE_PATH + "/{id}/previous")
