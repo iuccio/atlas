@@ -1084,6 +1084,9 @@
       "CREATE_STATEMENT_INTERNAL": "Dichiarazione di registrazione in atlas",
       "EDIT_STATEMENT": "Modifica del parere in atlas",
       "SUCCESSFUL_SAVE_NOTIFICATION": "Impostazioni salvate con successo"
+    },
+    "ERROR": {
+      "NOT_ALLOWED_BO_CONTACT": "La persona con l'indirizzo e-mail {{mail}} non ha i permessi necessari per essere registrata come contatto."
     }
   },
   "SEPODI": {
