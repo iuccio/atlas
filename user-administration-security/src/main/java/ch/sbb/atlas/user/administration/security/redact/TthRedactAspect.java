@@ -1,4 +1,4 @@
-package ch.sbb.line.directory.module.tth.redact;
+package ch.sbb.atlas.user.administration.security.redact;
 
 import ch.sbb.atlas.kafka.model.user.admin.ApplicationType;
 import ch.sbb.atlas.redact.RedactAspect;
@@ -16,7 +16,7 @@ public class TthRedactAspect {
 
   private final CantonBasedUserAdministrationService cantonBasedUserAdministrationService;
 
-  @Around("@annotation(ch.sbb.line.directory.module.tth.redact.TthRedacted)")
+  @Around("@annotation(ch.sbb.atlas.user.administration.security.redact.TthRedacted)")
   public Object redactSensitiveDataForTthReader(ProceedingJoinPoint joinPoint) throws Throwable {
     Object resultObject = joinPoint.proceed();
 
@@ -28,7 +28,7 @@ public class TthRedactAspect {
     return redactObject(resultObject);
   }
 
-  static Object redactObject(Object resultObject) {
+  public static Object redactObject(Object resultObject) {
     return RedactAspect.redactResult(resultObject);
   }
 

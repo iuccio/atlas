@@ -1,4 +1,4 @@
-package ch.sbb.line.directory.module.tth.redact;
+package ch.sbb.atlas.user.administration.security.redact;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

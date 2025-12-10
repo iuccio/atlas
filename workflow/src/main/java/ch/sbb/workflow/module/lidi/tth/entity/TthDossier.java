@@ -6,6 +6,7 @@ import ch.sbb.atlas.api.model.CantonAssociated;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.StatementDossierLinked;
 import ch.sbb.atlas.kafka.model.SwissCanton;
+import ch.sbb.atlas.redact.Redacted;
 import ch.sbb.workflow.entity.BaseWorkflowEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
@@ -42,6 +43,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @FieldNameConstants
 @Entity(name = "tth_dossier")
+@Redacted
 public class TthDossier extends BaseWorkflowEntity implements StatementDossierLinked, CantonAssociated, BoMailAssociated {
 
   private static final String VERSION_SEQ = "tth_dossier_seq";
@@ -64,9 +66,11 @@ public class TthDossier extends BaseWorkflowEntity implements StatementDossierLi
   private DossierStatus dossierStatus;
 
   @Size(min = 1, max = AtlasFieldLengths.LENGTH_5000)
+  @Redacted
   private String internalComment;
 
   @Size(min = 1, max = AtlasFieldLengths.LENGTH_5000)
+  @Redacted
   private String publicComment;
 
   @NotEmpty

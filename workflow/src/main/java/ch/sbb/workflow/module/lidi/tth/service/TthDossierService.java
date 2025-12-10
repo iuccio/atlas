@@ -6,6 +6,7 @@ import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingState
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
+import ch.sbb.atlas.user.administration.security.redact.TthRedacted;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
 import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
@@ -31,6 +32,7 @@ public class TthDossierService {
   private final TthDossierNotificationService notificationService;
   private final BoContactPermissionService boContactPermissionService;
 
+  @TthRedacted
   @PostAuthorize("""
       @cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)
       or
