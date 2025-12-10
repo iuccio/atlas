@@ -1,14 +1,9 @@
 package ch.sbb.workflow.module.lidi.tth.service;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
-import ch.sbb.atlas.api.client.user.administration.UserAdministrationClient;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
-import ch.sbb.atlas.api.user.administration.PermissionModel;
-import ch.sbb.atlas.api.user.administration.UserModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
-import ch.sbb.atlas.kafka.model.user.admin.ApplicationType;
-import ch.sbb.atlas.kafka.model.user.admin.PermissionRestrictionType;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
@@ -18,7 +13,6 @@ import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierQuestionRepository;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,7 +28,7 @@ public class TthDossierService {
   private final TthDossierQuestionRepository questionRepository;
   private final TimetableHearingStatementClient timetableHearingStatementClient;
   private final TthDossierNotificationService notificationService;
-  private final UserAdministrationClient userAdministrationClient;
+  private final BoContactPermissionService boContactPermissionService;
 
   @PreAuthorize("""
       @cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)""")
@@ -46,8 +40,9 @@ public class TthDossierService {
   @PreAuthorize("""
       @cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING, #dossier)""")
   public TthDossier createDossier(TthDossier dossier) {
+    boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
+
     dossier.setDossierStatus(DossierStatus.ADDED);
-    checkPermissionForBoContactMail(dossier.getBoContactMail());
     TthDossier tthDossier = dossierRepository.saveAndFlush(dossier);
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier));
     return tthDossier;
@@ -87,6 +82,7 @@ public class TthDossierService {
   public TthDossier updateDossier(Long dossierId, TthDossier dossier) {
     TthDossier currentDossier = getDossierById(dossierId);
     checkDossierIsInEditableStatus(currentDossier);
+    boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
 
     updateRemovedStatements(currentDossier, dossier);
 
@@ -144,23 +140,5 @@ public class TthDossierService {
     tthDossier.setDossierStatus(DossierStatus.DOSSIER_CANTON_CHECK);
     questionRepository.save(question);
     dossierRepository.save(tthDossier);
-  }
-
-  //TODO add test
-  private void checkPermissionForBoContactMail(String mail) {
-    UserModel user = userAdministrationClient.getUserByMail(mail);
-
-    List<PermissionModel> permissions =
-        user.getPermissions().stream()
-            .filter(permissionModel -> permissionModel.getApplication().equals(ApplicationType.TIMETABLE_HEARING)).toList();
-
-    boolean hasPermission = permissions.stream().map(PermissionModel::getPermissionRestrictions).flatMap(Collection::stream)
-        .filter(i -> i.getType() == PermissionRestrictionType.TRANSPORT_COMPANY_DOSSIER_ANSWER)
-        .anyMatch(i -> Boolean.parseBoolean(i.getValueAsString()));
-
-    if (!hasPermission) {
-      //TODO add custom Exception
-      throw new RuntimeException();
-    }
   }
 }

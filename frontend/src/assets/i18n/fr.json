@@ -1084,6 +1084,9 @@
       "CREATE_STATEMENT_INTERNAL": "Saisie de l'avis dans atlas",
       "EDIT_STATEMENT": "Traitement de l'avis dans atlas",
       "SUCCESSFUL_SAVE_NOTIFICATION": "Paramètres enregistrés avec succès"
+    },
+    "ERROR": {
+      "NOT_ALLOWED_BO_CONTACT": "La personne associée à l'adresse e-mail {{mail}} n'est pas autorisée à être enregistrée comme contact."
     }
   },
   "SEPODI": {

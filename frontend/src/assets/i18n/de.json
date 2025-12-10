@@ -1084,6 +1084,9 @@
       "CREATE_STATEMENT_INTERNAL": "Erfassung Stellungnahme in atlas",
       "EDIT_STATEMENT": "Bearbeitung Stellungnahme in atlas",
       "SUCCESSFUL_SAVE_NOTIFICATION": "Einstellungen erfolgreich gespeichert"
+    },
+    "ERROR": {
+      "NOT_ALLOWED_BO_CONTACT": "Die Person mit der Mail {{mail}} hat keine Berechtigungen um als Kontakt hinterlegt zu werden."
     }
   },
   "SEPODI": {
