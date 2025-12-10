@@ -3,8 +3,12 @@ package ch.sbb.atlas.api.workflow.tth.dossier;
 import ch.sbb.atlas.api.AtlasCharacterSetsRegex;
 import ch.sbb.atlas.api.AtlasFieldLengths;
 import ch.sbb.atlas.api.model.AuditableVersionModel;
+import ch.sbb.atlas.api.model.CantonAssociated;
+import ch.sbb.atlas.kafka.model.SwissCanton;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -27,10 +31,14 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @Schema(name = "TthDossier")
-public class TthDossierModel extends AuditableVersionModel implements StatementDossierLinked {
+public class TthDossierModel extends AuditableVersionModel implements StatementDossierLinked, CantonAssociated {
 
   @Schema(description = "Generated DB id", accessMode = AccessMode.READ_ONLY)
   private Long id;
+
+  @Schema(description = "Canton of the dossier", example = "BERN")
+  @NotNull
+  private SwissCanton swissCanton;
 
   @Schema(description = "Topic of the dossier", example = "Increase frequency on line S1 during peak hours")
   @NotBlank

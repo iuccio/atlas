@@ -18,9 +18,11 @@ import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierQuestionRepository;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,11 +36,15 @@ public class TthDossierService {
   private final TthDossierNotificationService notificationService;
   private final UserAdministrationClient userAdministrationClient;
 
+  @PreAuthorize("""
+      @cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)""")
   public TthDossier getDossierById(Long dossierId) {
     return dossierRepository.findById(dossierId).orElseThrow(() -> new IdNotFoundException(dossierId));
   }
 
   @Transactional
+  @PreAuthorize("""
+      @cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING, #dossier)""")
   public TthDossier createDossier(TthDossier dossier) {
     dossier.setDossierStatus(DossierStatus.ADDED);
     checkPermissionForBoContactMail(dossier.getBoContactMail());
@@ -48,16 +54,19 @@ public class TthDossierService {
   }
 
   @Transactional
-  public void sendDossierToBo(Long dossierId) {
-    TthDossier tthDossier = getDossierById(dossierId);
-    tthDossier.setDossierStatus(DossierStatus.DOSSIER_BO_CHECK);
+  @PreAuthorize("""
+      @cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING, #dossier)""")
+  public void sendDossierToBo(TthDossier dossier) {
+    dossier.setDossierStatus(DossierStatus.DOSSIER_BO_CHECK);
 
-    notificationService.notifyBoAboutNewQuestion(tthDossier);
+    notificationService.notifyBoAboutNewQuestion(dossier);
 
-    dossierRepository.save(tthDossier);
+    dossierRepository.save(dossier);
   }
 
   @Transactional
+  @PreAuthorize("""
+      @cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING, #dossier)""")
   public void completeDossier(TthDossier dossier, DossierStatus status) {
     checkDossierIsInEditableStatus(dossier);
     if (!status.isAllowedForCompleteTransition()) {
@@ -73,6 +82,8 @@ public class TthDossierService {
   }
 
   @Transactional
+  @PreAuthorize("""
+      @cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING, #dossier)""")
   public TthDossier updateDossier(Long dossierId, TthDossier dossier) {
     TthDossier currentDossier = getDossierById(dossierId);
     checkDossierIsInEditableStatus(currentDossier);
@@ -91,6 +102,7 @@ public class TthDossierService {
     if (!removedStatementIds.isEmpty()) {
       timetableHearingStatementClient.updateStatements(BatchUpdateTimetableHearingStatementsModel.builder()
           .ids(removedStatementIds)
+          .dossierCanton(dossier.getSwissCanton())
           .statementStatus(StatementStatus.RECEIVED)
           .publicComment(dossier.getPublicComment())
           .internalComment(dossier.getInternalComment())
@@ -138,13 +150,11 @@ public class TthDossierService {
   private void checkPermissionForBoContactMail(String mail) {
     UserModel user = userAdministrationClient.getUserByMail(mail);
 
-    PermissionModel permission =
+    List<PermissionModel> permissions =
         user.getPermissions().stream()
-            .filter(permissionModel -> permissionModel.getApplication().equals(ApplicationType.TIMETABLE_HEARING)).toList()
-            .getFirst();
+            .filter(permissionModel -> permissionModel.getApplication().equals(ApplicationType.TIMETABLE_HEARING)).toList();
 
-    boolean hasPermission = permission.getPermissionRestrictions()
-        .stream()
+    boolean hasPermission = permissions.stream().map(PermissionModel::getPermissionRestrictions).flatMap(Collection::stream)
         .filter(i -> i.getType() == PermissionRestrictionType.TRANSPORT_COMPANY_DOSSIER_ANSWER)
         .anyMatch(i -> Boolean.parseBoolean(i.getValueAsString()));
 

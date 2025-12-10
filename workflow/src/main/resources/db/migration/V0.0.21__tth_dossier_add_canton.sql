@@ -1,0 +1,1 @@
+alter table tth_dossier add column swiss_canton varchar(50);

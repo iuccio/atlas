@@ -72,9 +72,12 @@ class TthDossierControllerTest {
 
   @Test
   void shouldSendDossierToBo() {
+    TthDossier dossier = TthDossier.builder().id(1L).topic(TOPIC).build();
+    when(tthDossierService.getDossierById(any())).thenReturn(dossier);
+
     tthDossierController.sendDossierToBo(1L);
 
-    verify(tthDossierService).sendDossierToBo(1L);
+    verify(tthDossierService).sendDossierToBo(dossier);
   }
 
   @Test

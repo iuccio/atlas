@@ -6,11 +6,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
+import ch.sbb.atlas.api.client.user.administration.UserAdministrationClient;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
+import ch.sbb.atlas.api.user.administration.PermissionModel;
+import ch.sbb.atlas.api.user.administration.TransportCompanyDossierAnswerPermissionRestrictionModel;
+import ch.sbb.atlas.api.user.administration.UserModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
+import ch.sbb.atlas.kafka.model.SwissCanton;
+import ch.sbb.atlas.kafka.model.user.admin.ApplicationType;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
@@ -19,6 +26,7 @@ import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +50,9 @@ class TthDossierServiceTest {
   @MockitoBean
   private TthDossierNotificationService tthDossierNotificationService;
 
+  @MockitoBean
+  private UserAdministrationClient userAdministrationClient;
+
   @Captor
   private ArgumentCaptor<BatchUpdateTimetableHearingStatementsModel> batchUpdateCaptor;
 
@@ -50,7 +61,15 @@ class TthDossierServiceTest {
 
   @BeforeEach
   void setUp() {
+    when(userAdministrationClient.getUserByMail(any())).thenReturn(UserModel.builder()
+        .permissions(Set.of(PermissionModel.builder()
+            .application(ApplicationType.TIMETABLE_HEARING)
+            .permissionRestrictions(List.of(new TransportCompanyDossierAnswerPermissionRestrictionModel(true)))
+            .build()))
+        .build());
+
     TthDossier dossier = TthDossier.builder()
+        .swissCanton(SwissCanton.BERN)
         .topic("Bern, Salem - Takt")
         .internalComment("Noch mit Bernmobil abklären")
         .publicComment("In Abklärung mit GO")
@@ -84,6 +103,7 @@ class TthDossierServiceTest {
   @Test
   void shouldSaveDossier() {
     TthDossier dossier = tthDossierService.createDossier(TthDossier.builder()
+        .swissCanton(SwissCanton.BERN)
         .topic("Bern, Salem - Takt")
         .internalComment("Noch mit Bernmobil abklären")
         .publicComment("In Abklärung mit GO")
@@ -137,6 +157,7 @@ class TthDossierServiceTest {
   void shouldSendQuestionToBo() {
     // given
     TthDossier dossier = TthDossier.builder()
+        .swissCanton(SwissCanton.BERN)
         .topic("Bern, Salem - Takt")
         .internalComment("Noch mit Bernmobil abklären")
         .publicComment("In Abklärung mit GO")
@@ -149,9 +170,11 @@ class TthDossierServiceTest {
     assertThat(dossier.getId()).isNotNull();
 
     // when
-    tthDossierService.sendDossierToBo(dossier.getId());
+    tthDossierService.sendDossierToBo(dossier);
 
     // then
+    TthDossier updatedDossier = tthDossierService.getDossierById(dossier.getId());
+    assertThat(updatedDossier.getDossierStatus()).isEqualTo(DossierStatus.DOSSIER_BO_CHECK);
     verify(tthDossierNotificationService).notifyBoAboutNewQuestion(any());
   }
 
@@ -197,6 +220,7 @@ class TthDossierServiceTest {
         // First update removing current statements by deleting dossierId and setting status back to RECEIVED
         BatchUpdateTimetableHearingStatementsModel.builder()
             .ids(List.of(132L, 145L))
+            .dossierCanton(SwissCanton.BERN)
             .statementStatus(StatementStatus.RECEIVED)
             .dossierId(null)
             .dossierContactMail(null)
@@ -207,6 +231,7 @@ class TthDossierServiceTest {
         // Second update adding new statements by adding dossierId and setting status back to IN_REVIEW
         BatchUpdateTimetableHearingStatementsModel.builder()
             .ids(statementIds)
+            .dossierCanton(SwissCanton.BERN)
             .statementStatus(StatementStatus.IN_REVIEW)
             .dossierId(updatedDossier.getId())
             .dossierContactMail("bern@mobil.be")
@@ -220,7 +245,7 @@ class TthDossierServiceTest {
 
   @Test
   void shouldAnswerQuestionAsBo() {
-    tthDossierService.sendDossierToBo(exampleDossier.getId());
+    tthDossierService.sendDossierToBo(exampleDossier);
 
     // when
     String boAnswer = "Joa das geht schon.";
