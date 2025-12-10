@@ -68,7 +68,7 @@ public class TimetableHearingStatementService {
   @PostAuthorize("""
       @cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)
       or
-      @boUserAssignedToStatementService.isAssigned(returnObject)""")
+      @boUserMailCheckService.isCurrentUserMailAssignedTo(returnObject)""")
   public TimetableHearingStatement getTimetableHearingStatementById(Long id) {
     return timetableHearingStatementRepository.findById(id)
         .orElseThrow(() -> new IdNotFoundException(id));

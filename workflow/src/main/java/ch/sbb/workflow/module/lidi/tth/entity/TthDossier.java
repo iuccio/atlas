@@ -1,6 +1,7 @@
 package ch.sbb.workflow.module.lidi.tth.entity;
 
 import ch.sbb.atlas.api.AtlasFieldLengths;
+import ch.sbb.atlas.api.model.BoMailAssociated;
 import ch.sbb.atlas.api.model.CantonAssociated;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.StatementDossierLinked;
@@ -41,7 +42,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @FieldNameConstants
 @Entity(name = "tth_dossier")
-public class TthDossier extends BaseWorkflowEntity implements StatementDossierLinked, CantonAssociated {
+public class TthDossier extends BaseWorkflowEntity implements StatementDossierLinked, CantonAssociated, BoMailAssociated {
 
   private static final String VERSION_SEQ = "tth_dossier_seq";
 

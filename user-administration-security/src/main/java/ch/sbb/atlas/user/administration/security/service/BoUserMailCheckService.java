@@ -1,18 +1,18 @@
-package ch.sbb.line.directory.module.tth.service;
+package ch.sbb.atlas.user.administration.security.service;
 
+import ch.sbb.atlas.api.model.BoMailAssociated;
 import ch.sbb.atlas.service.UserService;
-import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class BoUserAssignedToStatementService {
+public class BoUserMailCheckService {
 
-  public boolean isAssigned(TimetableHearingStatement statement) {
+  public boolean isCurrentUserMailAssignedTo(BoMailAssociated boMail) {
     String preferredUsername = UserService.getPreferredUsername();
-    boolean isAssignedToStatement = Objects.equals(statement.getDossierContactMail(), preferredUsername);
+    boolean isAssignedToStatement = Objects.equals(boMail.getBoContactMail(), preferredUsername);
     log.info("{} is assigned to statement: {}", preferredUsername, isAssignedToStatement);
     return isAssignedToStatement;
   }
