@@ -28,7 +28,7 @@ public class TthDossierController implements TthDossierApiInternal {
 
   @Override
   public void sendDossierToBo(Long dossierId) {
-    tthDossierService.sendDossierToBo(dossierId);
+    tthDossierService.sendDossierToBo(tthDossierService.getDossierById(dossierId));
   }
 
   @Override

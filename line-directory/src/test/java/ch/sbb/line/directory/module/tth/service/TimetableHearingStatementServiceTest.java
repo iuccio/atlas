@@ -308,6 +308,7 @@ class TimetableHearingStatementServiceTest {
         documents);
     timetableHearingStatementService.updateStatementFromDossier(statement, BatchUpdateTimetableHearingStatementsModel.builder()
         .statementStatus(StatementStatus.IN_REVIEW)
+        .dossierCanton(statement.getSwissCanton())
         .dossierId(1L)
         .build());
 

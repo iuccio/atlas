@@ -11,6 +11,7 @@ import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingState
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.exception.NotFoundException.FileNotFoundException;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
+import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.atlas.pdf.sanitize.PdfCdr;
 import ch.sbb.line.directory.exception.TtfnidNotFoundException;
 import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberRepository;
@@ -36,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -320,6 +322,13 @@ public class TimetableHearingStatementService {
       BatchUpdateTimetableHearingStatementsModel updateModel) {
     if (isStatementAlreadyPartOfAnotherDossier(statement, updateModel)) {
       throw new StatementPartOfDossierException();
+    }
+    if (updateModel.getDossierCanton() != statement.getSwissCanton()) {
+      throw SimpleAtlasException.builder()
+          .status(HttpStatus.PRECONDITION_FAILED)
+          .messageAndError("Dossier canton does not match statement canton")
+          .displayCode("TTH.DOSSIER_STATEMENT_CANTON_MISMATCH")
+          .build();
     }
 
     statement.setStatementStatus(updateModel.getStatementStatus());

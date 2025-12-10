@@ -16,6 +16,7 @@ public class TthDossierMapper {
   public static TthDossier toEntity(TthDossierModel model) {
     TthDossier dossier = TthDossier.builder()
         .id(model.getId())
+        .swissCanton(model.getSwissCanton())
         .topic(model.getTopic())
         .internalComment(model.getInternalComment())
         .publicComment(model.getPublicComment())
@@ -31,6 +32,7 @@ public class TthDossierMapper {
   public static TthDossierModel toModel(TthDossier entity) {
     return TthDossierModel.builder()
         .id(entity.getId())
+        .swissCanton(entity.getSwissCanton())
         .topic(entity.getTopic())
         .dossierStatus(entity.getDossierStatus())
         .internalComment(entity.getInternalComment())
@@ -56,6 +58,7 @@ public class TthDossierMapper {
   public static BatchUpdateTimetableHearingStatementsModel toBatchUpdateModel(TthDossier dossier, DossierStatus newStatus) {
     BatchUpdateTimetableHearingStatementsModel batchUpdate = BatchUpdateTimetableHearingStatementsModel.builder()
         .ids(dossier.getStatementIds())
+        .dossierCanton(dossier.getSwissCanton())
         .publicComment(dossier.getPublicComment())
         .internalComment(dossier.getInternalComment())
         .topic(dossier.getTopic())
