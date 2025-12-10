@@ -1066,7 +1066,8 @@
       "HIDE_ORIGINAL_TEXT": "Nascondi il testo originale",
       "STATEMENT_ANONYMOUS": "Inoltro a terzi - Dichiarazione sulla protezione dei dati: il testo allegato non contiene dati personali. Tra questi rientrano, ad esempio, numeri di telefono, indirizzi e-mail, nome e cognome e indirizzi.",
       "STATEMENT_TRANSFER_CANTON": "Trasferimento in un altro cantone",
-      "STATEMENT_TRANSFER_CANTON_INFO": "Selezionare il cantone a cui inviare la dichiarazione."
+      "STATEMENT_TRANSFER_CANTON_INFO": "Selezionare il cantone a cui inviare la dichiarazione.",
+      "STATEMENT_PDF_ANONYMOUS_CHECKBOX": "L'allegato può essere inoltrato (ad esempio a un'azienda di trasporti)."
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Chiusura dell'anno di calendario",
