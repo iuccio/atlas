@@ -26,6 +26,8 @@ import { WhitespaceValidator } from '../../../core/validation/whitespace/whitesp
 import {
   StatementDetailFormGroup,
   StatementSenderFormGroup,
+  TimetableHearingStatementBuilder,
+  TimetableHearingStatementDocumentGroup,
 } from './statement-detail-form-group';
 import { Canton } from '../../../core/cantons/Canton';
 import { map, takeUntil } from 'rxjs/operators';
@@ -66,6 +68,7 @@ import { DisplayCantonPipe } from '../../../core/cantons/display-canton.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 import { StatementTextComponent } from './statement-text/statement-text.component';
 import { StatementPersonalInformationComponent } from './statement-personal-information/statement-personal-information.component';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-statement-detail',
@@ -94,6 +97,7 @@ import { StatementPersonalInformationComponent } from './statement-personal-info
     NgOptimizedImage,
     StatementTextComponent,
     StatementPersonalInformationComponent,
+    MatCheckbox,
   ],
   providers: [OpenStatementInMailService, TranslatePipe],
 })
@@ -309,8 +313,18 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
       topic: new FormControl(statement?.topic, [
         AtlasFieldLengthValidator.length_255,
       ]),
-      documents: new FormArray(
-        statement?.documents?.map((document) => new FormControl(document)) ?? []
+      documents: new FormArray<
+        FormGroup<TimetableHearingStatementDocumentGroup>
+      >(
+        statement?.documents
+          ?.map((document) =>
+            TimetableHearingStatementBuilder.buildTimetableHearingStatementDocumentGroup(
+              document
+            )
+          )
+          .sort((a, b) =>
+            a.getRawValue().fileName!.localeCompare(b.getRawValue().fileName!)
+          ) ?? []
       ),
       etagVersion: new FormControl(statement?.etagVersion),
       editor: new FormControl(statement?.editor),

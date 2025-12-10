@@ -87,19 +87,28 @@
               <app-atlas-label-field
                 fieldLabel="TTH.STATEMENT.ATTACHMENTS"
               ></app-atlas-label-field>
-              @for (document of form.value.documents; track document) {
-                <ng-container>
-                  <atlas-file
-                    (downloadFile)="downloadFile($event.name)"
-                    (fileDeleted)="removeDocument($event.name)"
-                    [deleteEnabled]="form.enabled"
-                    [downloadEnabled]="true"
-                    [file]="{
-                      name: document.fileName,
-                      size: document.fileSize,
-                    }"
-                  ></atlas-file>
-                </ng-container>
+              @for (document of form.controls.documents.controls; track document) {
+                <atlas-file
+                  (downloadFile)="downloadFile($event.name)"
+                  (fileDeleted)="removeDocument($event.name)"
+                  [deleteEnabled]="form.enabled"
+                  [downloadEnabled]="true"
+                  [file]="{
+                    name: document.getRawValue().fileName!,
+                    size: document.getRawValue().fileSize!,
+                  }"
+                >
+                  <ng-template #checkBox [formGroup]="document">
+                    <mat-checkbox
+                      formControlName="anonymous"
+                    >
+                      {{
+                        'TTH.STATEMENT.STATEMENT_PDF_ANONYMOUS_CHECKBOX'
+                          | translate
+                      }}
+                    </mat-checkbox>
+                  </ng-template>
+                </atlas-file>
               }
             </div>
           }
