@@ -1037,7 +1037,7 @@
       "E_MAIL_TEXT": "Si aucun e-mail n'est disponible, une entrée fictive, par exemple xxx@xxx.ch, suffit.",
       "E_MAIL_ITEMS_LIMIT_REACHED": "10 emails ont déjà été enregistrés",
       "PUBLIC_COMMENT": "Justification publique des commentateurs",
-      "INTERNAL_COMMENT": "Interne Begründung zum Zweck der Dokumentation",
+      "INTERNAL_COMMENT": "Justification interne à des fins de documentation",
       "CANTON_TRANSFER_COMMENT": "Justification interne à des fins de documentation",
       "ATTACHMENT_INFO": "Vous pouvez envoyer votre prise de position avec une annexe PDF. Il est possible d'envoyer 3 PDF jusqu'à 20 MB.",
       "ATTACHMENTS": "Pièces jointes PDF",

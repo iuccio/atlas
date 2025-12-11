@@ -15,10 +15,7 @@ textarea:focus {
 }
 
 textarea {
-  border-left: 1px solid variables.$gray-400;
-  border-top: 1px solid variables.$gray-400;
-  border-right: 1px solid variables.$gray-400;
-  border-bottom: 1px solid variables.$gray-400;
+  border: 1px solid variables.$gray-400;
   border-radius: 5px;
 
   padding: 2px 5px;
@@ -47,10 +44,7 @@ textarea[disabled] {
 textarea[readonly] {
   &:hover,
   &:focus {
-    border-left: 1px solid variables.$gray-400;
-    border-top: 1px solid variables.$gray-400;
-    border-right: 1px solid variables.$gray-400;
-    border-bottom: 1px solid variables.$gray-400;
+    border: 1px solid variables.$gray-400;
     border-radius: 5px;
 
     padding: 2px 5px;

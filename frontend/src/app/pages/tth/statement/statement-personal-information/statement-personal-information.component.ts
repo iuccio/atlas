@@ -1,5 +1,4 @@
 import { Component, input } from '@angular/core';
-import { AtlasSpacerComponent } from '../../../../core/components/spacer/atlas-spacer.component';
 import { TextFieldComponent } from '../../../../core/form-components/text-field/text-field.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormGroup } from '@angular/forms';
@@ -13,7 +12,6 @@ import { TimetableHearingStatementV2 } from '../../../../api';
 @Component({
   selector: 'app-statement-personal-information',
   imports: [
-    AtlasSpacerComponent,
     TextFieldComponent,
     TranslatePipe,
     AtlasClipboardComponent,
