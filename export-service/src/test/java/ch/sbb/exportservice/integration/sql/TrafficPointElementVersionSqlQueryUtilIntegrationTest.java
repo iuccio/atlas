@@ -1,5 +1,6 @@
 package ch.sbb.exportservice.integration.sql;
 
+import static ch.sbb.atlas.model.FutureTimetableHelper.getTimetableYearChangeDateToExportData;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.sbb.atlas.model.FutureTimetableHelper;
@@ -94,15 +95,21 @@ class TrafficPointElementVersionSqlQueryUtilIntegrationTest extends BaseSqlInteg
   void shouldReturnTimetableYears() throws SQLException {
     //given
     final int servicePointNumber = 1205887;
-    final LocalDate now = LocalDate.now();
-    insertServicePoint(servicePointNumber, now, now, Country.SWITZERLAND);
+    final LocalDate timetableYearChangeDateToExportData = getTimetableYearChangeDateToExportData(LocalDate.now());
+    final LocalDate lastTimetableYearChangeDateToExportData = timetableYearChangeDateToExportData.minusYears(1);
+    final LocalDate nextTimetableYearChangeDateToExportData = timetableYearChangeDateToExportData.plusYears(1);
+
+    insertServicePoint(servicePointNumber, lastTimetableYearChangeDateToExportData, nextTimetableYearChangeDateToExportData,
+        Country.SWITZERLAND);
+
     final String sloid = "ch:1:sloid:77559:0:2";
-    insertTrafficPoint(sloid, now, now);
-    insertTrafficPoint("ch:1:sloid:1", now.minusMonths(5), now.minusMonths(4));
+    insertTrafficPoint(sloid, lastTimetableYearChangeDateToExportData, nextTimetableYearChangeDateToExportData);
+    insertTrafficPoint("ch:1:sloid:1", lastTimetableYearChangeDateToExportData.minusMonths(5),
+        nextTimetableYearChangeDateToExportData.minusMonths(4));
     insertTrafficPoint("ch:1:sloid:2", LocalDate.of(2000, 1, 1), LocalDate.of(2010, 1, 1));
-    final String sqlQuery = TrafficPointElementVersionSqlQueryUtil.getSqlQuery(ExportTypeV2.WORLD_TIMETABLE_YEARS);
 
     //when
+    final String sqlQuery = TrafficPointElementVersionSqlQueryUtil.getSqlQuery(ExportTypeV2.WORLD_TIMETABLE_YEARS);
     final List<TrafficPointElementVersion> result = executeQuery(sqlQuery);
 
     //then

@@ -51,13 +51,13 @@ class StopPointSqlIntegrationTest extends BasePrmSqlIntegrationTest {
   @Test
   void shouldReturnTimetableYears() throws SQLException {
     // given
-    final LocalDate now = LocalDate.now();
+    LocalDate actualTimetableYearChangeDate = FutureTimetableHelper.getTimetableYearChangeDateToExportData(LocalDate.now());
 
-    insertStopPoint(2, 8507000, "ch:1:sloid:7001:1", now, now);
-    insertStopPoint(20, 8507000, "ch:1:sloid:7001:1", now.minusMonths(5),
-        now.minusMonths(4));
-    insertStopPoint(200, 8507000, "ch:1:sloid:7001:1", now.plusMonths(4),
-        now.plusMonths(5));
+    insertStopPoint(2, 8507000, "ch:1:sloid:7001:1", actualTimetableYearChangeDate, actualTimetableYearChangeDate);
+    insertStopPoint(20, 8507000, "ch:1:sloid:7001:1", actualTimetableYearChangeDate.minusMonths(5),
+        actualTimetableYearChangeDate.minusMonths(4));
+    insertStopPoint(200, 8507000, "ch:1:sloid:7001:1", actualTimetableYearChangeDate.plusMonths(4),
+        actualTimetableYearChangeDate.plusMonths(5));
     insertStopPoint(2000, 8507000, "ch:1:sloid:7001:1",
         LocalDate.of(1999, 1, 1),
         LocalDate.of(2010, 1, 1));
