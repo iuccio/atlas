@@ -69,7 +69,7 @@
           ></atlas-statement-text>
 
           @if (form.value.documents && form.value.documents.length > 0) {
-            <div class="mb-3 mt-5">
+            <div class="mb-3 mt-4">
               <app-atlas-label-field
                 fieldLabel="TTH.STATEMENT.ATTACHMENTS"
               ></app-atlas-label-field>
@@ -118,7 +118,7 @@
             [statement]="statement!"
           ></app-statement-personal-information>
 
-          <div>
+          <div class="mt-5">
             <span class="font-bold-xl">
               {{ 'TTH.STATEMENT.STATEMENT_TRANSFER_CANTON' | translate }}
             </span>
@@ -180,7 +180,6 @@
           }
 
           @if (form.disabled) {
-            <ng-container>
               <div class="pt-5">
                 <span class="font-bold-xl">
                   {{ 'TTH.STATEMENT.CLARIFICATION' | translate }}
@@ -203,7 +202,6 @@
                   <i class="ps-2 bi bi-envelope"></i>
                 </ng-template>
               </atlas-button>
-            </ng-container>
           }
           <h1 class="font-bold-xl pt-5">
             {{ 'TTH.STATEMENT.STATUS_JUSTIFICATION' | translate }}
