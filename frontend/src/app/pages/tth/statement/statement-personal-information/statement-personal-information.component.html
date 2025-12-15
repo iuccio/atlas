@@ -1,0 +1,86 @@
+<h1 class="font-bold-xl pt-2">
+  {{ 'TTH.STATEMENT.PERSONAL_INFORMATION' | translate }}
+</h1>
+
+<div class="d-flex flex-row col-12 mb-2">
+  <div class="d-flex flex-column col-6 pe-3">
+    <atlas-text-field
+      [formGroup]="form().controls.statementSender"
+      controlName="firstName"
+      fieldLabel="TTH.STATEMENT.FIRST_NAME"
+    >
+    </atlas-text-field>
+  </div>
+  <div class="d-flex flex-column col-6">
+    <atlas-text-field
+      [formGroup]="form().controls.statementSender"
+      controlName="lastName"
+      fieldLabel="TTH.STATEMENT.LAST_NAME"
+    >
+    </atlas-text-field>
+  </div>
+</div>
+
+<div class="d-flex flex-row col-12 mb-2">
+  <div class="d-flex flex-column col-12">
+    <atlas-text-field
+      [formGroup]="form().controls.statementSender"
+      controlName="organisation"
+      fieldLabel="TTH.STATEMENT.ORGANISATION"
+    >
+    </atlas-text-field>
+  </div>
+</div>
+
+<div class="d-flex flex-row col-12 mb-2">
+  <div class="d-flex flex-column col-2 pe-3">
+    <atlas-text-field
+      [formGroup]="form().controls.statementSender"
+      controlName="zip"
+      fieldLabel="TTH.STATEMENT.ZIP"
+    >
+    </atlas-text-field>
+  </div>
+  <div class="d-flex flex-column col-5 pe-3">
+    <atlas-text-field
+      [formGroup]="form().controls.statementSender"
+      controlName="city"
+      fieldLabel="TTH.STATEMENT.CITY"
+    >
+    </atlas-text-field>
+  </div>
+  <div class="d-flex flex-column col-5">
+    <atlas-text-field
+      [formGroup]="form().controls.statementSender"
+      controlName="street"
+      fieldLabel="TTH.STATEMENT.STREET"
+    >
+    </atlas-text-field>
+  </div>
+</div>
+
+<div class="mb-4">
+    <atlas-text-list
+      [formGroup]="form()"
+      [formGroupEnabled]="form().enabled"
+      [itemValidator]="emailValidator"
+      fieldLabel="TTH.STATEMENT.E_MAIL"
+      [required]="true"
+      placeHolderText="TTH.STATEMENT.E_MAIL_ITEMS_LIMIT_REACHED"
+      [fieldExamples]="[
+                  {
+                    label: 'FORM.MAX_ITEMS',
+                    arg: { key: 'numberOfItems', value: '10' },
+                  },
+                  { label: ' | ' },
+                  { label: 'TTH.STATEMENT.E_MAIL_TEXT' },
+                ]"
+      controlName="statementSender.emails"
+    >
+      <atlas-clipboard
+        [value]="emails"
+        [showMe]="form().disabled"
+        class="ps-2 pt-2"
+      ></atlas-clipboard>
+    </atlas-text-list>
+</div>

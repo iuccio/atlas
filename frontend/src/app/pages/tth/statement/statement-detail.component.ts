@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import {
   ApplicationRole,
   ApplicationType,
@@ -26,6 +26,8 @@ import { WhitespaceValidator } from '../../../core/validation/whitespace/whitesp
 import {
   StatementDetailFormGroup,
   StatementSenderFormGroup,
+  TimetableHearingStatementBuilder,
+  TimetableHearingStatementDocumentGroup,
 } from './statement-detail-form-group';
 import { Canton } from '../../../core/cantons/Canton';
 import { map, takeUntil } from 'rxjs/operators';
@@ -49,15 +51,13 @@ import { LoadingSpinnerService } from '../../../core/components/loading-spinner/
 import { ScrollToTopDirective } from '../../../core/scroll-to-top/scroll-to-top.directive';
 import { DetailPageContainerComponent } from '../../../core/components/detail-page-container/detail-page-container.component';
 import { DetailPageContentComponent } from '../../../core/components/detail-page-content/detail-page-content.component';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 import { UserDetailInfoComponent } from '../../../core/components/user-edit-info/user-detail-info.component';
 import { SelectComponent } from '../../../core/form-components/select/select.component';
 import { TimetableFieldNumberSelectComponent } from '../../../core/form-components/ttfn-select/timetable-field-number-select.component';
 import { TransportCompanySelectComponent } from '../../../core/form-components/tu-select/transport-company-select.component';
 import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
 import { TextFieldComponent } from '../../../core/form-components/text-field/text-field.component';
-import { StringListComponent } from '../../../core/form-components/string-list/string-list.component';
-import { AtlasClipboardComponent } from '../../../core/form-components/atlas-clipboard/atlas-clipboard.component';
 import { CommentComponent } from '../../../core/form-components/comment/comment.component';
 import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
 import { FileComponent } from '../../../core/components/file-upload/file/file.component';
@@ -66,6 +66,9 @@ import { AtlasButtonComponent } from '../../../core/components/button/atlas-butt
 import { DetailFooterComponent } from '../../../core/components/detail-footer/detail-footer.component';
 import { DisplayCantonPipe } from '../../../core/cantons/display-canton.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
+import { StatementTextComponent } from './statement-text/statement-text.component';
+import { StatementPersonalInformationComponent } from './statement-personal-information/statement-personal-information.component';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-statement-detail',
@@ -76,18 +79,14 @@ import { TranslatePipe } from '@ngx-translate/core';
     DetailPageContainerComponent,
     DetailPageContentComponent,
     ReactiveFormsModule,
-    NgIf,
     UserDetailInfoComponent,
     SelectComponent,
     TimetableFieldNumberSelectComponent,
     TransportCompanySelectComponent,
     AtlasSpacerComponent,
     TextFieldComponent,
-    StringListComponent,
-    AtlasClipboardComponent,
     CommentComponent,
     AtlasLabelFieldComponent,
-    NgFor,
     FileComponent,
     FileUploadComponent,
     AtlasButtonComponent,
@@ -95,10 +94,15 @@ import { TranslatePipe } from '@ngx-translate/core';
     DisplayCantonPipe,
     AsyncPipe,
     TranslatePipe,
+    NgOptimizedImage,
+    StatementTextComponent,
+    StatementPersonalInformationComponent,
+    MatCheckbox,
   ],
   providers: [OpenStatementInMailService, TranslatePipe],
 })
 export class StatementDetailComponent implements OnInit, DetailFormComponent {
+  @ViewChild(StatementTextComponent) statementText!: StatementTextComponent;
   YEAR_OPTIONS: number[] = [];
   CANTON_OPTIONS: Canton[] = [];
   STATUS_OPTIONS: StatementStatus[] = [];
@@ -114,18 +118,6 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
   isInitializingComponent = true;
 
   loadingSpinnerService = inject(LoadingSpinnerService);
-
-  get emails(): string {
-    if (this.statement?.statementSender.emails) {
-      return Array.from(this.statement?.statementSender.emails).join('\n');
-    }
-    return '';
-  }
-
-  readonly emailValidator = [
-    AtlasCharsetsValidator.email,
-    AtlasFieldLengthValidator.length_100,
-  ];
 
   private ngUnsubscribe = new Subject<void>();
 
@@ -305,6 +297,9 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
         Validators.required,
         AtlasFieldLengthValidator.statement,
       ]),
+      anonymousStatement: new FormControl(statement?.anonymousStatement, [
+        AtlasFieldLengthValidator.statement,
+      ]),
       statementAnonymous: new FormControl(statement?.statementAnonymous),
       publicComment: new FormControl(statement?.publicComment, [
         AtlasFieldLengthValidator.statement,
@@ -318,8 +313,18 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
       topic: new FormControl(statement?.topic, [
         AtlasFieldLengthValidator.length_255,
       ]),
-      documents: new FormArray(
-        statement?.documents?.map((document) => new FormControl(document)) ?? []
+      documents: new FormArray<
+        FormGroup<TimetableHearingStatementDocumentGroup>
+      >(
+        statement?.documents
+          ?.map((document) =>
+            TimetableHearingStatementBuilder.buildTimetableHearingStatementDocumentGroup(
+              document
+            )
+          )
+          .sort((a, b) =>
+            a.getRawValue().fileName!.localeCompare(b.getRawValue().fileName!)
+          ) ?? []
       ),
       etagVersion: new FormControl(statement?.etagVersion),
       editor: new FormControl(statement?.editor),
@@ -436,6 +441,7 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
     if (!this.isNew || this.isHearingStatusArchived) {
       this.form.disable();
     }
+    this.statementText?.resetForm(this.form);
   }
 
   private duplicateStatement() {
@@ -492,6 +498,7 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
       .updateHearingStatement(id, statement, this.uploadedFiles)
       .pipe(takeUntil(this.ngUnsubscribe), catchError(this.handleError()))
       .subscribe((statement) => {
+        this.statementText.ngOnInit();
         this.loadingSpinnerService.loading.next(false);
         this.notificationService.success(
           'TTH.STATEMENT.NOTIFICATION.EDIT_SUCCESS'
