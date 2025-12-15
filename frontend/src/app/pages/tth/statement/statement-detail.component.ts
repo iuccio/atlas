@@ -36,7 +36,6 @@ import { NotificationService } from '../../../core/notification/notification.ser
 import { ValidationService } from '../../../core/validation/validation.service';
 import { TthUtils } from '../util/tth-utils';
 import { StatementDialogService } from './statement-dialog/service/statement.dialog.service';
-import { FileDownloadService } from '../../../core/components/file-upload/file/file-download.service';
 import { OpenStatementInMailService } from './open-statement-in-mail.service';
 import { StatementShareService } from '../overview-detail/statement-share-service';
 import { Pages } from '../../pages';
@@ -54,21 +53,27 @@ import { DetailPageContentComponent } from '../../../core/components/detail-page
 import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 import { UserDetailInfoComponent } from '../../../core/components/user-edit-info/user-detail-info.component';
 import { SelectComponent } from '../../../core/form-components/select/select.component';
-import { TimetableFieldNumberSelectComponent } from '../../../core/form-components/ttfn-select/timetable-field-number-select.component';
-import { TransportCompanySelectComponent } from '../../../core/form-components/tu-select/transport-company-select.component';
 import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
-import { TextFieldComponent } from '../../../core/form-components/text-field/text-field.component';
 import { CommentComponent } from '../../../core/form-components/comment/comment.component';
-import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
-import { FileComponent } from '../../../core/components/file-upload/file/file.component';
-import { FileUploadComponent } from '../../../core/components/file-upload/file-upload.component';
 import { AtlasButtonComponent } from '../../../core/components/button/atlas-button.component';
 import { DetailFooterComponent } from '../../../core/components/detail-footer/detail-footer.component';
 import { DisplayCantonPipe } from '../../../core/cantons/display-canton.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 import { StatementTextComponent } from './statement-text/statement-text.component';
 import { StatementPersonalInformationComponent } from './statement-personal-information/statement-personal-information.component';
+import { StatementDataComponent } from './statement-data/statement-data.component';
+import { BoStatementDetailComponent } from './bo-statement-detail/bo-statement-detail.component';
+import { FileDownloadService } from '../../../core/components/file-upload/file/file-download.service';
+import { AtlasLabelFieldComponent } from '@atlas/form';
+import { FileComponent } from '../../../core/components/file-upload/file/file.component';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { FileUploadComponent } from '../../../core/components/file-upload/file-upload.component';
+
+type TthApplicationUserType = 'BO_TTH' | 'CANTON_TTH';
+const TthApplicationUserType = {
+  BoTth: 'BO_TTH' as TthApplicationUserType,
+  CantonTth: 'CANTON_TTH' as TthApplicationUserType,
+};
 
 @Component({
   selector: 'app-statement-detail',
@@ -81,14 +86,8 @@ import { MatCheckbox } from '@angular/material/checkbox';
     ReactiveFormsModule,
     UserDetailInfoComponent,
     SelectComponent,
-    TimetableFieldNumberSelectComponent,
-    TransportCompanySelectComponent,
     AtlasSpacerComponent,
-    TextFieldComponent,
     CommentComponent,
-    AtlasLabelFieldComponent,
-    FileComponent,
-    FileUploadComponent,
     AtlasButtonComponent,
     DetailFooterComponent,
     DisplayCantonPipe,
@@ -97,7 +96,12 @@ import { MatCheckbox } from '@angular/material/checkbox';
     NgOptimizedImage,
     StatementTextComponent,
     StatementPersonalInformationComponent,
+    StatementDataComponent,
+    BoStatementDetailComponent,
+    AtlasLabelFieldComponent,
+    FileComponent,
     MatCheckbox,
+    FileUploadComponent,
   ],
   providers: [OpenStatementInMailService, TranslatePipe],
 })
@@ -116,6 +120,7 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
   uploadedFiles: File[] = [];
   isDuplicating = false;
   isInitializingComponent = true;
+  private _applicationUserType!: TthApplicationUserType;
 
   loadingSpinnerService = inject(LoadingSpinnerService);
 
@@ -142,6 +147,14 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
 
   get cantonShort() {
     return Cantons.fromSwissCanton(this.form.value.swissCanton!)!.short;
+  }
+
+  get applicationUserType(): TthApplicationUserType {
+    return this._applicationUserType;
+  }
+
+  set applicationUserType(value: TthApplicationUserType) {
+    this._applicationUserType = value;
   }
 
   get alreadySavedDocuments() {
@@ -182,6 +195,14 @@ export class StatementDetailComponent implements OnInit, DetailFormComponent {
     this.initTtfnValidOnHandler();
     this.initCantonOptions();
     this.initStatusOptions();
+    this.applicationUserType = this.getTthApplicationUserType();
+  }
+
+  getTthApplicationUserType(): TthApplicationUserType {
+    if (this.permissionService.isTthCanton()) {
+      return TthApplicationUserType.CantonTth;
+    }
+    return TthApplicationUserType.BoTth;
   }
 
   cantonSelectionChanged() {
