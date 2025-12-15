@@ -1,8 +1,8 @@
 package ch.sbb.exportservice.integration.sql;
 
+import static ch.sbb.atlas.model.FutureTimetableHelper.getTimetableYearChangeDateToExportData;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import ch.sbb.atlas.model.FutureTimetableHelper;
 import ch.sbb.atlas.servicepoint.Country;
 import ch.sbb.exportservice.job.sepodi.loadingpoint.entity.LoadingPointVersion;
 import ch.sbb.exportservice.job.sepodi.loadingpoint.sql.LoadingPointVersionRowMapper;
@@ -72,35 +72,44 @@ class LoadingPointVersionSqlQueryUtilIntegrationTest extends BaseSqlIntegrationT
   @Test
   void shouldReturnTimetableYears() throws SQLException {
     // given
-    final LocalDate now = LocalDate.now();
+    final LocalDate timetableYearChangeDateToExportData = getTimetableYearChangeDateToExportData(LocalDate.now());
+    final LocalDate lastTimetableYearChangeDateToExportData = timetableYearChangeDateToExportData.minusYears(1);
+    final LocalDate nextTimetableYearChangeDateToExportData = timetableYearChangeDateToExportData.plusYears(1);
     final int servicePointNumber = 8509111;
     final String sboid = "ch:1:sboid:101999";
-    insertServicePoint(servicePointNumber, now, now, Country.AUSTRIA);
-    insertSharedBusinessOrganisation(sboid, "testIt", now, now);
-    insertLoadingPoint(50, servicePointNumber, now.minusMonths(5), now.minusMonths(4));
-    insertLoadingPoint(60, servicePointNumber, now, now);
-    insertLoadingPoint(70, servicePointNumber, now.plusMonths(4), now.plusMonths(5));
+    insertServicePoint(servicePointNumber, lastTimetableYearChangeDateToExportData, nextTimetableYearChangeDateToExportData,
+        Country.AUSTRIA);
+    insertSharedBusinessOrganisation(sboid, "testIt", lastTimetableYearChangeDateToExportData,
+        nextTimetableYearChangeDateToExportData);
+    insertLoadingPoint(50, servicePointNumber, timetableYearChangeDateToExportData.minusMonths(5),
+        timetableYearChangeDateToExportData.minusMonths(4));
+    insertLoadingPoint(60, servicePointNumber, timetableYearChangeDateToExportData, timetableYearChangeDateToExportData);
+    insertLoadingPoint(70, servicePointNumber, timetableYearChangeDateToExportData.plusMonths(4),
+        timetableYearChangeDateToExportData.plusMonths(5));
     insertLoadingPoint(80, servicePointNumber, LocalDate.of(1999, 1, 1), LocalDate.of(2010, 1, 1));
-    final String sqlQuery = LoadingPointVersionSqlQueryUtil.getSqlQuery(ExportTypeV2.WORLD_TIMETABLE_YEARS);
 
     // when
+    final String sqlQuery = LoadingPointVersionSqlQueryUtil.getSqlQuery(ExportTypeV2.WORLD_TIMETABLE_YEARS);
     final List<LoadingPointVersion> result = executeQuery(sqlQuery);
 
     // then
     assertThat(result).isNotEmpty().hasSize(3);
     result.sort(Comparator.comparing(LoadingPointVersion::getNumber));
     assertThat(result.getFirst().getParentSloidServicePoint()).isEqualTo("ch:1:sloid:1");
+    assertThat(result.getFirst().getNumber()).isEqualTo(50);
     assertThat(result.getFirst().getServicePointSharedBusinessOrganisation().getBusinessOrganisationNumber()).isEqualTo(3065);
     assertThat(result.get(1).getParentSloidServicePoint()).isEqualTo("ch:1:sloid:1");
+    assertThat(result.get(1).getNumber()).isEqualTo(60);
     assertThat(result.get(1).getServicePointSharedBusinessOrganisation().getBusinessOrganisationNumber()).isEqualTo(3065);
     assertThat(result.get(2).getParentSloidServicePoint()).isEqualTo("ch:1:sloid:1");
+    assertThat(result.get(2).getNumber()).isEqualTo(70);
     assertThat(result.get(2).getServicePointSharedBusinessOrganisation().getBusinessOrganisationNumber()).isEqualTo(3065);
   }
 
   @Test
   void shouldReturnFutureTimetableDateWithMatchingLoadingPointAndSePoBo() throws SQLException {
     // given
-    final LocalDate futureDate = FutureTimetableHelper.getTimetableYearChangeDateToExportData(LocalDate.now());
+    final LocalDate futureDate = getTimetableYearChangeDateToExportData(LocalDate.now());
     final int servicePointNumber = 8509111;
     final String sboid = "ch:1:sboid:101999";
     insertServicePoint(servicePointNumber, futureDate, futureDate, Country.AFGHANISTAN);
@@ -122,7 +131,7 @@ class LoadingPointVersionSqlQueryUtilIntegrationTest extends BaseSqlIntegrationT
   @Test
   void shouldReturnFutureTimetableDateWithMatchingLoadingPointWithoutSePoBo() throws SQLException {
     // given
-    final LocalDate futureDate = FutureTimetableHelper.getTimetableYearChangeDateToExportData(LocalDate.now());
+    final LocalDate futureDate = getTimetableYearChangeDateToExportData(LocalDate.now());
     final int servicePointNumber = 8509111;
     final String sboid = "ch:1:sboid:101999";
     insertServicePoint(servicePointNumber, futureDate.minusMonths(5), futureDate.minusMonths(4), Country.AFGHANISTAN);
@@ -144,7 +153,7 @@ class LoadingPointVersionSqlQueryUtilIntegrationTest extends BaseSqlIntegrationT
   @Test
   void shouldReturnFutureTimetableDateWithoutMatchingLoadingPointWithoutSePoBo() throws SQLException {
     // given
-    final LocalDate futureDate = FutureTimetableHelper.getTimetableYearChangeDateToExportData(LocalDate.now());
+    final LocalDate futureDate = getTimetableYearChangeDateToExportData(LocalDate.now());
     final int servicePointNumber = 8509111;
     final String sboid = "ch:1:sboid:101999";
     insertServicePoint(servicePointNumber, futureDate.minusMonths(5), futureDate.minusMonths(4), Country.AFGHANISTAN);

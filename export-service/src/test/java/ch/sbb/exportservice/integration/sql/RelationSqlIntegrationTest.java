@@ -54,15 +54,16 @@ class RelationSqlIntegrationTest extends BasePrmSqlIntegrationTest {
   @Test
   void shouldReturnTimetableYears() throws SQLException {
     // given
-    final LocalDate now = LocalDate.now();
+    LocalDate actualTimetableYearChangeDate = FutureTimetableHelper.getTimetableYearChangeDateToExportData(LocalDate.now());
 
-    insertRelation(2, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000), "ch:1:sloid:7000:2", now, now);
+    insertRelation(2, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000), "ch:1:sloid:7000:2",
+        actualTimetableYearChangeDate, actualTimetableYearChangeDate);
     insertRelation(20, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000), "ch:1:sloid:7000:2",
-        now.minusMonths(5),
-        now.minusMonths(4));
+        actualTimetableYearChangeDate.minusMonths(5),
+        actualTimetableYearChangeDate.minusMonths(4));
     insertRelation(200, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000), "ch:1:sloid:7000:2",
-        now.plusMonths(4),
-        now.plusMonths(5));
+        actualTimetableYearChangeDate.plusMonths(4),
+        actualTimetableYearChangeDate.plusMonths(5));
     insertRelation(2000, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000), "ch:1:sloid:7000:2",
         LocalDate.of(1999, 1, 1),
         LocalDate.of(2010, 1, 1));
