@@ -18,13 +18,14 @@ import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.atlas.model.exception.NotFoundException.FileNotFoundException;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
-import ch.sbb.line.directory.module.tth.exception.StatementPartOfDossierException;
+import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.line.directory.exception.TtfnidNotFoundException;
 import ch.sbb.line.directory.helper.PdfFiles;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumberVersion;
 import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberVersionRepository;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
+import ch.sbb.line.directory.module.tth.exception.StatementPartOfDossierException;
 import ch.sbb.line.directory.module.tth.mapper.TimetableHearingStatementMapperV2;
 import ch.sbb.line.directory.module.tth.model.TimetableHearingStatementSearchRestrictions;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingStatementRepository;
@@ -315,6 +316,53 @@ class TimetableHearingStatementServiceTest {
     assertThatThrownBy(
         () -> timetableHearingStatementService.updateHearingStatement(timetableHearingStatement, timetableHearingStatementModel,
             documents)).isInstanceOf(StatementPartOfDossierException.class);
+  }
+
+  @Test
+  void shouldThrowExceptionIfItIsAlreadyPartOfDossier() {
+    timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
+
+    TimetableHearingStatementModelV2 timetableHearingStatementModel = buildTimetableHearingStatementModelV2();
+    TimetableHearingStatement timetableHearingStatement =
+        timetableHearingStatementMapperV2.toEntity(timetableHearingStatementModel);
+
+    List<MultipartFile> documents = Collections.emptyList();
+    TimetableHearingStatement statement = timetableHearingStatementService.createHearingStatement(timetableHearingStatement,
+        documents);
+    timetableHearingStatementService.updateStatementFromDossier(statement, BatchUpdateTimetableHearingStatementsModel.builder()
+        .statementStatus(StatementStatus.IN_REVIEW)
+        .dossierCanton(statement.getSwissCanton())
+        .dossierId(1L)
+        .build());
+
+    assertThatThrownBy(
+        () -> timetableHearingStatementService.updateStatementFromDossier(statement,
+            BatchUpdateTimetableHearingStatementsModel.builder()
+                .statementStatus(StatementStatus.IN_REVIEW)
+                .dossierCanton(statement.getSwissCanton())
+                .dossierId(2L)
+                .build())).isInstanceOf(StatementPartOfDossierException.class);
+  }
+
+  @Test
+  void shouldNotUpdateHearingStatementIfItIsDifferentCanton() {
+    timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
+
+    TimetableHearingStatementModelV2 timetableHearingStatementModel = buildTimetableHearingStatementModelV2();
+    TimetableHearingStatement timetableHearingStatement =
+        timetableHearingStatementMapperV2.toEntity(timetableHearingStatementModel);
+
+    List<MultipartFile> documents = Collections.emptyList();
+    TimetableHearingStatement statement = timetableHearingStatementService.createHearingStatement(timetableHearingStatement,
+        documents);
+
+    assertThatThrownBy(
+        () -> timetableHearingStatementService.updateStatementFromDossier(statement,
+            BatchUpdateTimetableHearingStatementsModel.builder()
+                .statementStatus(StatementStatus.IN_REVIEW)
+                .dossierCanton(SwissCanton.ZUG)
+                .dossierId(1L)
+                .build())).isInstanceOf(SimpleAtlasException.class);
   }
 
   @Test
