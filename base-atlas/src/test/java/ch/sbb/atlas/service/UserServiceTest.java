@@ -135,4 +135,22 @@ class UserServiceTest {
     assertThat(result).isFalse();
   }
 
+  @Test
+  void shouldReturnPreferredUsername() {
+    //given
+    Authentication authentication = Mockito.mock(Authentication.class);
+    Jwt jwt = Mockito.mock(Jwt.class);
+    when(jwt.getClaim("preferred_username")).thenReturn("username123");
+    when(authentication.getPrincipal()).thenReturn(jwt);
+
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+
+    //when
+    String result = UserService.getPreferredUsername();
+    //then
+    assertThat(result).isEqualTo("username123");
+  }
+
 }
