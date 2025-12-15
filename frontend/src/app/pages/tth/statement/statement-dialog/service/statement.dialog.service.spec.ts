@@ -4,11 +4,23 @@ import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { SwissCanton } from '../../../../../api';
 import { StatementDialogService } from './statement.dialog.service';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
   StatementDetailFormGroup,
   StatementSenderFormGroup,
+  TimetableHearingStatementDocumentGroup,
 } from '../../statement-detail-form-group';
+
+const document = new FormGroup<TimetableHearingStatementDocumentGroup>({
+  id: new FormControl(),
+  anonymous: new FormControl(),
+  fileName: new FormControl(),
+  fileSize: new FormControl(),
+});
+
+const documentArray = new FormArray<
+  FormGroup<TimetableHearingStatementDocumentGroup>
+>([document]);
 
 const form = new FormGroup<StatementDetailFormGroup>({
   id: new FormControl(),
@@ -34,9 +46,10 @@ const form = new FormGroup<StatementDetailFormGroup>({
   internalComment: new FormControl(),
   cantonTransferComment: new FormControl(),
   topic: new FormControl(),
-  documents: new FormBuilder().array([]),
+  documents: documentArray,
   etagVersion: new FormControl(),
   editor: new FormControl(),
+  anonymousStatement: new FormControl(),
 });
 
 describe('StatementDialogService', () => {

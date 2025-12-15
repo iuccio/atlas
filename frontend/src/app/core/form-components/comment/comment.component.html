@@ -1,4 +1,5 @@
 <div [formGroup]="formGroup" class="d-flex flex-column">
+  @if (displayLabel) {
   <app-atlas-label-field
     [fieldExamples]="[
       { label: subLabel, translate: true },
@@ -12,13 +13,14 @@
     [required]="required"
     fieldLabel="{{ label }}"
     infoIconTitle="{{ info }}"
-    *ngIf="displayLabel"
   ></app-atlas-label-field>
+  }
   <textarea
     [attr.data-cy]="controlName"
     formControlName="{{ controlName }}"
     matInput
     rows="7"
+    [readonly]="readonly"
   ></textarea>
   <app-atlas-field-error
     [form]="formGroup"

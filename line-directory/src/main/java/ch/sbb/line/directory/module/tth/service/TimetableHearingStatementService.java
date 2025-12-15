@@ -12,11 +12,11 @@ import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.exception.NotFoundException.FileNotFoundException;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.pdf.sanitize.PdfCdr;
-import ch.sbb.line.directory.module.tth.exception.StatementPartOfDossierException;
 import ch.sbb.line.directory.exception.TtfnidNotFoundException;
 import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberRepository;
 import ch.sbb.line.directory.module.tth.entity.StatementDocument;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
+import ch.sbb.line.directory.module.tth.exception.StatementPartOfDossierException;
 import ch.sbb.line.directory.module.tth.mapper.ResponsibleTransportCompanyMapper;
 import ch.sbb.line.directory.module.tth.mapper.StatementSenderMapperV2;
 import ch.sbb.line.directory.module.tth.mapper.TimetableHearingStatementMapperV2;
@@ -104,8 +104,11 @@ public class TimetableHearingStatementService {
     checkThatStatementIsNotPartOfDossier(existingStatement);
     checkThatTimetableHearingYearExists(timetableHearingStatementModel.getTimetableYear());
 
-    TimetableHearingStatement timetableHearingStatementInDb = timetableHearingStatementRepository.getReferenceById(
-        timetableHearingStatementModel.getId());
+    TimetableHearingStatement timetableHearingStatementInDb = timetableHearingStatementRepository.findById(
+            timetableHearingStatementModel.getId())
+        .orElseThrow(() -> new IdNotFoundException(timetableHearingStatementModel.getId()));
+
+    updateStatementDocuments(timetableHearingStatementModel, timetableHearingStatementInDb);
 
     Set<String> fileNamesToKeep = timetableHearingStatementModel.getDocuments().stream()
         .map(TimetableHearingStatementDocumentModel::getFileName).collect(Collectors.toSet());
@@ -126,6 +129,16 @@ public class TimetableHearingStatementService {
     pdfsUploadAmazonService.uploadPdfFiles(files, timetableHearingStatement.getId().toString());
 
     return timetableHearingStatement;
+  }
+
+  private void updateStatementDocuments(TimetableHearingStatementModelV2 timetableHearingStatementModel,
+      TimetableHearingStatement timetableHearingStatementInDb) {
+    timetableHearingStatementModel.getDocuments()
+        .forEach(document -> timetableHearingStatementInDb.getDocuments()
+            .stream()
+            .filter(statementDocument -> statementDocument.getId().equals(document.getId()))
+            .findFirst()
+            .ifPresent(statementDocument -> statementDocument.setAnonymous(document.isAnonymous())));
   }
 
   public void deleteSpamMailFromYear(Long timetableHearingYear) {
@@ -199,9 +212,13 @@ public class TimetableHearingStatementService {
     timetableHearingStatementInDb.setStopPlace(timetableHearingStatementModel.getStopPlace());
     timetableHearingStatementInDb.setStatement(timetableHearingStatementModel.getStatement());
     timetableHearingStatementInDb.setPublicComment(timetableHearingStatementModel.getPublicComment());
+    timetableHearingStatementInDb.setInternalComment(timetableHearingStatementModel.getInternalComment());
     timetableHearingStatementInDb.setCantonTransferComment(timetableHearingStatementModel.getCantonTransferComment());
     timetableHearingStatementInDb.setStatementSender(
         StatementSenderMapperV2.toEntity(timetableHearingStatementModel.getStatementSender()));
+    timetableHearingStatementInDb.setTopic(timetableHearingStatementModel.getTopic());
+    timetableHearingStatementInDb.setStatementAnonymous(timetableHearingStatementModel.isStatementAnonymous());
+    timetableHearingStatementInDb.setAnonymousStatement(timetableHearingStatementModel.getAnonymousStatement());
 
     updateResponsibleTransportCompanies(timetableHearingStatementModel, timetableHearingStatementInDb);
     timetableHearingStatementInDb.setResponsibleTransportCompaniesDisplay(
@@ -307,7 +324,8 @@ public class TimetableHearingStatementService {
     timetableHearingStatementRepository.save(statement);
   }
 
-  private static boolean isStatementAlreadyPartOfAnotherDossier(TimetableHearingStatement statement, BatchUpdateTimetableHearingStatementsModel updateModel) {
+  private static boolean isStatementAlreadyPartOfAnotherDossier(TimetableHearingStatement statement,
+      BatchUpdateTimetableHearingStatementsModel updateModel) {
     return statement.isPartOfDossier()
         && updateModel.getDossierId() != null
         && !statement.getDossierId().equals(updateModel.getDossierId());
