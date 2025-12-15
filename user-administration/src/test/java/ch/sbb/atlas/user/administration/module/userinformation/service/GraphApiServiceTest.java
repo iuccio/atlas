@@ -70,6 +70,24 @@ class GraphApiServiceTest {
   }
 
   @Test
+  void shouldSearchUserByMail() {
+    graphApiService.searchUserByMail("test@test.com");
+
+    GetRequestConfiguration configuration = verifyGetAndReturnConfiguration();
+
+    String expectedSearchFilter = """
+        "mail:test@test.com"
+        """;
+    assertThat(configuration.queryParameters).isNotNull();
+    assertThat(configuration.queryParameters.search).isEqualTo(expectedSearchFilter);
+    assertThat(configuration.queryParameters.top).isEqualTo(10);
+
+    assertThat(configuration.headers).isNotNull();
+    assertThat(configuration.headers).hasSize(1);
+    assertThat(configuration.headers).containsKey("ConsistencyLevel");
+  }
+
+  @Test
   void shouldResolveUsers() {
     graphApiService.resolveUsers(List.of("user1", "user2"));
 
