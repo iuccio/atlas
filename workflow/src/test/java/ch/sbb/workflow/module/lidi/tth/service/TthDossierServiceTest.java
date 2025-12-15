@@ -20,6 +20,7 @@ import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.kafka.model.user.admin.ApplicationType;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
+import ch.sbb.atlas.user.administration.security.service.BoUserMailCheckService;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
 import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
@@ -53,6 +54,9 @@ class TthDossierServiceTest {
   @MockitoBean
   private UserAdministrationClient userAdministrationClient;
 
+  @MockitoBean
+  private BoUserMailCheckService boUserMailCheckService;
+
   @Captor
   private ArgumentCaptor<BatchUpdateTimetableHearingStatementsModel> batchUpdateCaptor;
 
@@ -67,6 +71,8 @@ class TthDossierServiceTest {
             .permissionRestrictions(List.of(new TransportCompanyDossierAnswerPermissionRestrictionModel(true)))
             .build()))
         .build());
+
+    when(boUserMailCheckService.isCurrentUserMailAssignedTo(any())).thenReturn(true);
 
     TthDossier dossier = TthDossier.builder()
         .swissCanton(SwissCanton.BERN)
@@ -249,8 +255,9 @@ class TthDossierServiceTest {
 
     // when
     String boAnswer = "Joa das geht schon.";
-    tthDossierService.answerQuestion(question.getId(), boAnswer, exampleDossier);
+    assertThat(exampleDossier.getDossierStatus()).isEqualTo(DossierStatus.DOSSIER_BO_CHECK);
 
+    tthDossierService.answerQuestion(question.getId(), boAnswer, exampleDossier);
     // then
     TthDossier tthDossier = tthDossierService.getDossierById(exampleDossier.getId());
 
