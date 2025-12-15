@@ -129,9 +129,10 @@ public class TthDossierService {
   }
 
   @Transactional
-  public void answerQuestion(Long questionId, String boAnswer) {
+  @PreAuthorize("""
+      @boUserMailCheckService.isCurrentUserMailAssignedTo(#tthDossier)""")
+  public void answerQuestion(Long questionId, String boAnswer, TthDossier tthDossier) {
     TthDossierQuestion question = questionRepository.findById(questionId).orElseThrow(() -> new IdNotFoundException(questionId));
-    TthDossier tthDossier = question.getTthDossier();
 
     if (tthDossier.getDossierStatus() != DossierStatus.DOSSIER_BO_CHECK) {
       throw SimpleAtlasException.builder()
@@ -141,9 +142,15 @@ public class TthDossierService {
           .build();
     }
 
-    question.setAnswerToCanton(boAnswer);
     tthDossier.setDossierStatus(DossierStatus.DOSSIER_CANTON_CHECK);
-    questionRepository.save(question);
     dossierRepository.save(tthDossier);
+
+    question.setAnswerToCanton(boAnswer);
+    questionRepository.save(question);
+  }
+
+  public TthDossier getDossierByQuestionId(Long questionId) {
+    return questionRepository.findByIdWithDossier(questionId).orElseThrow(() -> new IdNotFoundException(questionId))
+        .getTthDossier();
   }
 }

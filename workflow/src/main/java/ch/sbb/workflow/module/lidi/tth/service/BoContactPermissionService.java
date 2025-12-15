@@ -33,7 +33,7 @@ public class BoContactPermissionService {
     if (!hasPermission) {
       throw SimpleAtlasException.builder()
           .status(HttpStatus.PRECONDITION_FAILED)
-          .messageAndError("User with mail " + mail + " has no permission to be BO contact")
+          .messageAndError("User with mail " + mail + " has no permission to be BO contact and to answer any questions")
           .displayCode("TTH.ERROR.NOT_ALLOWED_BO_CONTACT", List.of(new Parameter("mail", mail)))
           .build();
     }

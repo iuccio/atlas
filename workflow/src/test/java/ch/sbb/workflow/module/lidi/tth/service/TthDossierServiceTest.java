@@ -249,7 +249,7 @@ class TthDossierServiceTest {
 
     // when
     String boAnswer = "Joa das geht schon.";
-    tthDossierService.answerQuestion(question.getId(), boAnswer);
+    tthDossierService.answerQuestion(question.getId(), boAnswer, exampleDossier);
 
     // then
     TthDossier tthDossier = tthDossierService.getDossierById(exampleDossier.getId());
@@ -266,7 +266,7 @@ class TthDossierServiceTest {
   void shouldNotBeAbleToAnswerQuestionInOtherStatus() {
     Long questionId = question.getId();
     assertThatExceptionOfType(SimpleAtlasException.class)
-        .isThrownBy(() -> tthDossierService.answerQuestion(questionId, "Joa das geht schon."))
+        .isThrownBy(() -> tthDossierService.answerQuestion(questionId, "Joa das geht schon.", exampleDossier))
         .withMessage("Dossier is not in status DOSSIER_BO_CHECK");
   }
 }

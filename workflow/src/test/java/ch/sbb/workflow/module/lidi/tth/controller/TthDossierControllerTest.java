@@ -93,8 +93,10 @@ class TthDossierControllerTest {
   @Test
   void shouldAnswerQuestion() {
     String answerToCanton = "Nein, leider nicht";
-    tthDossierController.answerQuestion(1L, BoAnswerModel.builder().answerToCanton(answerToCanton).build());
+    TthDossier dossier = TthDossier.builder().id(1L).topic(TOPIC).build();
+    when(tthDossierService.getDossierByQuestionId(1L)).thenReturn(dossier);
 
-    verify(tthDossierService).answerQuestion(1L, answerToCanton);
+    tthDossierController.answerQuestion(1L, BoAnswerModel.builder().answerToCanton(answerToCanton).build());
+    verify(tthDossierService).answerQuestion(1L, answerToCanton, dossier);
   }
 }

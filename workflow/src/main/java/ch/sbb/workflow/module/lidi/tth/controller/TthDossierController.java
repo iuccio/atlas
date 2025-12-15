@@ -33,7 +33,9 @@ public class TthDossierController implements TthDossierApiInternal {
 
   @Override
   public void answerQuestion(Long questionId, BoAnswerModel boAnswer) {
-    tthDossierService.answerQuestion(questionId, boAnswer.getAnswerToCanton());
+    TthDossier tthDossier = tthDossierService.getDossierByQuestionId(questionId);
+
+    tthDossierService.answerQuestion(questionId, boAnswer.getAnswerToCanton(), tthDossier);
   }
 
   @Override
