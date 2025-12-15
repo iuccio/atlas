@@ -54,13 +54,16 @@ class ReferencePointSqlIntegrationTest extends BasePrmSqlIntegrationTest {
   @Test
   void shouldReturnTimetableYears() throws SQLException {
     // given
-    final LocalDate now = LocalDate.now();
+    LocalDate actualTimetableYearChangeDate = FutureTimetableHelper.getTimetableYearChangeDateToExportData(LocalDate.now());
 
-    insertReferencePoint(2, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000), now, now);
-    insertReferencePoint(20, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000), now.minusMonths(5),
-        now.minusMonths(4));
-    insertReferencePoint(200, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000), now.plusMonths(4),
-        now.plusMonths(5));
+    insertReferencePoint(2, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000),
+        actualTimetableYearChangeDate, actualTimetableYearChangeDate);
+    insertReferencePoint(20, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000),
+        actualTimetableYearChangeDate.minusMonths(5),
+        actualTimetableYearChangeDate.minusMonths(4));
+    insertReferencePoint(200, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000),
+        actualTimetableYearChangeDate.plusMonths(4),
+        actualTimetableYearChangeDate.plusMonths(5));
     insertReferencePoint(2000, "ch:1:sloid:7001:1", ServicePointNumber.ofNumberWithoutCheckDigit(8507000),
         LocalDate.of(1999, 1, 1),
         LocalDate.of(2010, 1, 1));
