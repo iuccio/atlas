@@ -72,6 +72,10 @@ export class PermissionService {
   }
 
   mayAccessTimetableHearing() {
+    return this.isTthCanton() || this.isTthBoUser();
+  }
+
+  isTthCanton() {
     const applicationUserPermission = this.getApplicationUserPermission(
       ApplicationType.TimetableHearing
     );
@@ -255,5 +259,17 @@ export class PermissionService {
       return TerminationDecisionPersonEnum.Nova;
     }
     return undefined;
+  }
+
+  isTthBoUser(): boolean {
+    const applicationUserPermission = this.getApplicationUserPermission(
+      ApplicationType.TimetableHearing
+    );
+    return applicationUserPermission.permissionRestrictions.some(
+      (i) =>
+        [PermissionRestrictionType.TransportCompanyDossierAnswer].includes(
+          i.type!
+        ) && i.valueAsString === 'true'
+    );
   }
 }
