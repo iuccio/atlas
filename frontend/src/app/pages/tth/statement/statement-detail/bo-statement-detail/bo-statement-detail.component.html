@@ -2,13 +2,13 @@
   <atlas-detail-page-content>
     <div class="statement-form">
       <atlas-statement-data
-        [form]="form()"
-        [ttfnValidOn]="ttfnValidOn()!"
-        [statement]="statement()!"
+        [form]="form"
+        [ttfnValidOn]="ttfnValidOn!"
+        [statement]="statement!"
       />
       <div class="d-flex flex-column col-12">
         <form-comment
-          [formGroup]="form()"
+          [formGroup]="form"
           label="TTH.STATEMENT.STATEMENT_TEXT"
           controlName="anonymousStatement"
         >
@@ -21,7 +21,7 @@
           ></app-atlas-label-field>
           @for (document of anonymDocuments; track document) {
             <atlas-file
-              (downloadFile)="downloadPdf($event.name)"
+              (downloadFile)="downloadFile($event.name)"
               [deleteEnabled]="false"
               [downloadEnabled]="true"
               [file]="{
@@ -37,8 +37,7 @@
   </atlas-detail-page-content>
   <atlas-detail-footer>
     <atlas-button
-      (buttonClicked)="back()"
-      [footerEdit]="form().enabled"
+      (buttonClicked)="backToOverview()"
       buttonDataCy="back-to-overview"
       buttonText="COMMON.BACK_TO_OVERVIEW"
       buttonType="whiteFooterNonEdit"

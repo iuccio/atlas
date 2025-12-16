@@ -10,7 +10,7 @@ import { CommentComponent } from '../../../../core/form-components/comment/comme
 import { MatCheckbox } from '@angular/material/checkbox';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { StatementDetailFormGroup } from '../statement-detail-form-group';
+import { StatementDetailFormGroup } from '../statement-detail/statement-detail-form-group';
 import { StatementText } from './stetement-text';
 
 export const HIDE_ORIGINAL_TEXT_LABEL = 'TTH.STATEMENT.HIDE_ORIGINAL_TEXT';

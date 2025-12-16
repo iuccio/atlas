@@ -2,7 +2,7 @@ import { Component, input } from '@angular/core';
 import { TextFieldComponent } from '../../../../core/form-components/text-field/text-field.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormGroup } from '@angular/forms';
-import { StatementDetailFormGroup } from '../statement-detail-form-group';
+import { StatementDetailFormGroup } from '../statement-detail/statement-detail-form-group';
 import { AtlasClipboardComponent } from '../../../../core/form-components/atlas-clipboard/atlas-clipboard.component';
 import { StringListComponent } from '../../../../core/form-components/string-list/string-list.component';
 import { AtlasCharsetsValidator } from '../../../../core/validation/charsets/atlas-charsets-validator';
