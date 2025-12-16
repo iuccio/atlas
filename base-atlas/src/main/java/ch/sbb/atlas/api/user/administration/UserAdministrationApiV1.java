@@ -37,7 +37,7 @@ public interface UserAdministrationApiV1 {
   @Operation(description = "Retrieve User Information for a given user")
   UserModel getUser(@PathVariable String userId);
 
-  @GetMapping(BASE_PATH + "/information")
+  @GetMapping(BASE_PATH + "/mail")
   @Operation(description = "Retrieve User Information for a given user by mail")
   UserModel getUserByMail(@RequestParam String mail);
 

@@ -47,8 +47,8 @@ public class TthDossierService {
     if (dossier.getDossierStatus() != DossierStatus.DOSSIER_BO_CHECK) {
       throw SimpleAtlasException.builder()
           .status(HttpStatus.FORBIDDEN)
-          .messageAndError("Dossier is not in status DOSSIER_BO_CHECK")
-          .displayCode("TTH.DOSSIER_NOT_IN_BO_CHECK_STATUS")
+          .messageAndError("Dossier is already answered")
+          .displayCode("TTH.ERROR.DOSSIER_ALREADY_ANSWERED")
           .build();
     }
     return dossier;

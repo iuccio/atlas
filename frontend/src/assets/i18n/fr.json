@@ -1086,7 +1086,8 @@
       "SUCCESSFUL_SAVE_NOTIFICATION": "Paramètres enregistrés avec succès"
     },
     "ERROR": {
-      "NOT_ALLOWED_BO_CONTACT": "La personne associée à l'adresse e-mail {{mail}} n'est pas autorisée à être enregistrée comme contact."
+      "NOT_ALLOWED_BO_CONTACT": "La personne associée à l'adresse e-mail {{mail}} n'est pas autorisée à être enregistrée comme contact.",
+      "DOSSIER_ALREADY_ANSWERED": "Le dossier a déjà été traité."
     }
   },
   "SEPODI": {
