@@ -5,7 +5,7 @@ import { TimetableFieldNumberSelectComponent } from '../../../../core/form-compo
 import { TranslatePipe } from '@ngx-translate/core';
 import { TransportCompanySelectComponent } from '../../../../core/form-components/tu-select/transport-company-select.component';
 import { FormGroup } from '@angular/forms';
-import { StatementDetailFormGroup } from '../statement-detail-form-group';
+import { StatementDetailFormGroup } from '../statement-detail/statement-detail-form-group';
 import {
   TimetableFieldNumber,
   TimetableHearingStatementV2,
@@ -29,7 +29,7 @@ export class StatementDataComponent {
   ttfnValidOn = input.required<Date>();
   statement = input.required<TimetableHearingStatementV2>();
 
-  private timetableHearingStatementsService = inject(
+  private readonly timetableHearingStatementsService = inject(
     TimetableHearingStatementInternalService
   );
 

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StatementDialogComponent } from '../statement.dialog.component';
 import { FormGroup } from '@angular/forms';
-import { StatementDetailFormGroup } from '../../statement-detail-form-group';
+import { StatementDetailFormGroup } from '../../statement-detail/statement-detail-form-group';
 
 @Injectable({
   providedIn: 'root',

@@ -4,7 +4,7 @@ import {
   SwissCanton,
   TimetableHearingStatementDocument,
   TimetableHearingStatementResponsibleTransportCompany,
-} from '../../../api';
+} from '../../../../api';
 
 export interface StatementDetailFormGroup {
   id: FormControl<number | null | undefined>;
