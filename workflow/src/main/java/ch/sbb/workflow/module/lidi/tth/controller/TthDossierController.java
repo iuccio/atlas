@@ -22,6 +22,11 @@ public class TthDossierController implements TthDossierApiInternal {
   }
 
   @Override
+  public TthDossierModel getDossierForBo(Long dossierId) {
+    return TthDossierMapper.toModel(tthDossierService.getDossierForBo(dossierId));
+  }
+
+  @Override
   public TthDossierModel createDossier(TthDossierModel dossierModel) {
     return TthDossierMapper.toModel(tthDossierService.createDossier(TthDossierMapper.toEntity(dossierModel)));
   }
@@ -34,7 +39,6 @@ public class TthDossierController implements TthDossierApiInternal {
   @Override
   public void answerQuestion(Long questionId, BoAnswerModel boAnswer) {
     TthDossier tthDossier = tthDossierService.getDossierByQuestionId(questionId);
-
     tthDossierService.answerQuestion(questionId, boAnswer.getAnswerToCanton(), tthDossier);
   }
 

@@ -32,13 +32,26 @@ public class TthDossierService {
   private final TthDossierNotificationService notificationService;
   private final BoContactPermissionService boContactPermissionService;
 
-  @TthRedacted
   @PostAuthorize("""
       @cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)
-      or
-      @boUserMailCheckService.isCurrentUserMailAssignedTo(returnObject)""")
+      """)
   public TthDossier getDossierById(Long dossierId) {
-    return dossierRepository.findById(dossierId).orElseThrow(() -> new IdNotFoundException(dossierId));
+    return findDossier(dossierId);
+  }
+
+  @TthRedacted
+  @PostAuthorize("""
+      @boUserMailCheckService.isCurrentUserMailAssignedTo(returnObject)""")
+  public TthDossier getDossierForBo(Long dossierId) {
+    TthDossier dossier = findDossier(dossierId);
+    if (dossier.getDossierStatus() != DossierStatus.DOSSIER_BO_CHECK) {
+      throw SimpleAtlasException.builder()
+          .status(HttpStatus.FORBIDDEN)
+          .messageAndError("Dossier is not in status DOSSIER_BO_CHECK")
+          .displayCode("TTH.DOSSIER_NOT_IN_BO_CHECK_STATUS")
+          .build();
+    }
+    return dossier;
   }
 
   @Transactional
@@ -152,5 +165,9 @@ public class TthDossierService {
   public TthDossier getDossierByQuestionId(Long questionId) {
     return questionRepository.findByIdWithDossier(questionId).orElseThrow(() -> new IdNotFoundException(questionId))
         .getTthDossier();
+  }
+
+  public TthDossier findDossier(Long id) {
+    return dossierRepository.findById(id).orElseThrow(() -> new IdNotFoundException(id));
   }
 }
