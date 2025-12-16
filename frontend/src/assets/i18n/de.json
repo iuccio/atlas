@@ -1086,7 +1086,8 @@
       "SUCCESSFUL_SAVE_NOTIFICATION": "Einstellungen erfolgreich gespeichert"
     },
     "ERROR": {
-      "NOT_ALLOWED_BO_CONTACT": "Die Person mit der Mail {{mail}} hat keine Berechtigungen um als Kontakt hinterlegt zu werden und Fragen zu beantworten."
+      "NOT_ALLOWED_BO_CONTACT": "Die Person mit der Mail {{mail}} hat keine Berechtigungen um als Kontakt hinterlegt zu werden und Fragen zu beantworten.",
+      "DOSSIER_ALREADY_ANSWERED": "Das Dossier wurde bereits beantwortet."
     }
   },
   "SEPODI": {

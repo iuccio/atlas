@@ -134,7 +134,7 @@ class UserAdministrationControllerApiTest extends BaseControllerApiTest {
             .build()));
 
     // when & then
-    mvc.perform(get("/v1/users/information?mail=user1@yb.com"))
+    mvc.perform(get("/v1/users/mail?mail=user1@yb.com"))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.sbbUserId").value("user1"))
