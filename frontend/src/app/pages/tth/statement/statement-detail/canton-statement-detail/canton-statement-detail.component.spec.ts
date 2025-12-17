@@ -10,7 +10,7 @@ import {
 } from '../../../../../api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ErrorNotificationComponent } from '../../../../../core/notification/error/error-notification.component';
 import { InfoIconComponent } from '@atlas/form/info-icon/info-icon.component';
@@ -40,14 +40,21 @@ import { StringListComponent } from '../../../../../core/form-components/string-
 import { PermissionService } from '../../../../../core/auth/permission/permission.service';
 import { TimetableHearingStatementInternalService } from '../../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { TimetableHearingYearInternalService } from '../../../../../api/service/lidi/timetable-hearing-year-internal.service';
+import { LoadingSpinnerService } from '../../../../../core/components/loading-spinner/loading-spinner.service';
+import { StatementShareService } from '../../../overview-detail/statement-share-service';
 
 const existingStatement: TimetableHearingStatementV2 = {
   id: 1,
   swissCanton: SwissCanton.Bern,
   statement: 'Öper isch am YB-Match gsi',
+  editor: 'Harry Potter',
   statementSender: {
     emails: new Set('fan@yb.ch'),
   },
+  documents: [
+    { id: 123, fileName: 'fileName', fileSize: 1234, anonymous: true },
+    { id: 234, fileName: 'fileName.pdf', fileSize: 1234, anonymous: false },
+  ],
 };
 
 const years: TimetableHearingYear[] = [
@@ -62,6 +69,11 @@ let component: CantonStatementDetailComponent;
 let fixture: ComponentFixture<CantonStatementDetailComponent>;
 let router: Router;
 
+const mockStatementShareService = jasmine.createSpyObj(
+  'statementShareService',
+  ['getCloneStatement', 'clearCachedStatement'],
+  { statement: existingStatement }
+);
 const mockTimetableHearingYearsService = jasmine.createSpyObj(
   'TimetableHearingYearInternalService',
   ['getHearingYears']
@@ -75,6 +87,7 @@ const mockTimetableHearingStatementsService = jasmine.createSpyObj(
     'getPreviousStatement',
     'getResponsibleTransportCompanies',
     'updateHearingStatement',
+    'getStatementDocument',
   ]
 );
 const alternation: TimetableHearingStatementAlternating = {
@@ -95,6 +108,12 @@ mockTimetableHearingStatementsService.getPreviousStatement.and.returnValue(
 );
 mockTimetableHearingStatementsService.getResponsibleTransportCompanies.and.returnValue(
   of([transportCompany])
+);
+mockStatementShareService.getCloneStatement.and.returnValue(existingStatement);
+
+const blob = 'Blob' as unknown as Blob;
+mockTimetableHearingStatementsService.getStatementDocument.and.returnValue(
+  of(blob)
 );
 
 @Component({
@@ -197,6 +216,54 @@ describe('StatementDetailComponent for existing statement', () => {
     expect(
       mockTimetableHearingStatementsService.updateHearingStatement
     ).toHaveBeenCalled();
+  });
+
+  it('should cantonSelectionChanged', () => {
+    //given
+    mockTimetableHearingStatementsService.updateHearingStatement.and.returnValue(
+      of(existingStatement)
+    );
+    //when
+    component.cantonSelectionChanged();
+    //then
+    expect(component.form.controls.editor.getRawValue()).toBe(
+      existingStatement.editor
+    );
+    expect(component.form.controls.oldSwissCanton.getRawValue()).toBe(
+      component.initialValueForCanton
+    );
+  });
+
+  it('should removeDocument', () => {
+    //given
+    mockTimetableHearingStatementsService.updateHearingStatement.and.returnValue(
+      of(existingStatement)
+    );
+    expect(component.form.controls.documents.controls.length).toBe(2);
+
+    //when
+    component.removeDocument('fileName.pdf');
+    //then
+    expect(component.form.controls.documents.controls.length).toBe(1);
+  });
+
+  it('should downloadLocalFile', () => {
+    //given
+    expect(component.uploadedFiles.length).toBe(2);
+    mockTimetableHearingStatementsService.updateHearingStatement.and.returnValue(
+      of(existingStatement)
+    );
+    const blob = 'Blob' as unknown as Blob;
+    mockTimetableHearingStatementsService.getStatementDocument.and.returnValue(
+      of(blob)
+    );
+    const documents = existingStatement.documents;
+    //when
+    component.downloadLocalFile(1, documents);
+    //then
+    expect(component.uploadedFiles.length).toBe(4);
+    expect(component.uploadedFiles[0].name).toBeDefined();
+    expect(component.uploadedFiles[1].name).toBeDefined();
   });
 });
 
@@ -351,12 +418,20 @@ function setupTestBed(activatedRoute: {
     providers: [
       { provide: FormBuilder },
       {
+        provide: LoadingSpinnerService,
+        useValue: { loading: new BehaviorSubject(false) },
+      },
+      {
         provide: TimetableHearingYearInternalService,
         useValue: mockTimetableHearingYearsService,
       },
       {
         provide: TimetableHearingStatementInternalService,
         useValue: mockTimetableHearingStatementsService,
+      },
+      {
+        provide: StatementShareService,
+        useValue: mockStatementShareService,
       },
       { provide: PermissionService, useValue: adminPermissionServiceMock },
       { provide: TranslatePipe },

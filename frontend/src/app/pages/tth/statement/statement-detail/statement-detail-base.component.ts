@@ -23,10 +23,10 @@ export abstract class StatementDetailBaseComponent {
   );
 
   protected ttfnValidOn: Date | undefined = undefined;
-  protected statement: TimetableHearingStatementV2 | undefined;
+  statement: TimetableHearingStatementV2 | undefined;
   protected hearingStatus!: HearingStatus;
   form!: FormGroup<StatementDetailFormGroup>;
-  protected uploadedFiles: File[] = [];
+  uploadedFiles: File[] = [];
 
   protected backToOverview() {
     this.router

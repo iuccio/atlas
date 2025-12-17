@@ -222,7 +222,7 @@ export class CantonStatementDetailComponent
     );
   }
 
-  private downloadLocalFile(
+  downloadLocalFile(
     id: number,
     documents: Array<TimetableHearingStatementDocument> | undefined
   ) {
@@ -311,7 +311,7 @@ export class CantonStatementDetailComponent
     this.statementText?.resetForm(this.form);
   }
 
-  private duplicateStatement() {
+  duplicateStatement() {
     if (this.statementShareService.statement) {
       this.isDuplicating = true;
       const localCopyStatement = this.statementShareService.statement;
