@@ -67,7 +67,7 @@ class TthRedactAspectTest {
             .lastName("*****")
             .organisation("*****")
             .street("*****")
-            .zip(39012)
+            .zip(0)
             .city("*****")
             .emails(List.of("*****"))
             .build())
