@@ -129,7 +129,8 @@ class TthDossierServiceTest {
 
   @Test
   void shouldThrowExcpetionOnGetWhenStatusNotBoCheck() {
-    assertThatThrownBy(() -> tthDossierService.getDossierForBo(exampleDossier.getId())).isInstanceOf(SimpleAtlasException.class);
+    Long id = exampleDossier.getId();
+    assertThatThrownBy(() -> tthDossierService.getDossierForBo(id)).isInstanceOf(SimpleAtlasException.class);
   }
 
   @Test

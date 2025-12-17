@@ -307,6 +307,7 @@ class TimetableHearingStatementServiceTest {
     List<MultipartFile> documents = Collections.emptyList();
     TimetableHearingStatement statement = timetableHearingStatementService.createHearingStatement(timetableHearingStatement,
         documents);
+
     timetableHearingStatementService.updateStatementFromDossier(statement, BatchUpdateTimetableHearingStatementsModel.builder()
         .statementStatus(StatementStatus.IN_REVIEW)
         .dossierCanton(statement.getSwissCanton())
@@ -335,13 +336,16 @@ class TimetableHearingStatementServiceTest {
         .dossierId(1L)
         .build());
 
+    BatchUpdateTimetableHearingStatementsModel model =
+        BatchUpdateTimetableHearingStatementsModel.builder()
+            .statementStatus(StatementStatus.IN_REVIEW)
+            .dossierCanton(statement.getSwissCanton())
+            .dossierId(2L)
+            .build();
+
     assertThatThrownBy(
         () -> timetableHearingStatementService.updateStatementFromDossier(statement,
-            BatchUpdateTimetableHearingStatementsModel.builder()
-                .statementStatus(StatementStatus.IN_REVIEW)
-                .dossierCanton(statement.getSwissCanton())
-                .dossierId(2L)
-                .build())).isInstanceOf(StatementPartOfDossierException.class);
+            model)).isInstanceOf(StatementPartOfDossierException.class);
   }
 
   @Test
@@ -356,13 +360,16 @@ class TimetableHearingStatementServiceTest {
     TimetableHearingStatement statement = timetableHearingStatementService.createHearingStatement(timetableHearingStatement,
         documents);
 
+    BatchUpdateTimetableHearingStatementsModel model =
+        BatchUpdateTimetableHearingStatementsModel.builder()
+            .statementStatus(StatementStatus.IN_REVIEW)
+            .dossierCanton(SwissCanton.ZUG)
+            .dossierId(1L)
+            .build();
+
     assertThatThrownBy(
-        () -> timetableHearingStatementService.updateStatementFromDossier(statement,
-            BatchUpdateTimetableHearingStatementsModel.builder()
-                .statementStatus(StatementStatus.IN_REVIEW)
-                .dossierCanton(SwissCanton.ZUG)
-                .dossierId(1L)
-                .build())).isInstanceOf(SimpleAtlasException.class);
+        () -> timetableHearingStatementService.updateStatementFromDossier(statement, model)).isInstanceOf(
+        SimpleAtlasException.class);
   }
 
   @Test
