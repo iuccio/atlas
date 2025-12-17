@@ -25,6 +25,7 @@ import ch.sbb.atlas.user.administration.security.service.BoUserMailCheckService;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
 import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
+import ch.sbb.workflow.module.lidi.tth.repository.TthDossierQuestionRepository;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -45,6 +46,9 @@ class TthDossierServiceTest {
 
   @Autowired
   private TthDossierRepository tthDossierRepository;
+
+  @Autowired
+  private TthDossierQuestionRepository tthDossierQuestionRepository;
 
   @MockitoBean
   private TimetableHearingStatementClient timetableHearingStatementClient;
@@ -302,5 +306,12 @@ class TthDossierServiceTest {
     assertThatExceptionOfType(SimpleAtlasException.class)
         .isThrownBy(() -> tthDossierService.answerQuestion(questionId, "Joa das geht schon.", exampleDossier))
         .withMessage("Dossier is not in status DOSSIER_BO_CHECK");
+  }
+
+  @Test
+  void shouldGetDossierByQuestionId() {
+    Long questionId = exampleDossier.getDossierQuestions().getFirst().getId();
+    TthDossier foundDossier = tthDossierService.getDossierByQuestionId(questionId);
+    assertThat(foundDossier).usingRecursiveComparison().isEqualTo(exampleDossier);
   }
 }
