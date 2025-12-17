@@ -29,6 +29,9 @@ public class DummyTthDossier {
   @Enumerated(EnumType.STRING)
   private DossierStatus dossierStatus;
 
+  @Redacted
+  private int numberOfQuestions;
+
   @Size(min = 1, max = AtlasFieldLengths.LENGTH_5000)
   @Redacted
   private String internalComment;

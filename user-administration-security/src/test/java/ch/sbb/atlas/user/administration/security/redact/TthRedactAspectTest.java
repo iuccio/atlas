@@ -26,12 +26,13 @@ class TthRedactAspectTest {
     // given
     DummyTthDossier sensitiveDossier = DummyTthDossier.builder()
         .dossierStatus(DossierStatus.ADDED)
-        .internalComment("empty")
+        .internalComment("empty").numberOfQuestions(100)
         .build();
 
     DummyTthDossier redactedDossier = DummyTthDossier.builder()
         .dossierStatus(DossierStatus.ADDED)
         .internalComment("*****")
+        .numberOfQuestions(0)
         .build();
 
     // when & then
