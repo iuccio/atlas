@@ -36,7 +36,6 @@ describe('TTH Routing', () => {
       const router = TestBed.inject(Router);
       expect(router).toBeTruthy();
       const result = loadStatementDetailRoute().then((component) => {
-        console.log(component);
         expect(component).toBeDefined();
         expect(component.name).toBe('CantonStatementDetailComponent');
       });
@@ -66,7 +65,6 @@ describe('TTH Routing', () => {
       const router = TestBed.inject(Router);
       expect(router).toBeTruthy();
       const result = loadStatementDetailRoute().then((component) => {
-        console.log(component);
         expect(component).toBeDefined();
         expect(component.name).toBe('BoStatementDetailComponent');
       });
