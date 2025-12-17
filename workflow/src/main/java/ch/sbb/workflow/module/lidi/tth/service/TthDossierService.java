@@ -32,16 +32,14 @@ public class TthDossierService {
   private final TthDossierNotificationService notificationService;
   private final BoContactPermissionService boContactPermissionService;
 
-  @PostAuthorize("""
-      @cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)
-      """)
+  @PostAuthorize("@cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin"
+      + ".ApplicationType).TIMETABLE_HEARING)")
   public TthDossier getDossierById(Long dossierId) {
     return findDossier(dossierId);
   }
 
   @TthRedacted
-  @PostAuthorize("""
-      @boUserMailCheckService.isCurrentUserMailAssignedTo(returnObject)""")
+  @PostAuthorize("@boUserMailCheckService.isCurrentUserMailAssignedTo(returnObject)")
   public TthDossier getDossierForBo(Long dossierId) {
     TthDossier dossier = findDossier(dossierId);
     if (dossier.getDossierStatus() != DossierStatus.DOSSIER_BO_CHECK) {
@@ -55,8 +53,8 @@ public class TthDossierService {
   }
 
   @Transactional
-  @PreAuthorize("""
-      @cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING, #dossier)""")
+  @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
+      + ".TIMETABLE_HEARING, #dossier)")
   public TthDossier createDossier(TthDossier dossier) {
     boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
 
@@ -67,8 +65,8 @@ public class TthDossierService {
   }
 
   @Transactional
-  @PreAuthorize("""
-      @cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING, #dossier)""")
+  @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
+      + ".TIMETABLE_HEARING, #dossier)")
   public void sendDossierToBo(TthDossier dossier) {
     dossier.setDossierStatus(DossierStatus.DOSSIER_BO_CHECK);
 
@@ -78,8 +76,8 @@ public class TthDossierService {
   }
 
   @Transactional
-  @PreAuthorize("""
-      @cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING, #dossier)""")
+  @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
+      + ".TIMETABLE_HEARING, #dossier)")
   public void completeDossier(TthDossier dossier, DossierStatus status) {
     checkDossierIsInEditableStatus(dossier);
     if (!status.isAllowedForCompleteTransition()) {
@@ -95,8 +93,8 @@ public class TthDossierService {
   }
 
   @Transactional
-  @PreAuthorize("""
-      @cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING, #dossier)""")
+  @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
+      + ".TIMETABLE_HEARING, #dossier)")
   public TthDossier updateDossier(Long dossierId, TthDossier dossier) {
     TthDossier currentDossier = getDossierById(dossierId);
     checkDossierIsInEditableStatus(currentDossier);
@@ -142,8 +140,7 @@ public class TthDossierService {
   }
 
   @Transactional
-  @PreAuthorize("""
-      @boUserMailCheckService.isCurrentUserMailAssignedTo(#tthDossier)""")
+  @PreAuthorize("@boUserMailCheckService.isCurrentUserMailAssignedTo(#tthDossier)")
   public void answerQuestion(Long questionId, String boAnswer, TthDossier tthDossier) {
     TthDossierQuestion question = questionRepository.findById(questionId).orElseThrow(() -> new IdNotFoundException(questionId));
 

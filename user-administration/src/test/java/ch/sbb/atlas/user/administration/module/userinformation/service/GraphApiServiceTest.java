@@ -64,9 +64,10 @@ class GraphApiServiceTest {
     assertThat(configuration.queryParameters.search).isEqualTo(expectedSearchFilter);
     assertThat(configuration.queryParameters.top).isEqualTo(10);
 
-    assertThat(configuration.headers).isNotNull();
-    assertThat(configuration.headers).hasSize(1);
-    assertThat(configuration.headers).containsKey("ConsistencyLevel");
+    assertThat(configuration.headers)
+        .isNotNull()
+        .hasSize(1)
+        .containsKey("ConsistencyLevel");
   }
 
   @Test
@@ -82,9 +83,10 @@ class GraphApiServiceTest {
     assertThat(configuration.queryParameters.search).isEqualTo(expectedSearchFilter);
     assertThat(configuration.queryParameters.top).isEqualTo(10);
 
-    assertThat(configuration.headers).isNotNull();
-    assertThat(configuration.headers).hasSize(1);
-    assertThat(configuration.headers).containsKey("ConsistencyLevel");
+    assertThat(configuration.headers)
+        .isNotNull()
+        .hasSize(1)
+        .containsKey("ConsistencyLevel");
   }
 
   @Test
@@ -97,9 +99,10 @@ class GraphApiServiceTest {
     assertThat(configuration.queryParameters.filter).isEqualTo("onPremisesSamAccountName in ('user1', 'user2')");
     assertThat(configuration.queryParameters.count).isEqualTo(true);
 
-    assertThat(configuration.headers).isNotNull();
-    assertThat(configuration.headers).hasSize(1);
-    assertThat(configuration.headers).containsKey("ConsistencyLevel");
+    assertThat(configuration.headers)
+        .isNotNull()
+        .hasSize(1)
+        .containsKey("ConsistencyLevel");
   }
 
   private GetRequestConfiguration verifyGetAndReturnConfiguration() {

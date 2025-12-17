@@ -43,6 +43,7 @@ public class StatementSender {
   @Size(max = AtlasFieldLengths.LENGTH_100)
   private String street;
 
+  @Redacted
   @Min(1000)
   @Max(99999)
   private Integer zip;
