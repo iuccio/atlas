@@ -60,7 +60,7 @@ export interface TthDossier {
     /**
      * Questions for the BO to answer
      */
-    questions?: Array<TthDossierQuestion>;
+    questions: Array<TthDossierQuestion>;
 }
 export namespace TthDossier {
 }

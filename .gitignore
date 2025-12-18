@@ -125,6 +125,7 @@ frontend/jsonZipDirectory/
 .idea/kotlinc.xml
 .idea/copilot*.xml
 .idea/data_source_mapping.xml
+.idea/db-forest-config.xml
 
 /line-directory/export/
 /.export/

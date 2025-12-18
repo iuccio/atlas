@@ -22,6 +22,10 @@ public final class UserService {
     return getAccessToken().getClaim(Role.ROLES_JWT_KEY);
   }
 
+  public static String getPreferredUsername() {
+    return getAccessToken().getClaim("preferred_username");
+  }
+
   public static boolean hasUnauthorizedRole() {
     return getRoles().contains(Role.ATLAS_ROLES_UNAUTHORIZED_KEY);
   }

@@ -349,6 +349,7 @@
     "ROLE": "Rolle",
     "NOVA": "NOVA Termination",
     "INFO_PLUS": "Info+ Termination",
+    "TRANSPORT_COMPANY": "Stellungnahmenredakteur",
     "ADD_BUSINESS_ORGANISATION": "Geschäftsorganisation hinzufügen",
     "DELETE_BUSINESS_ORGANISATION": "Geschäftsorganisation entfernen",
     "SELECTED_USER_HAS_ALREADY_PERMISSIONS": "Gewählter Benutzer ist bereits hinterlegt",
@@ -1083,6 +1084,10 @@
       "CREATE_STATEMENT_INTERNAL": "Erfassung Stellungnahme in atlas",
       "EDIT_STATEMENT": "Bearbeitung Stellungnahme in atlas",
       "SUCCESSFUL_SAVE_NOTIFICATION": "Einstellungen erfolgreich gespeichert"
+    },
+    "ERROR": {
+      "NOT_ALLOWED_BO_CONTACT": "Die Person mit der Mail {{mail}} hat keine Berechtigungen um als Kontakt hinterlegt zu werden und Fragen zu beantworten.",
+      "DOSSIER_ALREADY_ANSWERED": "Das Dossier wurde bereits beantwortet."
     }
   },
   "SEPODI": {

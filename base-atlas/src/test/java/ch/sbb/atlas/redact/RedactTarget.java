@@ -20,6 +20,9 @@ class RedactTarget {
   private String mail;
 
   @Redacted
+  private int age;
+
+  @Redacted
   private Set<NestedRedactTarget> examinants;
 
   @Redacted

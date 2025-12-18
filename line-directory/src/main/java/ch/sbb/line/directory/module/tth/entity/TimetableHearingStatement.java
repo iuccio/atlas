@@ -1,12 +1,14 @@
 package ch.sbb.line.directory.module.tth.entity;
 
 import ch.sbb.atlas.api.AtlasFieldLengths;
+import ch.sbb.atlas.api.model.BoMailAssociated;
 import ch.sbb.atlas.api.model.CantonAssociated;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingConstants;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.StatementDossierLinked;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.entity.BaseEntity;
+import ch.sbb.atlas.redact.Redacted;
 import ch.sbb.line.directory.shared.transportcompany.entity.SharedTransportCompany;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -38,12 +40,13 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @ToString
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldNameConstants
 @Entity(name = "timetable_hearing_statement")
-public class TimetableHearingStatement extends BaseEntity implements CantonAssociated, StatementDossierLinked {
+@Redacted
+public class TimetableHearingStatement extends BaseEntity implements CantonAssociated, StatementDossierLinked, BoMailAssociated {
 
   private static final String VERSION_SEQ = "timetable_hearing_statement_seq";
 
@@ -80,9 +83,11 @@ public class TimetableHearingStatement extends BaseEntity implements CantonAssoc
   private String responsibleTransportCompaniesDisplay;
 
   @Valid
+  @Redacted
   private StatementSender statementSender;
 
   // Statement made by citizen
+  @Redacted
   @NotNull
   @Size(max = AtlasFieldLengths.LENGTH_5000)
   private String statement;
@@ -99,13 +104,16 @@ public class TimetableHearingStatement extends BaseEntity implements CantonAssoc
   private Set<StatementDocument> documents;
 
   // FoT Justification field for comments
+  @Redacted
   @Size(max = AtlasFieldLengths.LENGTH_5000)
   private String publicComment;
 
   // Canton internal comment
+  @Redacted
   @Size(max = AtlasFieldLengths.LENGTH_5000)
   private String internalComment;
 
+  @Redacted
   @Size(max = AtlasFieldLengths.LENGTH_280)
   private String cantonTransferComment;
 
@@ -145,4 +153,8 @@ public class TimetableHearingStatement extends BaseEntity implements CantonAssoc
     return dossierId != null;
   }
 
+  @Override
+  public String getBoContactMail() {
+    return dossierContactMail;
+  }
 }

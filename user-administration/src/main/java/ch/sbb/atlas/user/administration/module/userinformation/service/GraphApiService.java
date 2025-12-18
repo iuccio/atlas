@@ -26,6 +26,8 @@ public class GraphApiService {
   private static final int RESOLVE_CHUNK_SIZE = 20;
   private static final String[] USER_PROPERTIES_TO_SELECT = {"onPremisesSamAccountName", "surname", "givenName", "mail",
       "accountEnabled", "displayName"};
+  private static final String CONSISTENCY_LEVEL = "ConsistencyLevel";
+  private static final String EVENTUAL = "eventual";
 
   private final GraphServiceClient graphClient;
 
@@ -39,7 +41,21 @@ public class GraphApiService {
       requestConfig.queryParameters.search = """
           "onPremisesSamAccountName:%s" OR "mail:%s" OR "displayName:%s"
           """.formatted(searchQuery, searchQuery, searchQuery);
-      requestConfig.headers.add("ConsistencyLevel", "eventual");
+      requestConfig.headers.add(CONSISTENCY_LEVEL, EVENTUAL);
+    });
+  }
+
+  public List<UserModel> searchUserByMail(String mail) {
+    return getUsers(requestConfig -> {
+      Objects.requireNonNull(requestConfig.queryParameters);
+      Objects.requireNonNull(requestConfig.headers);
+
+      requestConfig.queryParameters.select = USER_PROPERTIES_TO_SELECT;
+      requestConfig.queryParameters.top = SEARCH_QUERY_LIMIT;
+      requestConfig.queryParameters.search = """
+          "mail:%s"
+          """.formatted(mail);
+      requestConfig.headers.add(CONSISTENCY_LEVEL, EVENTUAL);
     });
   }
 
@@ -76,7 +92,7 @@ public class GraphApiService {
       requestConfig.queryParameters.filter = "onPremisesSamAccountName in (%s)".formatted(
           userIds.stream().map("'%s'"::formatted).collect(Collectors.joining(", ")));
       requestConfig.queryParameters.count = true;
-      requestConfig.headers.add("ConsistencyLevel", "eventual");
+      requestConfig.headers.add(CONSISTENCY_LEVEL, EVENTUAL);
     });
   }
 

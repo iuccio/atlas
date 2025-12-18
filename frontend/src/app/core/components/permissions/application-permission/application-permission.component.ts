@@ -272,13 +272,24 @@ export class ApplicationPermissionComponent implements OnInit {
     );
   }
 
+  get showTransportCompanyDossierAnswer() {
+    return (
+      this.currentRoleConfig.permissions.specialPermissions.includes(
+        PermissionRestrictionType.TransportCompanyDossierAnswer
+      ) &&
+      (this.showAllSpecialPermissions ||
+        this.permissionsForm.controls.transportCompanyDossierAnswer?.value)
+    );
+  }
+
   get showSpecialPermissions() {
     return (
       this.currentRoleConfig.permissions.specialPermissions.length > 0 &&
       (this.showAllSpecialPermissions ||
         this.showBulkImport ||
         this.showNovaTerminationVote ||
-        this.showInfoPlusTerminationVote)
+        this.showInfoPlusTerminationVote ||
+        this.showTransportCompanyDossierAnswer)
     );
   }
 
@@ -296,5 +307,11 @@ export class ApplicationPermissionComponent implements OnInit {
         false
       );
     }
+  }
+
+  onTransportCompanyDossierToggle(value: boolean) {
+    this.form.controls.permissions.controls.transportCompanyDossierAnswer?.setValue(
+      value
+    );
   }
 }

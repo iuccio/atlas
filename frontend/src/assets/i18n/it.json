@@ -349,6 +349,7 @@
     "ROLE": "Rotolo",
     "NOVA": "NOVA Terminazione",
     "INFO_PLUS": "Info+ Terminazione",
+    "TRANSPORT_COMPANY": "Redattore delle prese di posizione",
     "ADD_BUSINESS_ORGANISATION": "Aggiungere l'organizzazione aziendale",
     "DELETE_BUSINESS_ORGANISATION": "Rimuovere l'organizzazione aziendale",
     "SELECTED_USER_HAS_ALREADY_PERMISSIONS": "L'utente selezionato è già memorizzato",
@@ -1083,6 +1084,10 @@
       "CREATE_STATEMENT_INTERNAL": "Dichiarazione di registrazione in atlas",
       "EDIT_STATEMENT": "Modifica del parere in atlas",
       "SUCCESSFUL_SAVE_NOTIFICATION": "Impostazioni salvate con successo"
+    },
+    "ERROR": {
+      "NOT_ALLOWED_BO_CONTACT": "La persona con l'indirizzo e-mail {{mail}} non ha i permessi necessari per essere registrata come contatto.",
+      "DOSSIER_ALREADY_ANSWERED": "Il dossier è già stato risolto."
     }
   },
   "SEPODI": {

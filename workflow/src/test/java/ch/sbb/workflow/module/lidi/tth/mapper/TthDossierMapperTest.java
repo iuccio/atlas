@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
+import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ class TthDossierMapperTest {
   void setUp() {
     dossier = TthDossier.builder()
         .id(1L)
+        .swissCanton(SwissCanton.BERN)
         .topic("Bern, Salem - Takt")
         .internalComment("Noch mit Bernmobil abklären")
         .publicComment("In Abklärung mit GO")
@@ -38,6 +40,7 @@ class TthDossierMapperTest {
 
     BatchUpdateTimetableHearingStatementsModel expected = BatchUpdateTimetableHearingStatementsModel.builder()
         .ids(dossier.getStatementIds())
+        .dossierCanton(dossier.getSwissCanton())
         .topic(dossier.getTopic())
         .internalComment(dossier.getInternalComment())
         .publicComment(dossier.getPublicComment())
@@ -55,6 +58,7 @@ class TthDossierMapperTest {
 
     BatchUpdateTimetableHearingStatementsModel expected = BatchUpdateTimetableHearingStatementsModel.builder()
         .ids(dossier.getStatementIds())
+        .dossierCanton(dossier.getSwissCanton())
         .topic(dossier.getTopic())
         .internalComment(dossier.getInternalComment())
         .publicComment(dossier.getPublicComment())
@@ -72,6 +76,7 @@ class TthDossierMapperTest {
 
     BatchUpdateTimetableHearingStatementsModel expected = BatchUpdateTimetableHearingStatementsModel.builder()
         .ids(dossier.getStatementIds())
+        .dossierCanton(dossier.getSwissCanton())
         .topic(dossier.getTopic())
         .internalComment(dossier.getInternalComment())
         .publicComment(dossier.getPublicComment())
@@ -89,6 +94,7 @@ class TthDossierMapperTest {
 
     BatchUpdateTimetableHearingStatementsModel expected = BatchUpdateTimetableHearingStatementsModel.builder()
         .ids(dossier.getStatementIds())
+        .dossierCanton(dossier.getSwissCanton())
         .topic(dossier.getTopic())
         .internalComment(dossier.getInternalComment())
         .publicComment(dossier.getPublicComment())
@@ -106,6 +112,7 @@ class TthDossierMapperTest {
 
     BatchUpdateTimetableHearingStatementsModel expected = BatchUpdateTimetableHearingStatementsModel.builder()
         .ids(dossier.getStatementIds())
+        .dossierCanton(dossier.getSwissCanton())
         .topic(dossier.getTopic())
         .internalComment(dossier.getInternalComment())
         .publicComment(dossier.getPublicComment())

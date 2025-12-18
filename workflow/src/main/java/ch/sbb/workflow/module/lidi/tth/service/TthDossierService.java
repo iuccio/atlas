@@ -6,6 +6,7 @@ import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingState
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
+import ch.sbb.atlas.user.administration.security.redact.TthRedacted;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
 import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +30,34 @@ public class TthDossierService {
   private final TthDossierQuestionRepository questionRepository;
   private final TimetableHearingStatementClient timetableHearingStatementClient;
   private final TthDossierNotificationService notificationService;
+  private final BoContactPermissionService boContactPermissionService;
 
+  @PostAuthorize("@cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin"
+      + ".ApplicationType).TIMETABLE_HEARING)")
   public TthDossier getDossierById(Long dossierId) {
-    return dossierRepository.findById(dossierId).orElseThrow(() -> new IdNotFoundException(dossierId));
+    return findDossier(dossierId);
+  }
+
+  @TthRedacted
+  @PostAuthorize("@boUserMailCheckService.isCurrentUserMailAssignedTo(returnObject)")
+  public TthDossier getDossierForBo(Long dossierId) {
+    TthDossier dossier = findDossier(dossierId);
+    if (dossier.getDossierStatus() != DossierStatus.DOSSIER_BO_CHECK) {
+      throw SimpleAtlasException.builder()
+          .status(HttpStatus.FORBIDDEN)
+          .messageAndError("Dossier is already answered")
+          .displayCode("TTH.ERROR.DOSSIER_ALREADY_ANSWERED")
+          .build();
+    }
+    return dossier;
   }
 
   @Transactional
+  @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
+      + ".TIMETABLE_HEARING, #dossier)")
   public TthDossier createDossier(TthDossier dossier) {
+    boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
+
     dossier.setDossierStatus(DossierStatus.ADDED);
     TthDossier tthDossier = dossierRepository.saveAndFlush(dossier);
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier));
@@ -41,16 +65,19 @@ public class TthDossierService {
   }
 
   @Transactional
-  public void sendDossierToBo(Long dossierId) {
-    TthDossier tthDossier = getDossierById(dossierId);
-    tthDossier.setDossierStatus(DossierStatus.DOSSIER_BO_CHECK);
+  @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
+      + ".TIMETABLE_HEARING, #dossier)")
+  public void sendDossierToBo(TthDossier dossier) {
+    dossier.setDossierStatus(DossierStatus.DOSSIER_BO_CHECK);
 
-    notificationService.notifyBoAboutNewQuestion(tthDossier);
+    notificationService.notifyBoAboutNewQuestion(dossier);
 
-    dossierRepository.save(tthDossier);
+    dossierRepository.save(dossier);
   }
 
   @Transactional
+  @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
+      + ".TIMETABLE_HEARING, #dossier)")
   public void completeDossier(TthDossier dossier, DossierStatus status) {
     checkDossierIsInEditableStatus(dossier);
     if (!status.isAllowedForCompleteTransition()) {
@@ -66,9 +93,12 @@ public class TthDossierService {
   }
 
   @Transactional
+  @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
+      + ".TIMETABLE_HEARING, #dossier)")
   public TthDossier updateDossier(Long dossierId, TthDossier dossier) {
     TthDossier currentDossier = getDossierById(dossierId);
     checkDossierIsInEditableStatus(currentDossier);
+    boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
 
     updateRemovedStatements(currentDossier, dossier);
 
@@ -84,6 +114,7 @@ public class TthDossierService {
     if (!removedStatementIds.isEmpty()) {
       timetableHearingStatementClient.updateStatements(BatchUpdateTimetableHearingStatementsModel.builder()
           .ids(removedStatementIds)
+          .dossierCanton(dossier.getSwissCanton())
           .statementStatus(StatementStatus.RECEIVED)
           .publicComment(dossier.getPublicComment())
           .internalComment(dossier.getInternalComment())
@@ -109,9 +140,9 @@ public class TthDossierService {
   }
 
   @Transactional
-  public void answerQuestion(Long questionId, String boAnswer) {
+  @PreAuthorize("@boUserMailCheckService.isCurrentUserMailAssignedTo(#tthDossier)")
+  public void answerQuestion(Long questionId, String boAnswer, TthDossier tthDossier) {
     TthDossierQuestion question = questionRepository.findById(questionId).orElseThrow(() -> new IdNotFoundException(questionId));
-    TthDossier tthDossier = question.getTthDossier();
 
     if (tthDossier.getDossierStatus() != DossierStatus.DOSSIER_BO_CHECK) {
       throw SimpleAtlasException.builder()
@@ -121,9 +152,19 @@ public class TthDossierService {
           .build();
     }
 
-    question.setAnswerToCanton(boAnswer);
     tthDossier.setDossierStatus(DossierStatus.DOSSIER_CANTON_CHECK);
-    questionRepository.save(question);
     dossierRepository.save(tthDossier);
+
+    question.setAnswerToCanton(boAnswer);
+    questionRepository.save(question);
+  }
+
+  public TthDossier getDossierByQuestionId(Long questionId) {
+    return questionRepository.findByIdWithDossier(questionId).orElseThrow(() -> new IdNotFoundException(questionId))
+        .getTthDossier();
+  }
+
+  public TthDossier findDossier(Long id) {
+    return dossierRepository.findById(id).orElseThrow(() -> new IdNotFoundException(id));
   }
 }

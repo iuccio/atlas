@@ -349,6 +349,7 @@
     "ROLE": "Rouleau",
     "NOVA": "Terminaison NOVA",
     "INFO_PLUS": "Terminaison Info+",
+    "TRANSPORT_COMPANY": "Rédacteur des prises de position",
     "ADD_BUSINESS_ORGANISATION": "Ajouter une organisation commerciale",
     "DELETE_BUSINESS_ORGANISATION": "Supprimer l'organisation commerciale",
     "SELECTED_USER_HAS_ALREADY_PERMISSIONS": "L'utilisateur sélectionné est déjà enregistré",
@@ -1083,6 +1084,10 @@
       "CREATE_STATEMENT_INTERNAL": "Saisie de l'avis dans atlas",
       "EDIT_STATEMENT": "Traitement de l'avis dans atlas",
       "SUCCESSFUL_SAVE_NOTIFICATION": "Paramètres enregistrés avec succès"
+    },
+    "ERROR": {
+      "NOT_ALLOWED_BO_CONTACT": "La personne associée à l'adresse e-mail {{mail}} n'est pas autorisée à être enregistrée comme contact.",
+      "DOSSIER_ALREADY_ANSWERED": "Le dossier a déjà été traité."
     }
   },
   "SEPODI": {

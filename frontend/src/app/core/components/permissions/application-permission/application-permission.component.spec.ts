@@ -17,8 +17,8 @@ import {
 } from '../form/application-permission-form-group';
 import { of } from 'rxjs';
 import { BusinessOrganisationService } from '../../../../api/service/bodi/business-organisation.service';
-import SpyObj = jasmine.SpyObj;
 import { translateServiceProvider } from '../../../../app.testing.mocks';
+import SpyObj = jasmine.SpyObj;
 
 export class MockUserPermissionProviderService extends UserPermissionProviderService {
   applicationPermissionFormGroup?: FormGroup<ApplicationPermission>;
@@ -108,4 +108,26 @@ describe('ApplicationPermissionComponent', () => {
     tick();
     expect(component.currentBusinessOrganisations.length).toBe(0);
   }));
+
+  it('should set transportCompanyDossierAnswer to true', () => {
+    // when
+    component.onTransportCompanyDossierToggle(true);
+
+    // then
+    const control =
+      component.form.controls.permissions.controls
+        .transportCompanyDossierAnswer;
+    expect(control!.value).toBe(true);
+  });
+
+  it('should set transportCompanyDossierAnswer to false', () => {
+    // when
+    component.onTransportCompanyDossierToggle(false);
+
+    // then
+    const control =
+      component.form.controls.permissions.controls
+        .transportCompanyDossierAnswer;
+    expect(control!.value).toBe(false);
+  });
 });

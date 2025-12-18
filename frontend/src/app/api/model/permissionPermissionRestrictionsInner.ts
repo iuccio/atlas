@@ -8,6 +8,7 @@
  * Do not edit the class manually.
  */
 import { CantonPermissionRestrictionModel } from './cantonPermissionRestrictionModel';
+import { TransportCompanyDossierAnswerPermissionRestrictionModel } from './transportCompanyDossierAnswerPermissionRestrictionModel';
 import { BulkImportPermissionRestrictionModel } from './bulkImportPermissionRestrictionModel';
 import { InfoPlusTerminationVotePermissionRestrictionModel } from './infoPlusTerminationVotePermissionRestrictionModel';
 import { CountryPermissionRestrictionModel } from './countryPermissionRestrictionModel';
@@ -20,5 +21,5 @@ import { PermissionRestrictionType } from './permissionRestrictionType';
  * @type PermissionPermissionRestrictionsInner
  * @export
  */
-export type PermissionPermissionRestrictionsInner = BulkImportPermissionRestrictionModel | CantonPermissionRestrictionModel | CountryPermissionRestrictionModel | InfoPlusTerminationVotePermissionRestrictionModel | NovaTerminationVotePermissionRestrictionModel | SboidPermissionRestrictionModel;
+export type PermissionPermissionRestrictionsInner = BulkImportPermissionRestrictionModel | CantonPermissionRestrictionModel | CountryPermissionRestrictionModel | InfoPlusTerminationVotePermissionRestrictionModel | NovaTerminationVotePermissionRestrictionModel | SboidPermissionRestrictionModel | TransportCompanyDossierAnswerPermissionRestrictionModel;
 

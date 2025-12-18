@@ -72,17 +72,22 @@ export class PermissionService {
   }
 
   mayAccessTimetableHearing() {
+    return this.isTthCanton() || this.isTthBoUser();
+  }
+
+  isTthCanton() {
     const applicationUserPermission = this.getApplicationUserPermission(
       ApplicationType.TimetableHearing
     );
-    return (
+    const isTthCanton =
       this.isAdmin ||
       [
         ApplicationRole.Supervisor,
         ApplicationRole.Writer,
         ApplicationRole.ExplicitReader,
-      ].includes(applicationUserPermission.role)
-    );
+      ].includes(applicationUserPermission.role);
+
+    return isTthCanton && !this.isTthBoUser();
   }
 
   isTthCanton(): boolean {
@@ -263,5 +268,18 @@ export class PermissionService {
       return TerminationDecisionPersonEnum.Nova;
     }
     return undefined;
+  }
+
+  isTthBoUser(): boolean {
+    const applicationUserPermission = this.getApplicationUserPermission(
+      ApplicationType.TimetableHearing
+    );
+    const isTthBoUser = applicationUserPermission.permissionRestrictions.some(
+      (i) =>
+        [PermissionRestrictionType.TransportCompanyDossierAnswer].includes(
+          i.type!
+        ) && i.valueAsString === 'true'
+    );
+    return isTthBoUser && !this.isTthCanton();
   }
 }

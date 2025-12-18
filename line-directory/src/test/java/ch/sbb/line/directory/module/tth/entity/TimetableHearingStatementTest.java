@@ -5,14 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.BaseValidatorTest;
-import ch.sbb.line.directory.module.tth.entity.StatementDocument;
-import ch.sbb.line.directory.module.tth.entity.StatementSender;
-import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement.TimetableHearingStatementBuilder;
 import ch.sbb.line.directory.shared.transportcompany.entity.SharedTransportCompany;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -109,6 +104,20 @@ class TimetableHearingStatementTest extends BaseValidatorTest {
 
     // then
     assertThat(constraintViolations).hasSize(1);
+  }
+
+  @Test
+  void shouldGetBoContactMail() {
+    // given
+    TimetableHearingStatement statement = minimalStatement()
+        .dossierContactMail("yb@forza.ch")
+        .build();
+
+    //when
+    String contactMail = statement.getBoContactMail();
+
+    // then
+    assertThat(contactMail).isEqualTo("yb@forza.ch");
   }
 
   @Test
