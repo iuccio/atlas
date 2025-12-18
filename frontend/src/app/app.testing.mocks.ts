@@ -3,7 +3,9 @@ import { FormControl, FormGroup } from '@angular/forms';
 import {
   ApplicationRole,
   ApplicationType,
+  TimetableFieldNumber,
   TimetableHearingStatementV2,
+  TransportCompany,
 } from './api';
 import { AtlasButtonType } from './core/components/button/atlas-button.type';
 import { TableColumn } from './core/components/table/table-column';
@@ -55,6 +57,40 @@ export class MockBoSelectComponent {
   @Input() formModus = true;
   @Input() formGroup!: FormGroup;
   @Input() sboidsRestrictions: string[] = [];
+}
+
+@Component({
+  selector: 'tu-select',
+  template: '<p>Mock TU Select Component</p>',
+})
+export class MockTuSelectComponent {
+  @Input() valueExtraction = '';
+  @Input() controlName!: string;
+  @Input() formModus = true;
+  @Input() formGroup!: FormGroup;
+  @Output() selectedTransportCompanyChanged = new EventEmitter();
+  @Output() tuSelectionChanged = new EventEmitter<TransportCompany>();
+
+  transportCompanies: Observable<TransportCompany[]> = of([]);
+}
+
+@Component({
+  selector: 'ttfn-select',
+  template: '<p>Mock TTFN Select Component</p>',
+})
+export class MockTimetableFieldNumberSelectComponent {
+  @Input() valueExtraction = 'ttfnid';
+  @Input() controlName!: string;
+  @Input() formModus = true;
+  @Input() required = true;
+  @Input() formGroup!: FormGroup;
+  @Input() validOn: Date | undefined = undefined;
+  @Input() disabled!: boolean;
+
+  @Output() selectedTimetableFieldNumberChanged = new EventEmitter();
+  @Output() ttfnSelectionChanged = new EventEmitter<TimetableFieldNumber>();
+
+  timetableFieldNumbers: Observable<TimetableFieldNumber[]> = of([]);
 }
 
 @Component({

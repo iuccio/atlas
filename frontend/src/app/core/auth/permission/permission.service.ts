@@ -85,6 +85,14 @@ export class PermissionService {
     );
   }
 
+  isTthCanton(): boolean {
+    return true;
+  }
+
+  isTthBoUser(): boolean {
+    return false;
+  }
+
   mayAccessTtfn() {
     const applicationUserPermission = this.getApplicationUserPermission(
       ApplicationType.Ttfn

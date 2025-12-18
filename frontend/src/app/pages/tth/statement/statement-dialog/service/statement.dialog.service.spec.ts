@@ -9,7 +9,7 @@ import {
   StatementDetailFormGroup,
   StatementSenderFormGroup,
   TimetableHearingStatementDocumentGroup,
-} from '../../statement-detail-form-group';
+} from '../../statement-detail/statement-detail-form-group';
 
 const document = new FormGroup<TimetableHearingStatementDocumentGroup>({
   id: new FormControl(),

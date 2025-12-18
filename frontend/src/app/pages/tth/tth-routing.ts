@@ -5,10 +5,27 @@ import { HearingStatus } from '../../api';
 
 import { statementResolver } from './statement/statement-detail.resolver';
 import { canLeaveDirtyForm } from '../../core/leave-guard/leave-dirty-form-guard.service';
+import { inject } from '@angular/core';
+import { PermissionService } from '../../core/auth/permission/permission.service';
 
 const statementActiveDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ACTIVE.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
 const statementPlannedDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_PLANNED.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
 const statementArchivedDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ARCHIVED.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
+
+export async function loadStatementDetailRoute() {
+  const permissionService = inject(PermissionService);
+  if (permissionService.isTthBoUser()) {
+    const m =
+      await import('./statement/statement-detail/bo-statement-detail/bo-statement-detail.component');
+    return m.BoStatementDetailComponent;
+  }
+  if (permissionService.isTthCanton()) {
+    const m =
+      await import('./statement/statement-detail/canton-statement-detail/canton-statement-detail.component');
+    return m.CantonStatementDetailComponent;
+  }
+  throw new Error('No component statement found for you!!!');
+}
 
 export const routes: Routes = [
   {
@@ -20,10 +37,9 @@ export const routes: Routes = [
   },
   {
     path: statementActiveDetailPath,
-    loadComponent: () =>
-      import('./statement/statement-detail.component').then(
-        (m) => m.StatementDetailComponent
-      ),
+    loadComponent: async () => {
+      return await loadStatementDetailRoute();
+    },
     canDeactivate: [canLeaveDirtyForm],
     resolve: {
       statement: statementResolver,
@@ -36,9 +52,10 @@ export const routes: Routes = [
   {
     path: statementPlannedDetailPath,
     loadComponent: () =>
-      import('./statement/statement-detail.component').then(
-        (m) => m.StatementDetailComponent
+      import('././statement/statement-detail/canton-statement-detail/canton-statement-detail.component').then(
+        (m) => m.CantonStatementDetailComponent
       ),
+    //todo: canActivate[isCantonUser]
     canDeactivate: [canLeaveDirtyForm],
     resolve: {
       statement: statementResolver,
@@ -51,9 +68,10 @@ export const routes: Routes = [
   {
     path: statementArchivedDetailPath,
     loadComponent: () =>
-      import('./statement/statement-detail.component').then(
-        (m) => m.StatementDetailComponent
+      import('./statement/statement-detail/canton-statement-detail/canton-statement-detail.component').then(
+        (m) => m.CantonStatementDetailComponent
       ),
+    //todo: canActivate[isCantonUser]
     canDeactivate: [canLeaveDirtyForm],
     resolve: {
       statement: statementResolver,
@@ -69,6 +87,7 @@ export const routes: Routes = [
       import('./overview-tab/overview-tab.component').then(
         (m) => m.OverviewTabComponent
       ),
+    //todo: canActivate[isCantonUser]
     children: [
       {
         path: Pages.TTH_ACTIVE.path,

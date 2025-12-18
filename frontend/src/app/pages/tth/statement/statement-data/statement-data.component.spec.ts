@@ -1,0 +1,104 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { StatementDataComponent } from './statement-data.component';
+import {
+  MockTimetableFieldNumberSelectComponent,
+  MockTuSelectComponent,
+  translateServiceProvider,
+} from '../../../../app.testing.mocks';
+import { provideHttpClient } from '@angular/common/http';
+import { statement, statementFormGroup } from '../statement-test-util.spec';
+import { TransportCompanySelectComponent } from '../../../../core/form-components/tu-select/transport-company-select.component';
+import { TimetableFieldNumberSelectComponent } from '../../../../core/form-components/ttfn-select/timetable-field-number-select.component';
+import {
+  TimetableFieldNumber,
+  TimetableHearingStatementResponsibleTransportCompany,
+  TransportCompany,
+} from '../../../../api';
+import { TimetableHearingStatementInternalService } from '../../../../api/service/lidi/timetable-hearing-statement-internal.service';
+import { of } from 'rxjs';
+
+const transportCompany: TransportCompany = {
+  id: 1234,
+  description: 'SBB',
+};
+
+const mockTimetableHearingStatementsService = jasmine.createSpyObj(
+  'TimetableHearingStatementInternalService',
+  ['getResponsibleTransportCompanies']
+);
+
+mockTimetableHearingStatementsService.getResponsibleTransportCompanies.and.returnValue(
+  of([transportCompany])
+);
+
+describe('StatementData', () => {
+  let component: StatementDataComponent;
+  let fixture: ComponentFixture<StatementDataComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [StatementDataComponent, MockTuSelectComponent],
+      providers: [
+        translateServiceProvider,
+        provideHttpClient(),
+        {
+          provide: TimetableHearingStatementInternalService,
+          useValue: mockTimetableHearingStatementsService,
+        },
+      ],
+    })
+      .overrideComponent(StatementDataComponent, {
+        remove: {
+          imports: [
+            TransportCompanySelectComponent,
+            TimetableFieldNumberSelectComponent,
+          ],
+        },
+        add: {
+          imports: [
+            MockTuSelectComponent,
+            MockTimetableFieldNumberSelectComponent,
+          ],
+        },
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(StatementDataComponent);
+    component = fixture.componentInstance;
+    fixture.componentRef.setInput('form', statementFormGroup);
+    fixture.componentRef.setInput('statement', statement);
+    fixture.componentRef.setInput('ttfnValidOn', new Date());
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+  it('should ttfnSelectionChanged', () => {
+    //given
+    const ttfn: TimetableFieldNumber = {
+      number: '30.300',
+      status: 'DRAFT',
+      businessOrganisation: 'ch:1:sboid:123',
+      validFrom: new Date(),
+      validTo: new Date(),
+    };
+    //when
+    component.ttfnSelectionChanged(ttfn);
+    //then
+    expect(
+      component.form().controls.responsibleTransportCompanies.value?.length
+    ).toBe(1);
+    const transportCompanies:
+      | TimetableHearingStatementResponsibleTransportCompany[]
+      | null
+      | undefined = component
+      .form()
+      .controls.responsibleTransportCompanies.getRawValue();
+    if (transportCompanies) {
+      expect(transportCompanies.length).toBe(1);
+      expect(transportCompanies[0]).toBe(transportCompany);
+    }
+  });
+});
