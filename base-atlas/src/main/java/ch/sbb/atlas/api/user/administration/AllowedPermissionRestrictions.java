@@ -37,12 +37,14 @@ public class AllowedPermissionRestrictions {
     ALLOWED_PERMISSION_RESTRICTIONS.put(Pair.of(ApplicationType.BODI, ApplicationRole.SUPERVISOR), Set.of());
 
     // TIMETABLE_HEARING
-    ALLOWED_PERMISSION_RESTRICTIONS.put(Pair.of(ApplicationType.TIMETABLE_HEARING, ApplicationRole.READER), Set.of());
+    ALLOWED_PERMISSION_RESTRICTIONS.put(Pair.of(ApplicationType.TIMETABLE_HEARING, ApplicationRole.READER),
+        Set.of(PermissionRestrictionType.TRANSPORT_COMPANY_DOSSIER_ANSWER));
     ALLOWED_PERMISSION_RESTRICTIONS.put(Pair.of(ApplicationType.TIMETABLE_HEARING, ApplicationRole.EXPLICIT_READER),
         Set.of());
     ALLOWED_PERMISSION_RESTRICTIONS.put(Pair.of(ApplicationType.TIMETABLE_HEARING, ApplicationRole.WRITER),
         Set.of(PermissionRestrictionType.CANTON));
-    ALLOWED_PERMISSION_RESTRICTIONS.put(Pair.of(ApplicationType.TIMETABLE_HEARING, ApplicationRole.SUPERVISOR), Set.of());
+    ALLOWED_PERMISSION_RESTRICTIONS.put(Pair.of(ApplicationType.TIMETABLE_HEARING, ApplicationRole.SUPERVISOR),
+        Set.of());
 
     // SEPODI
     ALLOWED_PERMISSION_RESTRICTIONS.put(Pair.of(ApplicationType.SEPODI, ApplicationRole.READER),

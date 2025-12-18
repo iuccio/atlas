@@ -9,6 +9,7 @@ import ch.sbb.atlas.api.user.administration.UserPermissionCreateModel;
 import ch.sbb.atlas.kafka.model.user.admin.ApplicationType;
 import ch.sbb.atlas.kafka.model.user.admin.PermissionRestrictionType;
 import ch.sbb.atlas.kafka.model.user.admin.UserAdministrationModel;
+import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.atlas.service.UserService;
 import ch.sbb.atlas.user.administration.mapper.KafkaModelMapper;
 import ch.sbb.atlas.user.administration.module.clientcredential.mapper.ClientCredentialMapper;
@@ -29,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -63,8 +65,20 @@ public class UserAdministrationController implements UserAdministrationApiV1 {
     Optional<UserModel> userModel = graphApiService.resolveUsers(List.of(userId))
         .stream()
         .findFirst();
-    UserModel user = userModel.orElseThrow(() -> new IllegalStateException("User is missing"));
+    UserModel user = userModel.orElseThrow(() -> displayUserNotFoundException(userId));
     user.setPermissions(getUserPermissionModels(userId));
+    return user;
+  }
+
+  @Override
+  public UserModel getUserByMail(String mail) {
+    Optional<UserModel> userModel = graphApiService.searchUserByMail(mail)
+        .stream()
+        .findFirst();
+
+    UserModel user = userModel.orElseThrow(() -> displayUserNotFoundException(mail));
+
+    user.setPermissions(getUserPermissionModels(user.getUserId()));
     return user;
   }
 
@@ -77,7 +91,7 @@ public class UserAdministrationController implements UserAdministrationApiV1 {
 
     UserModel userModel = graphApiService.resolveUsers(List.of(userId))
         .stream()
-        .findFirst().orElseThrow(() -> new IllegalStateException("User is missing"));
+        .findFirst().orElseThrow(() -> displayUserNotFoundException(userId));
     return UserDisplayNameModel.toModel(userModel);
   }
 
@@ -166,4 +180,12 @@ public class UserAdministrationController implements UserAdministrationApiV1 {
     log.info("ClientCredentials were synched to kafka");
   }
 
+  private SimpleAtlasException displayUserNotFoundException(String user) {
+    return SimpleAtlasException.builder()
+        .message("User not found: " + user)
+        .status(HttpStatus.NOT_FOUND)
+        .displayCode("USER_ADMIN.NOT_FOUND")
+        .error("User not Found")
+        .build();
+  }
 }

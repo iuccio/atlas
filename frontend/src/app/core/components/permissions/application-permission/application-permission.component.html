@@ -130,6 +130,19 @@
             ></atlas-slide-toggle>
           </div>
         }
+        @if (showTransportCompanyDossierAnswer) {
+          <div class="me-5">
+            <app-atlas-label-field
+              fieldLabel="USER_ADMIN.TRANSPORT_COMPANY"
+            ></app-atlas-label-field>
+            <atlas-slide-toggle
+              (toggleChange)="onTransportCompanyDossierToggle($event)"
+              [formGroup]="permissionsForm"
+              controlName="transportCompanyDossierAnswer"
+              [disabled]="form.disabled"
+            ></atlas-slide-toggle>
+          </div>
+        }
       </div>
     </div>
   }

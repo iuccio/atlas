@@ -401,6 +401,24 @@ describe('PermissionService', () => {
       expect(mayAccessTth).toBeFalse();
     });
 
+    it('should show TTH if reader with special restriction', () => {
+      userServiceMock.permissions = [
+        {
+          application: ApplicationType.TimetableHearing,
+          role: ApplicationRole.Reader,
+          permissionRestrictions: [
+            {
+              type: PermissionRestrictionType.TransportCompanyDossierAnswer,
+              valueAsString: 'true',
+            },
+          ],
+        },
+      ];
+
+      const mayAccessTth = permissionService.mayAccessTimetableHearing();
+      expect(mayAccessTth).toBeTrue();
+    });
+
     it('should evaluate at least supervisor', () => {
       userServiceMock.permissions = [
         {
@@ -474,6 +492,53 @@ describe('PermissionService', () => {
       const terminationPermission =
         permissionService.getTerminationPermission();
       expect(terminationPermission).toEqual(TerminationDecisionPersonEnum.Nova);
+    });
+  });
+
+  describe('Permission for TTH BO', () => {
+    let permissionService: PermissionService;
+    const userServiceMock = jasmine.createSpyObj({}, { isAdmin: false });
+
+    beforeEach(() => {
+      permissionService = new PermissionService(userServiceMock);
+    });
+
+    it('should get tth bo permission true', () => {
+      userServiceMock.permissions = [
+        {
+          application: ApplicationType.TimetableHearing,
+          role: ApplicationRole.Reader,
+          permissionRestrictions: [
+            {
+              type: PermissionRestrictionType.TransportCompanyDossierAnswer,
+              valueAsString: 'true',
+            },
+          ],
+        },
+      ];
+
+      const isTthBoUser = permissionService.isTthBoUser();
+      const isCanton = permissionService.isTthCanton();
+      expect(isTthBoUser).toBeTrue();
+      expect(isCanton).toBeFalse();
+    });
+
+    it('should get tth bo permission false', () => {
+      userServiceMock.permissions = [
+        {
+          application: ApplicationType.TimetableHearing,
+          role: ApplicationRole.Reader,
+          permissionRestrictions: [
+            {
+              type: PermissionRestrictionType.TransportCompanyDossierAnswer,
+              valueAsString: 'false',
+            },
+          ],
+        },
+      ];
+
+      const isTthBoUser = permissionService.isTthBoUser();
+      expect(isTthBoUser).toBeFalse();
     });
   });
 });

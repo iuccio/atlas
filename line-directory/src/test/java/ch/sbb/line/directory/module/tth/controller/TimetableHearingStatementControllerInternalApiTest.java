@@ -928,6 +928,7 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
     BatchUpdateTimetableHearingStatementsModel updateModel =
         BatchUpdateTimetableHearingStatementsModel.builder()
             .ids(List.of(statement.getId()))
+            .dossierCanton(SwissCanton.BERN)
             .dossierId(1L)
             .dossierContactMail("uerli@bernmobil.ch")
             .statementStatus(StatementStatus.IN_REVIEW)

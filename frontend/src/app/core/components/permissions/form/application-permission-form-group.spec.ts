@@ -78,6 +78,29 @@ describe('ApplicationPermissionFormGroupBuilder', () => {
     expect(permission).toEqual(existingPermission);
   });
 
+  it('should build form for tth bo answerer', () => {
+    const existingPermission: Permission = {
+      role: ApplicationRole.Reader,
+      application: ApplicationType.TimetableHearing,
+      permissionRestrictions: [
+        {
+          type: PermissionRestrictionType.TransportCompanyDossierAnswer,
+          valueAsString: 'true',
+        },
+      ],
+    };
+
+    const formGroup =
+      ApplicationPermissionFormGroupBuilder.buildAndFillFormGroup(
+        ApplicationType.TimetableHearing,
+        existingPermission
+      );
+
+    const permission =
+      ApplicationPermissionFormGroupBuilder.formToModel(formGroup);
+    expect(permission).toEqual(existingPermission);
+  });
+
   it('should build form for tth', () => {
     const existingPermission: Permission = {
       role: ApplicationRole.Writer,

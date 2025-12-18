@@ -11,6 +11,7 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -105,6 +106,42 @@ class UserAdministrationControllerApiTest extends BaseControllerApiTest {
         .andExpect(jsonPath("$.objects[?(@.sbbUserId == 'user2')].accountStatus").value("ACTIVE"))
         .andExpect(jsonPath("$.objects[?(@.sbbUserId == 'user2')].permissions[*]").value(hasSize(1)))
         .andExpect(jsonPath("$.objects[?(@.sbbUserId == 'user2')].lastName").value("lastName"));
+  }
+
+  @Test
+  void shouldGetUserByMail() throws Exception {
+    // given
+    Mockito.when(graphApiService.searchUserByMail("user1@yb.com"))
+        .thenReturn(List.of(
+            UserModel.builder()
+                .sbbUserId("user1")
+                .lastName("lastName")
+                .mail("user1@yb.com")
+                .build()
+        ));
+    Mockito.when(userAdministrationService.getUserPermissions("user1"))
+        .thenReturn(List.of(UserPermission.builder()
+            .role(ApplicationRole.READER)
+            .application(ApplicationType.TIMETABLE_HEARING)
+            .permissionRestrictions(
+                Set.of(
+                    PermissionRestriction.builder()
+                        .type(PermissionRestrictionType.TRANSPORT_COMPANY_DOSSIER_ANSWER)
+                        .restriction("true")
+                        .build()
+                )
+            )
+            .build()));
+
+    // when & then
+    mvc.perform(get("/v1/users/mail?mail=user1@yb.com"))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.sbbUserId").value("user1"))
+        .andExpect(jsonPath("$.lastName").value("lastName"))
+        .andExpect(jsonPath("$.permissions").value(hasSize(1)))
+        .andExpect(jsonPath("$.permissions[0].role").value("READER"))
+        .andExpect(jsonPath("$.permissions[0].application").value("TIMETABLE_HEARING"));
   }
 
   @Test

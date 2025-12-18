@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public interface TimetableHearingYearApiInternal {
 
   @GetMapping
-  @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin"
-      + ".ApplicationType).TIMETABLE_HEARING)")
   List<TimetableHearingYearModel> getHearingYears(
       @Parameter @RequestParam(required = false) List<HearingStatus> statusChoices);
 
