@@ -79,14 +79,15 @@ export class PermissionService {
     const applicationUserPermission = this.getApplicationUserPermission(
       ApplicationType.TimetableHearing
     );
-    return (
+    const isTthCanton =
       this.isAdmin ||
       [
         ApplicationRole.Supervisor,
         ApplicationRole.Writer,
         ApplicationRole.ExplicitReader,
-      ].includes(applicationUserPermission.role)
-    );
+      ].includes(applicationUserPermission.role);
+
+    return isTthCanton && !this.isTthBoUser();
   }
 
   mayAccessTtfn() {
@@ -265,11 +266,12 @@ export class PermissionService {
     const applicationUserPermission = this.getApplicationUserPermission(
       ApplicationType.TimetableHearing
     );
-    return applicationUserPermission.permissionRestrictions.some(
+    const isTthBoUser = applicationUserPermission.permissionRestrictions.some(
       (i) =>
         [PermissionRestrictionType.TransportCompanyDossierAnswer].includes(
           i.type!
         ) && i.valueAsString === 'true'
     );
+    return isTthBoUser && !this.isTthCanton();
   }
 }
