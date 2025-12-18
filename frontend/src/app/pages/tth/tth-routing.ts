@@ -14,12 +14,12 @@ const statementArchivedDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.T
 
 export async function loadStatementDetailRoute() {
   const permissionService = inject(PermissionService);
-  if (permissionService.isTthBoUser()) {
+  if (permissionService.getTthApplicationUserType() === 'BO_TTH') {
     const m =
       await import('./statement/statement-detail/bo-statement-detail/bo-statement-detail.component');
     return m.BoStatementDetailComponent;
   }
-  if (permissionService.isTthCanton()) {
+  if (permissionService.getTthApplicationUserType() === 'CANTON_TTH') {
     const m =
       await import('./statement/statement-detail/canton-statement-detail/canton-statement-detail.component');
     return m.CantonStatementDetailComponent;
@@ -55,7 +55,6 @@ export const routes: Routes = [
       import('././statement/statement-detail/canton-statement-detail/canton-statement-detail.component').then(
         (m) => m.CantonStatementDetailComponent
       ),
-    //todo: canActivate[isCantonUser]
     canDeactivate: [canLeaveDirtyForm],
     resolve: {
       statement: statementResolver,
@@ -71,7 +70,6 @@ export const routes: Routes = [
       import('./statement/statement-detail/canton-statement-detail/canton-statement-detail.component').then(
         (m) => m.CantonStatementDetailComponent
       ),
-    //todo: canActivate[isCantonUser]
     canDeactivate: [canLeaveDirtyForm],
     resolve: {
       statement: statementResolver,
@@ -87,7 +85,6 @@ export const routes: Routes = [
       import('./overview-tab/overview-tab.component').then(
         (m) => m.OverviewTabComponent
       ),
-    //todo: canActivate[isCantonUser]
     children: [
       {
         path: Pages.TTH_ACTIVE.path,
