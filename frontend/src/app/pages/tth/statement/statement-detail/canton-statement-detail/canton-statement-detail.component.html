@@ -3,77 +3,28 @@
     <atlas-detail-page-content>
       <div class="statement-form">
         <ng-container [formGroup]="form">
-          <h1 class="font-bold-4xl mt-5">
-            {{
-              statement
-                ? ('TTH.STATEMENT.STATEMENT' | translate) + ' ' + statement.id
-                : ('TTH.STATEMENT.NEW' | translate)
-            }}
-          </h1>
-
-          <div class="d-flex flex-column col-8 mt-3 mb-5">
-            <div class="label-input-row">
-              <app-atlas-label-field fieldLabel="TTH.STATEMENT.TOPIC" />
-              <div class="col-8">
-                <atlas-text-field [formGroup]="form" controlName="topic">
-                </atlas-text-field>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex flex-row col-12 mb-4">
-            <div class="d-flex flex-column col-12">
-              <tu-select
-                [formGroup]="form"
-                controlName="responsibleTransportCompanies"
-                data-cy="responsibleTransportCompanies"
-              ></tu-select>
-            </div>
-          </div>
-          <div class="d-flex flex-row col-12 mb-3 mt-4">
-            <div class="d-flex flex-column col-12">
-              <ttfn-select
-                [formGroup]="form"
-                [validOn]="ttfnValidOn"
-                controlName="ttfnid"
-                data-cy="ttfnid"
-                (ttfnSelectionChanged)="ttfnSelectionChanged($event)"
-                [required]="false"
-              ></ttfn-select>
-            </div>
-          </div>
-          <div class="d-flex flex-row col-12">
-            <div class="d-flex flex-column col-12">
-              <atlas-text-field
-                [fieldExamples]="[
-                  { label: 'FORM.FOR_EXAMPLE', translate: true },
-                  { label: 'Wiesenbach', translate: false },
-                  { label: ' |', translate: false },
-                  {
-                    label: 'FORM.MAX_CHARS',
-                    translate: true,
-                    arg: { key: 'numberOfChars', value: '255' },
-                  },
-                ]"
-                [formGroup]="form"
-                controlName="stopPlace"
-                fieldLabel="TTH.STATEMENT.STOP_POINT"
-                infoIconTitle="TTH.STATEMENT.STOP_POINT_INFO"
-              >
-              </atlas-text-field>
-            </div>
-          </div>
-
-          <atlas-statement-text
+          <atlas-statement-data
             [form]="form"
-            [isNew]="isNew"
-          ></atlas-statement-text>
+            [ttfnValidOn]="ttfnValidOn!"
+            [statement]="statement!"
+          />
+
+          <atlas-statement-text [form]="form" [isNew]="isNew" />
+
+          <app-statement-personal-information
+            [form]="form"
+            [statement]="statement!"
+          ></app-statement-personal-information>
 
           @if (form.value.documents && form.value.documents.length > 0) {
             <div class="mb-3 mt-4">
               <app-atlas-label-field
                 fieldLabel="TTH.STATEMENT.ATTACHMENTS"
               ></app-atlas-label-field>
-              @for ( document of form.controls.documents.controls;track document) {
+              @for (
+                document of form.controls.documents.controls;
+                track document
+              ) {
                 <atlas-file
                   (downloadFile)="downloadFile($event.name)"
                   (fileDeleted)="removeDocument($event.name)"
@@ -112,11 +63,6 @@
               ></atlas-file-upload>
             </ng-container>
           }
-
-          <app-statement-personal-information
-            [form]="form"
-            [statement]="statement!"
-          ></app-statement-personal-information>
 
           <div class="mt-5">
             <span class="font-bold-xl">
@@ -180,29 +126,30 @@
           }
 
           @if (form.disabled) {
-              <div class="pt-5">
-                <span class="font-bold-xl">
-                  {{ 'TTH.STATEMENT.CLARIFICATION' | translate }}
-                </span>
-                <span class="font-regular-lg">
-                  {{ 'TTH.STATEMENT.CLARIFICATION_POSTFIX' | translate }}
-                </span>
-                <atlas-spacer [divider]="true" height="10px"></atlas-spacer>
-              </div>
-              <div class="mb-3 font-regular-base">
-                {{ 'TTH.STATEMENT.CLARIFICATION_INFO' | translate }}
-              </div>
-              <atlas-button
-                (buttonClicked)="openAsMail()"
-                buttonDataCy="open-in-mail"
-                buttonText="TTH.STATEMENT.CLARIFICATION_MAIL"
-                buttonType="create"
-              >
-                <ng-template #rightIcon>
-                  <i class="ps-2 bi bi-envelope"></i>
-                </ng-template>
-              </atlas-button>
+            <div class="pt-5">
+              <span class="font-bold-xl">
+                {{ 'TTH.STATEMENT.CLARIFICATION' | translate }}
+              </span>
+              <span class="font-regular-lg">
+                {{ 'TTH.STATEMENT.CLARIFICATION_POSTFIX' | translate }}
+              </span>
+              <atlas-spacer [divider]="true" height="10px"></atlas-spacer>
+            </div>
+            <div class="mb-3 font-regular-base">
+              {{ 'TTH.STATEMENT.CLARIFICATION_INFO' | translate }}
+            </div>
+            <atlas-button
+              (buttonClicked)="openAsMail()"
+              buttonDataCy="open-in-mail"
+              buttonText="TTH.STATEMENT.CLARIFICATION_MAIL"
+              buttonType="create"
+            >
+              <ng-template #rightIcon>
+                <i class="ps-2 bi bi-envelope"></i>
+              </ng-template>
+            </atlas-button>
           }
+
           <h1 class="font-bold-xl pt-5">
             {{ 'TTH.STATEMENT.STATUS_JUSTIFICATION' | translate }}
             <atlas-spacer [divider]="true" height="20px"></atlas-spacer>

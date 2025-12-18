@@ -8,7 +8,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TimetableHearingStatementV2 } from '../../../../api';
 import { Subject } from 'rxjs';
 import { NotificationService } from '../../../../core/notification/notification.service';
-import { StatementDetailFormGroup } from '../statement-detail-form-group';
+import { StatementDetailFormGroup } from '../statement-detail/statement-detail-form-group';
 import { takeUntil } from 'rxjs/operators';
 import { ValidationService } from 'src/app/core/validation/validation.service';
 import { TimetableHearingStatementInternalService } from '../../../../api/service/lidi/timetable-hearing-statement-internal.service';
