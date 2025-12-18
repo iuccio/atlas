@@ -517,8 +517,10 @@ describe('PermissionService', () => {
         },
       ];
 
-      const terminationPermission = permissionService.isTthBoUser();
-      expect(terminationPermission).toBeTrue();
+      const isTthBoUser = permissionService.isTthBoUser();
+      const isCanton = permissionService.isTthCanton();
+      expect(isTthBoUser).toBeTrue();
+      expect(isCanton).toBeFalse();
     });
 
     it('should get tth bo permission false', () => {
@@ -535,8 +537,8 @@ describe('PermissionService', () => {
         },
       ];
 
-      const terminationPermission = permissionService.isTthBoUser();
-      expect(terminationPermission).toBeFalse();
+      const isTthBoUser = permissionService.isTthBoUser();
+      expect(isTthBoUser).toBeFalse();
     });
   });
 });
