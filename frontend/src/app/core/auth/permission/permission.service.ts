@@ -11,6 +11,12 @@ import { BulkImportPermission } from './bulk-import-permission';
 import { TerminationDecision } from '../../../api/model/terminationDecision';
 import TerminationDecisionPersonEnum = TerminationDecision.TerminationDecisionPersonEnum;
 
+export type TthApplicationUserType = 'BO_TTH' | 'CANTON_TTH';
+export const TthApplicationUserType = {
+  BoTth: 'BO_TTH' as TthApplicationUserType,
+  CantonTth: 'CANTON_TTH' as TthApplicationUserType,
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -73,29 +79,6 @@ export class PermissionService {
 
   mayAccessTimetableHearing() {
     return this.isTthCanton() || this.isTthBoUser();
-  }
-
-  isTthCanton() {
-    const applicationUserPermission = this.getApplicationUserPermission(
-      ApplicationType.TimetableHearing
-    );
-    const isTthCanton =
-      this.isAdmin ||
-      [
-        ApplicationRole.Supervisor,
-        ApplicationRole.Writer,
-        ApplicationRole.ExplicitReader,
-      ].includes(applicationUserPermission.role);
-
-    return isTthCanton && !this.isTthBoUser();
-  }
-
-  isTthCanton(): boolean {
-    return true;
-  }
-
-  isTthBoUser(): boolean {
-    return false;
   }
 
   mayAccessTtfn() {
@@ -274,12 +257,35 @@ export class PermissionService {
     const applicationUserPermission = this.getApplicationUserPermission(
       ApplicationType.TimetableHearing
     );
-    const isTthBoUser = applicationUserPermission.permissionRestrictions.some(
+    return applicationUserPermission.permissionRestrictions.some(
       (i) =>
         [PermissionRestrictionType.TransportCompanyDossierAnswer].includes(
           i.type!
         ) && i.valueAsString === 'true'
     );
-    return isTthBoUser && !this.isTthCanton();
+  }
+
+  isTthCanton() {
+    const applicationUserPermission = this.getApplicationUserPermission(
+      ApplicationType.TimetableHearing
+    );
+    return (
+      this.isAdmin ||
+      [
+        ApplicationRole.Supervisor,
+        ApplicationRole.Writer,
+        ApplicationRole.ExplicitReader,
+      ].includes(applicationUserPermission.role)
+    );
+  }
+
+  getTthApplicationUserType(): TthApplicationUserType {
+    if (this.isTthCanton() === this.isTthBoUser()) {
+      throw new Error('Wrong Tth application user type configuration.');
+    } else if (this.isTthCanton()) {
+      return TthApplicationUserType.CantonTth;
+    } else {
+      return TthApplicationUserType.BoTth;
+    }
   }
 }

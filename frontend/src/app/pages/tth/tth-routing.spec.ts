@@ -17,11 +17,11 @@ describe('TTH Routing', () => {
 
   it('should load CantonStatementDetailComponent', () => {
     const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'isTthCanton',
-      'isTthBoUser',
+      'getTthApplicationUserType',
     ]);
-    permissionServiceSpy.isTthCanton.and.returnValue(true);
-    permissionServiceSpy.isTthBoUser.and.returnValue(false);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
 
     TestBed.configureTestingModule({
       providers: [
@@ -46,11 +46,9 @@ describe('TTH Routing', () => {
 
   it('should load BoStatementDetailComponent', () => {
     const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'isTthCanton',
-      'isTthBoUser',
+      'getTthApplicationUserType',
     ]);
-    permissionServiceSpy.isTthCanton.and.returnValue(false);
-    permissionServiceSpy.isTthBoUser.and.returnValue(true);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
