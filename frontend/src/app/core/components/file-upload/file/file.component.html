@@ -1,5 +1,9 @@
 <ng-container #checkBox *ngTemplateOutlet="checkBox"></ng-container>
-<div class="file-container d-flex flex-row col-12 p-2 mb-1 mt-1" (click)="$event.stopPropagation()">
+<div
+  class="file-container d-flex flex-row col-12 p-2 mb-1 mt-1"
+  (click)="$event.stopPropagation()"
+  (keydown.enter)="$event.stopPropagation()"
+>
   <div class="d-flex flex-column col-8">
     <div class="text-truncate" [title]="file.name">{{ file.name }}</div>
   </div>
@@ -8,12 +12,17 @@
   </div>
   <div class="d-flex flex-row col-1">
     @if (deleteEnabled) {
-      <i class="bi bi-trash" (click)="onDelete(); $event.stopPropagation()"></i>
+      <i
+        class="bi bi-trash"
+        (click)="onDelete(); $event.stopPropagation()"
+        (keydown.enter)="onDelete(); $event.stopPropagation()"
+      ></i>
     }
     @if (downloadEnabled) {
       <i
         class="bi bi-download"
         (click)="download(); $event.stopPropagation()"
+        (keydown.enter)="download(); $event.stopPropagation()"
       ></i>
     }
   </div>
