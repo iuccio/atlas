@@ -3,6 +3,9 @@
   atlasFileDrop
   (filesDropped)="onFilesDropped($event)"
   (click)="maxFileCount !== uploadedFiles.length && selectFilesFromSystem()"
+  (keydown.space)="
+    maxFileCount !== uploadedFiles.length && selectFilesFromSystem()
+  "
 >
   <div class="file-upload-description">
     {{ 'COMMON.FILEUPLOAD.DROPZONE' | translate }}
