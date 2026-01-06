@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ContentChild,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef,
+} from '@angular/core';
 import {
   MatSort,
   MatSortHeader,
@@ -14,7 +22,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { TableFilter } from '../table-filter/config/table-filter';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-import { NgClass } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { TableFilterComponent } from '../table-filter/table-filter.component';
 import {
   MatCell,
@@ -65,6 +73,7 @@ import { FormatPipe } from './pipe/format.pipe';
     TranslatePipe,
     ShowTitlePipe,
     FormatPipe,
+    NgTemplateOutlet,
   ],
   providers: [TranslatePipe],
 })
@@ -89,6 +98,8 @@ export class TableComponent<DATATYPE> implements OnInit {
   @Output() buttonClickEvent = new EventEmitter<any>();
   @Output() checkedBoxEvent = new EventEmitter<SelectionModel<DATATYPE>>();
   isLoading = true;
+
+  @ContentChild('customCell') customCell!: TemplateRef<any>;
 
   constructor(private readonly tableService: TableService) {}
 
