@@ -71,10 +71,8 @@
     }
   </mat-select>
   @if (controlName) {
-    @let ctrl = formGroup.get(controlName);
     <atlas-field-error
-      [control]="ctrl"
-      [ctrlErrors]="ctrl?.errors"
+      [control]="formGroup.get(controlName)"
     ></atlas-field-error>
   }
 </div>

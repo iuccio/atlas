@@ -76,11 +76,7 @@
         </mat-radio-button>
       }
     </mat-radio-group>
-    @let ctrlSelectedType = form.get('selectedType');
-    <atlas-field-error
-      [control]="ctrlSelectedType"
-      [ctrlErrors]="ctrlSelectedType?.errors"
-    ></atlas-field-error>
+    <atlas-field-error [control]="form.get('selectedType')"></atlas-field-error>
   </div>
 
   @if (form.controls.spTypeGroup) {
@@ -113,10 +109,8 @@
           <mat-checkbox formControlName="stopPoint" data-cy="checkboxStopPoint">
             {{ 'SEPODI.SERVICE_POINTS.STOP_POINT' | translate }}
           </mat-checkbox>
-          @let ctrlStopPoint = form.get('spTypeGroup.stopPoint');
           <atlas-field-error
-            [control]="ctrlStopPoint"
-            [ctrlErrors]="ctrlStopPoint?.errors"
+            [control]="form.get('spTypeGroup.stopPoint')"
           ></atlas-field-error>
         </div>
 
@@ -155,10 +149,8 @@
           >
             {{ 'SEPODI.SERVICE_POINTS.FREIGHT_SERVICE_POINT' | translate }}
           </mat-checkbox>
-          @let ctrlFreightSP = form.get('spTypeGroup.freightServicePoint');
           <atlas-field-error
-            [control]="ctrlFreightSP"
-            [ctrlErrors]="ctrlFreightSP?.errors"
+            [control]="form.get('spTypeGroup.freightServicePoint')"
           ></atlas-field-error>
         </div>
 

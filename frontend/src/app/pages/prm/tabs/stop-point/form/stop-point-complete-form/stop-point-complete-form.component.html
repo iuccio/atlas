@@ -12,10 +12,8 @@
     <mat-checkbox formControlName="interoperable" data-cy="interoperable">
       {{ 'PRM.STOP_POINTS.FORM.INTEROPERABLE' | translate }}
     </mat-checkbox>
-    @let ctrl = form.get('interoperable');
     <atlas-field-error
-      [control]="ctrl"
-      [ctrlErrors]="ctrl?.errors"
+      [control]="form.get('interoperable')"
     ></atlas-field-error>
   </div>
 </div>

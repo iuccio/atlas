@@ -141,10 +141,8 @@
               {{ 'COMMON.NODATAFOUND' | translate }}
             </div>
             @if (form.controls.sectorSloids) {
-              @let ctrl = form.get('sectorSloids');
               <atlas-field-error
-                [control]="ctrl"
-                [ctrlErrors]="ctrl?.errors"
+                [control]="form.get('sectorSloids')"
               ></atlas-field-error>
             }
           }

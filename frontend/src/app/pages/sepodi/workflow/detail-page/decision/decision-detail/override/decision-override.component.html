@@ -32,10 +32,8 @@
       <mat-radio-button [value]="JudgementType.No">
         {{ 'WORKFLOW.DECISION.OVERRIDE_DECLINE' | translate }}
       </mat-radio-button>
-      @let ctrl = formGroup.get('fotJudgement');
       <atlas-field-error
-        [control]="ctrl"
-        [ctrlErrors]="ctrl?.errors"
+        [control]="formGroup.get('fotJudgement')"
       ></atlas-field-error>
     </mat-radio-group>
 
