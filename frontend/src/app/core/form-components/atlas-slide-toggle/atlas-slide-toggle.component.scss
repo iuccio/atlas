@@ -23,6 +23,11 @@
   background-color: variables.$errorColor;
 }
 
+.slide-track-neutral {
+  @extend .slide-track;
+  background-color: variables.$primary-400;
+}
+
 .slide-track-on {
   @extend .slide-track;
   background-color: variables.$successColor;

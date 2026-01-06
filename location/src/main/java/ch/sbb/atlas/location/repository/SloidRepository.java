@@ -1,5 +1,6 @@
 package ch.sbb.atlas.location.repository;
 
+import ch.sbb.atlas.api.location.SloidLocationModel;
 import ch.sbb.atlas.api.location.SloidType;
 import ch.sbb.atlas.model.AtlasListUtil;
 import ch.sbb.atlas.servicepoint.Country;
@@ -27,6 +28,9 @@ public class SloidRepository {
   private static final String SECTOR_SEQ = "sector_seq";
   public static final int BATCH_SIZE = 5_000;
 
+  public static final String SLOID = "sloid";
+  public static final String SLOIDTYPE = "sloidtype";
+
   @Qualifier("locationJdbcTemplate")
   private final NamedParameterJdbcTemplate locationJdbcTemplate;
 
@@ -40,7 +44,7 @@ public class SloidRepository {
     String sqlQuery = "select distinct sloid from allocated_sloid where sloid is not null and "
         + "sloidtype = :sloidType;";
     return new HashSet<>(locationJdbcTemplate.query(sqlQuery, mapSqlParameterSource,
-        (rs, row) -> rs.getString("sloid")));
+        (rs, row) -> rs.getString(SLOID)));
   }
 
   public Integer getNextSeqValue(SloidType sloidType) {
@@ -59,7 +63,7 @@ public class SloidRepository {
 
   public String insertSloid(String sloid, SloidType sloidType) {
     MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-    mapSqlParameterSource.addValue("sloid", sloid);
+    mapSqlParameterSource.addValue(SLOID, sloid);
     mapSqlParameterSource.addValue("sloidType", sloidType.name());
     String sqlQuery = "insert into allocated_sloid (sloid, sloidtype) values (:sloid, :sloidType);";
     try {
@@ -76,12 +80,12 @@ public class SloidRepository {
     String sqlQuery = "select sloid from available_service_point_sloid where country = :country "
         + "and claimed = false limit 1;";
     return locationJdbcTemplate.queryForObject(sqlQuery, mapSqlParameterSource,
-        (rs, row) -> rs.getString("sloid"));
+        (rs, row) -> rs.getString(SLOID));
   }
 
   public boolean isSloidAllocated(String sloid) {
     MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-    mapSqlParameterSource.addValue("sloid", sloid);
+    mapSqlParameterSource.addValue(SLOID, sloid);
     String sqlQuery = "select count(*) from allocated_sloid where sloid = :sloid;";
     Byte nbOfFoundSloids = locationJdbcTemplate.queryForObject(sqlQuery, mapSqlParameterSource,
         (rs, row) -> rs.getByte(1));
@@ -93,7 +97,7 @@ public class SloidRepository {
 
   public boolean isServicePointSloidAvailable(String sloid) {
     MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-    mapSqlParameterSource.addValue("sloid", sloid);
+    mapSqlParameterSource.addValue(SLOID, sloid);
     String sqlQuery = "select claimed from available_service_point_sloid where sloid = :sloid;";
     try {
       Boolean claimed = locationJdbcTemplate.queryForObject(sqlQuery, mapSqlParameterSource,
@@ -123,7 +127,7 @@ public class SloidRepository {
 
   public void setAvailableSloidToClaimed(String sloid) {
     MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-    mapSqlParameterSource.addValue("sloid", sloid);
+    mapSqlParameterSource.addValue(SLOID, sloid);
     String sqlQuery = "update available_service_point_sloid set claimed = true where sloid = "
         + ":sloid;";
     locationJdbcTemplate.update(sqlQuery, mapSqlParameterSource);
@@ -185,4 +189,11 @@ public class SloidRepository {
     });
   }
 
+  public List<SloidLocationModel> getSloid(String sloid) {
+    MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+    mapSqlParameterSource.addValue(SLOID, sloid);
+    String sqlQuery = "select sloid, sloidtype from location.location.allocated_sloid where sloid = :sloid;";
+    return locationJdbcTemplate.query(sqlQuery, mapSqlParameterSource,
+        (rs, row) -> new SloidLocationModel(rs.getString(SLOID), SloidType.valueOf(rs.getString(SLOIDTYPE))));
+  }
 }

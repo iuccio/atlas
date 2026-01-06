@@ -20,9 +20,9 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 @IntegrationTest
@@ -43,10 +43,10 @@ class SloidSyncServiceTest {
   private final NamedParameterJdbcTemplate locationJdbcTemplate;
   private final SloidRepository sloidRepository;
 
-  @MockBean
+  @MockitoBean
   private final PrmRepository prmRepository;
 
-  @MockBean
+  @MockitoBean
   private final SePoDiRepository sePoDiRepository;
 
   private final SloidSyncService sloidSyncService;

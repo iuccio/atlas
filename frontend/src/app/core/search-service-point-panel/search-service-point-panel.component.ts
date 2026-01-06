@@ -4,6 +4,14 @@ import { NgClass } from '@angular/common';
 import { SearchServicePointComponent } from '../search-service-point/search-service-point.component';
 import { AtlasButtonComponent } from '../components/button/atlas-button.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { AtlasSlideToggleComponent } from '../form-components/atlas-slide-toggle/atlas-slide-toggle.component';
+import { NavigateServicePointComponent } from '../navigate-service-point/navigate-service-point.component';
+
+export type SearchNavigationType = 'SEARCH' | 'NAVIGATION';
+export const SearchNavigationType = {
+  Search: 'SEARCH' as SearchNavigationType,
+  Navigation: 'NAVIGATION' as SearchNavigationType,
+};
 
 @Component({
   selector: 'atlas-search-service-point-panel',
@@ -14,6 +22,8 @@ import { TranslatePipe } from '@ngx-translate/core';
     SearchServicePointComponent,
     AtlasButtonComponent,
     TranslatePipe,
+    AtlasSlideToggleComponent,
+    NavigateServicePointComponent,
   ],
 })
 export class SearchServicePointPanelComponent {
@@ -21,13 +31,30 @@ export class SearchServicePointPanelComponent {
   @Output() toggleEvent = new EventEmitter<boolean>();
 
   private _showSearchPanel = true;
+  private _searchNavigationType: SearchNavigationType = 'SEARCH';
 
   get showSearchPanel() {
     return this._showSearchPanel;
   }
 
+  get searchNavigationType(): SearchNavigationType {
+    return this._searchNavigationType;
+  }
+
+  set searchNavigationType(value: SearchNavigationType) {
+    this._searchNavigationType = value;
+  }
+
   toggle() {
     this.toggleEvent.emit();
     this._showSearchPanel = !this.showSearchPanel;
+  }
+
+  changeSearchType(changeSearchType: boolean) {
+    if (changeSearchType) {
+      this.searchNavigationType = 'NAVIGATION';
+    } else {
+      this.searchNavigationType = 'SEARCH';
+    }
   }
 }
