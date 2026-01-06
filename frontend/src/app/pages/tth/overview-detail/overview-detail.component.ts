@@ -40,7 +40,7 @@ import { PermissionService } from '../../../core/auth/permission/permission.serv
 import { TimetableHearingStatementInternalService } from '../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
 import { OverviewTabHeadingComponent } from '../overview-tab/overview-tab-heading/overview-tab-heading.component';
-import { NgOptimizedImage } from '@angular/common';
+import { NgClass, NgOptimizedImage } from '@angular/common';
 import { SelectComponent } from '../../../core/form-components/select/select.component';
 import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
 import { AtlasButtonComponent } from '../../../core/components/button/atlas-button.component';
@@ -49,6 +49,8 @@ import { TableComponent } from '../../../core/components/table/table.component';
 import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
 import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
 import { DialogData } from '../../../core/components/dialog/dialog.data';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-detail',
@@ -65,6 +67,12 @@ import { DialogData } from '../../../core/components/dialog/dialog.data';
     DisplayDatePipe,
     TranslatePipe,
     NgOptimizedImage,
+    MatMenuTrigger,
+    MatIconButton,
+    MatMenu,
+    MatMenuItem,
+    NgOptimizedImage,
+    NgClass,
   ],
 })
 export class OverviewDetailComponent implements OnInit {

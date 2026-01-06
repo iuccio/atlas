@@ -10,6 +10,7 @@ export interface TableColumn<TYPE> {
   dropdown?: ColumnDropDown;
   checkbox?: ColumnCheckbox;
   button?: Button;
+  customCell?: boolean;
   icon?: Icon;
   callback?: (...args: any[]) => any;
   valuePath?: string;

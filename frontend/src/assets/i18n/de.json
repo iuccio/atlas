@@ -855,7 +855,9 @@
       "ADD_NEW_TIMETABLE_HEARING": "Neue Fahrplananhörung anlegen",
       "START_TIMETABLE_HEARING": "Dieses Fahrplanjahr starten",
       "CANCEL_COLLECTING_ACTION": "Sammelaktion beenden",
-      "CLOSE_TIMETABLE_HEARING": "Fahrplanjahr schliessen"
+      "CLOSE_TIMETABLE_HEARING": "Fahrplanjahr schliessen",
+      "CREATE_DOSSIER": "Dossier erstellen",
+      "ADD_TO_DOSSIER": "Hinzufügen zu einem Dossier"
     },
     "DROPDOWN": {
       "COLLECTING_STATUS_CHANGE_ACTION": {
