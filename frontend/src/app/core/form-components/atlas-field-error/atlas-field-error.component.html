@@ -1,6 +1,6 @@
-@if (control()?.touched) {
+@if (control()?.dirty || control()?.touched) {
   <div>
-    @for (validationError of errors(); track $index) {
+    @for (validationError of errors$ | async; track $index) {
       <span class="font-regular-sm">
         {{ validationError.error | translate: validationError.params }}
       </span>

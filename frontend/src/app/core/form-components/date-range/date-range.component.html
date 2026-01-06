@@ -37,10 +37,8 @@
         </mat-datepicker>
       </div>
     </div>
-    @let ctrlValidFrom = formGroup.get(controlNameFrom);
     <atlas-field-error
-      [control]="ctrlValidFrom"
-      [ctrlErrors]="ctrlValidFrom?.errors"
+      [control]="formGroup.get(controlNameFrom)"
     ></atlas-field-error>
   </div>
   <div class="d-flex flex-column col-6 pe-3">
@@ -83,10 +81,8 @@
         <mat-datepicker #validToPicker> </mat-datepicker>
       </div>
     </div>
-    @let ctrlValidTo = formGroup.get(controlNameTo);
     <atlas-field-error
-      [control]="ctrlValidTo"
-      [ctrlErrors]="ctrlValidTo?.errors"
+      [control]="formGroup.get(controlNameTo)"
     ></atlas-field-error>
   </div>
 </div>

@@ -22,11 +22,7 @@
           **
         }
       </mat-radio-button>
-      @let ctrlJudgement = form.get('judgement');
-      <atlas-field-error
-        [control]="ctrlJudgement"
-        [ctrlErrors]="ctrlJudgement?.errors"
-      ></atlas-field-error>
+      <atlas-field-error [control]="form.get('judgement')"></atlas-field-error>
     </mat-radio-group>
 
     @if (form.controls.judgement.value === 'YES') {
@@ -54,10 +50,8 @@
             <mat-datepicker #terminationDatePicker></mat-datepicker>
           </div>
         </div>
-        @let ctrlTerminationDate = form.get('terminationDate');
         <atlas-field-error
-          [control]="ctrlTerminationDate"
-          [ctrlErrors]="ctrlTerminationDate?.errors"
+          [control]="form.get('terminationDate')"
         ></atlas-field-error>
       </div>
     }

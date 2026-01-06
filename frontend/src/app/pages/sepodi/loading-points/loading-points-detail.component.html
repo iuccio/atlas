@@ -130,10 +130,8 @@
             </mat-radio-button>
           }
         </mat-radio-group>
-        @let ctrl = form.get('connectionPoint');
         <atlas-field-error
-          [control]="ctrl"
-          [ctrlErrors]="ctrl?.errors"
+          [control]="form.get('connectionPoint')"
         ></atlas-field-error>
       </div>
     </div>

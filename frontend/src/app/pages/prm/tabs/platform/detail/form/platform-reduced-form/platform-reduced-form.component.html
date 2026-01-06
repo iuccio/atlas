@@ -98,10 +98,8 @@
         }}"
       ></atlas-form-info-icon>
     </mat-checkbox>
-    @let ctrl = form.get('partialElevation');
     <atlas-field-error
-      [control]="ctrl"
-      [ctrlErrors]="ctrl?.errors"
+      [control]="form.get('partialElevation')"
     ></atlas-field-error>
   </div>
 </div>

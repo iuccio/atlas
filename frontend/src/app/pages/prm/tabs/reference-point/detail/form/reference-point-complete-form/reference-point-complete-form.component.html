@@ -51,10 +51,8 @@
         }}"
       ></atlas-form-info-icon>
     </mat-checkbox>
-    @let ctrl = form.get('mainReferencePoint');
     <atlas-field-error
-      [control]="ctrl"
-      [ctrlErrors]="ctrl?.errors"
+      [control]="form.get('mainReferencePoint')"
     ></atlas-field-error>
   </div>
 </div>

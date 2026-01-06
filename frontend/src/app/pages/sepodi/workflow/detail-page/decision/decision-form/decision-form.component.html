@@ -62,11 +62,7 @@
       <mat-radio-button [value]="JudgementType.No">
         {{ 'WORKFLOW.DECISION.DECLINE' | translate }}
       </mat-radio-button>
-      @let ctrl = form.get('judgement');
-      <atlas-field-error
-        [control]="ctrl"
-        [ctrlErrors]="ctrl?.errors"
-      ></atlas-field-error>
+      <atlas-field-error [control]="form.get('judgement')"></atlas-field-error>
     </mat-radio-group>
   }
 
