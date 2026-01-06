@@ -126,13 +126,14 @@
         @if (column.customCell) {
           <td
             (click)="stopPropagation($event)"
+            (keydown)="stopPropagation($event)"
             *matCellDef="let row"
             class="table-cell bordered-cell"
             mat-cell
           >
             <ng-container
               *ngTemplateOutlet="
-                customCell;
+                customCell();
                 context: { $implicit: row, column: column }
               "
             ></ng-container>

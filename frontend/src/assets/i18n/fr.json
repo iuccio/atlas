@@ -855,7 +855,9 @@
       "ADD_NEW_TIMETABLE_HEARING": "Créer une nouvelle consultation du horaire",
       "START_TIMETABLE_HEARING": "Lancer cette année d'horaire",
       "CANCEL_COLLECTING_ACTION": "Terminer la collecte",
-      "CLOSE_TIMETABLE_HEARING": "Clôture de l'année horaire"
+      "CLOSE_TIMETABLE_HEARING": "Clôture de l'année horaire",
+      "CREATE_DOSSIER": "Établir le dossier",
+      "ADD_TO_DOSSIER": "Ajouter à un dossier"
     },
     "DROPDOWN": {
       "COLLECTING_STATUS_CHANGE_ACTION": {

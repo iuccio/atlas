@@ -1,6 +1,6 @@
 import {
   Component,
-  ContentChild,
+  contentChild,
   EventEmitter,
   Input,
   OnInit,
@@ -99,7 +99,7 @@ export class TableComponent<DATATYPE> implements OnInit {
   @Output() checkedBoxEvent = new EventEmitter<SelectionModel<DATATYPE>>();
   isLoading = true;
 
-  @ContentChild('customCell') customCell!: TemplateRef<any>;
+  customCell = contentChild(TemplateRef);
 
   constructor(private readonly tableService: TableService) {}
 

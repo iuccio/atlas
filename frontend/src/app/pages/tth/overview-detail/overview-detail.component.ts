@@ -514,7 +514,7 @@ export class OverviewDetailComponent implements OnInit {
       });
       this.tableColumns.forEach((value) => (value.disabled = true));
       this.disableChangeStatementStatusSelect();
-      this.disableDuplicateButtonAction();
+      this.disableMenuButton();
       this.tableService.filterConfig?.disableFilters();
     } else {
       this.removeCheckBoxViewMode();
@@ -530,13 +530,11 @@ export class OverviewDetailComponent implements OnInit {
     }
   }
 
-  private disableDuplicateButtonAction() {
+  private disableMenuButton() {
     const duplicateButtonAction = this.tableColumns.filter(
       (value) => value.value === 'etagVersion'
     )[0];
-    if (duplicateButtonAction.button) {
-      duplicateButtonAction.button.disabled = true;
-    }
+    duplicateButtonAction.disabled = true;
   }
 
   private navigateTo(canton: string, timetableYear: number) {
@@ -765,16 +763,8 @@ export class OverviewDetailComponent implements OnInit {
       {
         headerTitle: '',
         value: 'etagVersion',
-        disabled: true,
-        button: {
-          icon: 'bi bi-files',
-          clickCallback: this.duplicate,
-          applicationType: 'TIMETABLE_HEARING',
-          buttonDataCy: 'duplicate-hearing',
-          title: 'TTH.BUTTON.DUPLICATE',
-          buttonType: 'icon',
-          disabled: false,
-        },
+        disabled: false,
+        customCell: true,
       },
     ];
   }
@@ -846,4 +836,10 @@ export class OverviewDetailComponent implements OnInit {
         }
       });
   }
+
+  createDossier(statement: TimetableHearingStatementV2) {}
+
+  addToDossier(statement: TimetableHearingStatementV2) {}
+
+  switchCanton(statement: TimetableHearingStatementV2) {}
 }
