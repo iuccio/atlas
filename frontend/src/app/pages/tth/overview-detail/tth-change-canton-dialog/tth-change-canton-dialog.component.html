@@ -4,4 +4,31 @@
   [formGroup]="formGroup"
   controlName="cantonChangeComment"
   maxChars="280"
-></atlas-base-change-dialog>
+>
+  @if (!showSwissCantonDropdown) {
+    <div class="mb-4">
+      <atlas-select
+        [additionalLabelspace]="0"
+        [displayExtractor]="extractShort"
+        [formGroup]="formGroup"
+        [options]="CANTON_DROPDOWN_OPTIONS_WITHOUT_SWISS"
+        [required]="true"
+        [valueExtractor]="extractEnumCanton"
+        controlName="swissCanton"
+        dataCy="swissCanton"
+        label="TTH.SELECT_CANTON"
+        optionTranslateLabelPrefix="TTH.CANTON."
+      >
+        <ng-template #matOptionPrefix let-canton="option">
+          <img
+            alt="canton-logo"
+            class="pe-1"
+            height="28"
+            ngSrc="assets/images/cantons/{{ canton.short.toUpperCase() }}.svg"
+            width="28"
+          />
+        </ng-template>
+      </atlas-select>
+    </div>
+  }
+</atlas-base-change-dialog>

@@ -309,6 +309,7 @@ public class TimetableHearingStatementService {
       + ".ApplicationType).TIMETABLE_HEARING, #statement)")
   public void updateHearingCanton(TimetableHearingStatement statement, SwissCanton swissCanton, String comment) {
     checkThatStatementIsNotPartOfDossier(statement);
+    statement.setOldSwissCanton(statement.getSwissCanton());
     statement.setSwissCanton(swissCanton);
     if (comment != null) {
       statement.setCantonTransferComment(comment);

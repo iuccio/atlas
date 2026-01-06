@@ -15,7 +15,7 @@ export class TthChangeCantonDialogService {
   constructor(private dialog: MatDialog) {}
 
   onClick(
-    changedCanton: SwissCanton,
+    changedCanton: SwissCanton | undefined,
     tths: TimetableHearingStatementV2[]
   ): Observable<boolean> {
     const changeCantonData: ChangeCantonData = {

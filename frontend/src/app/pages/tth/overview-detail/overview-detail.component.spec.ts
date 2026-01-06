@@ -32,7 +32,6 @@ import { TimetableHearingStatementInternalService } from '../../../api/service/l
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { TableComponent } from '../../../core/components/table/table.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-tab-heading',
@@ -56,8 +55,6 @@ const mockTimetableHearingStatementsService = jasmine.createSpyObj(
   'TimetableHearingStatementInternalService',
   ['getStatements']
 );
-
-const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
 
 let router: Router;
 
@@ -141,7 +138,6 @@ async function baseTestConfiguration() {
       { provide: TranslatePipe },
       { provide: DisplayDatePipe },
       { provide: PermissionService, useValue: adminPermissionServiceMock },
-      { provide: MatDialog, useValue: dialogSpy },
       TableService,
     ],
   })
@@ -362,6 +358,41 @@ describe('TimetableHearingOverviewDetailComponent', () => {
         { id: 1, fileName: 'Document 1', fileSize: 123 },
       ];
       expect(component.isDocumentExisting(testDocuments)).toBeTrue();
+    });
+
+    it('should create dossier', () => {
+      const statement: TimetableHearingStatementV2 = {
+        swissCanton: SwissCanton.Aargau,
+        statement: 'This is a statement',
+        statementSender: {
+          emails: new Set('muster@muster.com'),
+        },
+      };
+      component.createDossier(statement);
+    });
+
+    it('should add statement to existing dossier', () => {
+      const statement: TimetableHearingStatementV2 = {
+        swissCanton: SwissCanton.Aargau,
+        statement: 'This is a statement',
+        statementSender: {
+          emails: new Set('muster@muster.com'),
+        },
+      };
+      component.addToDossier(statement);
+    });
+
+    it('should change canton via dialog', () => {
+      const statement: TimetableHearingStatementV2 = {
+        swissCanton: SwissCanton.Aargau,
+        statement: 'This is a statement',
+        statementSender: {
+          emails: new Set('muster@muster.com'),
+        },
+      };
+      component.changeCanton(statement);
+
+      expect(tthChangeCantonDialogService.onClick).toHaveBeenCalled();
     });
 
     it('should open dialog', () => {
