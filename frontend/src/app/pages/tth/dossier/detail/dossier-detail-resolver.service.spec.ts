@@ -1,7 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
-import { DossierDetailResolver } from './dossier-detail-resolver.service';
-import { of } from 'rxjs';
+import {
+  ActivatedRouteSnapshot,
+  convertToParamMap,
+  RouterStateSnapshot,
+} from '@angular/router';
+import {
+  DossierDetailResolver,
+  dossierResolver,
+} from './dossier-detail-resolver.service';
+import { Observable, of } from 'rxjs';
 import { TthDossier } from '../../../../api/model/tthDossier';
 import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
 import { HearingStatus, SwissCanton } from '../../../../api';
@@ -47,9 +54,12 @@ describe('DossierDetailResolver', () => {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
     mockRoute.data = { hearingStatus: HearingStatus.Archived };
-    const statement = resolver.resolve(mockRoute);
 
-    statement.subscribe((statement) => {
+    const result = TestBed.runInInjectionContext(() =>
+      dossierResolver(mockRoute, {} as RouterStateSnapshot)
+    ) as Observable<TthDossier | undefined>;
+
+    result.subscribe((statement) => {
       expect(statement).toBeTruthy();
       expect(statement!.id).toBe(1234);
     });

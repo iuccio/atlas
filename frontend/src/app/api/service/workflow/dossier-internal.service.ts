@@ -17,4 +17,9 @@ export class DossierInternalService {
     return this.atlasApiService.get(`${this.BASE_PATH}/${encodeURIComponent(String(id))}`);
   }
 
+  public createDossier(tthDossier: TthDossier): Observable<TthDossier> {
+    this.atlasApiService.validateParams({ tthDossier });
+    return this.atlasApiService.post(`${this.BASE_PATH}`, tthDossier);
+  }
+
 }
