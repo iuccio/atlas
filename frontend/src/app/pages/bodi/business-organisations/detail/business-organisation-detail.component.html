@@ -1,4 +1,4 @@
-<atlas-detail-page-container scrollToTop>
+<atlas-detail-page-container atlasScrollToTop>
   <atlas-detail-page-content>
     <div class="detail-wrapper mt-5">
       @if (isNew) {
@@ -20,19 +20,22 @@
           }}</span>
           <span data-cy="total-range">
             -
-            <date-range-text [dateRange]="maxValidity"></date-range-text>
+            <atlas-date-range-text
+              [dateRange]="maxValidity"
+            ></atlas-date-range-text>
           </span>
         </div>
 
         <div class="col-12 d-flex mt-3">
           <div class="d-flex flex-column col-6 pe-3">
-            <app-switch-version
-              (switchVersion)="switchVersion($event)"
-              *ngIf="showVersionSwitch"
-              [currentRecord]="selectedVersion!"
-              [records]="versions!"
-              [switchDisabled]="form.enabled"
-            ></app-switch-version>
+            @if (showVersionSwitch) {
+              <atlas-switch-version
+                (switchVersion)="switchVersion($event)"
+                [currentRecord]="selectedVersion!"
+                [records]="versions!"
+                [switchDisabled]="form.enabled"
+              ></atlas-switch-version>
+            }
           </div>
         </div>
 
@@ -60,8 +63,8 @@
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: '146', translate: false },
-                { label: ' |', translate: false },
+                { label: ' 146', translate: false },
+                { label: ' | ', translate: false },
                 { label: 'max. 99999', translate: false },
               ]"
               [formGroup]="form"
@@ -78,8 +81,8 @@
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: 'STI', translate: false },
-                { label: ' |', translate: false },
+                { label: ' STI', translate: false },
+                { label: ' | ', translate: false },
                 {
                   label: 'FORM.MAX_CHARS',
                   translate: true,
@@ -97,8 +100,8 @@
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: 'Verkehrsbetriebe STI AG', translate: false },
-                { label: ' |', translate: false },
+                { label: ' Verkehrsbetriebe STI AG', translate: false },
+                { label: ' | ', translate: false },
                 {
                   label: 'FORM.MAX_CHARS',
                   translate: true,
@@ -118,8 +121,8 @@
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: 'STI', translate: false },
-                { label: ' |', translate: false },
+                { label: ' STI', translate: false },
+                { label: ' | ', translate: false },
                 {
                   label: 'FORM.MAX_CHARS',
                   translate: true,
@@ -137,8 +140,8 @@
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: 'Verkehrsbetriebe STI AG', translate: false },
-                { label: ' |', translate: false },
+                { label: ' Verkehrsbetriebe STI AG', translate: false },
+                { label: ' | ', translate: false },
                 {
                   label: 'FORM.MAX_CHARS',
                   translate: true,
@@ -158,8 +161,8 @@
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: 'STI', translate: false },
-                { label: ' |', translate: false },
+                { label: ' STI', translate: false },
+                { label: ' | ', translate: false },
                 {
                   label: 'FORM.MAX_CHARS',
                   translate: true,
@@ -177,8 +180,8 @@
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: 'Verkehrsbetriebe STI AG', translate: false },
-                { label: ' |', translate: false },
+                { label: ' Verkehrsbetriebe STI AG', translate: false },
+                { label: ' | ', translate: false },
                 {
                   label: 'FORM.MAX_CHARS',
                   translate: true,
@@ -198,8 +201,8 @@
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: 'STI', translate: false },
-                { label: ' |', translate: false },
+                { label: ' STI', translate: false },
+                { label: ' | ', translate: false },
                 {
                   label: 'FORM.MAX_CHARS',
                   translate: true,
@@ -217,8 +220,8 @@
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: 'Verkehrsbetriebe STI AG', translate: false },
-                { label: ' |', translate: false },
+                { label: ' Verkehrsbetriebe STI AG', translate: false },
+                { label: ' | ', translate: false },
                 {
                   label: 'FORM.MAX_CHARS',
                   translate: true,
@@ -235,7 +238,7 @@
 
         <span class="font-bold-2xl">{{ 'FORM.KEY_DATA' | translate }}</span>
         <div class="w-50">
-          <form-date-range [formGroup]="form"></form-date-range>
+          <atlas-form-date-range [formGroup]="form"></atlas-form-date-range>
         </div>
 
         <div class="col-12 d-flex mt-3 mb-4">
@@ -262,8 +265,8 @@
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: 'hans.muster@enterprise.ch', translate: false },
-                { label: ' |', translate: false },
+                { label: ' hans.muster@enterprise.ch', translate: false },
+                { label: ' | ', translate: false },
                 {
                   label: 'FORM.MAX_CHARS',
                   translate: true,
@@ -280,9 +283,9 @@
 
       <div class="mt-5">
         @if (!isNew) {
-          <app-user-detail-info
+          <atlas-user-detail-info
             [record]="selectedVersion"
-          ></app-user-detail-info>
+          ></atlas-user-detail-info>
         }
       </div>
     </div>

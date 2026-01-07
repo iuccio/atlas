@@ -23,7 +23,7 @@ import { provideHttpClient } from '@angular/common/http';
 import SpyObj = jasmine.SpyObj;
 
 @Component({
-  selector: 'app-user-select',
+  selector: 'atlas-user-select',
   template: '',
 })
 class MockUserSelectComponent {

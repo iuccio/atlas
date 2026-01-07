@@ -1,4 +1,4 @@
-<atlas-detail-page-container scrollToTop>
+<atlas-detail-page-container atlasScrollToTop>
   <atlas-detail-page-content>
     <div class="detail-wrapper mt-5">
       @if (isNew) {
@@ -16,25 +16,26 @@
           }}</span>
           <span data-cy="total-range">
             -
-            <date-range-text [dateRange]="maxValidity"></date-range-text>
+            <atlas-date-range-text [dateRange]="maxValidity"></atlas-date-range-text>
           </span>
         </div>
 
         <div class="col-12 d-flex mt-3">
           <div class="d-flex flex-column col-6 pe-3">
-            <app-switch-version
-              (switchVersion)="switchVersion($event)"
-              *ngIf="showVersionSwitch"
-              [currentRecord]="selectedVersion!"
-              [records]="versions!"
-              [switchDisabled]="form.enabled"
-            ></app-switch-version>
+            @if (showVersionSwitch) {
+              <atlas-switch-version
+                (switchVersion)="switchVersion($event)"
+                [currentRecord]="selectedVersion!"
+                [records]="versions!"
+                [switchDisabled]="form.enabled"
+              ></atlas-switch-version>
+            }
           </div>
           <div class="d-flex flex-column col-6 ps-3">
-            <app-subline-table
+            <atlas-subline-table
               [mainLineSlnid]="selectedVersion.slnid!"
               [eventSubject]="eventSubject"
-            ></app-subline-table>
+            ></atlas-subline-table>
           </div>
         </div>
 
@@ -60,35 +61,38 @@
               }}</span>
             </div>
             @if (form.disabled && showWorkflow) {
-              <app-workflow
+              <atlas-workflow
                 [descriptionForWorkflow]="selectedVersion.description!"
                 [lineRecord]="selectedVersion"
                 (workflowEvent)="reloadRecord()"
-              ></app-workflow>
+              ></atlas-workflow>
             }
-            <div class="d-flex mt-3" *ngIf="isShowLineSnapshotHistory">
-              <atlas-link
-                label="LIDI.LINE_VERSION_SNAPSHOT.NAVIGATE_TO_SNAPHOT"
-                (linkClicked)="navigateToSnapshot()"
-              ></atlas-link>
-            </div>
+            @if (isShowLineSnapshotHistory) {
+              <div class="d-flex mt-3">
+                <atlas-link
+                  label="LIDI.LINE_VERSION_SNAPSHOT.NAVIGATE_TO_SNAPHOT"
+                  (linkClicked)="navigateToSnapshot()"
+                ></atlas-link>
+              </div>
+            }
           </div>
         </div>
       }
 
-      <line-detail-form
+      <atlas-line-detail-form
         [boSboidRestriction]="boSboidRestriction"
         [form]="form"
         [newRecord]="isNew"
         [isLineConcessionTypeRequired]="isLineConcessionTypeRequired"
-      ></line-detail-form>
+      ></atlas-line-detail-form>
 
       @if (!isNew) {
         <div class="mt-5">
-          <app-user-detail-info
-            *ngIf="!isNew"
-            [record]="selectedVersion"
-          ></app-user-detail-info>
+          @if (!isNew) {
+            <atlas-user-detail-info
+              [record]="selectedVersion"
+            ></atlas-user-detail-info>
+          }
         </div>
       }
     </div>
@@ -122,19 +126,21 @@
       buttonType="whiteFooterEdit"
     >
     </atlas-button>
-    <ng-container *ngIf="!isNew">
-      <div *ngIf="isEditButtonVisible()">
-        <atlas-button
-          (buttonClicked)="toggleEdit()"
-          applicationType="LIDI"
-          [businessOrganisation]="selectedVersion.businessOrganisation!"
-          [disabled]="form.enabled || selectedVersion.status === 'REVOKED'"
-          buttonDataCy="edit-item"
-          buttonText="COMMON.EDIT"
-          buttonType="edit"
-          wrapperStyleClass="ms-3"
-        ></atlas-button>
-      </div>
+    @if (!isNew) {
+      @if (isEditButtonVisible()) {
+        <div>
+          <atlas-button
+            (buttonClicked)="toggleEdit()"
+            applicationType="LIDI"
+            [businessOrganisation]="selectedVersion.businessOrganisation!"
+            [disabled]="form.enabled || selectedVersion.status === 'REVOKED'"
+            buttonDataCy="edit-item"
+            buttonText="COMMON.EDIT"
+            buttonType="edit"
+            wrapperStyleClass="ms-3"
+          ></atlas-button>
+        </div>
+      }
       @if (
         form.disabled &&
         !isNew &&
@@ -155,6 +161,6 @@
         wrapperStyleClass="ms-3"
       >
       </atlas-button>
-    </ng-container>
+    }
   </atlas-detail-footer>
 </atlas-detail-page-container>

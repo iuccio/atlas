@@ -1,48 +1,64 @@
 <div class="tab-detail-container">
-  <ng-container *ngIf="isNew">
-    <app-create-stop-point
+  @if (isNew) {
+    <atlas-create-stop-point
       [form]="form"
       [isAuthorizedToCreateStopPoint]="isAuthorizedToCreateStopPoint"
-    ></app-create-stop-point>
-  </ng-container>
-  <ng-container *ngIf="!isNew">
+    ></atlas-create-stop-point>
+  }
+  @if (!isNew) {
     <div class="col-12 d-flex mt-3 flex-row">
       <div class="d-flex flex-row pe-3 col-12 justify-content-between">
         <div class="col-8">
-          <app-switch-version
-            (switchVersion)="switchVersion($event)"
-            *ngIf="showVersionSwitch"
-            [currentRecord]="selectedVersion"
-            [records]="stopPointVersions"
-            [switchDisabled]="isSwitchVersionDisabled"
-            [showStatus]="false"
-          ></app-switch-version>
+          @if (showVersionSwitch) {
+            <atlas-switch-version
+              (switchVersion)="switchVersion($event)"
+              [currentRecord]="selectedVersion"
+              [records]="stopPointVersions"
+              [switchDisabled]="isSwitchVersionDisabled"
+              [showStatus]="false"
+            ></atlas-switch-version>
+          }
         </div>
-        <app-navigation-sepodi-prm
+        <atlas-navigation-sepodi-prm
           [number]="selectedVersion.number.number"
           targetPage="service-point"
-        ></app-navigation-sepodi-prm>
+        ></atlas-navigation-sepodi-prm>
       </div>
     </div>
     <div class="col-12 d-flex mt-5">
-      <div *ngIf="selectedVersion.id" class="form-title-section">
-        <h2 class="font-bold-2xl color-gray-900">
-          {{ 'PRM.STOP_POINTS.DETAILS' | translate }} - {{ 'COMMON.VERSION' | translate }}
-          {{ selectedVersionIndex + 1 }}
-        </h2>
+      @if (selectedVersion.id) {
+        <div class="form-title-section">
+          <h2 class="font-bold-2xl color-gray-900">
+            {{ 'PRM.STOP_POINTS.DETAILS' | translate }} -
+            {{ 'COMMON.VERSION' | translate }}
+            {{ selectedVersionIndex + 1 }}
+          </h2>
+        </div>
+      }
+    </div>
+    @if (isReduced) {
+      <div>
+        <atlas-stop-point-reduced-form
+          [form]="form"
+        ></atlas-stop-point-reduced-form>
       </div>
-    </div>
-    <div *ngIf="isReduced">
-      <app-stop-point-reduced-form [form]="form"></app-stop-point-reduced-form>
-    </div>
-    <div *ngIf="!isReduced">
-      <app-stop-point-complete-form [form]="form"></app-stop-point-complete-form>
-    </div>
+    }
+    @if (!isReduced) {
+      <div>
+        <atlas-stop-point-complete-form
+          [form]="form"
+        ></atlas-stop-point-complete-form>
+      </div>
+    }
     <div>
       <mat-divider class="mt-4 mb-4"></mat-divider>
-      <app-user-detail-info *ngIf="!isNew" [record]="selectedVersion"></app-user-detail-info>
+      @if (!isNew) {
+        <atlas-user-detail-info
+          [record]="selectedVersion"
+        ></atlas-user-detail-info>
+      }
     </div>
-  </ng-container>
+  }
 </div>
 <atlas-detail-footer>
   <atlas-button
@@ -53,17 +69,18 @@
     [footerEdit]="(isFormEnabled$ | async) ?? false"
   >
   </atlas-button>
-  <ng-container *ngIf="!isNew">
-    <atlas-button
-      *ngIf="(isFormEnabled$ | async) === false"
-      (buttonClicked)="toggleEdit()"
-      applicationType="PRM"
-      [businessOrganisations]="businessOrganisations"
-      buttonDataCy="edit"
-      buttonText="COMMON.EDIT"
-      buttonType="edit-service-point-dependent"
-      wrapperStyleClass="ms-3"
-    ></atlas-button>
+  @if (!isNew) {
+    @if ((isFormEnabled$ | async) === false) {
+      <atlas-button
+        (buttonClicked)="toggleEdit()"
+        applicationType="PRM"
+        [businessOrganisations]="businessOrganisations"
+        buttonDataCy="edit"
+        buttonText="COMMON.EDIT"
+        buttonType="edit-service-point-dependent"
+        wrapperStyleClass="ms-3"
+      ></atlas-button>
+    }
     <atlas-button
       [footerEdit]="(isFormEnabled$ | async) ?? false"
       (buttonClicked)="toggleEdit()"
@@ -72,17 +89,18 @@
       buttonType="whiteFooterEdit"
       wrapperStyleClass="ms-3"
     ></atlas-button>
-  </ng-container>
-  <atlas-button
-    *ngIf="form"
-    (click)="save()"
-    [footerEdit]="isNew || ((isFormEnabled$ | async) ?? false)"
-    [disabled]="!form.dirty || saving"
-    [submitButton]="true"
-    buttonDataCy="save-item"
-    buttonText="COMMON.SAVE"
-    buttonType="whiteFooterEdit"
-    wrapperStyleClass="ms-3"
-  >
-  </atlas-button>
+  }
+  @if (form) {
+    <atlas-button
+      (click)="save()"
+      [footerEdit]="isNew || ((isFormEnabled$ | async) ?? false)"
+      [disabled]="!form.dirty || saving"
+      [submitButton]="true"
+      buttonDataCy="save-item"
+      buttonText="COMMON.SAVE"
+      buttonType="whiteFooterEdit"
+      wrapperStyleClass="ms-3"
+    >
+    </atlas-button>
+  }
 </atlas-detail-footer>

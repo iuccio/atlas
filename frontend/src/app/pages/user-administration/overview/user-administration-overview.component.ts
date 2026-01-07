@@ -12,7 +12,7 @@ import { MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-user-administration-overview',
+  selector: 'atlas-user-administration-overview',
   templateUrl: './user-administration-overview.component.html',
   imports: [
     AtlasButtonComponent,

@@ -20,3 +20,29 @@ $loading-spinner-size: 160px;
   background-size: $loading-spinner-size;
   background-image: url('../../../../assets/images/logo-atlas.svg');
 }
+
+.enter-animation {
+  animation: fadeIn 300ms ease-in;
+}
+
+.leave-animation {
+  animation: fadeOut 300ms ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

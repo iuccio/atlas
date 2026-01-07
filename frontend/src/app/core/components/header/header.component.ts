@@ -10,28 +10,28 @@ import { filter, map } from 'rxjs/operators';
 import { merge, Observable, of } from 'rxjs';
 import { NON_PROD_STAGES, Stages } from '../../constants/stages';
 import { MatToolbar } from '@angular/material/toolbar';
-import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { InfoIconComponent } from '@atlas/form/info-icon/info-icon.component';
-import { MaintenanceIconComponent } from './maintenance-icon/maintenance-icon.component';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { UserComponent } from '../user/user.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { MaintenanceIconComponent } from './maintenance-icon/maintenance-icon.component';
 
 @Component({
-  selector: 'app-header',
+  selector: 'atlas-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   imports: [
     MatToolbar,
     RouterLink,
-    NgIf,
     InfoIconComponent,
-    MaintenanceIconComponent,
     NgClass,
     LanguageSwitcherComponent,
     UserComponent,
     AsyncPipe,
     TranslatePipe,
+    MaintenanceIconComponent,
+    NgOptimizedImage,
   ],
   providers: [TranslatePipe],
 })

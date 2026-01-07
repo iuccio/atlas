@@ -1,4 +1,4 @@
-<ng-container *ngIf="isStopPointExisting">
+@if (isStopPointExisting) {
   <div class="tab-detail-container">
     <atlas-button
       (buttonClicked)="new()"
@@ -8,7 +8,7 @@
       buttonType="createCheckingPermission"
       wrapperStyleClass="mb-5"
     ></atlas-button>
-    <app-table
+    <atlas-table
       data-cy="contact-points-overview-table"
       [tableData]="contactPoints"
       [totalCount]="totalCount"
@@ -17,7 +17,7 @@
       (editElementEvent)="rowClicked($event)"
       (tableChanged)="getOverview($event)"
       (tableInitialized)="getOverview($event)"
-    ></app-table>
+    ></atlas-table>
   </div>
   <atlas-detail-footer>
     <atlas-button
@@ -29,4 +29,4 @@
     >
     </atlas-button>
   </atlas-detail-footer>
-</ng-container>
+}

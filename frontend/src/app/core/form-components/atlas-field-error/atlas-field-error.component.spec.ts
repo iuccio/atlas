@@ -1,18 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AtlasFieldErrorComponent } from './atlas-field-error.component';
+import { FormControl } from '@angular/forms';
 
 describe('AtlasFieldErrorComponent', () => {
   let component: AtlasFieldErrorComponent;
   let fixture: ComponentFixture<AtlasFieldErrorComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AtlasFieldErrorComponent],
-    }).compileComponents();
-
+  beforeEach(() => {
     fixture = TestBed.createComponent(AtlasFieldErrorComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('control', new FormControl());
     fixture.detectChanges();
   });
 

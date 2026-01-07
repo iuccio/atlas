@@ -10,7 +10,7 @@ import { SearchSelectComponent } from '../../../../core/form-components/search-s
 import { UserAdministrationService } from '../../../../api/service/user-administration/user-administration.service';
 
 @Component({
-  selector: 'form-search-select',
+  selector: 'atlas-form-search-select',
   template: '<p>form-search-select</p>',
 })
 class MockFormSearchSelectComponent {

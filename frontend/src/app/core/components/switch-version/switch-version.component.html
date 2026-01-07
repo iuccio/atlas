@@ -6,22 +6,26 @@
   data-cy="version-switch"
   mat-table
   multiTemplateDataRows
->
-  <ng-container *ngFor="let column of tableColumns" matColumnDef="{{ column.value }}">
-    <th
-      *matHeaderCellDef
-      class="font-bold-base color-primary-400 bordered-cell"
-      mat-header-cell
-      scope="col"
-    >
-      {{ column.headerTitle | translate }}
-    </th>
-    <ng-container *matCellDef="let value">
-      <td *ngIf="!value.placeholder" class="bordered-cell" mat-cell>
-        {{ format(value[column.value!], column) }}
-      </td>
+  >
+  @for (column of tableColumns; track column) {
+    <ng-container matColumnDef="{{ column.value }}">
+      <th
+        *matHeaderCellDef
+        class="font-bold-base color-primary-400 bordered-cell"
+        mat-header-cell
+        scope="col"
+        >
+        {{ column.headerTitle | translate }}
+      </th>
+      <ng-container *matCellDef="let value">
+        @if (!value.placeholder) {
+          <td class="bordered-cell" mat-cell>
+            {{ format(value[column.value!], column) }}
+          </td>
+        }
+      </ng-container>
     </ng-container>
-  </ng-container>
+  }
 
   <ng-container matColumnDef="placeholder-row">
     <td *matCellDef="let element" class="d-flex align-items-center">

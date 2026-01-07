@@ -5,14 +5,14 @@ import {
 } from '@angular/material/snack-bar';
 import { NotificationService } from '../notification.service';
 import { ErrorResponse } from '../../../api';
-import { NgIf, NgFor } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'error-notification',
+  selector: 'atlas-error-notification',
   templateUrl: './error-notification.component.html',
   styleUrls: ['./error-notification.component.scss'],
-  imports: [NgIf, NgFor, TranslatePipe],
+  imports: [TranslatePipe],
   providers: [TranslatePipe],
 })
 export class ErrorNotificationComponent {

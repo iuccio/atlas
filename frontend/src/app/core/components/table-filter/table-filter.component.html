@@ -7,9 +7,9 @@
             [class]="chipSearch.elementWidthCssClass"
             class="d-flex flex-column search-box"
           >
-            <app-atlas-label-field
+            <atlas-label-field
               [fieldLabel]="chipSearch.fieldLabel"
-            ></app-atlas-label-field>
+            ></atlas-label-field>
             <div
               [ngClass]="chipSearch.disabled ? 'disabled' : ''"
               class="search-main-field mb-4"
@@ -33,9 +33,9 @@
                     chipSearch.addSearchFromChipInputEvent($event); emitSearch()
                   "
                   [matChipInputFor]="chipList"
-                  attr.data-cy="table-filter-chip-search-{{ rowIdx }}-{{
-                    filterConfigIndex
-                  }}"
+                  [attr.data-cy]="
+                    `table-filter-chip-search-${rowIdx}-${filterConfigIndex}`
+                  "
                   class="font-regular-base"
                 />
                 <i class="bi bi-search"></i>
@@ -50,9 +50,9 @@
         ) {
           <div [class]="booleanFilter.elementWidthCssClass">
             <div class="slide-toggle-row-wrapper pb-3">
-              <app-atlas-label-field
+              <atlas-label-field
                 [fieldLabel]="booleanFilter.fieldLabel"
-              ></app-atlas-label-field>
+              ></atlas-label-field>
               <atlas-slide-toggle
                 [toggle]="booleanFilter.getActiveSearch()"
                 (toggleChange)="
@@ -70,7 +70,7 @@
         ) {
           <div [class]="searchSelect.elementWidthCssClass">
             @if (searchSelect.searchType === 'BUSINESS_ORGANISATION') {
-              <bo-select
+              <atlas-bo-select
                 (boSelectionChanged)="
                   searchSelect.setActiveSearch($event); emitSearch()
                 "
@@ -78,11 +78,11 @@
                 [formModus]="false"
                 controlName="businessOrganisation"
               >
-              </bo-select>
+              </atlas-bo-select>
             }
 
             @if (searchSelect.searchType === 'TIMETABLE_FIELD_NUMBER') {
-              <ttfn-select
+              <atlas-ttfn-select
                 (ttfnSelectionChanged)="
                   searchSelect.setActiveSearch($event); emitSearch()
                 "
@@ -92,11 +92,11 @@
                 [required]="false"
                 controlName="ttfnid"
               >
-              </ttfn-select>
+              </atlas-ttfn-select>
             }
 
             @if (searchSelect.searchType === 'TRANSPORT_COMPANY') {
-              <tu-select
+              <atlas-tu-select
                 (tuSelectionChanged)="
                   searchSelect.setActiveSearch($event); emitSearch()
                 "
@@ -105,7 +105,7 @@
                 [formModus]="false"
                 controlName="transportCompany"
               >
-              </tu-select>
+              </atlas-tu-select>
             }
           </div>
         }
@@ -140,9 +140,9 @@
           as dateSelect
         ) {
           <div [class]="dateSelect.elementWidthCssClass">
-            <app-atlas-label-field
+            <atlas-label-field
               fieldLabel="COMMON.SEARCH.VALIDITY"
-            ></app-atlas-label-field>
+            ></atlas-label-field>
             <div class="search-date-field">
               <div class="container-date-field">
                 <input
@@ -151,24 +151,24 @@
                   [matDatepicker]="picker"
                   [max]="MAX_DATE"
                   [min]="MIN_DATE"
-                  attr.data-cy="table-filter-date-select-{{ rowIdx }}-{{
-                    filterConfigIndex
-                  }}"
+                  [attr.data-cy]="
+                    `table-filter-date-select-${rowIdx}-${filterConfigIndex}`
+                  "
                   matInput
                 />
-                <form-date-icon
+                <atlas-form-date-icon
                   tabindex="0"
                   (click)="picker.open()"
                   (keydown.enter)="picker.open()"
                   (keydown.space)="picker.open()"
                   [enabled]="true"
-                ></form-date-icon>
+                ></atlas-form-date-icon>
                 <mat-datepicker #picker></mat-datepicker>
               </div>
             </div>
-            <app-atlas-field-error
+            <atlas-field-error
               [control]="dateSelect.formControl"
-            ></app-atlas-field-error>
+            ></atlas-field-error>
           </div>
         }
 
@@ -177,9 +177,9 @@
           as singleSearch
         ) {
           <div [class]="singleSearch.elementWidthCssClass">
-            <app-atlas-label-field
+            <atlas-label-field
               [fieldLabel]="singleSearch.label"
-            ></app-atlas-label-field>
+            ></atlas-label-field>
             <div
               [ngClass]="singleSearch.disabled ? 'disabled' : ''"
               class="single-search"
@@ -207,16 +207,16 @@
                     emitSearch()
                   "
                   [matChipInputFor]="singleSearchChipList"
-                  attr.data-cy="table-filter-single-search-{{ rowIdx }}-{{
-                    filterConfigIndex
-                  }}"
+                  [attr.data-cy]="
+                    `table-filter-single-search-${rowIdx}-${filterConfigIndex}`
+                  "
                   class="font-regular-base"
                 />
               </mat-chip-grid>
             </div>
-            <app-atlas-field-error
+            <atlas-field-error
               [control]="singleSearch.formControl"
-            ></app-atlas-field-error>
+            ></atlas-field-error>
           </div>
         }
       }

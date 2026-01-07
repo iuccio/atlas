@@ -6,10 +6,10 @@
         <atlas-slide-toggle [(toggle)]="automaticSloid"></atlas-slide-toggle>
       </div>
     </div>
-    <ng-container *ngIf="automaticSloid">
+    @if (automaticSloid) {
       <div class="fst-italic">{{ 'SEPODI.AUTOMATIC_SLOID' | translate }}</div>
-    </ng-container>
-    <ng-container *ngIf="!automaticSloid">
+    }
+    @if (!automaticSloid) {
       <atlas-text-field
         [fieldExamples]="[
           { label: 'FORM.FOR_EXAMPLE', translate: true },
@@ -18,14 +18,14 @@
             translate: false
           }
         ]"
-        [formGroup]="form"
-        [required]="false"
-        controlName="sloid"
+      [formGroup]="form"
+      [required]="false"
+      controlName="sloid"
       >
-        <ng-template #customChildInputPrefixTemplate>
-          <div class="pe-1">{{ givenPrefix }}</div>
-        </ng-template>
-      </atlas-text-field>
-    </ng-container>
-  </div>
+      <ng-template #customChildInputPrefixTemplate>
+        <div class="pe-1">{{ givenPrefix }}</div>
+      </ng-template>
+    </atlas-text-field>
+  }
+</div>
 </div>

@@ -23,7 +23,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Validity } from '../../model/validity';
 import { ValidityService } from '../validity/validity.service';
 import { DetailPageContainerComponent } from '../../../core/components/detail-page-container/detail-page-container.component';
-import { NgFor, NgIf } from '@angular/common';
+
 import { DateRangeTextComponent } from '../../../core/versioning/date-range-text/date-range-text.component';
 import { DetailPageContentComponent } from '../../../core/components/detail-page-content/detail-page-content.component';
 import { TextFieldComponent } from '../../../core/form-components/text-field/text-field.component';
@@ -42,13 +42,12 @@ import { ServicePointService } from '../../../api/service/sepodi/service-point.s
 import { LoadingPointService } from '../../../api/service/sepodi/loading-point.service';
 
 @Component({
-  selector: 'app-loading-points',
+  selector: 'atlas-loading-points',
   templateUrl: './loading-points-detail.component.html',
   styleUrls: ['./loading-points-detail.component.scss'],
   providers: [ValidityService, TranslatePipe],
   imports: [
     DetailPageContainerComponent,
-    NgIf,
     DateRangeTextComponent,
     DetailPageContentComponent,
     TextFieldComponent,
@@ -57,7 +56,6 @@ import { LoadingPointService } from '../../../api/service/sepodi/loading-point.s
     MatLabel,
     AtlasSpacerComponent,
     MatRadioGroup,
-    NgFor,
     MatRadioButton,
     AtlasFieldErrorComponent,
     DateRangeComponent,

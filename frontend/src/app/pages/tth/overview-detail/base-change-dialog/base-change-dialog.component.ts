@@ -8,17 +8,16 @@ import {
 } from '@angular/material/dialog';
 import { StatusChangeData } from '../tth-change-status-dialog/model/status-change-data';
 import { DialogService } from '../../../../core/components/dialog/dialog.service';
-import { NgIf } from '@angular/common';
+
 import { CommentComponent } from '../../../../core/form-components/comment/comment.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-base-change-dialog',
+  selector: 'atlas-base-change-dialog',
   templateUrl: './base-change-dialog.component.html',
   styleUrls: ['./base-change-dialog.component.scss'],
   imports: [
     MatDialogClose,
-    NgIf,
     CommentComponent,
     ReactiveFormsModule,
     MatDialogActions,

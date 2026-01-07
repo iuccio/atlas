@@ -5,53 +5,23 @@ $logoMarginLeft: 96px;
 .logo-placeholder {
   cursor: pointer;
   background: variables.$white;
-  width: 239px;
   min-width: 239px;
   height: variables.$headerHeight;
-  text-align: center;
-  vertical-align: middle;
-
-  .logo {
-    position: absolute;
-    top: 32px;
-    left: $logoMarginLeft;
-    width: 45px;
-    height: 45px;
-    background: variables.$accentColor url('/assets/images/a-logo.svg') no-repeat 12px 12px;
-    border-radius: 9.47368px;
-    background-size: 23px 23px;
-  }
 
   .title {
     color: variables.$accentColor;
-    position: absolute;
-    top: 83px;
-    left: $logoMarginLeft;
-    width: 45px;
-    height: 20px;
-    line-height: 20px;
   }
-}
-
-.spacer {
-  flex: variables.$flexSpaceSize;
-}
-
-.header-container {
-  margin-left: 0 !important;
 }
 
 @include variables.default-screen() {
   .header-container {
     padding-left: 155px;
-    margin-left: 0 !important;
   }
 }
 
 @include variables.large-screen() {
   .header-container {
     padding-left: 285px;
-    margin-left: 0 !important;
   }
 }
 
@@ -75,13 +45,9 @@ button.btn.btn-primary:focus {
   box-shadow: none;
 }
 
-div.d-flex {
-  padding-top: 0.4rem;
-  flex-direction: column;
-  line-height: 1.2rem;
-}
-
 .maintenance-info {
+  padding-top: 0.4rem;
+  line-height: 1.2rem;
   color: #c76118;
   align-items: center;
   .wrap {
@@ -90,6 +56,6 @@ div.d-flex {
   }
 }
 
-.environment-badge{
-  width: 500px;
+.environment-badge {
+  max-width: 500px;
 }

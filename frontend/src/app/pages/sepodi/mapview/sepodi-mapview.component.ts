@@ -21,7 +21,7 @@ import { NgClass } from '@angular/common';
 import { MapComponent } from '../map/map.component';
 
 @Component({
-  selector: 'app-sepodi-mapview',
+  selector: 'atlas-sepodi-mapview',
   templateUrl: './sepodi-mapview.component.html',
   styleUrls: ['./sepodi-mapview.component.scss'],
   imports: [

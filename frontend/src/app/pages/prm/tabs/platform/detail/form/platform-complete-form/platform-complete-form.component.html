@@ -1,12 +1,12 @@
 <div class="col-12 d-flex mt-4">
   <div class="d-flex flex-column col-6 pe-3">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       label="PRM.PLATFORMS.COMPLETE.ADDITIONAL_INFORMATION"
       info="PRM.PLATFORMS.COMPLETE.ADDITIONAL_INFORMATION_SUBTITLE"
       controlName="additionalInformation"
       maxChars="2000"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
 </div>
 <div class="col-12 d-flex mt-4">
@@ -15,7 +15,11 @@
       [fieldExamples]="[
         { label: 'FORM.FOR_EXAMPLE', translate: true },
         { label: '15.123 |', translate: false },
-        { label: 'FORM.MAX_DIGITS', translate: true, arg: { key: 'amount', value: '3' } }
+        {
+          label: 'FORM.MAX_DIGITS',
+          translate: true,
+          arg: { key: 'amount', value: '3' },
+        },
       ]"
       [formGroup]="form"
       controlName="superelevation"
@@ -28,7 +32,11 @@
       [fieldExamples]="[
         { label: 'FORM.FOR_EXAMPLE', translate: true },
         { label: '5.123 |', translate: false },
-        { label: 'FORM.MAX_DIGITS', translate: true, arg: { key: 'amount', value: '3' } }
+        {
+          label: 'FORM.MAX_DIGITS',
+          translate: true,
+          arg: { key: 'amount', value: '3' },
+        },
       ]"
       [formGroup]="form"
       controlName="inclinationWidth"
@@ -41,7 +49,11 @@
       [fieldExamples]="[
         { label: 'FORM.FOR_EXAMPLE', translate: true },
         { label: '5.123 |', translate: false },
-        { label: 'FORM.MAX_DIGITS', translate: true, arg: { key: 'amount', value: '3' } }
+        {
+          label: 'FORM.MAX_DIGITS',
+          translate: true,
+          arg: { key: 'amount', value: '3' },
+        },
       ]"
       [formGroup]="form"
       controlName="inclination"
@@ -138,12 +150,12 @@
     </atlas-select>
   </div>
   <div class="d-flex flex-column col-6 pe-3">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       label="PRM.PLATFORMS.COMPLETE.ADVICE_ACCESS_INFO"
       info="PRM.PLATFORMS.COMPLETE.ADVICE_ACCESS_INFO_SUBTITLE"
       controlName="adviceAccessInfo"
       maxChars="2000"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
 </div>

@@ -27,8 +27,5 @@
     </ng-template>
   </ng-select>
 
-  <app-atlas-field-error
-    [form]="formGroup"
-    controlName="{{ controlName }}"
-  ></app-atlas-field-error>
+  <atlas-field-error [control]="formGroup.get(controlName)"></atlas-field-error>
 </div>

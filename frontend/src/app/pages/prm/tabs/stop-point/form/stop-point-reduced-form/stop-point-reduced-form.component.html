@@ -1,26 +1,26 @@
 <div class="col-12 d-flex">
   <div class="col-6">
-    <means-of-transport-picker
+    <atlas-means-of-transport-picker
       [formGroup]="form"
       controlName="meansOfTransport"
       [disabled]="isNew || !form.enabled"
       [showInfo]="true"
       [meansOfTransportToShow]="meansOfTransportToShow"
-    ></means-of-transport-picker>
+    ></atlas-means-of-transport-picker>
   </div>
 </div>
 <div class="col-12 d-flex mt-4">
   <div class="d-flex flex-column col-6 pe-3">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       label="PRM.STOP_POINTS.FORM.FREE_TEXT"
       info="PRM.STOP_POINTS.FORM.FREE_TEXT_INFO"
       controlName="freeText"
       maxChars="2000"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
 </div>
 <div class="font-bold-2xl mt-3">{{ 'FORM.KEY_DATA' | translate }}</div>
 <div class="col-6 pb-3">
-  <form-date-range [formGroup]="form"></form-date-range>
+  <atlas-form-date-range [formGroup]="form"></atlas-form-date-range>
 </div>

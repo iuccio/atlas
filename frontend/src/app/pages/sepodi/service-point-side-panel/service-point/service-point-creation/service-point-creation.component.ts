@@ -44,7 +44,7 @@ import { stopPointTypesWithoutUnknown } from '../service-point-detail.component'
 import { ServicePointService } from '../../../../../api/service/sepodi/service-point.service';
 
 @Component({
-  selector: 'app-service-point-creation',
+  selector: 'atlas-service-point-creation',
   templateUrl: './service-point-creation.component.html',
   styleUrls: ['./service-point-creation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

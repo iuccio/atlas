@@ -2,11 +2,11 @@
   <div class="col-12 d-flex">
     <div class="d-flex flex-column col-5">
       <div class="d-flex flex-column col-11 me-3 mb-3">
-        <form-comment
+        <atlas-form-comment
           [formGroup]="formGroup"
           [label]="commentLabel"
           [required]="true"
-        ></form-comment>
+        ></atlas-form-comment>
       </div>
     </div>
     <div class="w-50">
@@ -44,16 +44,18 @@
           >
           </atlas-text-field>
         </div>
-        <div *ngIf="hasMail" class="d-flex flex-column col-7 pe-3">
-          <atlas-text-field
-            [formGroup]="formGroup"
-            [required]="true"
-            controlName="mail"
-            data-cy="workflowPersonMail"
-            fieldLabel="WORKFLOW.PERSON.MAIL"
-          >
-          </atlas-text-field>
-        </div>
+        @if (hasMail) {
+          <div class="d-flex flex-column col-7 pe-3">
+            <atlas-text-field
+              [formGroup]="formGroup"
+              [required]="true"
+              controlName="mail"
+              data-cy="workflowPersonMail"
+              fieldLabel="WORKFLOW.PERSON.MAIL"
+            >
+            </atlas-text-field>
+          </div>
+        }
       </div>
     </div>
   </div>

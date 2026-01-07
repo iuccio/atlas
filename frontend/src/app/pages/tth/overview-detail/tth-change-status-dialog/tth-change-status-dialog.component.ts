@@ -11,7 +11,7 @@ import { TimetableHearingStatementInternalService } from '../../../../api/servic
 import { BaseChangeDialogComponent } from '../base-change-dialog/base-change-dialog.component';
 
 @Component({
-  selector: 'app-tth-change-status-dialog',
+  selector: 'atlas-tth-change-status-dialog',
   templateUrl: './tth-change-status-dialog.component.html',
   imports: [BaseChangeDialogComponent, ReactiveFormsModule],
 })

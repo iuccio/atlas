@@ -10,7 +10,7 @@ import { AtlasFieldLengthValidator } from '../../../../core/validation/field-len
 import { TimetableHearingStatementV2 } from '../../../../api';
 
 @Component({
-  selector: 'app-statement-personal-information',
+  selector: 'atlas-statement-personal-information',
   imports: [
     TextFieldComponent,
     TranslatePipe,

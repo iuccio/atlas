@@ -13,7 +13,7 @@ import {
 } from '../../../../app.testing.mocks';
 import { LineDetailFormComponent } from '../../lines/detail/line-detail-form/line-detail-form.component';
 import { LinkIconComponent } from '../../../../core/form-components/link-icon/link-icon.component';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { CommentComponent } from '../../../../core/form-components/comment/comment.component';
 import { UserDetailInfoComponent } from '../../../../core/components/user-edit-info/user-detail-info.component';
 import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
@@ -33,7 +33,8 @@ import { NgOptimizedImage } from '@angular/common';
 import { DateRangeComponent } from '../../../../core/form-components/date-range/date-range.component';
 import { DateIconComponent } from '../../../../core/form-components/date-icon/date-icon.component';
 import { LineService } from '../../../../api/service/lidi/line.service';
-import { LineInternalService } from '../../../../api/service/lidi/line-internal.service';
+import { LineWorkflowService } from '../../../../api/service/workflow/line-workflow.service';
+import SpyObj = jasmine.SpyObj;
 
 const lineVersionSnapsot: LineVersionSnapshot = {
   id: 1234,
@@ -66,25 +67,26 @@ const lineVersion: LineVersionV2 = {
   swissLineNumber: '13',
 };
 
-let component: LineVersionSnapshotDetailComponent;
-let fixture: ComponentFixture<LineVersionSnapshotDetailComponent>;
+const mockData = {
+  lineVersionSnapshot: lineVersionSnapsot,
+};
 
 describe('LineVersionSnapshotDetailComponent', () => {
-  const mockLineService = jasmine.createSpyObj('lineService', [
-    'getLineVersionsV2',
-  ]);
-  mockLineService.getLineVersionsV2.and.returnValue(of([lineVersion]));
+  let component: LineVersionSnapshotDetailComponent;
+  let fixture: ComponentFixture<LineVersionSnapshotDetailComponent>;
 
-  const mockLineInternalService = jasmine.createSpyObj('lineInternalService', [
-    'getLineVersionSnapshotById',
-  ]);
-
-  const mockData = {
-    lineVersionSnapshot: lineVersionSnapsot,
-  };
+  let lineServiceSpy: SpyObj<LineService>;
+  let lineWorkflowServiceSpy: SpyObj<LineWorkflowService>;
 
   beforeEach(() => {
-    setupTestBed(mockLineService, mockLineInternalService, mockData);
+    lineServiceSpy = jasmine.createSpyObj<LineService>(['getLineVersionsV2']);
+    lineServiceSpy.getLineVersionsV2.and.returnValue(of([lineVersion]));
+
+    lineWorkflowServiceSpy = jasmine.createSpyObj<LineWorkflowService>({
+      getWorkflow: EMPTY,
+    });
+
+    setupTestBed(lineServiceSpy, lineWorkflowServiceSpy, mockData);
 
     fixture = TestBed.createComponent(LineVersionSnapshotDetailComponent);
     component = fixture.componentInstance;
@@ -103,7 +105,7 @@ describe('LineVersionSnapshotDetailComponent', () => {
 
 function setupTestBed(
   lineService: LineService,
-  lineInternalService: LineInternalService,
+  lineWorkflowService: LineWorkflowService,
   data: { lineVersionSnapshot: string | LineVersionSnapshot }
 ) {
   TestBed.configureTestingModule({
@@ -136,7 +138,7 @@ function setupTestBed(
     providers: [
       { provide: FormBuilder },
       { provide: LineService, useValue: lineService },
-      { provide: LineInternalService, useValue: lineInternalService },
+      { provide: LineWorkflowService, useValue: lineWorkflowService },
       { provide: PermissionService, useValue: adminPermissionServiceMock },
       { provide: ActivatedRoute, useValue: { snapshot: { data: data } } },
       { provide: TranslatePipe },

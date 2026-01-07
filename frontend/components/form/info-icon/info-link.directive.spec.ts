@@ -8,7 +8,7 @@ import SpyObj = jasmine.SpyObj;
 
 @Component({
   imports: [InfoLinkDirective],
-  template: `<span infoLink infoLinkTranslationKey="TEST_TRANSLATION_KEY"
+  template: `<span atlasInfoLink infoLinkTranslationKey="TEST_TRANSLATION_KEY"
     >Test</span
   >`,
 })

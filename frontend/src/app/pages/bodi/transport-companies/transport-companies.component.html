@@ -2,7 +2,7 @@
   {{ 'BODI.TRANSPORT_COMPANIES.TRANSPORT_COMPANIES' | translate }}
 </div>
 
-<app-table
+<atlas-table
   (editElementEvent)="editVersion($event)"
   (tableChanged)="getOverview($event)"
   (tableInitialized)="getOverview($event)"
@@ -12,5 +12,5 @@
   [tableFilterConfig]="tableFilterConfig"
   data-cy="bodi-transport-companies"
 >
-</app-table>
+</atlas-table>
 <router-outlet></router-outlet>

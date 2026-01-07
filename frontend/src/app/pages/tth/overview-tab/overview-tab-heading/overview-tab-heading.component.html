@@ -3,72 +3,105 @@
     <img
       alt="Canton Logo"
       class="flag"
-      src="assets/images/cantons/{{ cantonShort.toUpperCase() }}.svg"
+      ngSrc="assets/images/cantons/{{ cantonShort.toUpperCase() }}.svg"
+      width="100"
+      height="121"
     />
   </div>
-  <div *ngIf="isHearingStatusActive" class="ps-4">
-    <div class="table-heading font-bold-4xl color-gray-900 mb-3">
-      {{ 'PAGES.TTH.TITLE_MENU' | translate }} {{ foundTimetableHearingYear.timetableYear }}
+  @if (isHearingStatusActive) {
+    <div class="ps-4">
+      <div class="table-heading font-bold-4xl color-gray-900 mb-3">
+        {{ 'PAGES.TTH.TITLE_MENU' | translate }}
+        {{ foundTimetableHearingYear.timetableYear }}
+      </div>
+      @if (noPlannedTimetableHearingYearFound) {
+        <div class="mb-5">
+          <span>{{
+            'TTH.OVERVIEW_TAB.OVERVIEW_ACTUAL_NO_PLANNED_HEARING_YEAR_FOUND'
+              | translate
+          }}</span>
+        </div>
+      }
+      @if (!noTimetableHearingYearFound) {
+        <div>
+          <div class="mb-5">
+            <span>{{
+              'TTH.OVERVIEW_TAB.OVERVIEW_ACTUAL_SUBHEADING_PREFIX'
+                | translate
+                  : { timeTableYear: foundTimetableHearingYear.timetableYear }
+            }}</span>
+            <span class="font-bold-base">{{
+              'TTH.OVERVIEW_TAB.OVERVIEW_ACTUAL_SUBHEADING_POSTFIX'
+                | translate
+                  : {
+                      hearingFrom:
+                        foundTimetableHearingYear.hearingFrom | displayDate,
+                      hearingTo:
+                        foundTimetableHearingYear.hearingTo | displayDate,
+                    }
+            }}</span>
+          </div>
+        </div>
+      }
+      @if (noTimetableHearingYearFound && !noPlannedTimetableHearingYearFound) {
+        <div>
+          <div class="mb-5">
+            <span>{{
+              'TTH.OVERVIEW_TAB.OVERVIEW_ACTUAL_NOT_FOUND_SUBHEADING_PREFIX'
+                | translate
+                  : { timeTableYear: foundTimetableHearingYear.timetableYear }
+            }}</span>
+            <span class="font-bold-base">{{
+              'TTH.OVERVIEW_TAB.OVERVIEW_ACTUAL_SUBHEADING_POSTFIX'
+                | translate
+                  : {
+                      hearingFrom:
+                        foundTimetableHearingYear.hearingFrom | displayDate,
+                      hearingTo:
+                        foundTimetableHearingYear.hearingTo | displayDate,
+                    }
+            }}</span>
+          </div>
+        </div>
+      }
     </div>
-    <div *ngIf="noPlannedTimetableHearingYearFound" class="mb-5">
-      <span>{{
-        'TTH.OVERVIEW_TAB.OVERVIEW_ACTUAL_NO_PLANNED_HEARING_YEAR_FOUND' | translate
-      }}</span>
-    </div>
-    <div *ngIf="!noTimetableHearingYearFound">
+  }
+  @if (isHearingStatusPlanned) {
+    <div class="ps-4">
+      <div class="table-heading font-bold-4xl color-gray-900 mb-3">
+        {{ 'TTH.TAB.PLANNED' | translate }}
+      </div>
       <div class="mb-5">
         <span>{{
-          'TTH.OVERVIEW_TAB.OVERVIEW_ACTUAL_SUBHEADING_PREFIX'
-            | translate : { timeTableYear: foundTimetableHearingYear.timetableYear }
-        }}</span>
-        <span class="font-bold-base">{{
-          'TTH.OVERVIEW_TAB.OVERVIEW_ACTUAL_SUBHEADING_POSTFIX'
-            | translate
-              : {
-                  hearingFrom: foundTimetableHearingYear.hearingFrom | displayDate,
-                  hearingTo: foundTimetableHearingYear.hearingTo | displayDate
-                }
+          'TTH.OVERVIEW_TAB.OVERVIEW_PLANNED_SUBHEADING' | translate
         }}</span>
       </div>
+      @if (noTimetableHearingYearFound) {
+        <div class="table-heading font-bold-lg color-gray-900 mb-3">
+          <span>{{
+            'TTH.OVERVIEW_TAB.OVERVIEW_PLANNED_NOT_FOUND' | translate
+          }}</span>
+        </div>
+      }
     </div>
-    <div *ngIf="noTimetableHearingYearFound && !noPlannedTimetableHearingYearFound">
+  }
+  @if (isHearingStatusArchived) {
+    <div class="ps-4">
+      <div class="table-heading font-bold-4xl color-gray-900 mb-3">
+        {{ 'TTH.TAB.ARCHIVED' | translate }}
+      </div>
       <div class="mb-5">
         <span>{{
-          'TTH.OVERVIEW_TAB.OVERVIEW_ACTUAL_NOT_FOUND_SUBHEADING_PREFIX'
-            | translate : { timeTableYear: foundTimetableHearingYear.timetableYear }
-        }}</span>
-        <span class="font-bold-base">{{
-          'TTH.OVERVIEW_TAB.OVERVIEW_ACTUAL_SUBHEADING_POSTFIX'
-            | translate
-              : {
-                  hearingFrom: foundTimetableHearingYear.hearingFrom | displayDate,
-                  hearingTo: foundTimetableHearingYear.hearingTo | displayDate
-                }
+          'TTH.OVERVIEW_TAB.OVERVIEW_ARCHIVED_SUBHEADING' | translate
         }}</span>
       </div>
+      @if (noTimetableHearingYearFound) {
+        <div class="table-heading font-bold-lg color-gray-900 mb-3">
+          <span>{{
+            'TTH.OVERVIEW_TAB.OVERVIEW_ARCHIVED_NOT_FOUND' | translate
+          }}</span>
+        </div>
+      }
     </div>
-  </div>
-  <div *ngIf="isHearingStatusPlanned" class="ps-4">
-    <div class="table-heading font-bold-4xl color-gray-900 mb-3">
-      {{ 'TTH.TAB.PLANNED' | translate }}
-    </div>
-    <div class="mb-5">
-      <span>{{ 'TTH.OVERVIEW_TAB.OVERVIEW_PLANNED_SUBHEADING' | translate }}</span>
-    </div>
-    <div *ngIf="noTimetableHearingYearFound" class="table-heading font-bold-lg color-gray-900 mb-3">
-      <span>{{ 'TTH.OVERVIEW_TAB.OVERVIEW_PLANNED_NOT_FOUND' | translate }}</span>
-    </div>
-  </div>
-  <div *ngIf="isHearingStatusArchived" class="ps-4">
-    <div class="table-heading font-bold-4xl color-gray-900 mb-3">
-      {{ 'TTH.TAB.ARCHIVED' | translate }}
-    </div>
-    <div class="mb-5">
-      <span>{{ 'TTH.OVERVIEW_TAB.OVERVIEW_ARCHIVED_SUBHEADING' | translate }}</span>
-    </div>
-
-    <div *ngIf="noTimetableHearingYearFound" class="table-heading font-bold-lg color-gray-900 mb-3">
-      <span>{{ 'TTH.OVERVIEW_TAB.OVERVIEW_ARCHIVED_NOT_FOUND' | translate }}</span>
-    </div>
-  </div>
+  }
 </div>

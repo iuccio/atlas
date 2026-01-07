@@ -26,7 +26,7 @@ import { TrafficPointElementInternalService } from '../../../../api/service/sepo
 import { PlatformInternalService } from '../../../../api/service/prm/platform/platform-internal.service';
 
 @Component({
-  selector: 'app-platform',
+  selector: 'atlas-platform',
   templateUrl: './platform-table.component.html',
   imports: [
     NavigationSepodiPrmComponent,

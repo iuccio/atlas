@@ -5,15 +5,15 @@ import {
 } from '@ngx-translate/core';
 import { DateAdapter } from '@angular/material/core';
 import { Language } from './language';
-import { NgClass, NgFor, UpperCasePipe } from '@angular/common';
+import { NgClass, UpperCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-language-switcher',
+  selector: 'atlas-language-switcher',
   templateUrl: './language-switcher.component.html',
   styleUrls: ['./language-switcher.component.scss'],
-  imports: [NgFor, RouterLink, NgClass, UpperCasePipe],
+  imports: [RouterLink, NgClass, UpperCasePipe],
 })
 export class LanguageSwitcherComponent {
   static readonly STORED_LANGUAGE_KEY = 'language';

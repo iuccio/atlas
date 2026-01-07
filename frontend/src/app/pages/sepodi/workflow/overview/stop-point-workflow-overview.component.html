@@ -4,7 +4,7 @@
       {{ 'SEPODI.SERVICE_POINTS.WORKFLOW.WORKFLOWS' | translate }}
     </div>
 
-    <app-table
+    <atlas-table
       data-cy="workflow-table"
       [tableData]="stopPointWorkflows"
       [totalCount]="totalCount$"
@@ -13,6 +13,6 @@
       (editElementEvent)="edit($event)"
       (tableChanged)="getOverview($event)"
       (tableInitialized)="getOverview($event)"
-    ></app-table>
+    ></atlas-table>
   </div>
 </div>

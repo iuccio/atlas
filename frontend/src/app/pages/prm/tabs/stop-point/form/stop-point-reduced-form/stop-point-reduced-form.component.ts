@@ -14,7 +14,7 @@ import { DateRangeComponent } from '../../../../../../core/form-components/date-
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-stop-point-reduced-form',
+  selector: 'atlas-stop-point-reduced-form',
   templateUrl: './stop-point-reduced-form.component.html',
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
   imports: [

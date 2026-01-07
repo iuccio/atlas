@@ -2,33 +2,45 @@
 <atlas-dialog-content>
   <div class="mb-2">
     <span class="font-bold-4xl">{{ data.title | translate }}</span>
-    <div *ngIf="workflowId">
-      <span class="font-bold-lg color-gray-900">{{ 'COMMON.STATUS' | translate }} </span>
-      <span class="color-gray-900">{{ workflowStatusTranslated$ | async }}</span>
-    </div>
+    @if (workflowId) {
+      <div>
+        <span class="font-bold-lg color-gray-900"
+          >{{ 'COMMON.STATUS' | translate }}
+        </span>
+        <span class="color-gray-900">{{
+          workflowStatusTranslated$ | async
+        }}</span>
+      </div>
+    }
   </div>
 
   <div class="workflow-container">
-    <app-workflow-form
+    <atlas-workflow-form
       [formGroup]="workflowStartFormGroup"
       commentLabel="WORKFLOW.START.COMMENT"
       personLabel="WORKFLOW.START.KEY_DATA"
-    ></app-workflow-form>
+    ></atlas-workflow-form>
 
-    <div *ngIf="workflowId">
-      <app-workflow-check-form
-        [workflowId]="workflowId"
-        (workflowChecked)="closeDialog()"
-      ></app-workflow-check-form>
-    </div>
+    @if (workflowId) {
+      <div>
+        <atlas-workflow-check-form
+          [workflowId]="workflowId"
+          (workflowChecked)="closeDialog()"
+        ></atlas-workflow-check-form>
+      </div>
+    }
   </div>
 </atlas-dialog-content>
 
 <atlas-dialog-footer>
-  <button (click)="closeDialog()" class="atlas-primary-btn me-3" data-cy="dialog-cancel-button">
+  <button
+    (click)="closeDialog()"
+    class="atlas-primary-btn me-3"
+    data-cy="dialog-cancel-button"
+  >
     {{ data.cancelText ?? 'DIALOG.CANCEL' | translate }}
   </button>
-  <ng-container *ngIf="!workflowId">
+  @if (!workflowId) {
     <button
       (click)="startWorkflow()"
       class="atlas-primary-btn primary-color-btn"
@@ -37,5 +49,5 @@
     >
       {{ data.confirmText ?? 'DIALOG.OK' | translate }}
     </button>
-  </ng-container>
+  }
 </atlas-dialog-footer>

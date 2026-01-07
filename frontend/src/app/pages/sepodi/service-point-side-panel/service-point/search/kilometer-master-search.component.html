@@ -1,4 +1,4 @@
-<form-search-select
+<atlas-form-search-select
   (changeTrigger)="spSelectionChanged.emit($event)"
   (searchTrigger)="searchServicePoint($event)"
   [bindValueInp]="valueExtraction"
@@ -16,4 +16,4 @@
     <span>&nbsp;&nbsp;&nbsp;</span>
     <span [innerHTML]="item.designationOfficial"></span>
   </ng-template>
-</form-search-select>
+</atlas-form-search-select>

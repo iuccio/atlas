@@ -4,7 +4,7 @@
       <atlas-text-field
         [fieldExamples]="[
           { label: 'FORM.FOR_EXAMPLE', translate: true },
-          { label: 'Altstätten SG, Eichbergerstr. |', translate: false },
+          { label: ' Altstätten SG, Eichbergerstr. | ', translate: false },
           {
             label: 'FORM.MAX_CHARS',
             translate: true,
@@ -22,7 +22,7 @@
       <atlas-text-field
         [fieldExamples]="[
           { label: 'FORM.FOR_EXAMPLE', translate: true },
-          { label: 'Altstätten SG, Eichbergerstrasse |', translate: false },
+          { label: ' Altstätten SG, Eichbergerstrasse | ', translate: false },
           {
             label: 'FORM.MAX_CHARS',
             translate: true,
@@ -46,19 +46,19 @@
 
   <div class="col-12 d-flex">
     <div class="col-6 d-flex pb-3">
-      <form-date-range
+      <atlas-form-date-range
         [formGroup]="form.controls.validityGroup"
-      ></form-date-range>
+      ></atlas-form-date-range>
     </div>
 
     <div class="col-6 d-flex pb-3">
-      <bo-select
+      <atlas-bo-select
         class="mt-3 col-12"
         [formGroup]="form"
         [sboidsRestrictions]="boSboidRestriction"
         controlName="businessOrganisation"
         data-cy="businessOrganisation"
-      ></bo-select>
+      ></atlas-bo-select>
     </div>
   </div>
 
@@ -76,10 +76,7 @@
         </mat-radio-button>
       }
     </mat-radio-group>
-    <app-atlas-field-error
-      [form]="form"
-      controlName="selectedType"
-    ></app-atlas-field-error>
+    <atlas-field-error [control]="form.get('selectedType')"></atlas-field-error>
   </div>
 
   @if (form.controls.spTypeGroup) {
@@ -112,10 +109,9 @@
           <mat-checkbox formControlName="stopPoint" data-cy="checkboxStopPoint">
             {{ 'SEPODI.SERVICE_POINTS.STOP_POINT' | translate }}
           </mat-checkbox>
-          <app-atlas-field-error
-            [form]="form.controls.spTypeGroup"
-            controlName="stopPoint"
-          ></app-atlas-field-error>
+          <atlas-field-error
+            [control]="form.get('spTypeGroup.stopPoint')"
+          ></atlas-field-error>
         </div>
 
         @if (form.controls.spTypeGroup.controls.stopPointGroup) {
@@ -133,12 +129,12 @@
             >
             </atlas-select>
             <div class="col-6">
-              <means-of-transport-picker
+              <atlas-means-of-transport-picker
                 [formGroup]="form.controls.spTypeGroup.controls.stopPointGroup"
                 controlName="meansOfTransport"
                 [disabled]="form.disabled"
                 [showSectorWarning]="true"
-              ></means-of-transport-picker>
+              ></atlas-means-of-transport-picker>
             </div>
           </div>
         }
@@ -153,10 +149,9 @@
           >
             {{ 'SEPODI.SERVICE_POINTS.FREIGHT_SERVICE_POINT' | translate }}
           </mat-checkbox>
-          <app-atlas-field-error
-            [form]="form.controls.spTypeGroup"
-            controlName="freightServicePoint"
-          ></app-atlas-field-error>
+          <atlas-field-error
+            [control]="form.get('spTypeGroup.freightServicePoint')"
+          ></atlas-field-error>
         </div>
 
         @if (form.controls.spTypeGroup.controls.freightPointGroup) {
@@ -164,7 +159,7 @@
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: '70003 |', translate: false },
+                { label: ' 70003 | ', translate: false },
                 {
                   label: 'FORM.MAX_CHARS',
                   translate: true,
@@ -290,7 +285,7 @@
       </div>
 
       <div class="col-6 service-point-search">
-        <kilometer-master-search
+        <atlas-kilometer-master-search
           class="mt-3 col-12"
           [formGroup]="form.controls.routeNetworkGroup"
           [disabled]="
@@ -299,7 +294,7 @@
           "
           controlName="operatingPointKilometerMaster"
           data-cy="operatingPointKilometerMaster"
-        ></kilometer-master-search>
+        ></atlas-kilometer-master-search>
       </div>
     </div>
   }

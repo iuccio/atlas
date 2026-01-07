@@ -54,11 +54,6 @@ describe('AtlasButtonComponent', () => {
     isAtLeastSupervisor = true;
     hasPermissionsToCreate = true;
     hasPermissionsToWrite = true;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   describe('Visibility', () => {

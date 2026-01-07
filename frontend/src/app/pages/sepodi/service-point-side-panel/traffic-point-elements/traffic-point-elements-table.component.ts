@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Pages } from '../../../pages';
 import { TableFilter } from '../../../../core/components/table-filter/config/table-filter';
 import { TableService } from '../../../../core/components/table/table.service';
-import { NgIf } from '@angular/common';
+
 import { AtlasButtonComponent } from '../../../../core/components/button/atlas-button.component';
 import { NavigationSepodiPrmComponent } from '../../../../core/navigation-sepodi-prm/navigation-sepodi-prm.component';
 import { TableComponent } from '../../../../core/components/table/table.component';
@@ -18,11 +18,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { TrafficPointElementInternalService } from '../../../../api/service/sepodi/traffic-point-element-internal.service';
 
 @Component({
-  selector: 'app-service-point-traffic-point-elements-table',
+  selector: 'atlas-service-point-traffic-point-elements-table',
   templateUrl: './traffic-point-elements-table.component.html',
   styleUrls: ['./traffic-point-elements-table.component.scss'],
   imports: [
-    NgIf,
     AtlasButtonComponent,
     NavigationSepodiPrmComponent,
     TableComponent,

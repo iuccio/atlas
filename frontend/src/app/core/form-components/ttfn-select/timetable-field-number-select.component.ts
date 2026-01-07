@@ -13,18 +13,18 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TimetableFieldNumber } from '../../../api';
 import { map } from 'rxjs/operators';
 import { TimetableFieldNumberInternalService } from '../../../api/service/lidi/timetable-field-number-internal.service';
-import { SearchSelectComponent } from '../search-select/search-select.component';
 import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
 import { TimetableFieldNumberSelectOptionPipe } from './ttfn-select-option.pipe';
+import { SearchSelectComponent } from '../search-select/search-select.component';
 
 @Component({
-  selector: 'ttfn-select',
+  selector: 'atlas-ttfn-select',
   templateUrl: './timetable-field-number-select.component.html',
   imports: [
-    SearchSelectComponent,
     ReactiveFormsModule,
     AtlasLabelFieldComponent,
     TimetableFieldNumberSelectOptionPipe,
+    SearchSelectComponent,
   ],
 })
 export class TimetableFieldNumberSelectComponent

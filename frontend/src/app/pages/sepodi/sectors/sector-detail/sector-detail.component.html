@@ -12,7 +12,9 @@
   @if (!isNew) {
     <div class="font-xl mb-2">
       <span data-cy="total-range">
-        <date-range-text [dateRange]="maxValidity"></date-range-text>
+        <atlas-date-range-text
+          [dateRange]="maxValidity"
+        ></atlas-date-range-text>
       </span>
     </div>
   }
@@ -45,13 +47,13 @@
     @if (!isNew) {
       <div class="col-12 d-flex flex-row mb-5 justify-content-between">
         <div class="d-flex flex-column col-9 pe-3">
-          <app-switch-version
+          <atlas-switch-version
             (switchVersion)="switchVersion($event)"
             [currentRecord]="selectedVersion"
             [records]="sectorVersions"
             [switchDisabled]="form.enabled"
             [showStatus]="true"
-          ></app-switch-version>
+          ></atlas-switch-version>
         </div>
       </div>
 
@@ -97,14 +99,14 @@
 
     <div class="font-bold-2xl mt-5">{{ 'FORM.KEY_DATA' | translate }}</div>
     <div class="col-12 d-flex">
-      <form-date-range [formGroup]="form"></form-date-range>
+      <atlas-form-date-range [formGroup]="form"></atlas-form-date-range>
     </div>
 
-    <sepodi-geography
+    <atlas-sepodi-geography
       [editMode]="form.enabled"
       [form]="form.controls.sectorGeolocation"
       [geographyOptional]="false"
-    ></sepodi-geography>
+    ></atlas-sepodi-geography>
 
     <div class="font-bold-2xl mt-5">
       {{ 'SEPODI.SECTORS.CONSTRUCTION_INFORMATION' | translate }}
@@ -145,7 +147,9 @@
     @if (!isNew) {
       <div class="mb-3">
         <mat-divider class="mt-4 mb-4"></mat-divider>
-        <app-user-detail-info [record]="selectedVersion"></app-user-detail-info>
+        <atlas-user-detail-info
+          [record]="selectedVersion"
+        ></atlas-user-detail-info>
       </div>
     }
   </atlas-detail-page-content>

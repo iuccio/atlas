@@ -7,9 +7,9 @@ import {
   Self,
 } from '@angular/core';
 
-@Directive({ selector: '[removeChars]' })
+@Directive({ selector: '[atlasRemoveChars]' })
 export class RemoveCharsDirective implements AfterViewInit {
-  @Input() removeChars: string[] = [];
+  @Input() atlasRemoveChars: string[] = [];
 
   private inputElement?: HTMLInputElement;
   private value?: string;
@@ -24,7 +24,7 @@ export class RemoveCharsDirective implements AfterViewInit {
   @HostListener('keyup') onKeyUp() {
     if (this.inputElement) {
       if (this.value !== this.inputElement.value) {
-        for (const charToRemove of this.removeChars) {
+        for (const charToRemove of this.atlasRemoveChars) {
           this.inputElement.value = this.inputElement.value.replace(
             charToRemove,
             ''

@@ -250,7 +250,6 @@ describe('TimetableFieldNumberDetailComponent Detail page add new version', () =
     validFrom.markAsTouched();
     validTo.setValue(moment('31.10.1999', 'dd.MM.yyyy'));
     validTo.markAsTouched();
-    fixture.detectChanges();
 
     const validFromErrors = validFrom.errors;
     expect(validFromErrors).toBeDefined();

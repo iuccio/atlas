@@ -12,7 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 import SpyObj = jasmine.SpyObj;
 
 @Component({
-  selector: 'app-table',
+  selector: 'atlas-table',
   template: 'MockTableComponent',
 })
 class MockTableComponent {
@@ -70,7 +70,7 @@ describe('StopPointTerminationWorkflowOverviewComponent', () => {
   it('should display initial table data', () => {
     // given
     const mockTableComp: MockTableComponent = fixture.debugElement.query(
-      By.css('app-table')
+      By.css('atlas-table')
     ).componentInstance;
     // when
     mockTableComp.tableInitialized.emit({
@@ -101,7 +101,7 @@ describe('StopPointTerminationWorkflowOverviewComponent', () => {
       })
     );
     const mockTableComp: MockTableComponent = fixture.debugElement.query(
-      By.css('app-table')
+      By.css('atlas-table')
     ).componentInstance;
     // when
     mockTableComp.tableChanged.emit({

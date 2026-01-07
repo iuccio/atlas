@@ -16,7 +16,7 @@ import { SectorInternalService } from '../../../../api/service/sepodi/sector-int
 import { ReadSectorGroupVersion } from '../../../../api/model/readSectorGroupVersion';
 
 @Component({
-  selector: 'app-sector-group-overview',
+  selector: 'atlas-sector-group-overview',
   imports: [
     TranslatePipe,
     DetailPageContentComponent,

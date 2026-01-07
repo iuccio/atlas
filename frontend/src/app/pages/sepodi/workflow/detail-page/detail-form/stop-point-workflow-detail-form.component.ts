@@ -37,7 +37,7 @@ import { StopPointWorkflowBasicInfo } from '../../stop-point-workflow-basic-info
 import { StopPointWorkflowService } from '../../../../../api/service/workflow/stop-point-workflow.service';
 
 @Component({
-  selector: 'stop-point-workflow-detail-form',
+  selector: 'atlas-stop-point-workflow-detail-form',
   templateUrl: './stop-point-workflow-detail-form.component.html',
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
   imports: [

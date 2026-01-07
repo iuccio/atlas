@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 
 @Component({
-  selector: 'form-date-icon',
+  selector: 'atlas-form-date-icon',
   templateUrl: './date-icon.component.html',
   styleUrls: ['./date-icon.component.scss'],
 })

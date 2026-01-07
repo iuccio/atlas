@@ -2,7 +2,7 @@
   {{ 'BODI.BUSINESS_ORGANISATION.BUSINESS_ORGANISATIONS' | translate }}
 </div>
 
-<app-table
+<atlas-table
   [tableData]="businessOrganisations"
   [totalCount]="totalCount$"
   [tableColumns]="tableColumns"
@@ -12,5 +12,5 @@
   (tableInitialized)="getOverview($event)"
   data-cy="bodi-business-organisation"
 >
-</app-table>
+</atlas-table>
 <router-outlet></router-outlet>

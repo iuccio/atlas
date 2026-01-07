@@ -8,7 +8,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AtlasSpacerComponent } from '../../../../core/components/spacer/atlas-spacer.component';
 
 @Component({
-  selector: 'app-stop-point-workflow-basic-info',
+  selector: 'atlas-stop-point-workflow-basic-info',
   imports: [
     AsyncPipe,
     BoDisplayPipe,

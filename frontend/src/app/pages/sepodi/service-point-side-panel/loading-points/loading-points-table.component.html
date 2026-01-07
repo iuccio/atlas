@@ -12,7 +12,7 @@
     {{ 'SEPODI.LOADING_POINTS.LOADING_POINTS' | translate }}
   </div>
 
-  <app-table
+  <atlas-table
     data-cy="loading-point-table"
     [tableData]="elements"
     [totalCount]="totalCount$"
@@ -21,7 +21,7 @@
     (editElementEvent)="editVersion($event)"
     (tableChanged)="getOverview($event)"
     (tableInitialized)="getOverview($event)"
-  ></app-table>
+  ></atlas-table>
 </div>
 
 <atlas-detail-footer>

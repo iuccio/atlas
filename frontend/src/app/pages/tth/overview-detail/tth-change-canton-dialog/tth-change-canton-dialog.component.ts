@@ -12,7 +12,7 @@ import { TimetableHearingStatementInternalService } from '../../../../api/servic
 import { BaseChangeDialogComponent } from '../base-change-dialog/base-change-dialog.component';
 
 @Component({
-  selector: 'app-tth-change-canton-dialog',
+  selector: 'atlas-tth-change-canton-dialog',
   templateUrl: './tth-change-canton-dialog.component.html',
   imports: [BaseChangeDialogComponent, ReactiveFormsModule],
 })

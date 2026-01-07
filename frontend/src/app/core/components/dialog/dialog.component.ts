@@ -9,7 +9,7 @@ import { DialogData } from './dialog.data';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-dialog',
+  selector: 'atlas-dialog',
   templateUrl: './dialog.component.html',
   imports: [MatDialogClose, MatDialogContent, MatDialogActions, TranslatePipe],
   providers: [TranslatePipe],

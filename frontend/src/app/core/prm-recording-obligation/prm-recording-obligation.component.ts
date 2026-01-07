@@ -13,7 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AtlasSlideToggleComponent } from '../form-components/atlas-slide-toggle/atlas-slide-toggle.component';
 
 @Component({
-  selector: 'prm-recording-obligation',
+  selector: 'atlas-prm-recording-obligation',
   templateUrl: './prm-recording-obligation.component.html',
   imports: [TranslatePipe, AtlasSlideToggleComponent],
   providers: [TranslatePipe],

@@ -10,16 +10,16 @@ import { TableFilter } from '../../../../core/components/table-filter/config/tab
 import { TablePagination } from '../../../../core/components/table/table-pagination';
 import { TableColumn } from '../../../../core/components/table/table-column';
 import { TableContentPaginationAndSorting } from '../../../../core/components/table/table-content-pagination-and-sorting';
-import { NgIf } from '@angular/common';
+
 import { AtlasButtonComponent } from '../../../../core/components/button/atlas-button.component';
 import { TableComponent } from '../../../../core/components/table/table.component';
 import { DetailFooterComponent } from '../../../../core/components/detail-footer/detail-footer.component';
 import { ReferencePointInternalService } from '../../../../api/service/prm/reference-point/reference-point-internal.service';
 
 @Component({
-  selector: 'app-reference-point-table',
+  selector: 'atlas-reference-point-table',
   templateUrl: './reference-point-table.component.html',
-  imports: [NgIf, AtlasButtonComponent, TableComponent, DetailFooterComponent],
+  imports: [AtlasButtonComponent, TableComponent, DetailFooterComponent],
 })
 export class ReferencePointTableComponent
   extends BasePrmTabComponentService

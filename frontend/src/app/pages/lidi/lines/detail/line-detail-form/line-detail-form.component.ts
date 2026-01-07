@@ -7,11 +7,11 @@ import {
   OfferCategory,
 } from '../../../../../api';
 import {
-  SelectOptionGroup,
   SelectComponent,
+  SelectOptionGroup,
 } from '../../../../../core/form-components/select/select.component';
 import { ColumnDropDownEvent } from '../../../../../core/components/table/column-drop-down-event';
-import { NgIf, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { TextFieldComponent } from '../../../../../core/form-components/text-field/text-field.component';
 import { DateRangeComponent } from '../../../../../core/form-components/date-range/date-range.component';
 import { BusinessOrganisationSelectComponent } from '../../../../../core/form-components/bo-select/business-organisation-select.component';
@@ -28,12 +28,11 @@ interface OfferCategoryGroup {
 }
 
 @Component({
-  selector: 'line-detail-form',
+  selector: 'atlas-line-detail-form',
   templateUrl: './line-detail-form.component.html',
   styleUrls: ['./line-detail-form.component.scss'],
   imports: [
     ReactiveFormsModule,
-    NgIf,
     SelectComponent,
     TextFieldComponent,
     NgOptimizedImage,

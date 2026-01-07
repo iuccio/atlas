@@ -16,7 +16,7 @@ import { TableComponent } from '../../../../core/components/table/table.componen
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-lidi-workflow-overview',
+  selector: 'atlas-lidi-workflow-overview',
   templateUrl: './lidi-workflow-overview.component.html',
   imports: [TableComponent, RouterOutlet, TranslatePipe],
 })

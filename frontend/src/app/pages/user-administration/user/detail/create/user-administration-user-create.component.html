@@ -1,4 +1,4 @@
-<div scrollToTop>
+<div atlasScrollToTop>
   <atlas-detail-page-container>
     <atlas-detail-page-content>
       <h1 class="font-bold-4xl mb-5">{{ 'USER_ADMIN.NEW' | translate }}</h1>
@@ -15,10 +15,10 @@
         </mat-label>
       </div>
       <div style="margin-bottom: 15rem">
-        <app-user-select
+        <atlas-user-select
           (selectionChange)="selectUser($event)"
           [form]="userSearchForm"
-        ></app-user-select>
+        ></atlas-user-select>
 
         @if (userHasAlreadyPermissions) {
           <p class="color-error">

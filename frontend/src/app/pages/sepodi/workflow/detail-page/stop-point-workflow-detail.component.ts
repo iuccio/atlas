@@ -38,7 +38,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { StopPointWorkflowService } from '../../../../api/service/workflow/stop-point-workflow.service';
 
 @Component({
-  selector: 'stop-point-workflow-detail',
+  selector: 'atlas-stop-point-workflow-detail',
   templateUrl: './stop-point-workflow-detail.component.html',
   imports: [
     DetailPageContainerComponent,

@@ -52,7 +52,7 @@ const NUMBER_COLONS_PLATFORM = 1;
 const NUMBER_COLONS_AREA = 0;
 
 @Component({
-  selector: 'app-traffic-point-elements-detail',
+  selector: 'atlas-traffic-point-elements-detail',
   templateUrl: './traffic-point-elements-detail.component.html',
   styleUrls: ['./traffic-point-elements-detail.component.scss'],
   providers: [ValidityService],

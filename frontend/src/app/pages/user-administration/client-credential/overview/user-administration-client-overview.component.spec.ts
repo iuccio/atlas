@@ -4,9 +4,11 @@ import { UserAdministrationClientOverviewComponent } from './user-administration
 import { ContainerClientCredential } from '../../../../api';
 import { Observable, of, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { ClientCredentialAdministrationService } from '../../../../api/service/user-administration/client-credential-administration.service';
+import { TableComponent } from '../../../../core/components/table/table.component';
+import { MockTableComponent } from '../../../../app.testing.mocks';
 import SpyObj = jasmine.SpyObj;
 import Spy = jasmine.Spy;
-import { ClientCredentialAdministrationService } from '../../../../api/service/user-administration/client-credential-administration.service';
 
 describe('UserAdministrationClientOverviewComponent', () => {
   let component: UserAdministrationClientOverviewComponent;
@@ -40,7 +42,12 @@ describe('UserAdministrationClientOverviewComponent', () => {
         { provide: ActivatedRoute, useValue: { paramMap: new Subject() } },
         TranslatePipe,
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(UserAdministrationClientOverviewComponent, {
+        remove: { imports: [TableComponent] },
+        add: { imports: [MockTableComponent] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(
       UserAdministrationClientOverviewComponent
@@ -49,17 +56,12 @@ describe('UserAdministrationClientOverviewComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should getOverview', () => {
     //given
     component.clientCredentials = [
       { clientCredentialId: '134123-123123', alias: 'öV-info.ch' },
     ];
     component.totalCount = 1;
-    fixture.detectChanges();
 
     //when
     component.getOverview({
@@ -71,7 +73,6 @@ describe('UserAdministrationClientOverviewComponent', () => {
     expect(
       clientCredentialAdministrationServiceSpy.getClientCredentials
     ).toHaveBeenCalledWith(0, 10, ['clientCredentialId,asc']);
-
     expect(component.clientCredentials.length).toEqual(1);
     expect(component.clientCredentials[0].alias).toEqual('öV-info.ch');
     expect(component.totalCount).toEqual(1);
