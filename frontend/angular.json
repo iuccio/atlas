@@ -175,7 +175,6 @@
               "codeCoverageExclude": [
                 "charts/**",
                 "src/polyfills.ts",
-                "src/main.ts",
                 "components/coverage/**/*",
                 "coverage/**/*"
               ],
