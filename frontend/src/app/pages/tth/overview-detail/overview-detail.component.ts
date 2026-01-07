@@ -47,8 +47,6 @@ import { AtlasButtonComponent } from '../../../core/components/button/atlas-butt
 import { DownloadIconComponent } from '../../../core/form-components/download-icon/download-icon.component';
 import { TableComponent } from '../../../core/components/table/table.component';
 import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
-import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
-import { DialogData } from '../../../core/components/dialog/dialog.data';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatIconButton } from '@angular/material/button';
 
@@ -821,7 +819,20 @@ export class OverviewDetailComponent implements OnInit {
       .then();
   }
 
-  addToDossier(statement: TimetableHearingStatementV2) {}
+  addToDossier(statement: TimetableHearingStatementV2) {
+    console.log(
+      'ATLAS-3226 - Adding to dossier not implemented yet.',
+      statement
+    );
+  }
 
-  switchCanton(statement: TimetableHearingStatementV2) {}
+  switchCanton(statement: TimetableHearingStatementV2) {
+    this.tthChangeCantonDialogService
+      .onClick(undefined, [statement])
+      .subscribe((result) => {
+        if (result) {
+          this.ngOnInit();
+        }
+      });
+  }
 }
