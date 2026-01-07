@@ -9,7 +9,7 @@ import { TthDossier } from '../../../../api/model/tthDossier';
 export interface DossierDetailFormGroup {
   id: FormControl<number | null | undefined>;
   statementIds: FormControl<number[] | null | undefined>;
-  // swissCanton: FormControl<SwissCanton | null | undefined>;
+  swissCanton: FormControl<SwissCanton | null | undefined>;
   topic: FormControl<string | null | undefined>;
   internalComment: FormControl<string | null | undefined>;
   publicComment: FormControl<string | null | undefined>;
@@ -27,7 +27,7 @@ export class DossierFormGroupBuilder {
       statementIds: new FormControl(dossier?.statementIds, [
         Validators.required,
       ]),
-      // regernerate model -- swissCanton: new FormControl(dossier?.swissCanton),
+      swissCanton: new FormControl(dossier?.swissCanton),
       topic: new FormControl(dossier?.topic, [
         Validators.required,
         AtlasFieldLengthValidator.length_255,
