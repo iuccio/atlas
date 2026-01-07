@@ -4,9 +4,10 @@ import { DossierDetailResolver } from './dossier-detail-resolver.service';
 import { of } from 'rxjs';
 import { TthDossier } from '../../../../api/model/tthDossier';
 import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
-import { HearingStatus } from '../../../../api';
+import { HearingStatus, SwissCanton } from '../../../../api';
 
 const dossier: TthDossier = {
+  swissCanton: SwissCanton.Bern,
   boContactMail: 'info@bls.ch',
   boDeadlineToAnswer: new Date('2014-12-14'),
   questions: [{ question: 'Habt ihr mehr Busse?' }],

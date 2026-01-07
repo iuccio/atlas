@@ -32,6 +32,7 @@ import { TimetableHearingStatementInternalService } from '../../../api/service/l
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { TableComponent } from '../../../core/components/table/table.component';
+import { TthChangeCantonDialogService } from './tth-change-canton-dialog/service/tth-change-canton-dialog.service';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-tab-heading',
@@ -390,7 +391,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
           emails: new Set('muster@muster.com'),
         },
       };
-      component.changeCanton(statement);
+      component.switchCanton(statement);
 
       expect(tthChangeCantonDialogService.onClick).toHaveBeenCalled();
     });

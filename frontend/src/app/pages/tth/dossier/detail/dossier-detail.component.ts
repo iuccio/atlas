@@ -13,7 +13,7 @@ import {
 } from './dossier-detail-form-group';
 
 @Component({
-  selector: 'app-dossier-detail',
+  selector: 'atlas-dossier-detail',
   imports: [
     DetailPageContainerComponent,
     DetailPageContentComponent,
@@ -38,7 +38,8 @@ export class DossierDetailComponent implements DetailFormComponent, OnInit {
     } else {
       this.isNew = true;
       const statementIds: number[] =
-        this.activatedRoute.snapshot.queryParams.statementIds;
+        this.activatedRoute.snapshot.queryParams?.statementIds ?? [];
+      console.log('Creating new dossier with statement IDs:', statementIds);
     }
   }
 }
