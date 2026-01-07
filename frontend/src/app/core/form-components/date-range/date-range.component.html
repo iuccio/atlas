@@ -20,7 +20,6 @@
         [min]="MIN_DATE"
         [attr.data-cy]="controlNameFrom"
         [formControlName]="controlNameFrom"
-        required
       />
       <div>
         <atlas-form-date-icon
@@ -62,7 +61,6 @@
         [min]="MIN_DATE"
         [attr.data-cy]="controlNameTo"
         [formControlName]="controlNameTo"
-        required
         list="validToSuggestions"
       />
       @if (showMaxValidityAutoFill) {
