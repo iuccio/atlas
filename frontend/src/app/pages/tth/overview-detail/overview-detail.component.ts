@@ -69,7 +69,6 @@ import { MatIconButton } from '@angular/material/button';
     MatIconButton,
     MatMenu,
     MatMenuItem,
-    NgOptimizedImage,
     NgClass,
   ],
 })

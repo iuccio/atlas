@@ -120,12 +120,12 @@ export class Pages {
     path: ':canton',
   };
 
-  public static TTH_STATEMENT_DETAILS: Page = {
+  public static readonly TTH_STATEMENT_DETAILS: Page = {
     title: 'PAGES.DETAILS',
     path: ':id',
   };
 
-  public static TTH_DOSSIERS: Page = {
+  public static readonly TTH_DOSSIERS: Page = {
     title: 'PAGES.DOSSIERS',
     path: 'dossiers',
   };
