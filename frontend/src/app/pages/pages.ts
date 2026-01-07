@@ -125,6 +125,11 @@ export class Pages {
     path: ':id',
   };
 
+  public static TTH_DOSSIERS: Page = {
+    title: 'PAGES.DOSSIERS',
+    path: 'dossiers',
+  };
+
   public static readonly BUSINESS_ORGANISATIONS: Page = {
     title: 'PAGES.DETAILS',
     path: 'business-organisations',
