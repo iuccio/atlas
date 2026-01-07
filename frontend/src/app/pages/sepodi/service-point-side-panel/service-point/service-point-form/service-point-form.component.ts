@@ -44,7 +44,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ServicePointGeoDataInternalService } from '../../../../../api/service/sepodi/service-point-geo-data-internal.service';
 
 @Component({
-  selector: 'service-point-form',
+  selector: 'atlas-service-point-form',
   templateUrl: './service-point-form.component.html',
   styleUrls: ['./service-point-form.component.scss'],
   imports: [

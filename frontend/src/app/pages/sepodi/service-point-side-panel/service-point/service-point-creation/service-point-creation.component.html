@@ -23,7 +23,7 @@
         class="col-6"
         [fieldExamples]="[
           { label: 'FORM.FOR_EXAMPLE', translate: true },
-          { label: '57189 |', translate: false },
+          { label: ' 57189 | ', translate: false },
           {
             label: 'FORM.MAX_NUMBER_OF_DIGITS',
             translate: true,
@@ -40,7 +40,7 @@
       </atlas-text-field>
     </div>
 
-    <service-point-form
+    <atlas-service-point-form
       [form]="form"
       [selectableStopPointTypes]="stopPointTypesWithoutUnknown"
       (selectedServicePointTypeChange)="servicePointTypeChanged$.next($event)"
@@ -49,7 +49,7 @@
         <atlas-text-field
           [fieldExamples]="[
             { label: 'FORM.FOR_EXAMPLE', translate: true },
-            { label: 'BIBD |', translate: false },
+            { label: ' BIBD | ', translate: false },
             {
               label: 'FORM.MAX_CHARS',
               translate: true,
@@ -64,15 +64,15 @@
         </atlas-text-field>
       </div>
 
-      <sepodi-geography
+      <atlas-sepodi-geography
         geography
         [form]="form.controls.servicePointGeolocation"
         [editMode]="form.enabled"
         (geographyChanged)="
           $event ? onGeographyEnabled() : onGeographyDisabled()
         "
-      ></sepodi-geography>
-    </service-point-form>
+      ></atlas-sepodi-geography>
+    </atlas-service-point-form>
   </atlas-detail-page-content>
 
   <atlas-detail-footer>

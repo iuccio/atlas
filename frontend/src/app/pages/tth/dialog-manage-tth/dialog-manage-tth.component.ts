@@ -20,7 +20,7 @@ import { AtlasButtonComponent } from '../../../core/components/button/atlas-butt
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'dialog-manage-tth',
+  selector: 'atlas-dialog-manage-tth',
   templateUrl: './dialog-manage-tth.component.html',
   styleUrls: ['./dialog-manage-tth.component.scss'],
   imports: [

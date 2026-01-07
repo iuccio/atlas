@@ -29,7 +29,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { UserAdministrationService } from '../../../../api/service/user-administration/user-administration.service';
 
 @Component({
-  selector: 'app-user-administration-overview',
+  selector: 'atlas-user-administration-overview',
   templateUrl: './user-administration-user-overview.component.html',
   styleUrls: ['./user-administration-user-overview.component.scss'],
   imports: [

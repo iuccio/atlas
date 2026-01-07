@@ -10,16 +10,16 @@ import { TablePagination } from '../../../../core/components/table/table-paginat
 import { TableColumn } from '../../../../core/components/table/table-column';
 import { ParkingLotOverview } from '../../../../api';
 import { TableContentPaginationAndSorting } from '../../../../core/components/table/table-content-pagination-and-sorting';
-import { NgIf } from '@angular/common';
+
 import { AtlasButtonComponent } from '../../../../core/components/button/atlas-button.component';
 import { TableComponent } from '../../../../core/components/table/table.component';
 import { DetailFooterComponent } from '../../../../core/components/detail-footer/detail-footer.component';
 import { ParkingLotInternalService } from '../../../../api/service/prm/parking-lot/parking-lot-internal.service';
 
 @Component({
-  selector: 'app-parking-lot-table',
+  selector: 'atlas-parking-lot-table',
   templateUrl: './parking-lot-table.component.html',
-  imports: [NgIf, AtlasButtonComponent, TableComponent, DetailFooterComponent],
+  imports: [AtlasButtonComponent, TableComponent, DetailFooterComponent],
 })
 export class ParkingLotTableComponent
   extends BasePrmTabComponentService

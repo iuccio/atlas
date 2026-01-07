@@ -1,6 +1,8 @@
-<h2 *ngIf="titleTranslationKey" class="font-bold-2xl color-gray-900">
-  {{ titleTranslationKey | translate }}
-</h2>
+@if (titleTranslationKey) {
+  <h2 class="font-bold-2xl color-gray-900">
+    {{ titleTranslationKey | translate }}
+  </h2>
+}
 
 <div class="table-form-container">
   <table
@@ -11,21 +13,23 @@
     class="atlas-table"
     mat-table
     matSort
-  >
-    <ng-container *ngFor="let column of tableColumns" matColumnDef="{{ column.columnDef }}">
-      <th
-        *matHeaderCellDef
-        [mat-sort-header]="column.columnDef!"
-        class="font-bold-base color-primary-400 bordered-cell"
-        mat-header-cell
-        scope="col"
-      >
-        {{ column.headerTitle | translate }}
-      </th>
-      <td *matCellDef="let value" class="bordered-cell" mat-cell>
-        {{ getValue(value, column) }}
-      </td>
-    </ng-container>
+    >
+    @for (column of tableColumns; track column) {
+      <ng-container matColumnDef="{{ column.columnDef }}">
+        <th
+          *matHeaderCellDef
+          [mat-sort-header]="column.columnDef!"
+          class="font-bold-base color-primary-400 bordered-cell"
+          mat-header-cell
+          scope="col"
+          >
+          {{ column.headerTitle | translate }}
+        </th>
+        <td *matCellDef="let value" class="bordered-cell" mat-cell>
+          {{ getValue(value, column) }}
+        </td>
+      </ng-container>
+    }
 
     <tr *matHeaderRowDef="columnValues()" mat-header-row></tr>
     <tr
@@ -43,32 +47,35 @@
 
 <ng-content select="[table-button-between]"></ng-content>
 
-<div *ngIf="editable">
-  <button
-    (click)="editModeChanged.emit()"
-    [disabled]="editMode"
-    class="atlas-primary-btn me-2"
-    data-cy="add-relation-btn"
-  >
-    {{ addBtnNameTranslationKey | translate }}
-  </button>
-  <button
-    *ngIf="relationEditable"
-    (click)="editRelation()"
-    [disabled]="editMode || selectedIndex === -1"
-    class="atlas-primary-btn me-2"
-    data-cy="edit-relation-btn"
-  >
-    {{ updateBtnNameTranslationKey | translate }}
-  </button>
-  <button
-    (click)="deleteRelation.emit()"
-    [disabled]="selectedIndex === -1 || editMode"
-    class="atlas-primary-btn"
-    data-cy="delete-relation-btn"
-  >
-    {{ deleteBtnNameTranslationKey | translate }}
-  </button>
-</div>
+@if (editable) {
+  <div>
+    <button
+      (click)="editModeChanged.emit()"
+      [disabled]="editMode"
+      class="atlas-primary-btn me-2"
+      data-cy="add-relation-btn"
+      >
+      {{ addBtnNameTranslationKey | translate }}
+    </button>
+    @if (relationEditable) {
+      <button
+        (click)="editRelation()"
+        [disabled]="editMode || selectedIndex === -1"
+        class="atlas-primary-btn me-2"
+        data-cy="edit-relation-btn"
+        >
+        {{ updateBtnNameTranslationKey | translate }}
+      </button>
+    }
+    <button
+      (click)="deleteRelation.emit()"
+      [disabled]="selectedIndex === -1 || editMode"
+      class="atlas-primary-btn"
+      data-cy="delete-relation-btn"
+      >
+      {{ deleteBtnNameTranslationKey | translate }}
+    </button>
+  </div>
+}
 
 <ng-content></ng-content>

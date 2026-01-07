@@ -10,7 +10,9 @@
   @if (!isNew) {
     <div class="font-xl mb-2">
       <span data-cy="total-range">
-        <date-range-text [dateRange]="maxValidity"></date-range-text>
+        <atlas-date-range-text
+          [dateRange]="maxValidity"
+        ></atlas-date-range-text>
       </span>
     </div>
   }

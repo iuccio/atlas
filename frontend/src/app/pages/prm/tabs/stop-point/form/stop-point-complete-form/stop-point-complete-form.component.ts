@@ -27,7 +27,7 @@ import { SelectComponent } from '../../../../../../core/form-components/select/s
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-stop-point-complete-form',
+  selector: 'atlas-stop-point-complete-form',
   templateUrl: './stop-point-complete-form.component.html',
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
   imports: [

@@ -32,7 +32,7 @@ import { DetailPageContainerComponent } from '../../../../core/components/detail
 import { ScrollToTopDirective } from '../../../../core/scroll-to-top/scroll-to-top.directive';
 import { DetailPageContentComponent } from '../../../../core/components/detail-page-content/detail-page-content.component';
 import { DateRangeTextComponent } from '../../../../core/versioning/date-range-text/date-range-text.component';
-import { NgIf } from '@angular/common';
+
 import { SwitchVersionComponent } from '../../../../core/components/switch-version/switch-version.component';
 import { SublineTableComponent } from './subline-table/subline-table.component';
 import { LineWorkflowComponent } from '../../../../core/workflow/line-workflow.component';
@@ -58,7 +58,6 @@ import {
     ScrollToTopDirective,
     DetailPageContentComponent,
     DateRangeTextComponent,
-    NgIf,
     SwitchVersionComponent,
     SublineTableComponent,
     LineWorkflowComponent,
@@ -68,8 +67,8 @@ import {
     DetailFooterComponent,
     AtlasButtonComponent,
     TranslatePipe,
-    RevokeButton,
-  ],
+    RevokeButton
+],
 })
 export class LineDetailComponent implements Revokable, OnInit, OnDestroy {
   readonly eventSubject = new Subject<boolean>();

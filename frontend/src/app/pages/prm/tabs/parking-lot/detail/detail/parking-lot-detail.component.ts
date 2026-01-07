@@ -12,7 +12,7 @@ import { EMPTY, Observable, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PrmTabDetailBaseComponent } from '../../../../shared/prm-tab-detail-base.component';
 import { DetailPageContentComponent } from '../../../../../../core/components/detail-page-content/detail-page-content.component';
-import { NgIf } from '@angular/common';
+
 import { SloidComponent } from '../../../../../../core/form-components/sloid/sloid.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SwitchVersionComponent } from '../../../../../../core/components/switch-version/switch-version.component';
@@ -25,12 +25,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ParkingLotService } from '../../../../../../api/service/prm/parking-lot/parking-lot.service';
 
 @Component({
-  selector: 'app-parking-lot-detail',
+  selector: 'atlas-parking-lot-detail',
   templateUrl: './parking-lot-detail.component.html',
   providers: [ValidityService, TranslatePipe],
   imports: [
     DetailPageContentComponent,
-    NgIf,
     SloidComponent,
     ReactiveFormsModule,
     SwitchVersionComponent,

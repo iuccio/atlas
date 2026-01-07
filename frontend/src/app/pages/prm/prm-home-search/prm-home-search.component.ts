@@ -6,7 +6,7 @@ import { NgClass } from '@angular/common';
 import { PrmInfoBoxComponent } from './prm-info-box/prm-info-box.component';
 
 @Component({
-  selector: 'app-prm-home-search',
+  selector: 'atlas-prm-home-search',
   templateUrl: './prm-home-search.component.html',
   styleUrls: ['./prm-home-search.component.scss'],
   imports: [

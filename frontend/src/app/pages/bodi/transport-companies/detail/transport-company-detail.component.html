@@ -1,12 +1,12 @@
-<div scrollToTop>
+<div atlasScrollToTop>
   <atlas-detail-page-container>
     <atlas-detail-page-content>
       <div class="detail-wrapper">
         <h1 class="font-bold-4xl mb-5 mt-5">
           {{
             (transportCompany.abbreviation ?? '') +
-            ' - ' +
-            (transportCompany.businessRegisterName ?? '')
+              ' - ' +
+              (transportCompany.businessRegisterName ?? '')
           }}
         </h1>
 
@@ -15,11 +15,13 @@
         </h2>
 
         <div class="mb-5">
-          <span class="font-bold-lg color-gray-900">{{ 'COMMON.STATUS' | translate }} </span>
+          <span class="font-bold-lg color-gray-900"
+            >{{ 'COMMON.STATUS' | translate }}
+          </span>
           <span class="color-gray-900">{{
-              'BODI.TRANSPORT_COMPANIES.TRANSPORT_COMPANY_STATUS.' +
+            'BODI.TRANSPORT_COMPANIES.TRANSPORT_COMPANY_STATUS.' +
               transportCompany.transportCompanyStatus | translate
-            }}</span>
+          }}</span>
         </div>
         <form [formGroup]="transportFormGroup">
           <div class="col-12 d-flex">
@@ -58,8 +60,8 @@
           </div>
 
           <span class="font-bold-2xl">{{
-              'BODI.TRANSPORT_COMPANIES.OFFICIAL_DATA' | translate
-            }}</span>
+            'BODI.TRANSPORT_COMPANIES.OFFICIAL_DATA' | translate
+          }}</span>
           <div class="col-12 d-flex mt-3">
             <div class="d-flex flex-column col pe-3">
               <atlas-text-field
@@ -81,23 +83,27 @@
           </div>
         </form>
 
-        <span class="font-bold-2xl">{{ 'FORM.SUPPLEMENTARY_INFORMATION' | translate }}</span>
+        <span class="font-bold-2xl">{{
+          'FORM.SUPPLEMENTARY_INFORMATION' | translate
+        }}</span>
         <div class="col-12 d-flex mt-3">
           <div class="d-flex flex-column col-6">
-            <form-comment
+            <atlas-form-comment
               [displayLabel]="false"
               [formGroup]="transportFormGroup"
               [required]="false"
-            ></form-comment>
+            ></atlas-form-comment>
           </div>
         </div>
 
         <div class="mt-5">
-          <app-relation
+          <atlas-relation
             (deleteRelation)="deleteRelation()"
             (updateRelation)="updateRelation()"
             (editModeChanged)="editMode = !editMode"
-            (selectedIndexChanged)="selectedTransportCompanyRelationIndex = $event"
+            (selectedIndexChanged)="
+              selectedTransportCompanyRelationIndex = $event
+            "
             [editMode]="editMode"
             [editable]="mayCreate()"
             [records]="transportCompanyRelations"
@@ -105,19 +111,24 @@
             [tableColumns]="transportCompanyRelationTableColumns"
             [titleTranslationKey]="'BODI.TRANSPORT_COMPANIES.BO_RELATION_TITLE'"
           >
-            <form *ngIf="editMode" class="col-12 d-flex">
-              <bo-select
-                [formGroup]="form"
-                [disabled]="isUpdateRelationSelected"
-                class="col-6 pe-3 mt-3"
-                controlName="businessOrganisation"
-                data-cy="businessOrganisation"
-                valueExtraction=""
-              >
-              </bo-select>
-              <form-date-range [formGroup]="form" class="col-6"></form-date-range>
-            </form>
-          </app-relation>
+            @if (editMode) {
+              <form class="col-12 d-flex">
+                <atlas-bo-select
+                  [formGroup]="form"
+                  [disabled]="isUpdateRelationSelected"
+                  class="col-6 pe-3 mt-3"
+                  controlName="businessOrganisation"
+                  data-cy="businessOrganisation"
+                  valueExtraction=""
+                >
+                </atlas-bo-select>
+                <atlas-form-date-range
+                  [formGroup]="form"
+                  class="col-6"
+                ></atlas-form-date-range>
+              </form>
+            }
+          </atlas-relation>
         </div>
       </div>
     </atlas-detail-page-content>
@@ -125,7 +136,7 @@
     <atlas-detail-footer>
       <atlas-button
         [footerEdit]="editMode"
-        backButton
+        atlasBackButton
         buttonDataCy="back-to-overview"
         buttonText="COMMON.BACK_TO_OVERVIEW"
         buttonType="whiteFooterNonEdit"

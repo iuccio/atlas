@@ -14,7 +14,7 @@ import { CommentComponent } from '../../../../../../../core/form-components/comm
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-parking-lot-form',
+  selector: 'atlas-parking-lot-form',
   templateUrl: './parking-lot-form.component.html',
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
   imports: [

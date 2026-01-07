@@ -17,7 +17,7 @@ import { CommentComponent } from '../../../../../../../core/form-components/comm
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-reference-point-complete-form',
+  selector: 'atlas-reference-point-complete-form',
   templateUrl: './reference-point-complete-form.component.html',
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
   imports: [

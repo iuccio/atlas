@@ -5,7 +5,7 @@ import { FileDropDirective } from './file-drop.directive';
 
 @Component({
   imports: [FileDropDirective],
-  template: ` <div atlas-file-drop>Test Dropzone</div>`,
+  template: ` <div atlasFileDrop>Test Dropzone</div>`,
 })
 class TestComponent {}
 

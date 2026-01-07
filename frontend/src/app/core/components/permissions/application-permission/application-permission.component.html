@@ -46,7 +46,7 @@
               'BODI.BUSINESS_ORGANISATION.BUSINESS_ORGANISATIONS' | translate
             }}
           </span>
-          <app-relation
+          <atlas-relation
             (deleteRelation)="removeBusinessOrganisation()"
             (editModeChanged)="addBusinessOrganisation()"
             (selectedIndexChanged)="selectedBusinessOrganisationIndex = $event"
@@ -60,13 +60,13 @@
           >
             @if (form.enabled) {
               <div class="mb-3 bo-select-wrapper" table-button-between>
-                <bo-select
+                <atlas-bo-select
                   [controlName]="boFormCtrlName"
                   [formGroup]="businessOrganisationForm"
-                ></bo-select>
+                ></atlas-bo-select>
               </div>
             }
-          </app-relation>
+          </atlas-relation>
         }
         @if (showCantonRestriction) {
           <atlas-select
@@ -94,9 +94,9 @@
       <div class="special-permissions d-flex flex-row">
         @if (showBulkImport) {
           <div class="me-5">
-            <app-atlas-label-field
+            <atlas-label-field
               fieldLabel="PAGES.BULK_IMPORT.TITLE_MENU"
-            ></app-atlas-label-field>
+            ></atlas-label-field>
             <atlas-slide-toggle
               [formGroup]="permissionsForm"
               controlName="bulkImportRestriction"
@@ -106,9 +106,7 @@
         }
         @if (showNovaTerminationVote) {
           <div class="me-5">
-            <app-atlas-label-field
-              fieldLabel="USER_ADMIN.NOVA"
-            ></app-atlas-label-field>
+            <atlas-label-field fieldLabel="USER_ADMIN.NOVA"></atlas-label-field>
             <atlas-slide-toggle
               (toggleChange)="onNovaToggle($event)"
               [formGroup]="permissionsForm"
@@ -119,9 +117,9 @@
         }
         @if (showInfoPlusTerminationVote) {
           <div class="me-5">
-            <app-atlas-label-field
+            <atlas-label-field
               fieldLabel="USER_ADMIN.INFO_PLUS"
-            ></app-atlas-label-field>
+            ></atlas-label-field>
             <atlas-slide-toggle
               (toggleChange)="onInfoPlusToggle($event)"
               [formGroup]="permissionsForm"
@@ -132,9 +130,9 @@
         }
         @if (showTransportCompanyDossierAnswer) {
           <div class="me-5">
-            <app-atlas-label-field
+            <atlas-label-field
               fieldLabel="USER_ADMIN.TRANSPORT_COMPANY"
-            ></app-atlas-label-field>
+            ></atlas-label-field>
             <atlas-slide-toggle
               (toggleChange)="onTransportCompanyDossierToggle($event)"
               [formGroup]="permissionsForm"

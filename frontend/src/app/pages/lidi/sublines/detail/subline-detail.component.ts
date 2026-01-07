@@ -40,7 +40,7 @@ import { DetailPageContainerComponent } from '../../../../core/components/detail
 import { ScrollToTopDirective } from '../../../../core/scroll-to-top/scroll-to-top.directive';
 import { DetailPageContentComponent } from '../../../../core/components/detail-page-content/detail-page-content.component';
 import { DateRangeTextComponent } from '../../../../core/versioning/date-range-text/date-range-text.component';
-import { NgIf } from '@angular/common';
+
 import { SwitchVersionComponent } from '../../../../core/components/switch-version/switch-version.component';
 import { SearchSelectComponent } from '../../../../core/form-components/search-select/search-select.component';
 import { MatLabel } from '@angular/material/form-field';
@@ -67,7 +67,6 @@ import { RevokeButton } from '../../../../core/form-components/revoke-button/rev
     ScrollToTopDirective,
     DetailPageContentComponent,
     DateRangeTextComponent,
-    NgIf,
     SwitchVersionComponent,
     SearchSelectComponent,
     ReactiveFormsModule,
@@ -82,8 +81,8 @@ import { RevokeButton } from '../../../../core/form-components/revoke-button/rev
     AtlasButtonComponent,
     TranslatePipe,
     MainlineDescriptionPipe,
-    RevokeButton,
-  ],
+    RevokeButton
+],
 })
 export class SublineDetailComponent
   implements OnInit, DetailFormComponent, DetailWithCancelEdit

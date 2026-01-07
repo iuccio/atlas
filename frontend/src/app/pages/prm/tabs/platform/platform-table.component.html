@@ -1,11 +1,11 @@
 <div class="tab-detail-container">
   <div class="d-flex flex-row pe-3 col-12 justify-content-end">
-    <app-navigation-sepodi-prm
+    <atlas-navigation-sepodi-prm
       targetPage="traffic-point-table"
       [number]="servicePointVersion.number.number"
-    ></app-navigation-sepodi-prm>
+    ></atlas-navigation-sepodi-prm>
   </div>
-  <app-table
+  <atlas-table
     data-cy="platform-overview-table"
     [tableData]="platforms"
     [totalCount]="totalCount"
@@ -14,7 +14,7 @@
     (editElementEvent)="rowClicked($event)"
     (tableChanged)="getOverview($event)"
     (tableInitialized)="getOverview($event)"
-  ></app-table>
+  ></atlas-table>
 </div>
 <atlas-detail-footer>
   <atlas-button

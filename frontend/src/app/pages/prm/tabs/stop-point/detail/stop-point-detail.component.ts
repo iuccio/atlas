@@ -32,7 +32,7 @@ import { ValidityService } from '../../../../sepodi/validity/validity.service';
 import { ReferencePointCreationHintService } from './reference-point-creation-hint/reference-point-creation-hint.service';
 import { PermissionService } from '../../../../../core/auth/permission/permission.service';
 import { filter, map } from 'rxjs/operators';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { CreateStopPointComponent } from '../create-stop-point/create-stop-point.component';
 import { SwitchVersionComponent } from '../../../../../core/components/switch-version/switch-version.component';
 import { NavigationSepodiPrmComponent } from '../../../../../core/navigation-sepodi-prm/navigation-sepodi-prm.component';
@@ -47,11 +47,10 @@ import { TranslationSortingService } from '../../../../../core/translation/trans
 import { StopPointService } from '../../../../../api/service/prm/stop-point/stop-point.service';
 
 @Component({
-  selector: 'app-stop-point-detail',
+  selector: 'atlas-stop-point-detail',
   templateUrl: './stop-point-detail.component.html',
   providers: [ValidityService, TranslatePipe, TranslationSortingService],
   imports: [
-    NgIf,
     CreateStopPointComponent,
     SwitchVersionComponent,
     NavigationSepodiPrmComponent,

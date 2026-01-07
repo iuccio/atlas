@@ -2,7 +2,11 @@
   <div class="d-flex flex-column col-6">
     <atlas-text-field
       [fieldExamples]="[
-        { label: 'FORM.MAX_CHARS', translate: true, arg: { key: 'numberOfChars', value: '50' } }
+        {
+          label: 'FORM.MAX_CHARS',
+          translate: true,
+          arg: { key: 'numberOfChars', value: '50' },
+        },
       ]"
       [required]="true"
       [formGroup]="form"
@@ -16,7 +20,7 @@
   <h2 class="font-bold-2xl color-gray-900">
     {{ 'FORM.KEY_DATA' | translate }}
   </h2>
-  <form-date-range [formGroup]="form"></form-date-range>
+  <atlas-form-date-range [formGroup]="form"></atlas-form-date-range>
 </div>
 <h2 class="font-bold-2xl color-gray-900 mt-3">
   {{ 'FORM.SUPPLEMENTARY_INFORMATION' | translate }}
@@ -36,22 +40,29 @@
     </atlas-select>
   </div>
   <div class="d-flex flex-column col-6 pt-4 ps-5" [formGroup]="form">
-    <mat-checkbox formControlName="mainReferencePoint" data-cy="mainReferencePoint">
+    <mat-checkbox
+      formControlName="mainReferencePoint"
+      data-cy="mainReferencePoint"
+    >
       {{ 'PRM.REFERENCE_POINTS.MAIN_REFERENCE_POINT' | translate }}
-      <form-info-icon
-        infoTitle="{{ 'PRM.REFERENCE_POINTS.MAIN_REFERENCE_POINT_INFO' | translate }}"
-      ></form-info-icon>
+      <atlas-form-info-icon
+        infoTitle="{{
+          'PRM.REFERENCE_POINTS.MAIN_REFERENCE_POINT_INFO' | translate
+        }}"
+      ></atlas-form-info-icon>
     </mat-checkbox>
-    <app-atlas-field-error [form]="form" controlName="mainReferencePoint"></app-atlas-field-error>
+    <atlas-field-error
+      [control]="form.get('mainReferencePoint')"
+    ></atlas-field-error>
   </div>
 </div>
 <div class="col-12 d-flex mt-4">
   <div class="d-flex flex-column col-6">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       label="PRM.REFERENCE_POINTS.ADDITIONAL_INFORMATION"
       controlName="additionalInformation"
       maxChars="2000"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
 </div>

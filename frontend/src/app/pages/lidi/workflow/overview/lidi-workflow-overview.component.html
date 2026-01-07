@@ -2,7 +2,7 @@
   {{ 'LIDI.LINE_VERSION_SNAPSHOT.TABLE_HEADER' | translate }}
 </div>
 
-<app-table
+<atlas-table
   (editElementEvent)="navigateToDetails($event)"
   (tableChanged)="getOverview($event)"
   (tableInitialized)="getOverview($event)"
@@ -12,5 +12,5 @@
   [tableFilterConfig]="tableFilterConfig"
   data-cy="lidi-workflow-lines"
 >
-</app-table>
+</atlas-table>
 <router-outlet></router-outlet>

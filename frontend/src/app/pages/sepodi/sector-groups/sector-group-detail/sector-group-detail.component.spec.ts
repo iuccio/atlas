@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SectorGroupDetailComponent } from './sector-group-detail.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SectorMapService } from '../../map/sector-map.service';
@@ -38,6 +37,7 @@ describe('SectorGroupDetailComponent', () => {
     'clearDisplayedSectors',
     'displayCurrentSector',
     'clearCurrentSector',
+    'setDisplayedSectors',
   ]);
   const trafficPointMapService = jasmine.createSpyObj<TrafficPointMapService>([
     'displayTrafficPointsOnMap',

@@ -46,18 +46,22 @@
         </atlas-text-field>
       </div>
       <div class="d-flex flex-column col-12 pb-3">
-        <form-comment
+        <atlas-form-comment
           [formGroup]="formGroup"
           label="WORKFLOW.START.COMMENT"
           [required]="true"
           controlName="motivationComment"
-        ></form-comment>
+        ></atlas-form-comment>
       </div>
     </div>
   </form>
 </atlas-dialog-content>
 <atlas-dialog-footer>
-  <button (click)="closeDialog()" class="atlas-primary-btn me-3" data-cy="dialog-cancel-button">
+  <button
+    (click)="closeDialog()"
+    class="atlas-primary-btn me-3"
+    data-cy="dialog-cancel-button"
+  >
     {{ data.cancelText ?? 'DIALOG.CANCEL' | translate }}
   </button>
   <button

@@ -23,7 +23,7 @@
   </div>
 }
 
-<app-stop-point-workflow-basic-info [stopPoint]="stopPoint" />
+<atlas-stop-point-workflow-basic-info [stopPoint]="stopPoint" />
 
 <div class="workflow">
   <h1 class="font-bold-2xl pt-5">
@@ -126,14 +126,14 @@
 </div>
 
 <div class="d-flex flex-column col-12 mb-5">
-  <form-comment
+  <atlas-form-comment
     [formGroup]="form"
     [required]="true"
     label="SEPODI.SERVICE_POINTS.WORKFLOW.COMMENT"
     subLabel="SEPODI.SERVICE_POINTS.WORKFLOW.COMMENT_SUB_LABEL"
     controlName="workflowComment"
     maxChars="1500"
-  ></form-comment>
+  ></atlas-form-comment>
 </div>
 
 <div [formGroup]="form" class="examinant-section col-12">
@@ -141,11 +141,11 @@
     <div class="font-bold-2xl">
       {{ 'SEPODI.SERVICE_POINTS.WORKFLOW.EXAMINANTS' | translate }}
 
-      <form-info-icon
+      <atlas-form-info-icon
         infoTitle="{{
           'SEPODI.SERVICE_POINTS.WORKFLOW.EXAMINANTS_INFO' | translate
         }}"
-      ></form-info-icon>
+      ></atlas-form-info-icon>
     </div>
     @if (form.enabled) {
       <div class="translated-paragraph">
@@ -154,11 +154,11 @@
     }
   </div>
 
-  <stop-point-workflow-examinants-table
+  <atlas-stop-point-workflow-examinants-table
     (openDecision)="openDecision($event)"
     [form]="form"
     [currentWorkflowStatus]="currentWorkflow?.status"
-  ></stop-point-workflow-examinants-table>
+  ></atlas-stop-point-workflow-examinants-table>
 </div>
 
 <div class="d-flex mt-5">

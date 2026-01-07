@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MeanOfTransport } from '../../../api';
-import { AsyncPipe, NgClass, NgFor, NgOptimizedImage } from '@angular/common';
+import { AsyncPipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
 import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -16,13 +16,12 @@ import { GetIconPipe } from './get-icon.pipe';
 import { distinctUntilChanged, of, startWith } from 'rxjs';
 
 @Component({
-  selector: 'means-of-transport-picker',
+  selector: 'atlas-means-of-transport-picker',
   templateUrl: './means-of-transport-picker.component.html',
   styleUrls: ['./means-of-transport-picker.component.scss'],
   imports: [
     ReactiveFormsModule,
     AtlasLabelFieldComponent,
-    NgFor,
     NgClass,
     AtlasFieldErrorComponent,
     TranslatePipe,

@@ -100,7 +100,7 @@ describe('DateRangeComponent', () => {
 
   function openValidFromPickerAndSelectHeader() {
     const datePickerToggles = fixture.debugElement.queryAll(
-      By.css('form-date-icon')
+      By.css('atlas-form-date-icon')
     );
     expect(datePickerToggles.length).toEqual(2);
 
@@ -109,7 +109,7 @@ describe('DateRangeComponent', () => {
     fixture.detectChanges();
 
     return fixture.debugElement.queryAll(
-      By.css('today-and-future-timetable-header')
+      By.css('atlas-today-and-future-timetable-header')
     );
   }
 
@@ -120,7 +120,7 @@ describe('DateRangeComponent', () => {
     fixture.detectChanges();
 
     const datePickerToggles = fixture.debugElement.queryAll(
-      By.css('form-date-icon')
+      By.css('atlas-form-date-icon')
     );
     datePickerToggles[1].nativeElement.click();
     fixture.detectChanges();

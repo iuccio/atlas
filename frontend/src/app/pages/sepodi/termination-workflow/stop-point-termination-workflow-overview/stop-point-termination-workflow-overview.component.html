@@ -6,7 +6,7 @@
 
     @let workflows = workflows$ | async;
 
-    <app-table
+    <atlas-table
       data-cy="sp-termination-workflow-table"
       [tableData]="workflows?.objects ?? []"
       [totalCount]="workflows?.totalCount ?? 0"
@@ -15,6 +15,6 @@
       (editElementEvent)="onRowClick($event)"
       (tableChanged)="loadWorkflows($event)"
       (tableInitialized)="loadWorkflows($event)"
-    ></app-table>
+    ></atlas-table>
   </div>
 </div>

@@ -17,7 +17,7 @@ import { SelectComponent } from '../../../../../../../core/form-components/selec
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-platform-complete-form',
+  selector: 'atlas-platform-complete-form',
   templateUrl: './platform-complete-form.component.html',
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
   imports: [

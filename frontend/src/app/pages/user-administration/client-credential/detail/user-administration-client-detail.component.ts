@@ -8,7 +8,7 @@ import { UserPermissionGivenClientService } from './edit/user-permission-given-c
 import { DetailFormComponent } from '../../../../core/leave-guard/leave-dirty-form-guard.service';
 
 @Component({
-  selector: 'app-client-credential-administration',
+  selector: 'atlas-client-credential-administration',
   templateUrl: './user-administration-client-detail.component.html',
   imports: [
     UserAdministrationClientEditComponent,

@@ -47,15 +47,13 @@ describe('SideNavComponent', () => {
     fixture = TestBed.createComponent(SideNavComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should show side-nav', () => {
+    fixture.detectChanges();
+
     const result = fixture.debugElement.queryAll(By.css('a'));
+
     expect(result).toBeDefined();
     expect(result[0].nativeElement.textContent.trim()).toBe(
       Pages.pages[0].titleMenu
@@ -71,11 +69,12 @@ describe('SideNavComponent', () => {
 
   it('line directory route should be active', async () => {
     await router.navigate(['line-directory']);
-    fixture.detectChanges();
     assertActiveNavItem('PAGES.LIDI.TITLE_MENU');
   });
 
   const assertActiveNavItem = (pageTitle: string) => {
+    fixture.detectChanges();
+
     const navItems = fixture.debugElement.queryAll(By.css('a'));
     const activeNavItemIndex = navItems.findIndex((item) =>
       Object.keys(item.classes).includes('route-active')
@@ -89,18 +88,21 @@ describe('SideNavComponent', () => {
   it('should set activePageIndex correct', () => {
     const currentUrl = '/service-point-directory';
     component['setActivePage'](currentUrl, Pages.pages);
+
     expect(component.activePageIndex).toBe(3);
   });
 
   it('should set activeSubPageIndex correct', () => {
     const currentUrl = '/service-point-directory/workflows';
     component['setActivePage'](currentUrl, Pages.pages);
+
     expect(component.activeSubPageIndex).toBe(0);
     expect(component.activePageIndex).toBeNull();
   });
 
   it('should set index for unknown page to 0', () => {
     component['setActivePage']('/unknown', Pages.pages);
+
     expect(component.activePageIndex).toBe(0);
     expect(component.activeSubPageIndex).toBe(0);
   });

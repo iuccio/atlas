@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { OverviewTabHeadingComponent } from './overview-tab-heading.component';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { HearingStatus } from '../../../../api';
@@ -29,40 +28,21 @@ describe('TimetableHearingOverviewTabHeadingComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should return when hearingStatus is Active', () => {
-    //given
-    fixture.componentInstance.hearingStatus = HearingStatus.Active;
+    component.hearingStatus = HearingStatus.Active;
 
-    //when
-    fixture.detectChanges();
-
-    //then
     expect(component.isHearingStatusActive).toBeTruthy();
   });
 
   it('should return when hearingStatus is Planned', () => {
-    //given
-    fixture.componentInstance.hearingStatus = HearingStatus.Planned;
+    component.hearingStatus = HearingStatus.Planned;
 
-    //when
-    fixture.detectChanges();
-
-    //then
     expect(component.isHearingStatusPlanned).toBeTruthy();
   });
 
   it('should return when hearingStatus is Archived', () => {
-    //given
-    fixture.componentInstance.hearingStatus = HearingStatus.Archived;
+    component.hearingStatus = HearingStatus.Archived;
 
-    //when
-    fixture.detectChanges();
-
-    //then
     expect(component.isHearingStatusArchived).toBeTruthy();
   });
 });

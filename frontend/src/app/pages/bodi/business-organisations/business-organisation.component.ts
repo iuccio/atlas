@@ -18,7 +18,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { BusinessOrganisationService } from '../../../api/service/bodi/business-organisation.service';
 
 @Component({
-  selector: 'app-bodi-business-organisations',
+  selector: 'atlas-bodi-business-organisations',
   templateUrl: './business-organisation.component.html',
   imports: [TableComponent, RouterOutlet, TranslatePipe],
   providers: [TranslatePipe],

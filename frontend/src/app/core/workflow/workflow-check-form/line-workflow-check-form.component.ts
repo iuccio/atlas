@@ -14,7 +14,7 @@ import { NotificationService } from '../../notification/notification.service';
 import { ValidationService } from '../../validation/validation.service';
 import { WhitespaceValidator } from '../../validation/whitespace/whitespace-validator';
 import { PermissionService } from '../../auth/permission/permission.service';
-import { NgIf } from '@angular/common';
+
 import { LineWorkflowFormComponent } from '../workflow-form/line-workflow-form.component';
 import { AtlasButtonComponent } from '../../components/button/atlas-button.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -22,10 +22,9 @@ import { UserAdministrationService } from '../../../api/service/user-administrat
 import { LineWorkflowService } from '../../../api/service/workflow/line-workflow.service';
 
 @Component({
-  selector: 'app-workflow-check-form',
+  selector: 'atlas-workflow-check-form',
   templateUrl: './line-workflow-check-form.component.html',
   imports: [
-    NgIf,
     LineWorkflowFormComponent,
     ReactiveFormsModule,
     AtlasButtonComponent,

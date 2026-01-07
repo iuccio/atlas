@@ -12,7 +12,7 @@ import {
 } from './business-organisation-detail-form-group';
 import { BusinessOrganisationLanguageService } from '../../../../core/form-components/bo-select/business-organisation-language.service';
 import { ValidityService } from '../../../sepodi/validity/validity.service';
-import { NgIf } from '@angular/common';
+
 import { TextFieldComponent } from '../../../../core/form-components/text-field/text-field.component';
 import { DateRangeComponent } from '../../../../core/form-components/date-range/date-range.component';
 import { SelectComponent } from '../../../../core/form-components/select/select.component';
@@ -45,7 +45,6 @@ import {
   providers: [ValidityService, TranslatePipe],
   imports: [
     ReactiveFormsModule,
-    NgIf,
     TextFieldComponent,
     DateRangeComponent,
     SelectComponent,
@@ -58,8 +57,8 @@ import {
     DetailFooterComponent,
     AtlasButtonComponent,
     UserDetailInfoComponent,
-    RevokeButton,
-  ],
+    RevokeButton
+],
 })
 export class BusinessOrganisationDetailComponent
   implements Revokable, OnInit, DetailFormComponent, DetailWithCancelEdit

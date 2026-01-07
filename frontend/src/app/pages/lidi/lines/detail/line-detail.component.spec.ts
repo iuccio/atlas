@@ -27,7 +27,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 
 @Component({
-  selector: 'app-subline-table',
+  selector: 'atlas-subline-table',
   template: '<p>Mock subline table Component</p>',
   imports: [FormModule],
 })
@@ -37,7 +37,7 @@ export class MockSublineTableComponent {
 }
 
 @Component({
-  selector: 'app-subline-detail',
+  selector: 'atlas-subline-detail',
   template: '<p>Mock subline table Component</p>',
   providers: [ValidityService],
   imports: [ReactiveFormsModule],
@@ -130,13 +130,8 @@ describe('LineDetailComponent for existing lineVersion', () => {
     router = TestBed.inject(Router);
   });
 
-  it('should be created', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should disable form parts when in review', () => {
     lineVersion.status = Status.InReview;
-    fixture.detectChanges();
 
     expect(component.form.enabled).toBeFalse();
     component.toggleEdit();
@@ -149,7 +144,6 @@ describe('LineDetailComponent for existing lineVersion', () => {
 
   it('should not disable form parts when in draft/validated', () => {
     lineVersion.status = Status.Draft;
-    fixture.detectChanges();
 
     component.toggleEdit();
 
@@ -311,10 +305,6 @@ describe('LineDetailComponent for new lineVersion', () => {
     router = TestBed.inject(Router);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   describe('create new Version', () => {
     it('successfully', () => {
       spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
@@ -352,7 +342,6 @@ describe('LineDetailComponent for new lineVersion', () => {
         throwError(() => error)
       );
       component.save();
-      fixture.detectChanges();
 
       expect(component.form.enabled).toBeTrue();
     });

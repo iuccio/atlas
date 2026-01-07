@@ -6,20 +6,21 @@
     wrapperStyleClass="mb-5"
     (buttonClicked)="newBusinessOrganisation()"
     buttonText="BODI.BUSINESS_ORGANISATION.NEW"
-  >
+    >
   </atlas-button>
 
   <nav mat-tab-nav-bar class="tabs" data-cy="tabs" [tabPanel]="tabPanel">
-    <a
-      mat-tab-link
-      class="font-bold-xl"
-      *ngFor="let tab of TABS"
-      [routerLink]="tab.link"
-      routerLinkActive="active-tab"
-      [attr.data-cy]="'tab-' + tab.link"
-    >
-      {{ tab.title | translate }}
-    </a>
+    @for (tab of TABS; track tab) {
+      <a
+        mat-tab-link
+        class="font-bold-xl"
+        [routerLink]="tab.link"
+        routerLinkActive="active-tab"
+        [attr.data-cy]="'tab-' + tab.link"
+        >
+        {{ tab.title | translate }}
+      </a>
+    }
   </nav>
   <div class="white-table-container-tabs">
     <mat-tab-nav-panel #tabPanel>

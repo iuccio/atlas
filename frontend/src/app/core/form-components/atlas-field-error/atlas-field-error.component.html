@@ -1,10 +1,9 @@
-<div *ngIf="!customError">
-  <span *ngFor="let validationError of errors" class="font-regular-sm">
-    {{ validationError.error | translate: validationError.params }}
-  </span>
-</div>
-<div *ngIf="error">
-  <span class="font-regular-sm">
-    {{ error | translate }}
-  </span>
-</div>
+@if (control()?.dirty || control()?.touched) {
+  <div>
+    @for (validationError of errors$ | async; track $index) {
+      <span class="font-regular-sm">
+        {{ validationError.error | translate: validationError.params }}
+      </span>
+    }
+  </div>
+}

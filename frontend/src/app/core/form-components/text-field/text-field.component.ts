@@ -1,7 +1,6 @@
 import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FieldExample } from './field-example';
-import { AtlasFieldCustomError } from '../atlas-field-error/atlas-field-custom-error';
 import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
 import { NgStyle, NgTemplateOutlet } from '@angular/common';
 import { EmptyToNullDirective } from '../../text-input/empty-to-null';
@@ -31,7 +30,6 @@ export class TextFieldComponent {
   @Input() required!: boolean;
   @Input() fieldExamples!: Array<FieldExample>;
   @Input() customInputNgStyle!: Record<string, string | undefined | null>;
-  @Input() customError!: AtlasFieldCustomError;
   @Input() paddingBottom = true;
   @ContentChild('customChildInputPostfixTemplate')
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any

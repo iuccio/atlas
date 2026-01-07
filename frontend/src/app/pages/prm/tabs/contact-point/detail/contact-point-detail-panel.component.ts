@@ -13,7 +13,7 @@ import { DetailWithRelationTabComponent } from '../../relation/tab/detail-with-r
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-contact-point-detail-panel',
+  selector: 'atlas-contact-point-detail-panel',
   templateUrl: './contact-point-detail-panel.component.html',
   imports: [
     DetailPageContainerComponent,

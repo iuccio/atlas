@@ -6,7 +6,7 @@ import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'today-and-future-timetable-header',
+  selector: 'atlas-today-and-future-timetable-header',
   templateUrl: 'today-and-future-timetable-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButton, MatCalendarHeader, TranslatePipe],

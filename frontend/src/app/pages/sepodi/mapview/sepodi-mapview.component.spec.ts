@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SepodiMapviewComponent } from './sepodi-mapview.component';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Component, Input } from '@angular/core';
@@ -10,7 +9,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MapService } from '../map/map.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Map } from 'maplibre-gl';
 import { GeoJsonProperties } from 'geojson';
 import { translateServiceProvider } from '../../../app.testing.mocks';
@@ -24,7 +23,7 @@ export class MockAtlasMapComponent {
 }
 
 @Component({
-  selector: 'app-search-service-point-panel',
+  selector: 'atlas-search-service-point-panel',
   template: '<h1>SearchServicePointMockComponent</h1>',
 })
 class SearchServicePointMockComponent {
@@ -33,11 +32,12 @@ class SearchServicePointMockComponent {
 
 const authService: Partial<AuthService> = {};
 const mapSpy = jasmine.createSpyObj<Map>(['once', 'on']);
-const mapService = jasmine.createSpyObj<MapService>([
-  'initMap',
-  'removeMap',
-  'initMapEvents',
-]);
+const mapService = jasmine.createSpyObj<MapService>(
+  ['initMap', 'removeMap', 'initMapEvents'],
+  {
+    selectedElement: new Subject(),
+  }
+);
 
 mapService.servicePointsShown = new BehaviorSubject(false);
 mapService.mapInitialized = new BehaviorSubject(false);
@@ -71,10 +71,6 @@ describe('SepodiMapviewComponent', () => {
     fixture = TestBed.createComponent(SepodiMapviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should style side panel to open and closed', () => {

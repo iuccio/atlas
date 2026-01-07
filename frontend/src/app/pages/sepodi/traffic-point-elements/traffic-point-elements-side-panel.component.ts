@@ -23,7 +23,7 @@ import { environment } from '../../../../environments/environment';
 import { TrafficPointMapService } from '../map/traffic-point-map.service';
 
 @Component({
-  selector: 'app-traffic-point-elements-side-panel',
+  selector: 'atlas-traffic-point-elements-side-panel',
   templateUrl: './traffic-point-elements-side-panel.component.html',
   styleUrls: ['./traffic-point-elements-side-panel.component.scss'],
   imports: [

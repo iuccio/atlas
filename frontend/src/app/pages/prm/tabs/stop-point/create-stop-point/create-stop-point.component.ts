@@ -15,7 +15,7 @@ import {
 } from '../form/stop-point-detail-form-group';
 import { prmMeansOfTransport } from '../prm-variant-info.service';
 import { DetailFormComponent } from '../../../../../core/leave-guard/leave-dirty-form-guard.service';
-import { NgIf } from '@angular/common';
+
 import { MeansOfTransportPickerComponent } from '../../../../../core/form-components/means-of-transport-picker/means-of-transport-picker.component';
 import { AtlasButtonComponent } from '../../../../../core/components/button/atlas-button.component';
 import { StopPointReducedFormComponent } from '../form/stop-point-reduced-form/stop-point-reduced-form.component';
@@ -23,11 +23,10 @@ import { StopPointCompleteFormComponent } from '../form/stop-point-complete-form
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-create-stop-point',
+  selector: 'atlas-create-stop-point',
   templateUrl: './create-stop-point.component.html',
   styleUrls: ['./create-stop-point.component.scss'],
   imports: [
-    NgIf,
     MatStepper,
     MatStep,
     MatStepLabel,

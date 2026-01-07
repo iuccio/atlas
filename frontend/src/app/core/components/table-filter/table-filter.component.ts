@@ -33,7 +33,7 @@ import { InstanceOfPipe } from './instance-of.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-table-filter',
+  selector: 'atlas-table-filter',
   templateUrl: './table-filter.component.html',
   styleUrls: ['./table-filter.component.scss'],
   imports: [

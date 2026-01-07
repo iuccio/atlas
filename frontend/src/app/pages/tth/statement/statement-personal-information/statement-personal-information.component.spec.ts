@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { StatementPersonalInformationComponent } from './statement-personal-information.component';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';

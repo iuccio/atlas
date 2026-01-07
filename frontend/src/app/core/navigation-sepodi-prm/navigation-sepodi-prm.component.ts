@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Country } from '../../api';
 import { Countries } from '../country/Countries';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { ServicePointService } from '../../api/service/sepodi/service-point.service';
 import { StopPointService } from '../../api/service/prm/stop-point/stop-point.service';
@@ -16,9 +16,9 @@ export type TargetPageType =
   | 'platform-detail';
 
 @Component({
-  selector: 'app-navigation-sepodi-prm',
+  selector: 'atlas-navigation-sepodi-prm',
   templateUrl: './navigation-sepodi-prm.component.html',
-  imports: [NgIf, TranslatePipe],
+  imports: [TranslatePipe],
 })
 export class NavigationSepodiPrmComponent implements OnInit, OnChanges {
   @Input() targetPage!: TargetPageType;

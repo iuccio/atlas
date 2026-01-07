@@ -12,22 +12,22 @@
   <div class="col-12 d-flex flex-row mt-3 justify-content-between">
     <div class="d-flex flex-column col-9 pe-3">
       @if (showVersionSwitch) {
-        <app-switch-version
+        <atlas-switch-version
           (switchVersion)="switchVersion($event)"
           [currentRecord]="selectedVersion"
           [records]="trafficPointVersions"
           [switchDisabled]="isSwitchVersionDisabled"
           [showStatus]="true"
-        ></app-switch-version>
+        ></atlas-switch-version>
       }
     </div>
     @if (!isNew && !isTrafficPointArea) {
-      <app-navigation-sepodi-prm
+      <atlas-navigation-sepodi-prm
         targetPage="platform-detail"
         [number]="selectedVersion.servicePointNumber!.number"
         [parentSloid]="selectedVersion.servicePointSloid"
         [sloid]="selectedVersion.sloid"
-      ></app-navigation-sepodi-prm>
+      ></atlas-navigation-sepodi-prm>
     }
   </div>
 
@@ -101,14 +101,14 @@
 
   <div class="font-bold-2xl mt-5">{{ 'FORM.KEY_DATA' | translate }}</div>
   <div class="col-12 d-flex">
-    <form-date-range [formGroup]="form"></form-date-range>
+    <atlas-form-date-range [formGroup]="form"></atlas-form-date-range>
   </div>
 
-  <sepodi-geography
+  <atlas-sepodi-geography
     (geographyChanged)="$event ? geographyEnabled() : geographyDisabled()"
     [editMode]="form.enabled"
     [form]="form.controls.trafficPointElementGeolocation"
-  ></sepodi-geography>
+  ></atlas-sepodi-geography>
 
   @if (!isTrafficPointArea) {
     <div class="font-bold-2xl mt-5">
@@ -174,7 +174,9 @@
   @if (!isNew) {
     <div class="mb-3">
       <mat-divider class="mt-4 mb-4"></mat-divider>
-      <app-user-detail-info [record]="selectedVersion"></app-user-detail-info>
+      <atlas-user-detail-info
+        [record]="selectedVersion"
+      ></atlas-user-detail-info>
     </div>
   }
 </atlas-detail-page-content>

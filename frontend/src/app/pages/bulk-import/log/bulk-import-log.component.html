@@ -14,11 +14,14 @@
           item of [
             {
               label: 'BULK_IMPORT.LABEL.OBJECT_TYPE' | translate,
-              value: 'PAGES.BULK_IMPORT.' + data.importResult.businessObjectType | translate,
+              value:
+                'PAGES.BULK_IMPORT.' + data.importResult.businessObjectType
+                | translate,
             },
             {
               label: 'BULK_IMPORT.LABEL.IMPORT_TYPE' | translate,
-              value: 'PAGES.BULK_IMPORT.' + data.importResult.importType | translate,
+              value:
+                'PAGES.BULK_IMPORT.' + data.importResult.importType | translate,
             },
             {
               label: 'BULK_IMPORT.LABEL.EXECUTED_FROM' | translate,
@@ -31,7 +34,10 @@
           ];
           track $index
         ) {
-          <ng-container [ngTemplateOutlet]="resultInfo" [ngTemplateOutletContext]="item">
+          <ng-container
+            [ngTemplateOutlet]="resultInfo"
+            [ngTemplateOutletContext]="item"
+          >
           </ng-container>
         }
 
@@ -45,8 +51,15 @@
           ></ng-container>
         }
 
-        <ng-template #statusTemplate let-color="color" let-text="text" let-nbOfLines="nbOfLines">
-          <div class="d-flex align-items-center justify-content-center text-nowrap">
+        <ng-template
+          #statusTemplate
+          let-color="color"
+          let-text="text"
+          let-nbOfLines="nbOfLines"
+        >
+          <div
+            class="d-flex align-items-center justify-content-center text-nowrap"
+          >
             <div class="square-{{ color }}"></div>
             <span class="ps-2">{{ nbOfLines }}</span>
             <span class="font-bold-base ps-2">{{ text }}</span>
@@ -98,11 +111,14 @@
                 [ngClass]="{
                   'square-success': entry.status === 'SUCCESS',
                   'square-info': entry.status === 'INFO',
-                  'square-error': entry.status !== 'INFO' && entry.status !== 'SUCCESS',
+                  'square-error':
+                    entry.status !== 'INFO' && entry.status !== 'SUCCESS',
                 }"
               ></div>
               <div class="d-flex justify-content-between w-100 ps-2">
-                <span>{{ 'BULK_IMPORT.STATUS.' + entry.status | translate }}</span>
+                <span>{{
+                  'BULK_IMPORT.STATUS.' + entry.status | translate
+                }}</span>
                 <span>{{ entry.errors?.length }}</span>
               </div>
               <i [class]="entry.expanded ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
@@ -114,7 +130,9 @@
                     <li>
                       {{
                         error.displayInfo.code
-                          | translate: (error.displayInfo.parameters | paramsForTranslation)
+                          | translate
+                            : (error.displayInfo.parameters
+                                | paramsForTranslation)
                       }}
                     </li>
                   } @else {
@@ -125,7 +143,9 @@
                     </li>
                   }
                 } @empty {
-                  <li>{{ 'BULK_IMPORT.LABEL.UNEXPECTED_ERROR' | translate }}</li>
+                  <li>
+                    {{ 'BULK_IMPORT.LABEL.UNEXPECTED_ERROR' | translate }}
+                  </li>
                 }
               </ul>
             }
@@ -140,7 +160,9 @@
           class="font-regular-base"
           [pageSizeOptions]="[5, 20]"
           [length]="data.importResult.logEntries?.length"
-          (page)="pagedLogEntries = pageChanged($event, data.importResult.logEntries)"
+          (page)="
+            pagedLogEntries = pageChanged($event, data.importResult.logEntries)
+          "
         ></mat-paginator>
       </main>
     </div>
@@ -148,5 +170,5 @@
     <p>{{ 'BULK_IMPORT.LABEL.NOT_VALID_ID' | translate: { id: data.id } }}</p>
   }
 } @else {
-  <app-loading-spinner [isLoading]="true"></app-loading-spinner>
+  <atlas-loading-spinner [isLoading]="true"></atlas-loading-spinner>
 }

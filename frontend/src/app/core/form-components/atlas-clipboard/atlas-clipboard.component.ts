@@ -16,8 +16,8 @@ export class AtlasClipboardComponent {
 
   constructor(private notificationService: NotificationService) {}
 
-  @HostListener('click', ['$event'])
-  public onClick(): void {
+  @HostListener('click')
+  onClick() {
     this.notificationService.success('COMMON.COPY_CLIPBOARD_SUCCESS');
   }
 }

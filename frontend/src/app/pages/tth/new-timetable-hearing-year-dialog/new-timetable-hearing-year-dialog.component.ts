@@ -32,7 +32,7 @@ import { DateRangeComponent } from '../../../core/form-components/date-range/dat
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-tthdialog',
+  selector: 'atlas-tthdialog',
   templateUrl: './new-timetable-hearing-year-dialog.component.html',
   imports: [
     ReactiveFormsModule,

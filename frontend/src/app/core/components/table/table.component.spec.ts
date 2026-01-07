@@ -7,7 +7,6 @@ import { StatementStatus } from '../../../api';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { TableFilterComponent } from '../table-filter/table-filter.component';
 import { FormatPipe } from './pipe/format.pipe';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 export interface Obj {
   prop: string;
@@ -26,12 +25,7 @@ describe('TableComponent', () => {
         TranslateModule.forRoot(),
         TableFilterComponent,
       ],
-      providers: [
-        TranslatePipe,
-        FormatPipe,
-        TableService,
-        provideNoopAnimations(),
-      ],
+      providers: [TranslatePipe, FormatPipe, TableService],
     });
 
     fixture = TestBed.createComponent(TableComponent);
@@ -104,14 +98,10 @@ describe('TableComponent', () => {
     ];
     component.totalCount = 10;
     component.isLoading = false;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should get relations comma separated', () => {
+    fixture.detectChanges();
     const tableCells = fixture.debugElement.queryAll(By.css('td'));
     expect(tableCells).toBeDefined();
     expect(tableCells[3].nativeElement.innerText).toEqual('a, b, c');
@@ -120,6 +110,7 @@ describe('TableComponent', () => {
   });
 
   it('should get dropdown', () => {
+    fixture.detectChanges();
     const tableCells = fixture.debugElement.queryAll(
       By.css('td .atlas-select')
     );
@@ -135,6 +126,7 @@ describe('TableComponent', () => {
   it('should output edit event', () => {
     spyOn(component.editElementEvent, 'emit');
 
+    fixture.detectChanges();
     const firstTableCell = fixture.debugElement.query(By.css('td'));
     firstTableCell.nativeElement.click();
 
@@ -150,6 +142,7 @@ describe('TableComponent', () => {
     component.sortData({ active: 'validFrom', direction: 'asc' });
     spyOn(component.tableChanged, 'emit');
 
+    fixture.detectChanges();
     const paginator = fixture.debugElement.query(By.css('mat-paginator'));
     paginator.nativeNode.setAttribute(
       'ng-reflect-page-size-options',
@@ -176,6 +169,7 @@ describe('TableComponent', () => {
   });
 
   it('should click on sort name', () => {
+    fixture.detectChanges();
     spyOn(component.tableChanged, 'emit');
 
     const buttonSortHeaderName = fixture.debugElement.query(

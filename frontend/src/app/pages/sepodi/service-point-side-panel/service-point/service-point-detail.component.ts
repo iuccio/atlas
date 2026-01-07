@@ -60,7 +60,7 @@ export const stopPointTypesWithoutUnknown: StopPointTypeNotUnknown[] =
   Object.values(StopPointType).filter((type) => type !== 'UNKNOWN');
 
 @Component({
-  selector: 'app-service-point',
+  selector: 'atlas-service-point',
   templateUrl: './service-point-detail.component.html',
   providers: [ValidityService, TranslatePipe, TranslationSortingService],
   imports: [

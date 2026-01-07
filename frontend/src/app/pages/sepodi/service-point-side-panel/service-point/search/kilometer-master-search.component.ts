@@ -19,7 +19,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ServicePointInternalService } from '../../../../../api/service/sepodi/service-point-internal.service';
 
 @Component({
-  selector: 'kilometer-master-search',
+  selector: 'atlas-kilometer-master-search',
   templateUrl: './kilometer-master-search.component.html',
   imports: [
     SearchSelectComponent,

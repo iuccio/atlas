@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, ViewChild } from '@angular/core';
-import { MatStepper, MatStepperIcon, MatStep } from '@angular/material/stepper';
+import { MatStep, MatStepper, MatStepperIcon } from '@angular/material/stepper';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { catchError, EMPTY, Observable, of, shareReplay, take } from 'rxjs';
 import { DecisionFormGroupBuilder } from '../decision-form/decision-form-group';
@@ -7,7 +7,7 @@ import { StopPointPerson } from 'src/app/api';
 import { AtlasCharsetsValidator } from 'src/app/core/validation/charsets/atlas-charsets-validator';
 import { DialogService } from 'src/app/core/components/dialog/dialog.service';
 import { map } from 'rxjs/operators';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogCloseComponent } from '../../../../../../core/components/dialog/close/dialog-close.component';
 import { DialogContentComponent } from '../../../../../../core/components/dialog/content/dialog-content.component';
 import { TextFieldComponent } from '../../../../../../core/form-components/text-field/text-field.component';
@@ -19,7 +19,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { StopPointWorkflowService } from '../../../../../../api/service/workflow/stop-point-workflow.service';
 
 @Component({
-  selector: 'sepodi-wf-decision-stepper',
+  selector: 'atlas-sepodi-wf-decision-stepper',
   templateUrl: './decision-stepper.component.html',
   imports: [
     DialogCloseComponent,

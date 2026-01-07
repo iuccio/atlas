@@ -2,7 +2,11 @@
   <div class="d-flex flex-column col-6">
     <atlas-text-field
       [fieldExamples]="[
-        { label: 'FORM.MAX_CHARS', translate: true, arg: { key: 'numberOfChars', value: '50' } }
+        {
+          label: 'FORM.MAX_CHARS',
+          translate: true,
+          arg: { key: 'numberOfChars', value: '50' },
+        },
       ]"
       [required]="true"
       [formGroup]="form"
@@ -17,7 +21,7 @@
   <h2 class="font-bold-2xl color-gray-900">
     {{ 'FORM.KEY_DATA' | translate }}
   </h2>
-  <form-date-range [formGroup]="form"></form-date-range>
+  <atlas-form-date-range [formGroup]="form"></atlas-form-date-range>
 </div>
 
 <h2 class="font-bold-2xl color-gray-900 mt-3">
@@ -55,11 +59,11 @@
 
 <div class="col-12 d-flex mt-4">
   <div class="d-flex flex-column col-6">
-    <form-comment
+    <atlas-form-comment
       [formGroup]="form"
       label="PRM.PARKING_LOTS.ADDITIONAL_INFORMATION"
       controlName="additionalInformation"
       maxChars="2000"
-    ></form-comment>
+    ></atlas-form-comment>
   </div>
 </div>

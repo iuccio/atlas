@@ -9,7 +9,7 @@ import { TableComponent } from '../../../../core/components/table/table.componen
 import { ClientCredentialAdministrationService } from '../../../../api/service/user-administration/client-credential-administration.service';
 
 @Component({
-  selector: 'app-client-credential-administration-overview',
+  selector: 'atlas-client-credential-administration-overview',
   templateUrl: './user-administration-client-overview.component.html',
   imports: [TableComponent, RouterOutlet],
 })

@@ -3,33 +3,33 @@
     <div class="d-flex pe-3 col-12 justify-content-between">
       <div class="col-9">
         @if (showVersionSwitch && selectedVersion) {
-          <app-switch-version
+          <atlas-switch-version
             (switchVersion)="switchVersion($event)"
             [currentRecord]="selectedVersion"
             [records]="servicePointVersions"
             [switchDisabled]="isSwitchVersionDisabled"
-          ></app-switch-version>
+          ></atlas-switch-version>
         }
       </div>
       <div class="d-flex flex-column">
-        <app-navigation-sepodi-prm
+        <atlas-navigation-sepodi-prm
           [number]="(selectedVersion?.number)!.number"
           [sloid]="selectedVersion?.sloid"
           targetPage="stop-point"
-        ></app-navigation-sepodi-prm>
+        ></atlas-navigation-sepodi-prm>
         @if (selectedVersion?.sloid) {
           <div class="align-self-center">
-            <prm-recording-obligation
+            <atlas-prm-recording-obligation
               [showToggle]="false"
               [sloid]="selectedVersion?.sloid!"
-            ></prm-recording-obligation>
+            ></atlas-prm-recording-obligation>
           </div>
         }
         @if (isTerminationInProgress) {
           <div class="align-self-center">
-            <app-stop-point-termination-info
+            <atlas-stop-point-termination-info
               [sloid]="selectedVersion?.sloid!"
-            ></app-stop-point-termination-info>
+            ></atlas-stop-point-termination-info>
           </div>
         }
       </div>
@@ -57,7 +57,7 @@
   </div>
 
   @if (form) {
-    <service-point-form
+    <atlas-service-point-form
       [form]="form"
       [currentVersion]="selectedVersion"
       [selectableStopPointTypes]="selectableStopPointTypes"
@@ -69,7 +69,7 @@
           <atlas-text-field
             [fieldExamples]="[
               { label: 'FORM.FOR_EXAMPLE', translate: true },
-              { label: 'BIBD |', translate: false },
+              { label: ' BIBD | ', translate: false },
               {
                 label: 'FORM.MAX_CHARS',
                 translate: true,
@@ -97,21 +97,23 @@
         }
       </div>
 
-      <sepodi-geography
+      <atlas-sepodi-geography
         geography
         [form]="form.controls.servicePointGeolocation"
         [editMode]="form.enabled"
         (geographyChanged)="
           $event ? onGeographyEnabled() : onGeographyDisabled()
         "
-      ></sepodi-geography>
-    </service-point-form>
+      ></atlas-sepodi-geography>
+    </atlas-service-point-form>
   }
 
   @if (selectedVersion) {
     <div class="mb-3">
       <mat-divider class="mt-4 mb-4"></mat-divider>
-      <app-user-detail-info [record]="selectedVersion"></app-user-detail-info>
+      <atlas-user-detail-info
+        [record]="selectedVersion"
+      ></atlas-user-detail-info>
     </div>
   }
 </atlas-detail-page-container>

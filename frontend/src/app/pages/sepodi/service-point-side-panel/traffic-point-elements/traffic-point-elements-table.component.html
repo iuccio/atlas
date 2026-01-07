@@ -1,26 +1,28 @@
 <div class="traffic-point-element-table p-5 position-relative">
   <div class="d-flex flex-row pe-3 col-12 justify-content-between">
-    <atlas-button
-      *ngIf="createVisible"
-      (buttonClicked)="addNewTrafficPointElement()"
-      applicationType="SEPODI"
-      buttonDataCy="new-traffic-point-element"
-      buttonText="{{
-        isTrafficPointArea
-          ? ('SEPODI.BOARDING_AREAS.NEW' | translate)
-          : ('SEPODI.TRAFFIC_POINT_ELEMENTS.NEW' | translate)
-      }}"
-      buttonType="edit-service-point-dependent"
-      [businessOrganisations]="servicePointBusinessOrganisations"
-      buttonStyleClass="atlas-raised-button mat-mdc-raised-button"
-      wrapperStyleClass="mb-3"
-    ></atlas-button>
-    <app-navigation-sepodi-prm
-      *ngIf="!isTrafficPointArea"
-      targetPage="platform-table"
-      [number]="servicePointVersion.number!.number"
-      [sloid]="servicePointVersion.sloid!"
-    ></app-navigation-sepodi-prm>
+    @if (createVisible) {
+      <atlas-button
+        (buttonClicked)="addNewTrafficPointElement()"
+        applicationType="SEPODI"
+        buttonDataCy="new-traffic-point-element"
+        buttonText="{{
+          isTrafficPointArea
+            ? ('SEPODI.BOARDING_AREAS.NEW' | translate)
+            : ('SEPODI.TRAFFIC_POINT_ELEMENTS.NEW' | translate)
+        }}"
+        buttonType="edit-service-point-dependent"
+        [businessOrganisations]="servicePointBusinessOrganisations"
+        buttonStyleClass="atlas-raised-button mat-mdc-raised-button"
+        wrapperStyleClass="mb-3"
+      ></atlas-button>
+    }
+    @if (!isTrafficPointArea) {
+      <atlas-navigation-sepodi-prm
+        targetPage="platform-table"
+        [number]="servicePointVersion.number!.number"
+        [sloid]="servicePointVersion.sloid!"
+      ></atlas-navigation-sepodi-prm>
+    }
   </div>
 
   <div class="font-bold-2xl mt-5">
@@ -30,7 +32,7 @@
         : ('SEPODI.TRAFFIC_POINT_ELEMENTS.TRAFFIC_POINT_ELEMENTS' | translate)
     }}
   </div>
-  <app-table
+  <atlas-table
     data-cy="traffic-point-elements-table"
     [tableData]="trafficPointElementRows"
     [totalCount]="totalCount$"
@@ -41,7 +43,7 @@
     (editElementEvent)="editVersion($event)"
     (tableChanged)="getOverview($event)"
     (tableInitialized)="getOverview($event)"
-  ></app-table>
+  ></atlas-table>
 </div>
 
 <atlas-detail-footer>

@@ -2,9 +2,10 @@ import { Directive, HostBinding, HostListener, Input } from '@angular/core';
 import { isEmpty } from '../../../util/strings';
 import { Observable, of } from 'rxjs';
 
-@Directive({ selector: '[mouseOverTitle]' })
+@Directive({ selector: '[atlasMouseOverTitle]' })
 export class MouseOverTitleDirective {
-  @Input() mouseOverTitle: (value: string) => Observable<string> = () => of('');
+  @Input() atlasMouseOverTitle: (value: string) => Observable<string> = () =>
+    of('');
   @Input() mouseOverTitleValue = '';
 
   private oldValue = '';
@@ -19,7 +20,7 @@ export class MouseOverTitleDirective {
       return;
     }
 
-    this.mouseOverTitle(this.mouseOverTitleValue).subscribe({
+    this.atlasMouseOverTitle(this.mouseOverTitleValue).subscribe({
       next: (result) => {
         this.title = result;
         this.oldValue = this.mouseOverTitleValue;

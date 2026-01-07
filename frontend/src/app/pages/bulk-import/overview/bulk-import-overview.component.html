@@ -40,23 +40,28 @@
       <br />
       <div class="col-12 d-flex justify-content-between">
         <div class="d-flex flex-column col-3 pe-3">
-          <p>{{ 'PAGES.BULK_IMPORT.IMPORT_EXECUTED_BY' | translate }} {{ userName }}</p>
+          <p>
+            {{ 'PAGES.BULK_IMPORT.IMPORT_EXECUTED_BY' | translate }}
+            {{ userName }}
+          </p>
         </div>
         <div class="d-flex flex-column col-3 pe-3">
-          <mat-checkbox
-            *ngIf="isAtLeastSupervisor"
-            (change)="enableUserSelect($event.checked)"
-            [checked]="isUserSelectEnabled"
-            data-cy="checkboxBulkImport"
-          >
-            {{ 'PAGES.BULK_IMPORT.IMPORT_FOR_SOMEONE_ELSE' | translate }}
-          </mat-checkbox>
-          <app-user-select
-            *ngIf="isUserSelectEnabled"
-            [form]="form.controls.userSearchForm"
-            [searchInAtlas]="true"
-            [applicationType]="form.controls.applicationType.value!"
-          ></app-user-select>
+          @if (isAtLeastSupervisor) {
+            <mat-checkbox
+              (change)="enableUserSelect($event.checked)"
+              [checked]="isUserSelectEnabled"
+              data-cy="checkboxBulkImport"
+            >
+              {{ 'PAGES.BULK_IMPORT.IMPORT_FOR_SOMEONE_ELSE' | translate }}
+            </mat-checkbox>
+          }
+          @if (isUserSelectEnabled) {
+            <atlas-user-select
+              [form]="form.controls.userSearchForm"
+              [searchInAtlas]="true"
+              [applicationType]="form.controls.applicationType.value!"
+            ></atlas-user-select>
+          }
         </div>
         <div class="d-flex flex-column col-3 pe-3">
           <atlas-text-list

@@ -10,7 +10,7 @@
     </h1>
 
     <div class="d-flex flex-column col-6 pe-3">
-      <app-atlas-label-field
+      <atlas-label-field
         [fieldExamples]="[
           {
             label: 'TTH.NEW_YEAR.DIALOG.PLAN_DROPDOWN_DESCRIPTION',
@@ -21,7 +21,7 @@
         fieldLabel="TTH.NEW_YEAR.DIALOG.PLAN_DROPDOWN_TITLE"
         infoIconTitle="TTH.NEW_YEAR.DIALOG.PLAN_INFO"
       >
-      </app-atlas-label-field>
+      </atlas-label-field>
     </div>
 
     <atlas-select
@@ -34,7 +34,7 @@
     </atlas-select>
 
     <div class="pb-3 mb-3">
-      <form-date-range
+      <atlas-form-date-range
         controlNameFrom="hearingFrom"
         controlNameTo="hearingTo"
         infoIconTitleFrom="TTH.NEW_YEAR.DIALOG.HEARING_FROM_INFO"
@@ -47,7 +47,7 @@
         labelUntil="TTH.NEW_YEAR.DIALOG.HEARING_UNTIL"
         [formGroup]="form"
         class="col-6"
-      ></form-date-range>
+      ></atlas-form-date-range>
     </div>
 
     <mat-dialog-actions class="justify-content-end">

@@ -1,4 +1,4 @@
-<atlas-detail-page-container scrollToTop>
+<atlas-detail-page-container atlasScrollToTop>
   <atlas-detail-page-content>
     <div class="detail-wrapper mt-5">
       @if (selectedVersion) {
@@ -12,7 +12,9 @@
           </span>
           <span data-cy="total-range">
             -
-            <date-range-text [dateRange]="maxValidity!"></date-range-text>
+            <atlas-date-range-text
+              [dateRange]="maxValidity!"
+            ></atlas-date-range-text>
           </span>
         </div>
       } @else {
@@ -22,12 +24,12 @@
       }
       @if (showSwitch) {
         <div class="col-6 mt-3">
-          <app-switch-version
+          <atlas-switch-version
             (switchVersion)="switchVersion($event)"
             [currentRecord]="selectedVersion!"
             [records]="versions"
             [switchDisabled]="form.enabled"
-          ></app-switch-version>
+          ></atlas-switch-version>
         </div>
       }
 
@@ -163,38 +165,38 @@
           </div>
         </div>
 
-        <means-of-transport-picker
+        <atlas-means-of-transport-picker
           [disabled]="form.disabled"
           [formGroup]="form"
           [meansOfTransportToShow]="allowableMeansOfTransport"
           [multiSelectMode]="false"
           controlName="meanOfTransport"
-        ></means-of-transport-picker>
+        ></atlas-means-of-transport-picker>
 
         <span class="font-bold-2xl d-block mt-4">{{
           'FORM.KEY_DATA' | translate
         }}</span>
         <div class="w-50">
-          <form-date-range [formGroup]="form"></form-date-range>
+          <atlas-form-date-range [formGroup]="form"></atlas-form-date-range>
         </div>
 
         <div class="col-12 d-flex pb-3">
           <div class="d-flex flex-column col-6 pt-3">
-            <bo-select
+            <atlas-bo-select
               [formGroup]="form"
               [sboidsRestrictions]="boSboidRestriction"
               controlName="businessOrganisation"
               data-cy="businessOrganisation"
-            ></bo-select>
+            ></atlas-bo-select>
           </div>
         </div>
       </form>
 
       @if (selectedVersion) {
         <div class="mt-5">
-          <app-user-detail-info
+          <atlas-user-detail-info
             [record]="selectedVersion"
-          ></app-user-detail-info>
+          ></atlas-user-detail-info>
         </div>
       }
     </div>

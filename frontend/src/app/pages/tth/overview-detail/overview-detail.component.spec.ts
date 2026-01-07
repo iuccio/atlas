@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { OverviewDetailComponent } from './overview-detail.component';
 import { AppTestingModule } from '../../../app.testing.module';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -32,9 +31,10 @@ import { PermissionService } from '../../../core/auth/permission/permission.serv
 import { TimetableHearingStatementInternalService } from '../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { TableComponent } from '../../../core/components/table/table.component';
 
 @Component({
-  selector: 'app-timetable-hearing-overview-tab-heading',
+  selector: 'atlas-timetable-hearing-overview-tab-heading',
   template: '<p>MockAppTthOverviewTabHeadingComponent</p>',
   imports: [AppTestingModule],
 })
@@ -140,7 +140,12 @@ async function baseTestConfiguration() {
       { provide: PermissionService, useValue: adminPermissionServiceMock },
       TableService,
     ],
-  }).compileComponents();
+  })
+    .overrideComponent(OverviewDetailComponent, {
+      remove: { imports: [TableComponent] },
+      add: { imports: [MockTableComponent] },
+    })
+    .compileComponents();
 
   return TestBed.createComponent(OverviewDetailComponent);
 }

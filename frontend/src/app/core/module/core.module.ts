@@ -8,11 +8,9 @@ import { UserComponent } from '../components/user/user.component';
 import { TableComponent } from '../components/table/table.component';
 import { SideNavComponent } from '../components/side-nav/side-nav.component';
 import { RouterModule } from '@angular/router';
-import { TrimInputDirective } from '../text-input/trim-input';
 import { SwitchVersionComponent } from '../components/switch-version/switch-version.component';
 import { TableFilterComponent } from '../components/table-filter/table-filter.component';
 import { ErrorNotificationComponent } from '../notification/error/error-notification.component';
-import { WithDefaultValueDirective } from '../text-input/with-default-value.directive';
 import { FormModule } from './form.module';
 import { RelationComponent } from '../components/relation/relation.component';
 import { UserDetailInfoComponent } from '../components/user-edit-info/user-detail-info.component';
@@ -80,8 +78,6 @@ const coreComponents = [
   SideNavComponent,
   TableComponent,
   UserComponent,
-  TrimInputDirective,
-  WithDefaultValueDirective,
   TableFilterComponent,
   ErrorNotificationComponent,
   RelationComponent,

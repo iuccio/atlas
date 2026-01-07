@@ -21,7 +21,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { StopPointWorkflowService } from '../../../../api/service/workflow/stop-point-workflow.service';
 
 @Component({
-  selector: 'app-workflow-dialog',
+  selector: 'atlas-workflow-dialog',
   templateUrl: './add-stop-point-workflow.component.html',
   styleUrls: ['./add-stop-point-workflow.component.scss'],
   imports: [

@@ -10,14 +10,14 @@ import { LineRecord } from './model/line-record';
 import { LineVersionWorkflow, WorkflowProcessingStatus } from '../../api';
 import { LineWorkflowDialogService } from './dialog/line-workflow-dialog.service';
 import { LineInternalService } from '../../api/service/lidi/line-internal.service';
-import { NgIf } from '@angular/common';
+
 import { AtlasButtonComponent } from '../components/button/atlas-button.component';
 
 @Component({
-  selector: 'app-workflow [lineRecord]',
+  selector: 'atlas-workflow [lineRecord]',
   templateUrl: './line-workflow.component.html',
   styleUrls: ['./line-workflow.component.scss'],
-  imports: [NgIf, AtlasButtonComponent],
+  imports: [AtlasButtonComponent],
 })
 export class LineWorkflowComponent implements OnInit, OnChanges {
   @Input() lineRecord!: LineRecord;

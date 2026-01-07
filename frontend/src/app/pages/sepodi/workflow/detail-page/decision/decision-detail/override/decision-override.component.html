@@ -1,9 +1,11 @@
 @if (existingDecision?.fotJudgement || isSepodiSupervisor) {
   <div class="override-section" [formGroup]="formGroup">
-    <div class="font-bold-4xl mt-5">{{ 'SEPODI.SERVICE_POINTS.WORKFLOW.OVERRIDE_TITLE'|translate }}</div>
+    <div class="font-bold-4xl mt-5">
+      {{ 'SEPODI.SERVICE_POINTS.WORKFLOW.OVERRIDE_TITLE' | translate }}
+    </div>
 
     <div class="mt-3 d-flex justify-content-between">
-      <div class="col-5" [title]="formGroup.controls.firstName.value??''">
+      <div class="col-5" [title]="formGroup.controls.firstName.value ?? ''">
         <atlas-text-field
           [formGroup]="formGroup"
           [required]="true"
@@ -12,7 +14,7 @@
         >
         </atlas-text-field>
       </div>
-      <div class="col-5" [title]="formGroup.controls.lastName.value??''">
+      <div class="col-5" [title]="formGroup.controls.lastName.value ?? ''">
         <atlas-text-field
           [formGroup]="formGroup"
           [required]="true"
@@ -30,16 +32,18 @@
       <mat-radio-button [value]="JudgementType.No">
         {{ 'WORKFLOW.DECISION.OVERRIDE_DECLINE' | translate }}
       </mat-radio-button>
-      <app-atlas-field-error [form]="formGroup" controlName="fotJudgement"></app-atlas-field-error>
+      <atlas-field-error
+        [control]="formGroup.get('fotJudgement')"
+      ></atlas-field-error>
     </mat-radio-group>
 
     <div class="mt-3">
-      <form-comment
+      <atlas-form-comment
         [formGroup]="formGroup"
         [label]="'SEPODI.SERVICE_POINTS.WORKFLOW.COMMENT' | translate"
         controlName="fotMotivation"
         [required]="true"
-      ></form-comment>
+      ></atlas-form-comment>
     </div>
   </div>
 }

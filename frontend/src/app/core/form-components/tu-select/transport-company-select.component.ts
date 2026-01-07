@@ -19,7 +19,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { TransportCompanyService } from '../../../api/service/bodi/transport-company.service';
 
 @Component({
-  selector: 'tu-select',
+  selector: 'atlas-tu-select',
   templateUrl: './transport-company-select.component.html',
   imports: [
     SearchSelectComponent,

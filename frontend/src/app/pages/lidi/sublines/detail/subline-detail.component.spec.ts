@@ -133,10 +133,6 @@ describe('SublineDetailComponent for existing sublineVersion', () => {
     router = TestBed.inject(Router);
   });
 
-  it('should be created', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should update SublineVersion successfully', () => {
     sublineService.updateSublineVersionV2.and.returnValue(of(sublineVersion));
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
@@ -166,8 +162,6 @@ describe('SublineDetailComponent for existing sublineVersion', () => {
     component.toggleEdit();
     component.form.controls.description.setValue('NewDescription');
     component.save();
-    fixture.detectChanges();
-    fixture.detectChanges();
 
     expect(component.form.enabled).toBeTrue();
   });

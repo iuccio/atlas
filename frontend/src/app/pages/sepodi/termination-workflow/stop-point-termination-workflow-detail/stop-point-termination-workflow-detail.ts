@@ -31,7 +31,7 @@ import { TerminationStopPointWorkflowModel } from '../../../../api/model/termina
 import TerminationDecisionPersonEnum = TerminationDecision.TerminationDecisionPersonEnum;
 
 @Component({
-  selector: 'app-stop-point-termination-workflow-detail',
+  selector: 'atlas-stop-point-termination-workflow-detail',
   imports: [
     DetailPageContainerComponent,
     DetailPageContentComponent,
