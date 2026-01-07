@@ -22,7 +22,7 @@
     mat-table
     matSort
   >
-    @for (column of tableColumns; track column) {
+    @for (column of tableColumns; track column.headerTitle) {
       <ng-container matColumnDef="{{ column.columnDef ?? column.value }}">
         <th
           *matHeaderCellDef
