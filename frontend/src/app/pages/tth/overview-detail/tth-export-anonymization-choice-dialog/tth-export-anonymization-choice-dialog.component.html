@@ -1,57 +1,54 @@
 <atlas-dialog-close class="pe-2" (clicked)="close()"></atlas-dialog-close>
 <atlas-dialog-content>
-  <div class="mb-5 dialog-title">
-    <span class="font-bold-4xl">{{
-      'WORKFLOW.BUTTON.RESTART' | translate
-    }}</span>
+  <div class="mb-3">
+    <span class="font-bold-4xl">
+      {{ 'TTH.DIALOG.EXPORT_TYPE_TITLE' | translate }}
+    </span>
   </div>
-  <form>
-    <div class="col-12 px-5 mt-3">
-      <div class="d-flex justify-content-between mt-2">
-        <atlas-text-field
-          [required]="true"
-          controlName="firstName"
-          data-cy="stopPointRestartWorkflowPersonFirstName"
-          fieldLabel="WORKFLOW.PERSON.FIRSTNAME"
-          class="col-5"
-        >
-        </atlas-text-field>
-        <atlas-text-field
-          [required]="true"
-          controlName="lastName"
-          data-cy="stopPointRestartWorkflowPersonLastName"
-          fieldLabel="WORKFLOW.PERSON.LASTNAME"
-          class="col-5"
-        >
-        </atlas-text-field>
-      </div>
-    </div>
-  </form>
-  <atlas-dialog-content>
-    <mat-radio-group>
+  <div class="mb-4">
+    <span class="font-regular-lg">
+      {{ 'TTH.DIALOG.EXPORT_TYPE_MESSAGE' | translate }}
+    </span>
+  </div>
+
+  <mat-radio-group [(ngModel)]="isAnonymizedExport" class="d-flex flex-column">
+    <div>
       <mat-radio-button [value]="true">
         {{ 'TTH.DIALOG.EXPORT_TYPE_ANONYMIZED' | translate }}
       </mat-radio-button>
-      <mat-radio-button [value]="false">
-        {{ 'TTH.DIALOG.EXPORT_TYPE_NOT_ANONYMIZED' | translate }}
-      </mat-radio-button>
-    </mat-radio-group>
-  </atlas-dialog-content>
-
-  <atlas-dialog-footer>
-    <button
-      (click)="close()"
-      class="atlas-primary-btn me-3"
-      data-cy="dialog-close-button"
-    >
-      {{ 'COMMON.BACK' | translate }}
-    </button>
-    <button
-      (click)="downloadCsv()"
-      class="atlas-primary-btn me-3"
-      data-cy="dialog-confirm-button"
-    >
-      Herunterladen
-    </button>
-  </atlas-dialog-footer>
+      <atlas-form-info-icon
+        infoTitle="{{ 'TTH.DIALOG.EXPORT_TYPE_INFO' | translate }}"
+      ></atlas-form-info-icon>
+    </div>
+    <div>
+      <div class="mb-1">
+        <mat-radio-button [value]="false">
+          {{ 'TTH.DIALOG.EXPORT_TYPE_NOT_ANONYMIZED' | translate }}
+        </mat-radio-button>
+      </div>
+      @if (!isAnonymizedExport) {
+        <ul>
+          <li class="font-regular-sm d-block mt-1 ms-2 text-danger">
+            {{ 'TTH.DIALOG.EXPORT_TYPE_RESPONSIBILITY_INFO' | translate }}
+          </li>
+        </ul>
+      }
+    </div>
+  </mat-radio-group>
 </atlas-dialog-content>
+<atlas-dialog-footer>
+  <button
+    (click)="close()"
+    class="atlas-primary-btn me-3"
+    data-cy="dialog-close-button"
+  >
+    {{ 'COMMON.BACK' | translate }}
+  </button>
+  <button
+    (click)="confirm()"
+    class="atlas-primary-btn me-3"
+    data-cy="dialog-confirm-button"
+  >
+    {{ 'TTH.DIALOG.CONFIRM' | translate }}
+  </button>
+</atlas-dialog-footer>
