@@ -827,7 +827,9 @@
       "COMMENT_LABEL": "Kommentar dazu",
       "BACK": "Zurück",
       "STATUS_CHANGE_MESSAGE": "Sie ändern die ausgewählte Stellungnahme.",
-      "MULTIPLE_STATUS_CHANGE_MESSAGE": "Sie ändern {{tthsLength}} ausgewählte Stellungnahme."
+      "MULTIPLE_STATUS_CHANGE_MESSAGE": "Sie ändern {{tthsLength}} ausgewählte Stellungnahme.",
+      "EXPORT_TYPE_ANONYMIZED": "Anonymisiert",
+      "EXPORT_TYPE_NOT_ANONYMIZED": "Nicht Anonymisiert"
     },
     "START_HEARING_DIALOG": {
       "TITLE": "Fahrplanjahr starten?",

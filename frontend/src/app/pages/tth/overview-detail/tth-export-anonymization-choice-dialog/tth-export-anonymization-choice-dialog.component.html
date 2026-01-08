@@ -1,0 +1,57 @@
+<atlas-dialog-close class="pe-2" (clicked)="close()"></atlas-dialog-close>
+<atlas-dialog-content>
+  <div class="mb-5 dialog-title">
+    <span class="font-bold-4xl">{{
+      'WORKFLOW.BUTTON.RESTART' | translate
+    }}</span>
+  </div>
+  <form>
+    <div class="col-12 px-5 mt-3">
+      <div class="d-flex justify-content-between mt-2">
+        <atlas-text-field
+          [required]="true"
+          controlName="firstName"
+          data-cy="stopPointRestartWorkflowPersonFirstName"
+          fieldLabel="WORKFLOW.PERSON.FIRSTNAME"
+          class="col-5"
+        >
+        </atlas-text-field>
+        <atlas-text-field
+          [required]="true"
+          controlName="lastName"
+          data-cy="stopPointRestartWorkflowPersonLastName"
+          fieldLabel="WORKFLOW.PERSON.LASTNAME"
+          class="col-5"
+        >
+        </atlas-text-field>
+      </div>
+    </div>
+  </form>
+  <atlas-dialog-content>
+    <mat-radio-group>
+      <mat-radio-button [value]="true">
+        {{ 'TTH.DIALOG.EXPORT_TYPE_ANONYMIZED' | translate }}
+      </mat-radio-button>
+      <mat-radio-button [value]="false">
+        {{ 'TTH.DIALOG.EXPORT_TYPE_NOT_ANONYMIZED' | translate }}
+      </mat-radio-button>
+    </mat-radio-group>
+  </atlas-dialog-content>
+
+  <atlas-dialog-footer>
+    <button
+      (click)="close()"
+      class="atlas-primary-btn me-3"
+      data-cy="dialog-close-button"
+    >
+      {{ 'COMMON.BACK' | translate }}
+    </button>
+    <button
+      (click)="downloadCsv()"
+      class="atlas-primary-btn me-3"
+      data-cy="dialog-confirm-button"
+    >
+      Herunterladen
+    </button>
+  </atlas-dialog-footer>
+</atlas-dialog-content>
