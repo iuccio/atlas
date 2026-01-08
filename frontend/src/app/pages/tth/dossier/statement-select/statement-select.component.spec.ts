@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DossierDetailComponent } from './dossier-detail.component';
+import { StatementSelectComponent } from './statement-select.component';
 import { ActivatedRoute } from '@angular/router';
 
 describe('StatementSelectComponent', () => {
-  let component: DossierDetailComponent;
-  let fixture: ComponentFixture<DossierDetailComponent>;
+  let component: StatementSelectComponent;
+  let fixture: ComponentFixture<StatementSelectComponent>;
 
   const activatedRoute = {
     snapshot: {
@@ -17,7 +17,7 @@ describe('StatementSelectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DossierDetailComponent],
+      imports: [StatementSelectComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -26,7 +26,7 @@ describe('StatementSelectComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DossierDetailComponent);
+    fixture = TestBed.createComponent(StatementSelectComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

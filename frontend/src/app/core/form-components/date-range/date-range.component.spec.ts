@@ -24,7 +24,7 @@ timetableYearChangeService.getNextTimetablesYearChange.and.returnValue(
   of([nextTimetableYearChange])
 );
 
-describe('DateRangeComponent', () => {
+describe('DateComponent', () => {
   let component: DateRangeComponent;
   let fixture: ComponentFixture<DateRangeComponent>;
 

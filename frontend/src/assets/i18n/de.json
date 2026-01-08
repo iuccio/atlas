@@ -1080,6 +1080,25 @@
       "STATEMENT_TRANSFER_CANTON_INFO": "Wählen Sie den Kanton aus, an den Sie die Stellungnahme übergeben.",
       "STATEMENT_PDF_ANONYMOUS_CHECKBOX": "Der Anhang darf weitergeleitet werden (z.B. an ein Transportunternehmen)"
     },
+    "DOSSIER": {
+      "DOSSIER": "Dossier",
+      "NEW": "Neues Dossier",
+      "INTERNAL_FEEDBACK": "Interne Rückfrage",
+      "INTERNAL_FEEDBACK_HINT": "(an Ihre Mitarbeiter*innen)",
+      "INTERNAL_FEEDBACK_INFO": "Geben Sie die Inhalte des Dossiers an eine Fachperson für eine Frage weiter. Die Inhalte erscheinen als Direkt-Link in Ihrer E-Mail.",
+      "EXTERNAL_FEEDBACK": "Externe Rückfrage",
+      "EXTERNAL_FEEDBACK_HINT": "(beim Transportunternehmen)",
+      "BO_CONTACT_MAIL": "E-Mail der Kontaktperson bei der TU",
+      "BO_DEADLINE_TO_ANSWER": "Frist zur Beantwortung durch TU",
+      "BO_QUESTION": "Frage an das Transportunternehmen",
+      "INTERNAL_COMMENT": "Interne Begründung zum Zweck der Dokumentation",
+      "PUBLIC_COMMENT": "Öffentliche Begründung für Stellungnehmende",
+      "COMPLETION": "Abschluss",
+      "NOTIFICATION": {
+        "ADD_SUCCESS": "Neues Dossier erfolgreich gespeichert.",
+        "EDIT_SUCCESS": "Das Dossier wurde erfolgreich gespeichert."
+      }
+    },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Fahrplanjahr schliessen",
       "CONFIRMATION_MESSAGE": "Möchten Sie das Fahrplanjahr abschliessen? Diese Aktion kann nicht rückgängig gemacht werden. Beim Schliessen des Fahrplanjahrs werden die Stellungnahmen verschoben:",

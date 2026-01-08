@@ -5,6 +5,7 @@ import { AtlasFieldLengthValidator } from '../../../../core/validation/field-len
 import { WhitespaceValidator } from '../../../../core/validation/whitespace/whitespace-validator';
 import moment, { Moment } from 'moment/moment';
 import { TthDossier } from '../../../../api/model/tthDossier';
+import { SelectedStatements } from '../statement-select/statement-select.component';
 
 export interface DossierDetailFormGroup {
   id: FormControl<number | null | undefined>;
@@ -46,13 +47,37 @@ export class DossierFormGroupBuilder {
         AtlasCharsetsValidator.email,
       ]),
       boDeadlineToAnswer: new FormControl(
-        dossier?.boDeadlineToAnswer ? moment(dossier.boDeadlineToAnswer) : null,
-        [Validators.required]
+        dossier?.boDeadlineToAnswer ? moment(dossier.boDeadlineToAnswer) : null
       ),
       question: new FormControl(dossier?.questions.at(0)?.question, [
         Validators.maxLength(5000),
         WhitespaceValidator.blankOrEmptySpaceSurrounding,
       ]),
     });
+  }
+
+  static getDossier(
+    form: FormGroup<DossierDetailFormGroup>,
+    selectedStatements: SelectedStatements
+  ): TthDossier {
+    const dossier: TthDossier = {
+      id: form.controls.id.value!,
+      statementIds: form.controls.statementIds.value!,
+      swissCanton: form.controls.swissCanton.value!,
+      topic: form.controls.topic.value!,
+      internalComment: form.controls.internalComment.value!,
+      publicComment: form.controls.publicComment.value!,
+      boContactMail: form.controls.boContactMail.value!,
+      boDeadlineToAnswer: form.controls.boDeadlineToAnswer.value?.toDate(),
+      questions: [],
+    };
+    if (form.controls.question.value) {
+      dossier.questions = [
+        {
+          question: form.controls.question.value!,
+        },
+      ];
+    }
+    return dossier;
   }
 }

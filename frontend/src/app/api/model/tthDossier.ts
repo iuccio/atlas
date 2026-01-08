@@ -54,11 +54,11 @@ export interface TthDossier {
     /**
      * Mail of the business partner at the transport company
      */
-    boContactMail: string;
+    boContactMail?: string;
     /**
      * Deadline for the dossier to be answered
      */
-    boDeadlineToAnswer: Date;
+    boDeadlineToAnswer?: Date;
     /**
      * Questions for the BO to answer
      */

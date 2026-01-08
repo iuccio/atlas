@@ -3,3 +3,14 @@ export function addElementsToArrayWhenNotUndefined<T>(
 ): T[] {
   return elements.filter((value): value is T => !!value);
 }
+
+export function toNumberArrayStrict(input: string | string[]): number[] {
+  const arr = typeof input === 'string' ? [input] : input;
+  return arr.map((s) => {
+    const n = Number(s);
+    if (Number.isNaN(n)) {
+      throw new Error(`Invalid input`);
+    }
+    return n;
+  });
+}

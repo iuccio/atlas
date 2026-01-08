@@ -77,11 +77,9 @@ public class TthDossier extends BaseWorkflowEntity implements StatementDossierLi
   @ElementCollection(targetClass = Long.class, fetch = FetchType.EAGER)
   private List<Long> statementIds;
 
-  @NotBlank
   @Size(max = AtlasFieldLengths.LENGTH_255)
   private String boContactMail;
 
-  @NotNull
   private LocalDate boDeadlineToAnswer;
 
   @Builder.Default
