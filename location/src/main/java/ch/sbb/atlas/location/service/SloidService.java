@@ -1,7 +1,7 @@
 package ch.sbb.atlas.location.service;
 
-import ch.sbb.atlas.api.location.SloidLocationModel;
 import ch.sbb.atlas.api.location.SloidType;
+import ch.sbb.atlas.location.model.SloidLocation;
 import ch.sbb.atlas.location.repository.SloidRepository;
 import ch.sbb.atlas.servicepoint.Country;
 import jakarta.validation.constraints.NotNull;
@@ -72,7 +72,7 @@ public class SloidService {
     return sloidPrefix + ":" + nextSeqValue;
   }
 
-  public List<SloidLocationModel> getSloid(String sloid) {
+  public List<SloidLocation> getSloid(String sloid) {
     return sloidRepository.getSloid(sloid);
   }
 }

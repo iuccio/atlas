@@ -6,9 +6,11 @@ import ch.sbb.atlas.api.location.SloidApiV1;
 import ch.sbb.atlas.api.location.SloidLocationModel;
 import ch.sbb.atlas.api.location.SloidType;
 import ch.sbb.atlas.exception.SloidAlreadyExistsException;
+import ch.sbb.atlas.location.model.SloidLocation;
 import ch.sbb.atlas.location.service.SloidService;
 import ch.sbb.atlas.location.service.SloidSyncService;
 import ch.sbb.atlas.servicepoint.SloidValidation;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,7 +56,12 @@ public class SloidController implements SloidApiV1 {
 
   @Override
   public List<SloidLocationModel> getSloid(String sloid) {
-    return sloidService.getSloid(sloid);
+    List<SloidLocation> sloidLocations = sloidService.getSloid(sloid);
+    List<SloidLocationModel> sloidLocationModels = new ArrayList<>();
+    sloidLocations.forEach(sloidLocation -> {
+      sloidLocationModels.add(new SloidLocationModel(sloidLocation.sloid(), sloidLocation.sloidType()));
+    });
+    return sloidLocationModels;
   }
 
   private void isValidSloid(ClaimSloidRequestModel requestModel) {

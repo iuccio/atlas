@@ -20,7 +20,7 @@ export class ServicePointNavigationHelper {
       commands.push(sloidContainer.rootSloid);
       return commands;
     }
-    commands.push(navigation!.rootPath!);
+    commands.push(navigation!.rootPath);
     commands.push(sloidContainer.rootSloid);
 
     commands.push(navigation!.path);
@@ -45,7 +45,7 @@ export class ServicePointNavigationHelper {
       return commands;
     }
 
-    commands.push(navigation!.rootPath!);
+    commands.push(navigation!.rootPath);
     commands.push(this.buildServicePointNumber(sloidContainer));
     if (model.sloidType === 'PLATFORM' || model.sloidType === 'AREA') {
       commands.push(navigation!.path);
