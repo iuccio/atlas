@@ -1,7 +1,7 @@
 package ch.sbb.atlas.location.repository;
 
-import ch.sbb.atlas.api.location.SloidLocationModel;
 import ch.sbb.atlas.api.location.SloidType;
+import ch.sbb.atlas.location.model.SloidLocation;
 import ch.sbb.atlas.model.AtlasListUtil;
 import ch.sbb.atlas.servicepoint.Country;
 import java.sql.PreparedStatement;
@@ -189,11 +189,11 @@ public class SloidRepository {
     });
   }
 
-  public List<SloidLocationModel> getSloid(String sloid) {
+  public List<SloidLocation> getSloid(String sloid) {
     MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
     mapSqlParameterSource.addValue(SLOID, sloid);
-    String sqlQuery = "select sloid, sloidtype from location.location.allocated_sloid where sloid = :sloid;";
+    String sqlQuery = "select sloid, sloidtype from allocated_sloid where sloid = :sloid;";
     return locationJdbcTemplate.query(sqlQuery, mapSqlParameterSource,
-        (rs, row) -> new SloidLocationModel(rs.getString(SLOID), SloidType.valueOf(rs.getString(SLOIDTYPE))));
+        (rs, row) -> new SloidLocation(rs.getString(SLOID), SloidType.valueOf(rs.getString(SLOIDTYPE))));
   }
 }

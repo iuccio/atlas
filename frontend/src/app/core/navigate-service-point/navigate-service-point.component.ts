@@ -13,9 +13,10 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { ServicePointNavigationHelper } from './service-point-navigation.helper';
 
-const MAX_PRM_COLON = 5;
-const NOTFOUND_LABEL = 'COMMON.NODATAFOUND';
-const NAVIGATION_PLACEHOLDER = 'SEPODI.SERVICE_POINTS.NAVIGATION_PLACEHOLDER';
+export const MAX_PRM_COLON = 5;
+export const NOTFOUND_LABEL = 'COMMON.NODATAFOUND';
+export const NAVIGATION_PLACEHOLDER =
+  'SEPODI.SERVICE_POINTS.NAVIGATION_PLACEHOLDER';
 
 @Component({
   selector: 'atlas-navigate-service-point',
@@ -46,15 +47,21 @@ export class NavigateServicePointComponent {
     this._resultMsg = value;
   }
 
-  private locationService = inject(LocationService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private readonly locationService = inject(LocationService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   onSearch(): void {
-    this.checkIsPrmSearchPossible();
-    if (this.ngSelect().searchTerm) {
+    const searchTerm = this.ngSelect().searchTerm;
+    this.doSearch(searchTerm);
+  }
+
+  doSearch(searchTerm: string) {
+    if (this.checkIsNotPrmSearchPossible(searchTerm)) {
+      this.resultMsg = NOTFOUND_LABEL;
+    } else if (searchTerm) {
       this.locationService
-        .getSloidLocationModel(this.ngSelect().searchTerm)
+        .getSloidLocationModel(searchTerm)
         .subscribe((sloidLocations) => {
           if (sloidLocations.length === 0 || sloidLocations.length > 1) {
             this.resultMsg = NOTFOUND_LABEL;
@@ -65,17 +72,11 @@ export class NavigateServicePointComponent {
     }
   }
 
-  checkIsPrmSearchPossible() {
-    const colonCount = Array.from(
-      this.ngSelect().searchTerm.matchAll(/:/g)
-    ).length;
-    if (
-      this.searchType() === ServicePointSearch.PRM &&
-      colonCount > MAX_PRM_COLON
-    ) {
-      this.resultMsg = NOTFOUND_LABEL;
-      return;
-    }
+  checkIsNotPrmSearchPossible(searchTerm: string) {
+    const colonCount = Array.from(searchTerm.matchAll(/:/g)).length;
+    return (
+      this.searchType() === ServicePointSearch.PRM && colonCount > MAX_PRM_COLON
+    );
   }
 
   navigateTo(sloidLocation: SloidLocationModel): void {

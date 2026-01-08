@@ -50,8 +50,8 @@ export class SearchServicePointPanelComponent {
     this._showSearchPanel = !this.showSearchPanel;
   }
 
-  changeSearchType(changeSearchType: boolean) {
-    if (changeSearchType) {
+  changeSearchType(changeSearch: boolean) {
+    if (changeSearch) {
       this.searchNavigationType = 'NAVIGATION';
     } else {
       this.searchNavigationType = 'SEARCH';
