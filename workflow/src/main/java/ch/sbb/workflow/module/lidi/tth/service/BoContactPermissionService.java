@@ -20,22 +20,24 @@ public class BoContactPermissionService {
   private final UserAdministrationClient userAdministrationClient;
 
   public void checkPermissionForBoContactMail(String mail) {
-    UserModel user = userAdministrationClient.getUserByMail(mail);
+    if (mail != null) {
+      UserModel user = userAdministrationClient.getUserByMail(mail);
 
-    List<PermissionModel> permissions =
-        user.getPermissions().stream()
-            .filter(permissionModel -> permissionModel.getApplication().equals(ApplicationType.TIMETABLE_HEARING)).toList();
+      List<PermissionModel> permissions =
+          user.getPermissions().stream()
+              .filter(permissionModel -> permissionModel.getApplication().equals(ApplicationType.TIMETABLE_HEARING)).toList();
 
-    boolean hasPermission = permissions.stream().map(PermissionModel::getPermissionRestrictions).flatMap(Collection::stream)
-        .filter(i -> i.getType() == PermissionRestrictionType.TRANSPORT_COMPANY_DOSSIER_ANSWER)
-        .anyMatch(i -> Boolean.parseBoolean(i.getValueAsString()));
+      boolean hasPermission = permissions.stream().map(PermissionModel::getPermissionRestrictions).flatMap(Collection::stream)
+          .filter(i -> i.getType() == PermissionRestrictionType.TRANSPORT_COMPANY_DOSSIER_ANSWER)
+          .anyMatch(i -> Boolean.parseBoolean(i.getValueAsString()));
 
-    if (!hasPermission) {
-      throw SimpleAtlasException.builder()
-          .status(HttpStatus.PRECONDITION_FAILED)
-          .messageAndError("You are not allowed to answer any questions")
-          .displayCode("TTH.ERROR.NOT_ALLOWED_BO_CONTACT", List.of(new Parameter("mail", mail)))
-          .build();
+      if (!hasPermission) {
+        throw SimpleAtlasException.builder()
+            .status(HttpStatus.PRECONDITION_FAILED)
+            .messageAndError("You are not allowed to answer any questions")
+            .displayCode("TTH.ERROR.NOT_ALLOWED_BO_CONTACT", List.of(new Parameter("mail", mail)))
+            .build();
+      }
     }
   }
 }

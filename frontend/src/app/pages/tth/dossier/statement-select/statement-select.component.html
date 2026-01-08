@@ -1,0 +1,10 @@
+<atlas-table
+  (buttonClickEvent)="removeStatement($event)"
+  (editElementEvent)="goToStatement($event)"
+  [tableColumns]="tableColumns"
+  [tableData]="statements"
+  [sortingDisabled]="true"
+  [showTableFilter]="false"
+  [showPaginator]="false"
+  data-cy="tthTable"
+></atlas-table>

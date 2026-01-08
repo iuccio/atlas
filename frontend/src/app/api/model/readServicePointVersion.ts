@@ -108,25 +108,37 @@ export interface ReadServicePointVersion {
     servicePointGeolocation?: ServicePointGeolocation;
     country: Country;
     /**
-     * ServicePoint is OperatingPointKilometer
+     * ServicePoint is FareStop
      */
-    operatingPointKilometer?: boolean;
+    fareStop?: boolean;
     /**
      * ServicePoint is StopPoint
      */
     stopPoint?: boolean;
     /**
+<<<<<<< HEAD
      * ServicePoint has a Geolocation
      */
     hasGeolocation?: boolean;
     /**
      * ServicePoint is FareStop
-     */
-    fareStop?: boolean;
-    /**
+=======
      * ServicePoint is BorderPoint
+>>>>>>> ee80a2a07d (ATLAS-3217: Begin implementation of dossier create)
      */
     borderPoint?: boolean;
+    /**
+<<<<<<< HEAD
+     * ServicePoint is BorderPoint
+=======
+     * ServicePoint is TrafficPoint
+     */
+    trafficPoint?: boolean;
+    /**
+     * ServicePoint is OperatingPointKilometer
+>>>>>>> ee80a2a07d (ATLAS-3217: Begin implementation of dossier create)
+     */
+    operatingPointKilometer?: boolean;
     /**
      * ServicePoint is TrafficPoint
      */
