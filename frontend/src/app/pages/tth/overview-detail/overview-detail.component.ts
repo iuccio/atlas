@@ -47,6 +47,7 @@ import { AtlasButtonComponent } from '../../../core/components/button/atlas-butt
 import { DownloadIconComponent } from '../../../core/form-components/download-icon/download-icon.component';
 import { TableComponent } from '../../../core/components/table/table.component';
 import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
+import { TthExportAnonymizationChoiceDialogService } from './tth-export-anonymization-choice-dialog/service/tth-export-anonymization-choice-dialog.service';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-detail',
@@ -130,7 +131,8 @@ export class OverviewDetailComponent implements OnInit {
     private readonly translateService: TranslateService,
     private readonly permissionService: PermissionService,
     private readonly statementShareService: StatementShareService,
-    private readonly matDialog: MatDialog
+    private readonly matDialog: MatDialog,
+    private readonly tthExportAnonymizationChoiceDialogService: TthExportAnonymizationChoiceDialogService
   ) {}
 
   get isHearingYearActive(): boolean {
@@ -274,6 +276,10 @@ export class OverviewDetailComponent implements OnInit {
       .subscribe((response) =>
         FileDownloadService.downloadFile('statements.csv', response)
       );
+  }
+
+  openDialog() {
+    this.tthExportAnonymizationChoiceDialogService.openDialog();
   }
 
   manageTimetableHearing() {
