@@ -1,37 +1,42 @@
-import { Component, inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { DialogCloseComponent } from '../../../../core/components/dialog/close/dialog-close.component';
-import { MatDialogRef } from '@angular/material/dialog';
-import { DialogContentComponent } from '../../../../core/components/dialog/content/dialog-content.component';
-import { DialogFooterComponent } from '../../../../core/components/dialog/footer/dialog-footer.component';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
-import { AppTestingModule } from '../../../../app.testing.module';
-import { TextFieldComponent } from '../../../../core/form-components/text-field/text-field.component';
+import { DialogContentComponent } from '../../../../core/components/dialog/content/dialog-content.component';
+import { DialogFooterComponent } from '../../../../core/components/dialog/footer/dialog-footer.component';
+import { InfoIconComponent } from '@atlas/form';
+import { FormsModule } from '@angular/forms';
+import { DialogData } from '../../../../core/components/dialog/dialog.data';
 
 @Component({
-  selector: 'app-tth-export-anonymization-choice-dialog',
+  selector: 'atlas-tth-export-anonymization-choice-dialog',
+  templateUrl: './tth-export-anonymization-choice-dialog.component.html',
+  styleUrls: ['./tth-export-anonymization-choice-dialog.component.scss'],
   imports: [
     DialogCloseComponent,
-    DialogContentComponent,
-    DialogFooterComponent,
     TranslatePipe,
     MatRadioButton,
     MatRadioGroup,
-    AppTestingModule,
-    TextFieldComponent,
+    DialogContentComponent,
+    DialogFooterComponent,
+    InfoIconComponent,
+    FormsModule,
   ],
-  templateUrl: './tth-export-anonymization-choice-dialog.component.html',
 })
 export class TthExportAnonymizationChoiceDialogComponent {
-  private readonly dialogRef = inject(
-    MatDialogRef<TthExportAnonymizationChoiceDialogComponent>
-  );
+  isAnonymizedExport = true;
 
-  close(result?: boolean) {
-    this.dialogRef.close(result);
+  constructor(
+    public dialogRef: MatDialogRef<TthExportAnonymizationChoiceDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
+  ) {}
+
+  close() {
+    this.dialogRef.close(null);
   }
 
-  downloadCsv() {
-    console.log('downloadCsv called');
+  confirm() {
+    this.dialogRef.close({ isAnonymized: this.isAnonymizedExport });
   }
 }

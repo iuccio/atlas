@@ -47,7 +47,8 @@ import { AtlasButtonComponent } from '../../../core/components/button/atlas-butt
 import { DownloadIconComponent } from '../../../core/form-components/download-icon/download-icon.component';
 import { TableComponent } from '../../../core/components/table/table.component';
 import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
-import { TthExportAnonymizationChoiceDialogService } from './tth-export-anonymization-choice-dialog/service/tth-export-anonymization-choice-dialog.service';
+import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
+import { DialogData } from '../../../core/components/dialog/dialog.data';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-detail',
@@ -131,8 +132,7 @@ export class OverviewDetailComponent implements OnInit {
     private readonly translateService: TranslateService,
     private readonly permissionService: PermissionService,
     private readonly statementShareService: StatementShareService,
-    private readonly matDialog: MatDialog,
-    private readonly tthExportAnonymizationChoiceDialogService: TthExportAnonymizationChoiceDialogService
+    private readonly matDialog: MatDialog
   ) {}
 
   get isHearingYearActive(): boolean {
@@ -278,8 +278,28 @@ export class OverviewDetailComponent implements OnInit {
       );
   }
 
-  openDialog() {
-    this.tthExportAnonymizationChoiceDialogService.openDialog();
+  openTthExportAnonymizationChoiceDialog(): void {
+    const data: DialogData = {
+      title: 'TTH.DIALOG.EXPORT_ANONYMIZATION_CHOICE_TITLE',
+      message: 'TTH.DIALOG.EXPORT_ANONYMIZATION_CHOICE_MESSAGE',
+      cancelText: 'TTH.DIALOG.CANCEL',
+      confirmText: 'TTH.DIALOG.CONFIRM',
+    };
+
+    this.matDialog
+      .open(TthExportAnonymizationChoiceDialogComponent, {
+        data: data,
+        disableClose: true,
+        panelClass: 'atlas-dialog-panel',
+        backdropClass: 'atlas-dialog-backdrop',
+      })
+      .afterClosed()
+      .pipe()
+      .subscribe((result: { isAnonymized: boolean }) => {
+        if (result != null) {
+          this.downloadCsv();
+        }
+      });
   }
 
   manageTimetableHearing() {
