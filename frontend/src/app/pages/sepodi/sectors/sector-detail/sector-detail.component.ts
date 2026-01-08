@@ -45,6 +45,8 @@ import {
   Revokable,
   RevokeButton,
 } from '../../../../core/form-components/revoke-button/revoke-button';
+import { SloidContainerComponent } from '../../../../core/sloid-container/sloid-container.component';
+import { AtlasClipboardComponent } from '../../../../core/form-components/atlas-clipboard/atlas-clipboard.component';
 
 @Component({
   selector: 'atlas-sector-detail',
@@ -65,6 +67,8 @@ import {
     UserDetailInfoComponent,
     AtlasButtonComponent,
     RevokeButton,
+    SloidContainerComponent,
+    AtlasClipboardComponent,
   ],
 })
 export class SectorDetailComponent

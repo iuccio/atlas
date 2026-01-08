@@ -58,9 +58,8 @@ public class SloidController implements SloidApiV1 {
   public List<SloidLocationModel> getSloid(String sloid) {
     List<SloidLocation> sloidLocations = sloidService.getSloid(sloid);
     List<SloidLocationModel> sloidLocationModels = new ArrayList<>();
-    sloidLocations.forEach(sloidLocation -> {
-      sloidLocationModels.add(new SloidLocationModel(sloidLocation.sloid(), sloidLocation.sloidType()));
-    });
+    sloidLocations.forEach(
+        sloidLocation -> sloidLocationModels.add(new SloidLocationModel(sloidLocation.sloid(), sloidLocation.sloidType())));
     return sloidLocationModels;
   }
 

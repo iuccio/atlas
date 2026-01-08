@@ -14,13 +14,10 @@
     </div>
   }
   <div class="d-flex flex-row mb-5">
-    <div class="d-flex flex-column me-5" data-cy="selected-version-sloid">
-      <div class="font-bold-base">
-        {{ 'SEPODI.SERVICE_POINTS.SLOID' | translate }}
-      </div>
-      <div>{{ trafficPoint.sloid }}</div>
-    </div>
-    <div class="d-flex flex-column me-5" data-cy="selected-version-sloid">
+    <atlas-sloid-container
+      [sloid]="trafficPoint.sloid!"
+    ></atlas-sloid-container>
+    <div class="d-flex flex-column ms-5 me-5">
       <div class="font-bold-base">
         {{ 'SEPODI.TRAFFIC_POINT_ELEMENTS.DESIGNATION' | translate }}
       </div>

@@ -4,34 +4,37 @@
   "
   class="search-container"
 >
-  <span *ngIf="!showSearchPanel" class="ps-4 pt-2 search-plaintext"
-    >{{ 'COMMON.SEARCH.SEARCH_CRITERIA' | translate }}...</span
-  >
-  <div class="container-sp-create-and-search" *ngIf="showSearchPanel">
-    @if (searchNavigationType === 'NAVIGATION') {
-      <atlas-navigate-service-point
-        [searchNavigationType]="searchNavigationType"
-        [searchType]="searchType"
-      ></atlas-navigate-service-point>
-    } @else {
-      <app-search-service-point
-        [searchType]="searchType"
-      ></app-search-service-point>
-    }
+  @if (!showSearchPanel) {
+    <span class="ps-4 pt-2 search-plaintext"
+      >{{ 'COMMON.SEARCH.SEARCH_CRITERIA' | translate }}...</span
+    >
+  } @else {
+    <div class="container-sp-create-and-search">
+      @if (searchNavigationType === 'NAVIGATION') {
+        <atlas-navigate-service-point
+          [searchNavigationType]="searchNavigationType"
+          [searchType]="searchType"
+        ></atlas-navigate-service-point>
+      } @else {
+        <atlas-search-service-point
+          [searchType]="searchType"
+        ></atlas-search-service-point>
+      }
 
-    <div class="font-bold-sm ps-3">
-      <span>
-        {{ 'SEPODI.SERVICE_POINTS.SEARCH_OR_NAVIGATION' | translate }}
-      </span>
-      <div class="ps-4 pt-lg-2">
-        <atlas-slide-toggle
-          (toggleChange)="changeSearchType($event)"
-          [slideTrackNeutral]="true"
-        ></atlas-slide-toggle>
+      <div class="font-bold-sm ps-3">
+        <span>
+          {{ 'SEPODI.SERVICE_POINTS.SEARCH_OR_NAVIGATION' | translate }}
+        </span>
+        <div class="ps-4 pt-lg-2">
+          <atlas-slide-toggle
+            (toggleChange)="changeSearchType($event)"
+            [slideTrackNeutral]="true"
+          ></atlas-slide-toggle>
+        </div>
       </div>
+      <ng-content></ng-content>
     </div>
-    <ng-content></ng-content>
-  </div>
+  }
   <div class="button-container">
     <atlas-button
       (buttonClicked)="toggle()"
