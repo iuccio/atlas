@@ -21,6 +21,7 @@ import { MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
 import { SectorMapService } from '../map/sector-map.service';
 import { environment } from '../../../../environments/environment';
 import { TrafficPointMapService } from '../map/traffic-point-map.service';
+import { SloidContainerComponent } from '../../../core/sloid-container/sloid-container.component';
 
 @Component({
   selector: 'atlas-traffic-point-elements-side-panel',
@@ -37,6 +38,7 @@ import { TrafficPointMapService } from '../map/traffic-point-map.service';
     RouterLinkActive,
     RouterOutlet,
     RouterLink,
+    SloidContainerComponent,
   ],
 })
 export class TrafficPointElementsSidePanelComponent

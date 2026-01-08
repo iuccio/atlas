@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AtlasLabelFieldComponent } from './atlas-label-field.component';
+import { AtlasLabelFieldComponent } from '@atlas/form';
 import { FieldExample } from '../../../src/app/core/form-components/text-field/field-example';
 import { By } from '@angular/platform-browser';
 import { translateServiceProvider } from '../../../src/app/app.testing.mocks';

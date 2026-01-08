@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ServicePointSearchType } from '../search-service-point/service-point-search';
 import { NgClass } from '@angular/common';
-import { SearchServicePointComponent } from '../search-service-point/search-service-point.component';
 import { AtlasButtonComponent } from '../components/button/atlas-button.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AtlasSlideToggleComponent } from '../form-components/atlas-slide-toggle/atlas-slide-toggle.component';
 import { NavigateServicePointComponent } from '../navigate-service-point/navigate-service-point.component';
+import { SearchServicePointComponent } from '../search-service-point/search-service-point.component';
 
 export type SearchNavigationType = 'SEARCH' | 'NAVIGATION';
 export const SearchNavigationType = {
@@ -19,11 +19,11 @@ export const SearchNavigationType = {
   styleUrls: ['./search-service-point-panel.component.scss'],
   imports: [
     NgClass,
-    SearchServicePointComponent,
     AtlasButtonComponent,
     TranslatePipe,
     AtlasSlideToggleComponent,
     NavigateServicePointComponent,
+    SearchServicePointComponent,
   ],
 })
 export class SearchServicePointPanelComponent {
@@ -51,10 +51,6 @@ export class SearchServicePointPanelComponent {
   }
 
   changeSearchType(changeSearch: boolean) {
-    if (changeSearch) {
-      this.searchNavigationType = 'NAVIGATION';
-    } else {
-      this.searchNavigationType = 'SEARCH';
-    }
+    this.searchNavigationType = changeSearch ? 'NAVIGATION' : 'SEARCH';
   }
 }

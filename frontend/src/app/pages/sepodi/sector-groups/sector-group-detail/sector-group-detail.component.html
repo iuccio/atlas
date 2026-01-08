@@ -20,11 +20,10 @@
   }
   <div class="d-flex flex-row mb-5" data-cy="sector-group-header-title">
     @if (!isNew) {
-      <div class="d-flex flex-column me-5">
-        <div class="font-bold-base">
-          {{ 'SEPODI.SERVICE_POINTS.SLOID' | translate }}
-        </div>
-        <div>{{ selectedVersion.sloid }}</div>
+      <div class="me-5">
+        <atlas-sloid-container
+          [sloid]="selectedVersion.sloid!"
+        ></atlas-sloid-container>
       </div>
     }
     <div class="d-flex flex-column me-5">
@@ -33,6 +32,7 @@
       </div>
       <div>
         {{ trafficPoint.designation ?? '-' }} - {{ trafficPoint.sloid }}
+        <atlas-clipboard [value]="trafficPoint.sloid" [showMe]="true"></atlas-clipboard>
       </div>
     </div>
     <div class="d-flex flex-column">
