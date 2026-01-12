@@ -10,9 +10,9 @@ import {
 } from '../../../../../api';
 import { PrmMeanOfTransportHelper } from '../../../util/prm-mean-of-transport-helper';
 import { DetailPageContainerComponent } from '../../../../../core/components/detail-page-container/detail-page-container.component';
-
 import { DateRangeTextComponent } from '../../../../../core/versioning/date-range-text/date-range-text.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { SloidContainerComponent } from '../../../../../core/sloid-container/sloid-container.component';
 import { DetailWithRelationTabComponent } from '../../relation/tab/detail-with-relation-tab.component';
 
 @Component({
@@ -22,6 +22,7 @@ import { DetailWithRelationTabComponent } from '../../relation/tab/detail-with-r
     DetailPageContainerComponent,
     DateRangeTextComponent,
     TranslatePipe,
+    SloidContainerComponent,
     DetailWithRelationTabComponent,
   ],
 })

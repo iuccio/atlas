@@ -51,6 +51,8 @@ import { ReadSectorGroupVersion } from '../../../../api/model/readSectorGroupVer
 import { UpdateSectorGroupVersion } from '../../../../api/model/updateSectorGroupVersion';
 import { SectorGroupInternalService } from '../../../../api/service/sepodi/sector-group-internal.service';
 import { RevokeButton } from '../../../../core/form-components/revoke-button/revoke-button';
+import { SloidContainerComponent } from '../../../../core/sloid-container/sloid-container.component';
+import { AtlasClipboardComponent } from '../../../../core/form-components/atlas-clipboard/atlas-clipboard.component';
 
 @Component({
   selector: 'atlas-sector-group-detail',
@@ -71,6 +73,8 @@ import { RevokeButton } from '../../../../core/form-components/revoke-button/rev
     AtlasLabelFieldComponent,
     AtlasFieldErrorComponent,
     RevokeButton,
+    SloidContainerComponent,
+    AtlasClipboardComponent,
   ],
   templateUrl: './sector-group-detail.component.html',
   styleUrls: ['./sector-group-detail.component.scss'],

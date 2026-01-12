@@ -1,0 +1,9 @@
+<div class="d-flex flex-column" data-cy="selected-version-sloid">
+  <div class="font-bold-base">
+    {{ label() | translate }}
+  </div>
+  <div>
+    {{ sloid() }}
+    <atlas-clipboard [value]="sloid()" [showMe]="true"></atlas-clipboard>
+  </div>
+</div>

@@ -1,12 +1,17 @@
 package ch.sbb.atlas.location.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.location.ClaimSloidRequestModel;
+import ch.sbb.atlas.api.location.SloidLocationModel;
 import ch.sbb.atlas.api.location.SloidType;
+import ch.sbb.atlas.location.model.SloidLocation;
 import ch.sbb.atlas.location.service.SloidService;
 import ch.sbb.atlas.location.service.SloidSyncService;
 import ch.sbb.atlas.servicepoint.SloidNotValidException;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,6 +50,16 @@ public class SloidControllerTest {
 
     // when, then
     assertThrows(SloidNotValidException.class, () -> sloidController.claimSloid(requestModel));
+  }
+
+  @Test
+  void shouldGetSloid() {
+    // given
+    when(sloidService.getSloid("ch:1:sloid:1")).thenReturn(List.of(new SloidLocation("ch:1:sloid:1", SloidType.PLATFORM)));
+
+    // when, then
+    List<SloidLocationModel> result = sloidController.getSloid("ch:1:sloid:1");
+    assertThat(result).hasSize(1);
   }
 
   @ParameterizedTest

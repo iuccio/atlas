@@ -1,9 +1,11 @@
 package ch.sbb.atlas.location.service;
 
 import ch.sbb.atlas.api.location.SloidType;
+import ch.sbb.atlas.location.model.SloidLocation;
 import ch.sbb.atlas.location.repository.SloidRepository;
 import ch.sbb.atlas.servicepoint.Country;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -55,6 +57,7 @@ public class SloidService {
     }
   }
 
+
   public boolean claimSloid(String sloid, @NotNull SloidType sloidType) {
     if (!sloidRepository.isSloidAllocated(sloid)) {
       sloidRepository.insertSloid(sloid, sloidType);
@@ -67,5 +70,9 @@ public class SloidService {
 
   private String createFormattedSloid(String sloidPrefix, Integer nextSeqValue) {
     return sloidPrefix + ":" + nextSeqValue;
+  }
+
+  public List<SloidLocation> getSloid(String sloid) {
+    return sloidRepository.getSloid(sloid);
   }
 }

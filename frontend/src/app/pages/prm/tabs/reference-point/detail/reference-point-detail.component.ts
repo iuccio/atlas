@@ -25,6 +25,7 @@ import { DetailFooterComponent } from '../../../../../core/components/detail-foo
 import { AtlasButtonComponent } from '../../../../../core/components/button/atlas-button.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ReferencePointService } from '../../../../../api/service/prm/reference-point/reference-point.service';
+import { SloidContainerComponent } from '../../../../../core/sloid-container/sloid-container.component';
 
 @Component({
   selector: 'atlas-reference-point',
@@ -43,6 +44,7 @@ import { ReferencePointService } from '../../../../../api/service/prm/reference-
     DetailFooterComponent,
     AtlasButtonComponent,
     TranslatePipe,
+    SloidContainerComponent,
   ],
 })
 export class ReferencePointDetailComponent

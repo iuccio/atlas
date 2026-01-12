@@ -1,12 +1,14 @@
 package ch.sbb.atlas.location.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.sbb.atlas.api.location.SloidType;
 import ch.sbb.atlas.location.BaseLocationIntegrationTest;
 import ch.sbb.atlas.location.LocationSchemaCreation;
+import ch.sbb.atlas.location.model.SloidLocation;
 import ch.sbb.atlas.location.repository.SloidRepository;
 import ch.sbb.atlas.servicepoint.Country;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -139,6 +141,14 @@ class SloidServiceTest extends BaseLocationIntegrationTest {
     String result = sloidService.getNextAvailableServicePointSloid(Country.SWITZERLAND);
     //then
     assertThat(result).isEqualTo("ch:1:sloid:2");
+  }
+
+  @Test
+  void shouldGetSloid() {
+    //when
+    List<SloidLocation> result = sloidService.getSloid("ch:1:sloid:7000");
+    //then
+    assertThat(result).hasSize(1);
   }
 
 }
