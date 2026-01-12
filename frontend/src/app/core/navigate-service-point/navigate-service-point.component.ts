@@ -57,9 +57,7 @@ export class NavigateServicePointComponent {
   }
 
   doSearch(searchTerm: string) {
-    if (this.checkIsNotPrmSearchPossible(searchTerm)) {
-      this.resultMsg = NOTFOUND_LABEL;
-    } else if (searchTerm) {
+    if (searchTerm) {
       this.locationService
         .getSloidLocationModel(searchTerm)
         .subscribe((sloidLocations) => {
@@ -70,13 +68,6 @@ export class NavigateServicePointComponent {
           }
         });
     }
-  }
-
-  checkIsNotPrmSearchPossible(searchTerm: string) {
-    const colonCount = Array.from(searchTerm.matchAll(/:/g)).length;
-    return (
-      this.searchType() === ServicePointSearch.PRM && colonCount > MAX_PRM_COLON
-    );
   }
 
   navigateTo(sloidLocation: SloidLocationModel): void {
@@ -104,12 +95,14 @@ export class NavigateServicePointComponent {
     this.doNavigate(commands);
   }
 
-  private doNavigate(navigationCommands: string[]) {
-    this.router
-      .navigate(navigationCommands, { relativeTo: this.route })
-      .then(() => {
+  private doNavigate(commands: string[]) {
+    if (commands.length === 0) {
+      this.resultMsg = NOTFOUND_LABEL;
+    } else {
+      this.router.navigate(commands, { relativeTo: this.route }).then(() => {
         this.resultMsg = NAVIGATION_PLACEHOLDER;
         this.ngSelect().close();
       });
+    }
   }
 }

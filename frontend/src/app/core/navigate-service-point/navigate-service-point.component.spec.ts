@@ -47,20 +47,6 @@ describe('NavigateServicePoint', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should be possible search on PRM', () => {
-    //when
-    const result = component.checkIsNotPrmSearchPossible('ch:1:sloid:12:0:1');
-    //then
-    expect(result).toBeFalse();
-  });
-
-  it('should not be possible search on PRM', () => {
-    //when
-    const result = component.checkIsNotPrmSearchPossible('ch:1:sloid:12:0:1:1');
-    //then
-    expect(result).toBeTrue();
-  });
-
   it('should find and navigate PRM', () => {
     //given
     locationServiceSpy.getSloidLocationModel.and.returnValue(
