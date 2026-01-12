@@ -18,8 +18,13 @@ export class ServicePointNavigationHelper {
     if (!navigation && model.sloidType === 'SERVICE_POINT') {
       commands.push(rootNavigationPath);
       commands.push(sloidContainer.rootSloid);
+      //e.g. {host}/prm-directory/{sloid}
       return commands;
     }
+    if (!navigation && model.sloidType !== 'SERVICE_POINT') {
+      return commands;
+    }
+
     commands.push(navigation!.rootPath);
     commands.push(sloidContainer.rootSloid);
 
@@ -28,6 +33,7 @@ export class ServicePointNavigationHelper {
     if (navigation?.suffixDetail) {
       commands.push(navigation.suffixDetail);
     }
+    //e.g. {host}/prm-directory/{rootSloid}/{platforms/{sloid}/detail
     return commands;
   }
 
@@ -42,6 +48,10 @@ export class ServicePointNavigationHelper {
     if (!navigation && model.sloidType === 'SERVICE_POINT') {
       commands.push(rootNavigationPath);
       commands.push(this.buildServicePointNumber(sloidContainer));
+      //e.g. {host}/service-point-directory/service-points/{servicePointNumber}/service-point
+      return commands;
+    }
+    if (!navigation && model.sloidType !== 'SERVICE_POINT') {
       return commands;
     }
 
@@ -50,12 +60,14 @@ export class ServicePointNavigationHelper {
     if (model.sloidType === 'PLATFORM' || model.sloidType === 'AREA') {
       commands.push(navigation!.path);
       commands.push(sloidContainer.sloid);
+      //e.g. {host}/service-point-directory/service-points/{servicePointNumber}/service-point/areas/{sloid}
     }
     if (model.sloidType === 'SECTOR' || model.sloidType === 'SECTOR_GROUP') {
       commands.push(navigation!.parentPath!);
       commands.push(sloidContainer.parentSloid!);
       commands.push(navigation!.path);
       commands.push(sloidContainer.sloid);
+      //e.g. {host}/service-point-directory/service-points/{servicePointNumber}/traffic-point-elements/{parentSloid}/sectors/sloid
     }
     return commands;
   }
