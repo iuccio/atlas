@@ -1,0 +1,39 @@
+<div class="dialog-close-panel dialog-close-icon-container">
+  <button [mat-dialog-close]="false" class="close-icon-btn">
+    <em class="bi bi-x fs-2"></em>
+  </button>
+</div>
+<div class="dialog" data-cy="dialog">
+  Aktuelle ausgewähtlte Statements
+  <atlas-statement-select
+    [(selectedStatements)]="selectedStatements"
+  ></atlas-statement-select>
+  <atlas-spacer [divider]="true"></atlas-spacer>
+  <atlas-table
+    (buttonClickEvent)="addStatement($event)"
+    (editElementEvent)="addStatement($event)"
+    (tableChanged)="getAdditionalStatements($event)"
+    (tableInitialized)="getAdditionalStatements($event)"
+    [tableColumns]="tableColumns"
+    [tableData]="statements"
+    [totalCount]="totalCount$"
+    [tableFilterConfig]="tableFilterConfig"
+    data-cy="tthTable"
+  ></atlas-table>
+  <mat-dialog-actions class="justify-content-end">
+    <button
+      (click)="cancel()"
+      class="atlas-primary-btn me-3"
+      data-cy="dialog-cancel-button"
+    >
+      {{ data.cancelText ?? 'DIALOG.CANCEL' | translate }}
+    </button>
+    <button
+      (click)="confirm()"
+      class="atlas-primary-btn primary-color-btn"
+      data-cy="dialog-confirm-button"
+    >
+      {{ data.confirmText ?? 'DIALOG.OK' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -5,7 +5,6 @@ import { AtlasFieldLengthValidator } from '../../../../core/validation/field-len
 import { WhitespaceValidator } from '../../../../core/validation/whitespace/whitespace-validator';
 import moment, { Moment } from 'moment/moment';
 import { TthDossier } from '../../../../api/model/tthDossier';
-import { SelectedStatements } from '../statement-select/statement-select.component';
 
 export interface DossierDetailFormGroup {
   id: FormControl<number | null | undefined>;
@@ -56,10 +55,7 @@ export class DossierFormGroupBuilder {
     });
   }
 
-  static getDossier(
-    form: FormGroup<DossierDetailFormGroup>,
-    selectedStatements: SelectedStatements
-  ): TthDossier {
+  static getDossier(form: FormGroup<DossierDetailFormGroup>): TthDossier {
     const dossier: TthDossier = {
       id: form.controls.id.value!,
       statementIds: form.controls.statementIds.value!,

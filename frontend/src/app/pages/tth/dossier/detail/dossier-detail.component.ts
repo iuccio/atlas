@@ -1,4 +1,4 @@
-import { Component, inject, model, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { DetailFormComponent } from '../../../../core/leave-guard/leave-dirty-form-guard.service';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,10 +27,10 @@ import { DossierInternalService } from '../../../../api/service/workflow/dossier
 import { catchError, EMPTY } from 'rxjs';
 import { NotificationService } from '../../../../core/notification/notification.service';
 import { toNumberArrayStrict } from '../../../../core/util/arrays';
-import {
-  SelectedStatements,
-  StatementSelectComponent,
-} from '../statement-select/statement-select.component';
+import { StatementSelectComponent } from '../statement-select/statement-select.component';
+import { StatementSelectDialogService } from '../statement-select/dialog/statement-select-dialog.service';
+import { SwissCanton } from '../../../../api';
+import { TimetableHearingStatementInternalService } from '../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 
 @Component({
   selector: 'atlas-dossier-detail',
@@ -56,25 +56,32 @@ import {
 export class DossierDetailComponent
   implements DetailFormComponent, DetailWithCancelEdit, OnInit
 {
-  readonly activatedRoute = inject(ActivatedRoute);
-  readonly router = inject(Router);
-  readonly detailHelperService = inject(DetailDialogHelperService);
-  readonly dossierInternalService = inject(DossierInternalService);
-  readonly notificationService = inject(NotificationService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly detailHelperService = inject(DetailDialogHelperService);
+  private readonly dossierInternalService = inject(DossierInternalService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly statementSelectDialogService = inject(
+    StatementSelectDialogService
+  );
+  private readonly timetableHearingStatementInternalService = inject(
+    TimetableHearingStatementInternalService
+  );
 
   form!: FormGroup<DossierDetailFormGroup>;
   isNew = false;
+  swissCanton!: SwissCanton;
+  timetableHearingYear!: number;
 
-  private _selectedStatements!: SelectedStatements;
+  private _selectedStatements!: number[];
 
-  get selectedStatements(): SelectedStatements {
+  get selectedStatements(): number[] {
     return this._selectedStatements;
   }
 
-  set selectedStatements(value: SelectedStatements) {
+  set selectedStatements(value: number[]) {
     this._selectedStatements = value;
-    this.form.controls.statementIds.setValue(value.statementIds);
-    this.form.controls.swissCanton.setValue(value.swissCanton);
+    this.form.controls.statementIds.setValue(value);
   }
 
   ngOnInit() {
@@ -83,13 +90,26 @@ export class DossierDetailComponent
     this.form = DossierFormGroupBuilder.buildFormGroup(dossier);
     if (dossier) {
       this.isNew = false;
+      this.form.disable();
     } else {
       this.isNew = true;
-      const statementIds: number[] = toNumberArrayStrict(
+
+      this.selectedStatements = toNumberArrayStrict(
         this.activatedRoute.snapshot.queryParams?.statementIds
       );
-      this.selectedStatements = { statementIds: statementIds };
     }
+
+    this.loadCantonAndYear();
+  }
+
+  private loadCantonAndYear() {
+    this.timetableHearingStatementInternalService
+      .getStatement(this.selectedStatements[0])
+      .subscribe((statement) => {
+        this.swissCanton = statement.swissCanton;
+        this.form.controls.swissCanton.setValue(this.swissCanton);
+        this.timetableHearingYear = statement.timetableYear!;
+      });
   }
 
   toggleEdit() {
@@ -101,16 +121,13 @@ export class DossierDetailComponent
   }
 
   back() {
-    this.router.navigate(['..'], { relativeTo: this.activatedRoute }).then();
+    this.router.navigate(['../..'], { relativeTo: this.activatedRoute }).then();
   }
 
   save() {
     ValidationService.validateForm(this.form);
     if (this.form.valid) {
-      const dossier = DossierFormGroupBuilder.getDossier(
-        this.form,
-        this.selectedStatements
-      );
+      const dossier = DossierFormGroupBuilder.getDossier(this.form);
       this.form.disable();
       if (this.isNew) {
         this.createDossier(dossier);
@@ -129,7 +146,10 @@ export class DossierDetailComponent
           'TTH.DOSSIER.NOTIFICATION.ADD_SUCCESS'
         );
         this.router
-          .navigate(['..', dossier.id], { relativeTo: this.activatedRoute })
+          .navigate(['..', dossier.id], {
+            relativeTo: this.activatedRoute,
+            queryParams: {},
+          })
           .then(() => this.ngOnInit());
       });
   }
@@ -139,5 +159,15 @@ export class DossierDetailComponent
       this.form.enable();
       return EMPTY;
     };
+  }
+
+  openAddStatementsDialog() {
+    this.statementSelectDialogService
+      .select(
+        this.selectedStatements,
+        this.swissCanton,
+        this.timetableHearingYear
+      )
+      .subscribe((selected) => (this.selectedStatements = selected));
   }
 }
