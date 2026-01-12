@@ -1,11 +1,14 @@
 import {
+  ChangeDetectorRef,
   Component,
   contentChild,
   EventEmitter,
+  inject,
   Input,
   OnInit,
   Output,
   TemplateRef,
+  viewChild,
 } from '@angular/core';
 import {
   MatSort,
@@ -36,6 +39,7 @@ import {
   MatRow,
   MatRowDef,
   MatTable,
+  MatTableModule,
 } from '@angular/material/table';
 import { MouseOverTitleDirective } from './directive/mouse-over-title.directive';
 import { SelectComponent } from '../../form-components/select/select.component';
@@ -74,6 +78,7 @@ import { FormatPipe } from './pipe/format.pipe';
     ShowTitlePipe,
     FormatPipe,
     NgTemplateOutlet,
+    MatTableModule,
   ],
   providers: [TranslatePipe],
 })
@@ -100,6 +105,8 @@ export class TableComponent<DATATYPE> implements OnInit {
   isLoading = true;
 
   customCell = contentChild(TemplateRef);
+  table = viewChild<MatTable<DATATYPE>>(MatTable);
+  changeDetectorRef = inject(ChangeDetectorRef);
 
   constructor(private readonly tableService: TableService) {}
 
@@ -113,6 +120,8 @@ export class TableComponent<DATATYPE> implements OnInit {
   set tableData(data: DATATYPE[]) {
     this._tableData = data;
     this.isLoading = false;
+    this.changeDetectorRef.detectChanges();
+    console.log('set table data', data);
   }
 
   get pageSize(): number {

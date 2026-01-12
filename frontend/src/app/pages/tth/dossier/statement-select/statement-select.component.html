@@ -1,10 +1,17 @@
-<atlas-table
-  (buttonClickEvent)="removeStatement($event)"
-  (editElementEvent)="goToStatement($event)"
-  [tableColumns]="tableColumns"
-  [tableData]="statements"
-  [sortingDisabled]="true"
-  [showTableFilter]="false"
-  [showPaginator]="false"
-  data-cy="tthTable"
-></atlas-table>
+<div class="font-bold-xl">
+  {{ 'TTH.DOSSIER.STATEMENTS' | translate }}: {{ statements.length }}
+</div>
+@if (statements.length > 0) {
+  <atlas-table
+    (buttonClickEvent)="removeStatement($event)"
+    (editElementEvent)="goToStatement($event)"
+    [tableColumns]="tableColumns"
+    [tableData]="statements"
+    [sortingDisabled]="true"
+    [showTableFilter]="false"
+    [showPaginator]="false"
+    data-cy="tthTable"
+  ></atlas-table>
+} @else {
+  {{ 'TTH.DOSSIER.NO_STATEMENTS' | translate }}
+}

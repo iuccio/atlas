@@ -1,7 +1,13 @@
-import { Component, inject, model, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  effect,
+  inject,
+  model,
+  viewChild,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  SwissCanton,
   TimetableHearingStatementDocument,
   TimetableHearingStatementV2,
 } from '../../../../api';
@@ -11,20 +17,16 @@ import { TableColumn } from '../../../../core/components/table/table-column';
 import { Router } from '@angular/router';
 import { Pages } from '../../../pages';
 import { Cantons } from '../../../../core/cantons/Cantons';
-
-export interface SelectedStatements {
-  swissCanton?: SwissCanton;
-  statementIds: number[];
-}
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'atlas-statement-select',
-  imports: [FormsModule, ReactiveFormsModule, TableComponent],
+  imports: [FormsModule, ReactiveFormsModule, TableComponent, TranslatePipe],
   templateUrl: './statement-select.component.html',
   styleUrls: ['./statement-select.component.scss'],
 })
-export class StatementSelectComponent implements OnInit {
-  selectedStatements = model.required<SelectedStatements>();
+export class StatementSelectComponent {
+  selectedStatements = model.required<number[]>();
 
   private readonly timetableHearingStatementInternalService = inject(
     TimetableHearingStatementInternalService
@@ -55,45 +57,38 @@ export class StatementSelectComponent implements OnInit {
         callback: this.isDocumentExisting,
       },
     },
+    {
+      headerTitle: '',
+      value: 'etagVersion',
+      disabled: true,
+      button: {
+        icon: 'bi bi-trash',
+        clickCallback: this.removeStatement,
+        applicationType: 'TIMETABLE_HEARING',
+        buttonDataCy: 'duplicate-hearing',
+        title: 'TTH.BUTTON.DUPLICATE',
+        buttonType: 'icon',
+        disabled: false,
+      },
+    },
   ];
   statements: TimetableHearingStatementV2[] = [];
+
+  constructor() {
+    effect(() => {
+      this.loadStatementsToTable();
+    });
+  }
 
   isDocumentExisting(documents: Array<TimetableHearingStatementDocument>) {
     return documents.length > 0;
   }
 
-  ngOnInit() {
-    this.loadSwissCanton();
-    this.selectedStatements.subscribe(() => {
-      console.log('selectedStatements changed', this.selectedStatements());
-      this.getOverview();
-    });
-  }
-
-  private loadSwissCanton() {
-    if (
-      !this.selectedStatements()?.swissCanton &&
-      this.selectedStatements()?.statementIds.length > 0
-    ) {
-      this.timetableHearingStatementInternalService
-        .getStatement(this.selectedStatements().statementIds[0]!)
-        .subscribe((statement) => {
-          this.selectedStatements.set({
-            statementIds: this.selectedStatements().statementIds,
-            swissCanton: statement.swissCanton,
-          });
-        });
-    }
-  }
-
   removeStatement(statement: TimetableHearingStatementV2) {
-    const updatedStatementIds = this.selectedStatements().statementIds.filter(
+    const updatedStatementIds = this.selectedStatements().filter(
       (id) => id !== statement.id
     );
-    this.selectedStatements.set({
-      statementIds: updatedStatementIds,
-      swissCanton: this.selectedStatements().swissCanton,
-    });
+    this.selectedStatements.set(updatedStatementIds);
   }
 
   goToStatement(statement: TimetableHearingStatementV2) {
@@ -107,9 +102,9 @@ export class StatementSelectComponent implements OnInit {
       .then();
   }
 
-  getOverview() {
+  loadStatementsToTable() {
     const loadedStatements: TimetableHearingStatementV2[] = [];
-    this.selectedStatements().statementIds.forEach((id) => {
+    this.selectedStatements().forEach((id) => {
       this.timetableHearingStatementInternalService
         .getStatement(id)
         .subscribe((statement) => {
@@ -117,6 +112,6 @@ export class StatementSelectComponent implements OnInit {
         });
     });
     this.statements = loadedStatements;
-    console.log('loaded statements for table', this.statements);
+    console.log('loaded statements in table:', this.statements);
   }
 }
