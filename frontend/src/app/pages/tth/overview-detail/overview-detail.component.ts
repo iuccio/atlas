@@ -255,7 +255,7 @@ export class OverviewDetailComponent implements OnInit {
       .then();
   }
 
-  downloadCsv() {
+  downloadCsv(anonymizedExport: boolean): void {
     this.timetableHearingStatementsService
       .getStatementsAsCsv(
         this.translateService.currentLang,
@@ -271,7 +271,8 @@ export class OverviewDetailComponent implements OnInit {
           .filter(
             (numberOrUndefined): numberOrUndefined is number =>
               !!numberOrUndefined
-          )
+          ),
+        anonymizedExport
       )
       .subscribe((response) =>
         FileDownloadService.downloadFile('statements.csv', response)
@@ -297,7 +298,7 @@ export class OverviewDetailComponent implements OnInit {
       .pipe()
       .subscribe((result: { isAnonymized: boolean }) => {
         if (result != null) {
-          this.downloadCsv();
+          this.downloadCsv(result.isAnonymized);
         }
       });
   }

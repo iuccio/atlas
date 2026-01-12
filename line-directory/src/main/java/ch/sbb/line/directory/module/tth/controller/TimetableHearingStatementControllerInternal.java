@@ -80,7 +80,8 @@ public class TimetableHearingStatementControllerInternal implements TimetableHea
     Container<TimetableHearingStatementModelV2> statements = getStatements(Pageable.unpaged(), statementRequestParams);
     File csvFile = timetableHearingStatementExportService.getStatementsAsCsv(
         statements.getObjects(),
-        Locale.forLanguageTag(language)
+        Locale.forLanguageTag(language),
+        statementRequestParams.isAnonymized()
     );
 
     try {
