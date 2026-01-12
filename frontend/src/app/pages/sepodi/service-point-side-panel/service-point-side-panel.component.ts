@@ -15,9 +15,9 @@ import { Countries } from '../../../core/country/Countries';
 import { DetailPageContainerComponent } from '../../../core/components/detail-page-container/detail-page-container.component';
 import { DateRangeTextComponent } from '../../../core/versioning/date-range-text/date-range-text.component';
 import { MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
-
 import { SplitServicePointNumberPipe } from '../../../core/search-service-point/split-service-point-number.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
+import { SloidContainerComponent } from '../../../core/sloid-container/sloid-container.component';
 
 export const TABS = [
   {
@@ -61,6 +61,7 @@ export const FOREIGN_TABS = TABS.filter((i) =>
     RouterOutlet,
     SplitServicePointNumberPipe,
     TranslatePipe,
+    SloidContainerComponent,
   ],
 })
 export class ServicePointSidePanelComponent implements OnInit, OnDestroy {

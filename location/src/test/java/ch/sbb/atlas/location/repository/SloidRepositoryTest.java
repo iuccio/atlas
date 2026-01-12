@@ -9,7 +9,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ch.sbb.atlas.api.location.SloidLocationModel;
 import ch.sbb.atlas.api.location.SloidType;
+import ch.sbb.atlas.location.model.SloidLocation;
 import ch.sbb.atlas.servicepoint.Country;
 import java.util.HashSet;
 import java.util.List;
@@ -185,6 +187,18 @@ class SloidRepositoryTest {
     verify(jdbcTemplate, times(1)).batchUpdate(
         eq("insert into allocated_sloid (sloid, sloidtype) values (?, ?);"),
         any(BatchPreparedStatementSetter.class));
+  }
+
+  @Test
+  void shouldGetloids() {
+    // given
+    when(locationJdbcTemplate.query(eq("select sloid, sloidtype from allocated_sloid where sloid = :sloid;"),
+        argThat((ArgumentMatcher<MapSqlParameterSource>) map -> "ch:1:sloid:1".equals(map.getValue("sloid"))),
+        any(RowMapper.class))).thenReturn(List.of(new SloidLocationModel("ch:1:sloid:1", SloidType.PLATFORM)));
+    // when
+    List<SloidLocation> sloid = sloidRepository.getSloid("ch:1:sloid:1");
+    // then
+    assertThat(sloid).hasSize(1);
   }
 
 }

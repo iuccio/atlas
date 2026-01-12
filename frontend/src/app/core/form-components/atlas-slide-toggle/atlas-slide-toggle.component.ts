@@ -8,17 +8,17 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'atlas-slide-toggle',
   templateUrl: './atlas-slide-toggle.component.html',
   styleUrls: ['./atlas-slide-toggle.component.scss'],
-  imports: [NgClass],
+  imports: [],
 })
 export class AtlasSlideToggleComponent implements OnInit, OnChanges {
   @Input() toggle = false;
   @Input() disabled = false;
+  @Input() slideTrackNeutral = false;
 
   @Input() formGroup?: FormGroup;
   @Input() controlName?: string;

@@ -25,11 +25,11 @@ import { MapComponent } from '../map/map.component';
   templateUrl: './sepodi-mapview.component.html',
   styleUrls: ['./sepodi-mapview.component.scss'],
   imports: [
-    SearchServicePointPanelComponent,
     AtlasButtonComponent,
     NgClass,
     RouterOutlet,
     MapComponent,
+    SearchServicePointPanelComponent,
   ],
 })
 export class SepodiMapviewComponent
