@@ -30,9 +30,16 @@ public class TimetableHearingStatementExportService {
   private final MessageSource timetableHearingStatementCsvTranslations;
   private final UserAdministrationClient userAdministrationClient;
 
-  public File getStatementsAsCsv(List<TimetableHearingStatementModelV2> statements, Locale locale) {
-    List<TimetableHearingStatementCsvModel> csvData = statements.stream().map(TimetableHearingStatementCsvModel::fromModel)
-        .toList();
+  public File getStatementsAsCsv(List<TimetableHearingStatementModelV2> statements, Locale locale, boolean anonymized) {
+    List<TimetableHearingStatementCsvModel> csvData;
+
+    if (!anonymized) {
+      csvData = statements.stream().map(TimetableHearingStatementCsvModel::fromModel)
+          .toList();
+    } else {
+      csvData = statements.stream().map(TimetableHearingStatementCsvModel::fromModelAnonymized)
+          .toList();
+    }
 
     Set<String> exportedEditors = csvData.stream().map(TimetableHearingStatementCsvModel::getEditor).collect(Collectors.toSet());
     if (!exportedEditors.isEmpty()) {

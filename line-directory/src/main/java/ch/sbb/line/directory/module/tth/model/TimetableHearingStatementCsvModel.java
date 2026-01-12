@@ -20,8 +20,9 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"cantonAbbreviation", "timetableFieldNumber", "timetableFieldNumberDescription", "stopPlace",
     "timetabeHearingStatementId", "transportCompanyAbbreviations", "transportCompanyDescriptions", "statement",
-    "documentsPresent", "status", "justification", "firstName", "lastName", "organisation",
-    "street", "zipAndCity", "emails", "editor", "editionDate", "timetableHearingYear"})
+    "documentsPresent", "status", "firstName", "lastName", "organisation",
+    "street", "zipAndCity", "emails", "editor", "editionDate", "tim etableHearingYear", "statementAnonymous",
+    "anonymousStatement", "publicComment", "internalComment", "cantonTransferComment", "topic"})
 public class TimetableHearingStatementCsvModel {
 
   private String cantonAbbreviation;
@@ -34,7 +35,6 @@ public class TimetableHearingStatementCsvModel {
   private String statement;
   private Boolean documentsPresent;
   private StatementStatus status;
-  private String justification;
   private String firstName;
   private String lastName;
   private String organisation;
@@ -44,6 +44,13 @@ public class TimetableHearingStatementCsvModel {
   private String editor;
   private LocalDateTime editionDate;
   private Long timetableHearingYear;
+
+  private Boolean statementAnonymous;
+  private String anonymousStatement;
+  private String publicComment;
+  private String internalComment;
+  private String cantonTransferComment;
+  private String topic;
 
   public static TimetableHearingStatementCsvModel fromModel(TimetableHearingStatementModelV2 timetableHearingStatementModel) {
 
@@ -65,7 +72,6 @@ public class TimetableHearingStatementCsvModel {
         .statement(timetableHearingStatementModel.getStatement())
         .documentsPresent(!timetableHearingStatementModel.getDocuments().isEmpty())
         .status(timetableHearingStatementModel.getStatementStatus())
-        .justification(timetableHearingStatementModel.getPublicComment())
         .firstName(timetableHearingStatementModel.getStatementSender().getFirstName())
         .lastName(timetableHearingStatementModel.getStatementSender().getLastName())
         .organisation(timetableHearingStatementModel.getStatementSender().getOrganisation())
@@ -77,7 +83,49 @@ public class TimetableHearingStatementCsvModel {
         .editor(timetableHearingStatementModel.getEditor())
         .editionDate(timetableHearingStatementModel.getEditionDate())
         .timetableHearingYear(timetableHearingStatementModel.getTimetableYear())
+
+        .statementAnonymous(timetableHearingStatementModel.isStatementAnonymous())
+        .anonymousStatement(timetableHearingStatementModel.getAnonymousStatement())
+        .publicComment(timetableHearingStatementModel.getPublicComment())
+        .internalComment(timetableHearingStatementModel.getInternalComment())
+        .cantonTransferComment(timetableHearingStatementModel.getCantonTransferComment())
+        .topic(timetableHearingStatementModel.getTopic())
         .build();
+  }
+
+  public static TimetableHearingStatementCsvModel fromModelAnonymized(
+      TimetableHearingStatementModelV2 timetableHearingStatementModel) {
+    if (timetableHearingStatementModel.isStatementAnonymous()) {
+
+    }
+
+    return TimetableHearingStatementCsvModel.builder()
+        .cantonAbbreviation(timetableHearingStatementModel.getSwissCanton().getAbbreviation())
+        .timetableFieldNumber(timetableHearingStatementModel.getTimetableFieldNumber())
+        .timetableFieldNumberDescription(timetableHearingStatementModel.getTimetableFieldDescription())
+        .stopPlace(timetableHearingStatementModel.getStopPlace())
+        .timetabeHearingStatementId(timetableHearingStatementModel.getId())
+        .transportCompanyAbbreviations(
+            timetableHearingStatementModel.getResponsibleTransportCompanies().stream()
+                .map(TimetableHearingStatementResponsibleTransportCompanyModel::getAbbreviation)
+                .filter(Objects::nonNull)
+                .sorted().collect(Collectors.joining(",")))
+        .transportCompanyDescriptions(timetableHearingStatementModel.getResponsibleTransportCompanies().stream()
+            .map(TimetableHearingStatementResponsibleTransportCompanyModel::getBusinessRegisterName)
+            .filter(Objects::nonNull)
+            .sorted().collect(Collectors.joining(",")))
+        .documentsPresent(!timetableHearingStatementModel.getDocuments().isEmpty())
+        .status(timetableHearingStatementModel.getStatementStatus())
+        .editor(timetableHearingStatementModel.getEditor())
+        .editionDate(timetableHearingStatementModel.getEditionDate())
+        .timetableHearingYear(timetableHearingStatementModel.getTimetableYear())
+
+        //TODO -> if true then statement is anonymized and it should be as well exported
+        .statementAnonymous(timetableHearingStatementModel.isStatementAnonymous())
+        .anonymousStatement(timetableHearingStatementModel.getAnonymousStatement())
+        .topic(timetableHearingStatementModel.getTopic())
+        .build();
+
   }
 
   public static String getZipAndCity(Integer zip, String city) {

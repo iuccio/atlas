@@ -1,14 +1,14 @@
-import {inject, Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {AtlasApiService} from '../atlas-api.service';
-import {UpdateHearingStatementStatus} from '../../model/updateHearingStatementStatus';
-import {UpdateHearingCanton} from '../../model/updateHearingCanton';
-import {ContainerTimetableHearingStatementV2} from '../../model/containerTimetableHearingStatementV2';
-import {SwissCanton} from '../../model/swissCanton';
-import {StatementStatus} from '../../model/statementStatus';
-import {TimetableHearingStatementV2} from '../../model/timetableHearingStatementV2';
-import {TimetableHearingStatementAlternating} from '../../model/timetableHearingStatementAlternating';
-import {TransportCompany} from '../../model/transportCompany';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AtlasApiService } from '../atlas-api.service';
+import { UpdateHearingStatementStatus } from '../../model/updateHearingStatementStatus';
+import { UpdateHearingCanton } from '../../model/updateHearingCanton';
+import { ContainerTimetableHearingStatementV2 } from '../../model/containerTimetableHearingStatementV2';
+import { SwissCanton } from '../../model/swissCanton';
+import { StatementStatus } from '../../model/statementStatus';
+import { TimetableHearingStatementV2 } from '../../model/timetableHearingStatementV2';
+import { TimetableHearingStatementAlternating } from '../../model/timetableHearingStatementAlternating';
+import { TransportCompany } from '../../model/transportCompany';
 
 @Injectable({
   providedIn: 'root',
@@ -47,7 +47,7 @@ export class TimetableHearingStatementInternalService {
 
   public getStatementsAsCsv(
     language: string, timetableHearingYear?: number, canton?: SwissCanton, searchCriterias?: Array<string>,
-    statusRestrictions?: Array<StatementStatus>, ttfnid?: string, transportCompanies?: Array<number>,
+    statusRestrictions?: Array<StatementStatus>, ttfnid?: string, transportCompanies?: Array<number>, anonymized?: boolean,
   ): Observable<Blob> {
     this.atlasApiService.validateParams({ language });
     const httpParams = this.atlasApiService.paramsOf({
@@ -57,6 +57,7 @@ export class TimetableHearingStatementInternalService {
       statusRestrictions,
       ttfnid,
       transportCompanies,
+      anonymized
     });
     return this.atlasApiService.getBlob(`${this.STATEMENTS}/csv/${encodeURIComponent(String(language))}`, httpParams);
   }

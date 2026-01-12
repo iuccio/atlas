@@ -1,4 +1,3 @@
-
 package ch.sbb.atlas.api.timetable.hearing;
 
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
@@ -35,4 +34,6 @@ public class TimetableHearingStatementRequestParams {
 
   @Singular(ignoreNullCollections = true)
   private List<Long> transportCompanies = new ArrayList<>();
+
+  private boolean anonymized;
 }
