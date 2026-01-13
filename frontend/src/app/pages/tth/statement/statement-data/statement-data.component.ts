@@ -23,6 +23,7 @@ import { TimetableHearingStatementInternalService } from '../../../../api/servic
     TransportCompanySelectComponent,
   ],
   templateUrl: './statement-data.component.html',
+  styleUrls: ['./statement-data.component.scss'],
 })
 export class StatementDataComponent {
   form = input.required<FormGroup<StatementDetailFormGroup>>();
