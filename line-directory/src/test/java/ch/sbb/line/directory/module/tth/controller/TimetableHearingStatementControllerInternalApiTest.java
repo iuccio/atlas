@@ -8,8 +8,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -849,7 +847,7 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
   void shouldGetStatementsAsCsv() throws Exception {
     // Given
     String expectedCsvHeader = """
-        Kanton;"Fahrplanfeld-Nr.";Fahrplanfeldbezeichnung;Haltestelle;ID;"Abkürzung Transportunternehmung";"Name Transportunternehmung";Stellungnahme;Anhang;Status;Begründung;Vorname;Nachname;Organisation;Strasse;"PLZ/Ort";"E-Mails";Bearbeiter;"Zuletzt bearbeitet";Fahrplanjahr
+        Kanton;"Fahrplanfeld-Nr.";Fahrplanfeldbezeichnung;Haltestelle;ID;"Abkürzung Transportunternehmung";"Name Transportunternehmung";Stellungnahme;Anhang;Status;Vorname;Nachname;Organisation;Strasse;"PLZ/Ort";"E-Mails";Fahrplanjahr;"Anonyme Stellungnahme";"Anonymisierte Stellungnahme";"Öffentliche Begründung";"Interne Begründung";Thema
         """;
 
     TimetableHearingStatementModelV2 statement = timetableHearingStatementControllerInternal.createStatement(
@@ -873,8 +871,109 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
     String response = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
     assertThat(response).startsWith(CsvExportWriter.UTF_8_BYTE_ORDER_MARK + expectedCsvHeader);
     assertThat(response).contains(statement.getStatement());
+  }
 
-    verify(userAdministrationClient, times(1)).getUserInformation(any());
+  @Test
+  void shouldGetStatementsAsCsvAnonymized() throws Exception {
+    // Given
+    String expectedCsvHeader = """
+        Kanton;"Fahrplanfeld-Nr.";Fahrplanfeldbezeichnung;Haltestelle;ID;"Abkürzung Transportunternehmung";"Name Transportunternehmung";Stellungnahme;Anhang;Status;Vorname;Nachname;Organisation;Strasse;"PLZ/Ort";"E-Mails";Fahrplanjahr;"Anonyme Stellungnahme";"Anonymisierte Stellungnahme";"Öffentliche Begründung";"Interne Begründung";Thema
+        """;
+
+    TimetableHearingStatementModelV2 statement = timetableHearingStatementControllerInternal.createStatement(
+        TimetableHearingStatementModelV2.builder()
+            .timetableYear(TIMETABLE_HEARING_YEAR.getTimetableYear())
+            .swissCanton(SwissCanton.BERN)
+            .statementSender(TimetableHearingStatementSenderModelV2.builder()
+                .firstName("Fabienne")
+                .lastName("Mueller")
+                .zip(3001)
+                .city("Bern")
+                .street("Musterstrasse 1")
+                .organisation("SBB")
+                .emails(Set.of("fabienne.mueller@sbb.ch", "flo.mueller@sbb.ch"))
+                .build())
+            .statement("Ich hätte gerne mehrere Verbindungen am Abend.")
+            .anonymousStatement("Anonyme Stellungnahme")
+            .statementAnonymous(false)
+            .internalComment("Einfach eine interne Begründung")
+            .publicComment("Einfach eine öffentliche Begründung")
+            .build(),
+        Collections.emptyList());
+
+    // When
+    MvcResult mvcResult = mvc.perform(
+            get("/internal/timetable-hearing/statements/csv/de?timetableHearingYear=" + statement.getTimetableYear() +
+                "&anonymized=true"))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    // Then
+    String response = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+    assertThat(response).startsWith(CsvExportWriter.UTF_8_BYTE_ORDER_MARK + expectedCsvHeader);
+    assertThat(response).contains(statement.getAnonymousStatement());
+    assertThat(response).doesNotContain(statement.getStatement());
+    assertThat(response).doesNotContain("fabienne.mueller@sbb.ch");
+    assertThat(response).doesNotContain("flo.mueller@sbb.ch");
+    assertThat(response).doesNotContain("Fabienne");
+    assertThat(response).doesNotContain("Mueller");
+    assertThat(response).doesNotContain("3001");
+    assertThat(response).doesNotContain("Bern");
+    assertThat(response).doesNotContain("Musterstrasse 1");
+    assertThat(response).doesNotContain("SBB");
+    assertThat(response).doesNotContain("Einfach eine interne Begründung");
+    assertThat(response).doesNotContain("Einfach eine öffentliche Begründung");
+  }
+
+  @Test
+  void shouldGetStatementsAsCsvAnonymizedByBoolean() throws Exception {
+    // Given
+    String expectedCsvHeader = """
+        Kanton;"Fahrplanfeld-Nr.";Fahrplanfeldbezeichnung;Haltestelle;ID;"Abkürzung Transportunternehmung";"Name Transportunternehmung";Stellungnahme;Anhang;Status;Vorname;Nachname;Organisation;Strasse;"PLZ/Ort";"E-Mails";Fahrplanjahr;"Anonyme Stellungnahme";"Anonymisierte Stellungnahme";"Öffentliche Begründung";"Interne Begründung";Thema
+        """;
+
+    TimetableHearingStatementModelV2 statement = timetableHearingStatementControllerInternal.createStatement(
+        TimetableHearingStatementModelV2.builder()
+            .timetableYear(TIMETABLE_HEARING_YEAR.getTimetableYear())
+            .swissCanton(SwissCanton.BERN)
+            .statementSender(TimetableHearingStatementSenderModelV2.builder()
+                .firstName("Fabienne")
+                .lastName("Mueller")
+                .zip(3001)
+                .city("Bern")
+                .street("Musterstrasse 1")
+                .organisation("SBB")
+                .emails(Set.of("fabienne.mueller@sbb.ch", "flo.mueller@sbb.ch"))
+                .build())
+            .statement("Ich hätte gerne mehrere Verbindungen am Abend.")
+            .statementAnonymous(true)
+            .internalComment("Einfach eine interne Begründung")
+            .publicComment("Einfach eine öffentliche Begründung")
+            .build(),
+        Collections.emptyList());
+
+    // When
+    MvcResult mvcResult = mvc.perform(
+            get("/internal/timetable-hearing/statements/csv/de?timetableHearingYear=" + statement.getTimetableYear() +
+                "&anonymized=true"))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    // Then
+    String response = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+    assertThat(response).startsWith(CsvExportWriter.UTF_8_BYTE_ORDER_MARK + expectedCsvHeader);
+    assertThat(statement.isStatementAnonymous()).isTrue();
+    assertThat(response).contains(statement.getStatement());
+    assertThat(response).doesNotContain("fabienne.mueller@sbb.ch");
+    assertThat(response).doesNotContain("flo.mueller@sbb.ch");
+    assertThat(response).doesNotContain("Fabienne");
+    assertThat(response).doesNotContain("Mueller");
+    assertThat(response).doesNotContain("3001");
+    assertThat(response).doesNotContain("Bern");
+    assertThat(response).doesNotContain("Musterstrasse 1");
+    assertThat(response).doesNotContain("SBB");
+    assertThat(response).doesNotContain("Einfach eine interne Begründung");
+    assertThat(response).doesNotContain("Einfach eine öffentliche Begründung");
   }
 
   @Test
