@@ -1,11 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  effect,
-  inject,
-  model,
-  viewChild,
-} from '@angular/core';
+import { Component, effect, inject, model } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TimetableHearingStatementDocument,
@@ -18,6 +11,7 @@ import { Router } from '@angular/router';
 import { Pages } from '../../../pages';
 import { Cantons } from '../../../../core/cantons/Cantons';
 import { TranslatePipe } from '@ngx-translate/core';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'atlas-statement-select',
@@ -103,15 +97,12 @@ export class StatementSelectComponent {
   }
 
   loadStatementsToTable() {
-    const loadedStatements: TimetableHearingStatementV2[] = [];
-    this.selectedStatements().forEach((id) => {
-      this.timetableHearingStatementInternalService
-        .getStatement(id)
-        .subscribe((statement) => {
-          loadedStatements.push(statement);
-        });
+    forkJoin(
+      this.selectedStatements().map((id) =>
+        this.timetableHearingStatementInternalService.getStatement(id)
+      )
+    ).subscribe((statements) => {
+      this.statements = statements;
     });
-    this.statements = loadedStatements;
-    console.log('loaded statements in table:', this.statements);
   }
 }

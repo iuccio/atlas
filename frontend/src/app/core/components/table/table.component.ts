@@ -1,14 +1,11 @@
 import {
-  ChangeDetectorRef,
   Component,
   contentChild,
   EventEmitter,
-  inject,
   Input,
   OnInit,
   Output,
   TemplateRef,
-  viewChild,
 } from '@angular/core';
 import {
   MatSort,
@@ -105,8 +102,6 @@ export class TableComponent<DATATYPE> implements OnInit {
   isLoading = true;
 
   customCell = contentChild(TemplateRef);
-  table = viewChild<MatTable<DATATYPE>>(MatTable);
-  changeDetectorRef = inject(ChangeDetectorRef);
 
   constructor(private readonly tableService: TableService) {}
 
@@ -120,8 +115,6 @@ export class TableComponent<DATATYPE> implements OnInit {
   set tableData(data: DATATYPE[]) {
     this._tableData = data;
     this.isLoading = false;
-    this.changeDetectorRef.detectChanges();
-    console.log('set table data', data);
   }
 
   get pageSize(): number {
