@@ -94,16 +94,5 @@ class TimetableFieldNumberControllerInternalApiTest extends BaseControllerApiTes
         .andExpect(jsonPath("$.message")
             .value("Supplied sort field nam not found on TimetableFieldNumber"));
   }
-
-  @Test
-  void shouldCallMergeAllVersionsOnEndpointTrigger() throws Exception {
-    // given
-    Mockito.doNothing().when(timetableFieldNumberService).mergeAllVersions();
-
-    // when & then
-    mvc.perform(post("/internal/field-numbers/merge-all-versions"))
-        .andExpect(status().isOk());
-
-    Mockito.verify(timetableFieldNumberService).mergeAllVersions();
-  }
+  
 }
