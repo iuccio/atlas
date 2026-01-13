@@ -3,9 +3,10 @@ package ch.sbb.line.directory.module.tth.controller;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingYearApiInternal;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingYearModel;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
+import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.mapper.TimeTableHearingYearMapper;
 import ch.sbb.line.directory.module.tth.model.TimetableHearingYearSearchRestrictions;
-import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
+import ch.sbb.line.directory.module.tth.service.TimetableHearingStatementService;
 import ch.sbb.line.directory.module.tth.service.TimetableHearingYearService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TimetableHearingYearControllerInternal implements TimetableHearingYearApiInternal {
 
   private final TimetableHearingYearService timetableHearingYearService;
+  private final TimetableHearingStatementService timetableHearingStatementService;
 
   @Override
   public List<TimetableHearingYearModel> getHearingYears(List<HearingStatus> statusChoices) {
@@ -59,7 +61,15 @@ public class TimetableHearingYearControllerInternal implements TimetableHearingY
   @Override
   public TimetableHearingYearModel closeTimetableHearing(Long year) {
     TimetableHearingYear hearingYear = timetableHearingYearService.getHearingYear(year);
+    timetableHearingYearService.mayTransitionToHearingStatus(hearingYear, HearingStatus.ARCHIVED);
+    timetableHearingStatementService.deleteSpamMailFromYear(year);
+
+    // status step in transaction
+    timetableHearingYearService.transitionStatusAccordingDossier();
+
+    // move step in transaction
     TimetableHearingYear closedHearing = timetableHearingYearService.closeTimetableHearing(hearingYear);
+
     return TimeTableHearingYearMapper.toModel(closedHearing);
   }
 }

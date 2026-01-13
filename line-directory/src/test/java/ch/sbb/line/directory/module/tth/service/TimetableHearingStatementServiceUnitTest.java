@@ -9,6 +9,7 @@ import ch.sbb.line.directory.module.tth.mapper.ResponsibleTransportCompanyMapper
 import ch.sbb.line.directory.module.tth.mapper.TimetableHearingStatementMapperV2;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingStatementRepository;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingYearRepository;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -58,4 +59,11 @@ class TimetableHearingStatementServiceUnitTest {
     verify(timetableHearingStatementRepositoryMock).deleteByStatementStatusAndTimetableYear(StatementStatus.JUNK, year);
   }
 
+  @Test
+  void shouldCallRepositoryOnUpdateStatementsToReceived() {
+    // when
+    timetableHearingStatementService.updateStatementsToReceived(List.of(1L, 2L, 3L));
+    // then
+    verify(timetableHearingStatementRepositoryMock).updateStatementStatusByIds(List.of(1L, 2L, 3L), StatementStatus.RECEIVED);
+  }
 }

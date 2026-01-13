@@ -1,7 +1,9 @@
 package ch.sbb.line.directory.module.tth.service;
 
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
+import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
+import ch.sbb.line.directory.module.tth.client.WorkflowClient;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.exception.HearingCurrentlyActiveException;
 import ch.sbb.line.directory.module.tth.exception.NoHearingCurrentlyActiveException;
@@ -16,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class TimetableHearingYearService {
 
   private final TimetableHearingYearRepository timetableHearingYearRepository;
   private final TimetableHearingStatementService timetableHearingStatementService;
+  private final WorkflowClient workflowClient;
 
   public List<TimetableHearingYear> getHearingYears(TimetableHearingYearSearchRestrictions searchRestrictions) {
     return timetableHearingYearRepository.findAll(searchRestrictions.getSpecification());
@@ -40,6 +42,7 @@ public class TimetableHearingYearService {
     return timetableHearingYearRepository.findById(year).orElseThrow(() -> new IdNotFoundException(year));
   }
 
+  @Transactional
   public TimetableHearingYear createTimetableHearing(TimetableHearingYear timetableHearingYear) {
     timetableHearingYear.setHearingStatus(HearingStatus.PLANNED);
     timetableHearingYear.setStatementCreatableExternal(true);
@@ -48,6 +51,7 @@ public class TimetableHearingYearService {
     return timetableHearingYearRepository.save(timetableHearingYear);
   }
 
+  @Transactional
   public TimetableHearingYear startTimetableHearing(TimetableHearingYear timetableHearingYear) {
     mayTransitionToHearingStatus(timetableHearingYear, HearingStatus.ACTIVE);
 
@@ -58,6 +62,7 @@ public class TimetableHearingYearService {
     return timetableHearingYearRepository.save(timetableHearingYear);
   }
 
+  @Transactional
   public TimetableHearingYear updateTimetableHearingSettings(Long year, TimetableHearingYear timetableHearingYear) {
     TimetableHearingYear hearingYear = getHearingYear(year);
     hearingYear.setStatementEditable(timetableHearingYear.isStatementEditable());
@@ -66,22 +71,33 @@ public class TimetableHearingYearService {
     return hearingYear;
   }
 
+  @Transactional
+  public void transitionStatusAccordingDossier() {
+    // request statement ids
+    List<Long> statementIdsFromStatus = workflowClient.getStatementIdsFromStatus(
+        List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK)
+    );
+
+    // update statements to status received (bulk)
+    timetableHearingStatementService.updateStatementsToReceived(statementIdsFromStatus);
+
+    // call patch endpoint
+    workflowClient.patchDossierStatusClosingYear();
+  }
+
+  @Transactional
   public TimetableHearingYear closeTimetableHearing(TimetableHearingYear timetableHearingYear) {
-    mayTransitionToHearingStatus(timetableHearingYear, HearingStatus.ARCHIVED);
-
-    timetableHearingStatementService.deleteSpamMailFromYear(timetableHearingYear.getTimetableYear());
-
     timetableHearingStatementService.moveClosedStatementsToNextYearWithStatusUpdates(timetableHearingYear.getTimetableYear());
 
     timetableHearingYear.setStatementCreatableInternal(false);
     timetableHearingYear.setStatementCreatableExternal(false);
     timetableHearingYear.setStatementEditable(false);
-
     timetableHearingYear.setHearingStatus(HearingStatus.ARCHIVED);
+
     return timetableHearingYearRepository.save(timetableHearingYear);
   }
 
-  private void mayTransitionToHearingStatus(TimetableHearingYear timetableHearingYear, HearingStatus hearingStatus) {
+  public void mayTransitionToHearingStatus(TimetableHearingYear timetableHearingYear, HearingStatus hearingStatus) {
     if (hearingStatus == HearingStatus.ACTIVE) {
       if (timetableHearingYearRepository.hearingActive()) {
         throw new HearingCurrentlyActiveException();
