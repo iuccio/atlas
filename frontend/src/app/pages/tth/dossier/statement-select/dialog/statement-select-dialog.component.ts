@@ -43,6 +43,7 @@ import { Pages } from '../../../../pages';
 })
 export class StatementSelectDialogComponent implements OnInit {
   data = inject<StatementSelectData>(MAT_DIALOG_DATA);
+  selectedStatements: number[] = [];
 
   private readonly dialogRef =
     inject<MatDialogRef<StatementSelectDialogComponent>>(MatDialogRef);
@@ -99,6 +100,7 @@ export class StatementSelectDialogComponent implements OnInit {
       },
     },
   ];
+
   mapToLastname(statementSender: TimetableHearingStatementSenderV2) {
     return statementSender.lastName;
   }
@@ -107,7 +109,6 @@ export class StatementSelectDialogComponent implements OnInit {
     return documents.length > 0;
   }
 
-  selectedStatements: number[] = [];
   statements: TimetableHearingStatementV2[] = [];
   totalCount$ = 0;
   tableFilterConfig!: TableFilter<unknown>[][];
@@ -129,6 +130,9 @@ export class StatementSelectDialogComponent implements OnInit {
   }
 
   addStatement(row: TimetableHearingStatementV2) {
+    if (this.selectedStatements.includes(row.id!)) {
+      return;
+    }
     this.selectedStatements = [...this.selectedStatements, row.id!];
   }
 

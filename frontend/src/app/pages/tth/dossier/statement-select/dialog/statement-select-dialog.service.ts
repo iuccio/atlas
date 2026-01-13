@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { StatementSelectDialogComponent } from './statement-select-dialog.component';
 import { DialogData } from '../../../../../core/components/dialog/dialog.data';
 import { SwissCanton } from '../../../../../api';
+import { filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,7 @@ export class StatementSelectDialogService {
       backdropClass: 'atlas-dialog-backdrop',
     });
 
-    return this.dialogRef.afterClosed();
+    return this.dialogRef.afterClosed().pipe(filter((i) => i));
   }
 }
 
