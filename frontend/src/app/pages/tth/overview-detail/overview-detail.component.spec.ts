@@ -32,6 +32,7 @@ import { TimetableHearingStatementInternalService } from '../../../api/service/l
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { TableComponent } from '../../../core/components/table/table.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-tab-heading',
@@ -55,6 +56,8 @@ const mockTimetableHearingStatementsService = jasmine.createSpyObj(
   'TimetableHearingStatementInternalService',
   ['getStatements']
 );
+
+const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
 
 let router: Router;
 
@@ -138,6 +141,7 @@ async function baseTestConfiguration() {
       { provide: TranslatePipe },
       { provide: DisplayDatePipe },
       { provide: PermissionService, useValue: adminPermissionServiceMock },
+      { provide: MatDialog, useValue: dialogSpy },
       TableService,
     ],
   })
@@ -358,6 +362,40 @@ describe('TimetableHearingOverviewDetailComponent', () => {
         { id: 1, fileName: 'Document 1', fileSize: 123 },
       ];
       expect(component.isDocumentExisting(testDocuments)).toBeTrue();
+    });
+
+    it('should open dialog', () => {
+      dialogSpy.open.and.returnValue({
+        afterClosed: () => of(null),
+      } as any);
+
+      component.openTthExportAnonymizationChoiceDialog();
+
+      expect(dialogSpy.open).toHaveBeenCalled();
+    });
+
+    it('should call downloadCsv(true) when dialog returns isAnonymized=true', () => {
+      spyOn(component, 'downloadCsv');
+
+      dialogSpy.open.and.returnValue({
+        afterClosed: () => of({ isAnonymized: true }),
+      } as any);
+
+      component.openTthExportAnonymizationChoiceDialog();
+
+      expect(component.downloadCsv).toHaveBeenCalledOnceWith(true);
+    });
+
+    it('should call downloadCsv(true) when dialog returns isAnonymized=true', () => {
+      spyOn(component, 'downloadCsv');
+
+      dialogSpy.open.and.returnValue({
+        afterClosed: () => of({ isAnonymized: false }),
+      } as any);
+
+      component.openTthExportAnonymizationChoiceDialog();
+
+      expect(component.downloadCsv).toHaveBeenCalledOnceWith(false);
     });
   });
 

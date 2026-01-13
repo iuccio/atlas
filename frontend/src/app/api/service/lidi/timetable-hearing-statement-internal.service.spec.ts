@@ -1,11 +1,11 @@
-import { TestBed } from '@angular/core/testing';
-import { AtlasApiService } from '../atlas-api.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { UserService } from '../../../core/auth/user/user.service';
-import { TimetableHearingStatementInternalService } from './timetable-hearing-statement-internal.service';
-import { UpdateHearingStatementStatus } from '../../model/updateHearingStatementStatus';
-import { UpdateHearingCanton } from '../../model/updateHearingCanton';
-import { TimetableHearingStatementV2 } from '../../model/timetableHearingStatementV2';
+import {TestBed} from '@angular/core/testing';
+import {AtlasApiService} from '../atlas-api.service';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {UserService} from '../../../core/auth/user/user.service';
+import {TimetableHearingStatementInternalService} from './timetable-hearing-statement-internal.service';
+import {UpdateHearingStatementStatus} from '../../model/updateHearingStatementStatus';
+import {UpdateHearingCanton} from '../../model/updateHearingCanton';
+import {TimetableHearingStatementV2} from '../../model/timetableHearingStatementV2';
 import any = jasmine.any;
 
 describe('TimetableHearingStatementInternalService', () => {
@@ -81,7 +81,40 @@ describe('TimetableHearingStatementInternalService', () => {
       statusRestrictions: undefined,
       ttfnid: undefined,
       transportCompanies: undefined,
+      anonymized: undefined,
     });
+    expect(apiService.getBlob).toHaveBeenCalledOnceWith(
+      '/line-directory/internal/timetable-hearing/statements/csv/de',
+      any(HttpParams),
+    );
+  });
+
+  it('should getStatementsAsCsv with anonymized true', () => {
+    service.getStatementsAsCsv(
+      'de',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      true,
+    );
+
+    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+      language: 'de',
+    });
+
+    expect(apiService.paramsOf).toHaveBeenCalledOnceWith({
+      timetableHearingYear: undefined,
+      canton: undefined,
+      searchCriterias: undefined,
+      statusRestrictions: undefined,
+      ttfnid: undefined,
+      transportCompanies: undefined,
+      anonymized: true,
+    });
+
     expect(apiService.getBlob).toHaveBeenCalledOnceWith(
       '/line-directory/internal/timetable-hearing/statements/csv/de',
       any(HttpParams),
