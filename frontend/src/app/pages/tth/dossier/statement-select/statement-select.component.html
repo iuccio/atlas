@@ -1,6 +1,3 @@
-<div class="font-bold-xl">
-  {{ 'TTH.DOSSIER.STATEMENTS' | translate }}: {{ statements.length }}
-</div>
 @if (statements.length > 0) {
   <atlas-table
     (buttonClickEvent)="removeStatement($event)"
@@ -13,5 +10,7 @@
     data-cy="tthTable"
   ></atlas-table>
 } @else {
-  {{ 'TTH.DOSSIER.NO_STATEMENTS' | translate }}
+  <div class="pb-3">
+    {{ 'TTH.DOSSIER.NO_STATEMENTS' | translate }}
+  </div>
 }

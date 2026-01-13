@@ -82,6 +82,7 @@ export class DossierDetailComponent
   set selectedStatements(value: number[]) {
     this._selectedStatements = value;
     this.form.controls.statementIds.setValue(value);
+    this.form.controls.statementIds.markAsDirty();
   }
 
   ngOnInit() {
@@ -90,6 +91,7 @@ export class DossierDetailComponent
     this.form = DossierFormGroupBuilder.buildFormGroup(dossier);
     if (dossier) {
       this.isNew = false;
+      this.selectedStatements = dossier.statementIds;
       this.form.disable();
     } else {
       this.isNew = true;

@@ -45,7 +45,7 @@ export interface Button {
   applicationType: ApplicationType;
   buttonDataCy: string;
   buttonType: AtlasButtonType;
-  disabled: boolean;
+  disabled: (...args: any[]) => any;
 }
 
 export interface Icon {

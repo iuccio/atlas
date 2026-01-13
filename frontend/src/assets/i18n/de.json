@@ -47,6 +47,7 @@
     "REVOKE": "Fehlerfassung",
     "DELETE": "Löschen",
     "CANCEL": "Abbrechen",
+    "APPLY": "Anwenden",
     "NODATAFOUND": "Es wurden keine Daten gefunden.",
     "TYPE_TO_SEARCH": "Tippen Sie mindestens 2 Zeichen ein, um die Suche zu beginnen.",
     "TYPE_TO_SEARCH_SHORT": "Tippen Sie mindestens 2 Zeichen ein...",
@@ -1101,8 +1102,12 @@
       "PUBLIC_COMMENT": "Öffentliche Begründung für Stellungnehmende",
       "COMPLETION": "Abschluss",
       "NO_STATEMENTS": "Es sind keine Stellungnahmen im Dossier enthalten.",
-      "STATEMENTS": "Stellungnahmen",
+      "STATEMENTS": "Stellungnahmen des Dossiers",
       "ADD_STATEMENTS": "Weitere Stellungnahmen zum Dossier hinzufügen",
+      "STATEMENT_SELECT": {
+        "CURRENT_STATEMENTS": "Aktuell ausgewählte Stellungnahmen",
+        "ADDITIONAL_STATEMENTS": "Weitere Stellungnahmen"
+      },
       "NOTIFICATION": {
         "ADD_SUCCESS": "Neues Dossier erfolgreich gespeichert.",
         "EDIT_SUCCESS": "Das Dossier wurde erfolgreich gespeichert."

@@ -1,4 +1,4 @@
-import { Component, effect, inject, model } from '@angular/core';
+import { Component, effect, inject, input, model } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TimetableHearingStatementDocument,
@@ -21,6 +21,7 @@ import { forkJoin } from 'rxjs';
 })
 export class StatementSelectComponent {
   selectedStatements = model.required<number[]>();
+  removeOptionEnabled = input(true);
 
   private readonly timetableHearingStatementInternalService = inject(
     TimetableHearingStatementInternalService
@@ -59,10 +60,10 @@ export class StatementSelectComponent {
         icon: 'bi bi-trash',
         clickCallback: this.removeStatement,
         applicationType: 'TIMETABLE_HEARING',
-        buttonDataCy: 'duplicate-hearing',
-        title: 'TTH.BUTTON.DUPLICATE',
+        buttonDataCy: 'removeStatement',
+        title: 'COMMON.DELETE',
         buttonType: 'icon',
-        disabled: false,
+        disabled: () => !this.removeOptionEnabled(),
       },
     },
   ];
@@ -97,12 +98,16 @@ export class StatementSelectComponent {
   }
 
   loadStatementsToTable() {
-    forkJoin(
-      this.selectedStatements().map((id) =>
-        this.timetableHearingStatementInternalService.getStatement(id)
-      )
-    ).subscribe((statements) => {
-      this.statements = statements;
-    });
+    if (this.selectedStatements().length === 0) {
+      this.statements = [];
+    } else {
+      forkJoin(
+        this.selectedStatements().map((id) =>
+          this.timetableHearingStatementInternalService.getStatement(id)
+        )
+      ).subscribe((statements) => {
+        this.statements = statements;
+      });
+    }
   }
 }

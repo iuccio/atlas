@@ -22,8 +22,8 @@ export class StatementSelectDialogService {
     const selectStatementsData: StatementSelectData = {
       title: 'TTH.DIALOG.STATUS_CHANGE',
       message: 'TTH.DIALOG.STATUS_CHANGE',
-      cancelText: 'TTH.DIALOG.BACK',
-      confirmText: 'TTH.DIALOG.STATUS_CHANGE',
+      cancelText: 'COMMON.CANCEL',
+      confirmText: 'COMMON.APPLY',
       selectedStatements: selectedStatements,
       swissCanton: swissCanton,
       timetableHearingYear: timetableHearingYear,
