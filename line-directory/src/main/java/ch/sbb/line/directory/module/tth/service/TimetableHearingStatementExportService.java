@@ -1,19 +1,14 @@
 package ch.sbb.line.directory.module.tth.service;
 
 import ch.sbb.atlas.amazon.service.FileService;
-import ch.sbb.atlas.api.client.user.administration.UserAdministrationClient;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementModelV2;
-import ch.sbb.atlas.api.user.administration.UserDisplayNameModel;
 import ch.sbb.atlas.export.AtlasCsvMapper;
 import ch.sbb.atlas.export.CsvExportWriter;
 import ch.sbb.atlas.export.LocalizedPropertyNamingStrategy;
 import ch.sbb.line.directory.module.tth.model.TimetableHearingStatementCsvModel;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -28,26 +23,16 @@ public class TimetableHearingStatementExportService {
 
   private final FileService fileService;
   private final MessageSource timetableHearingStatementCsvTranslations;
-  private final UserAdministrationClient userAdministrationClient;
 
   public File getStatementsAsCsv(List<TimetableHearingStatementModelV2> statements, Locale locale, boolean anonymized) {
     List<TimetableHearingStatementCsvModel> csvData;
 
-    if (!anonymized) {
-      csvData = statements.stream().map(TimetableHearingStatementCsvModel::fromModel)
-          .toList();
-    } else {
+    if (anonymized) {
       csvData = statements.stream().map(TimetableHearingStatementCsvModel::fromModelAnonymized)
           .toList();
-    }
-
-    Set<String> exportedEditors = csvData.stream().map(TimetableHearingStatementCsvModel::getEditor).collect(Collectors.toSet());
-    if (!exportedEditors.isEmpty()) {
-      List<UserDisplayNameModel> resolvedUserInformation = userAdministrationClient.getUserInformation(
-          new ArrayList<>(exportedEditors));
-      csvData.forEach(csvLine -> resolvedUserInformation.stream()
-          .filter(i -> i.getSbbUserId().equals(csvLine.getEditor())).findFirst()
-          .ifPresent(userInfo -> csvLine.setEditor(userInfo.getDisplayName())));
+    } else {
+      csvData = statements.stream().map(TimetableHearingStatementCsvModel::fromModel)
+          .toList();
     }
 
     return CsvExportWriter.writeToFile(fileService.getDir() + "statements", csvData,

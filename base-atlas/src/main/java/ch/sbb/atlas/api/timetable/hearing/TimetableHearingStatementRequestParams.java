@@ -1,5 +1,6 @@
 package ch.sbb.atlas.api.timetable.hearing;
 
+import ch.sbb.atlas.api.model.CantonAssociated;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class TimetableHearingStatementRequestParams {
+public class TimetableHearingStatementRequestParams implements CantonAssociated {
 
   private Long timetableHearingYear;
 
@@ -36,4 +37,9 @@ public class TimetableHearingStatementRequestParams {
   private List<Long> transportCompanies = new ArrayList<>();
 
   private boolean anonymized;
+
+  @Override
+  public SwissCanton getSwissCanton() {
+    return canton;
+  }
 }
