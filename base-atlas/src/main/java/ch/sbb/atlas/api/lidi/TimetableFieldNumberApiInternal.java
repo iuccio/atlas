@@ -11,7 +11,6 @@ import java.util.List;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,9 +47,4 @@ public interface TimetableFieldNumberApiInternal {
   @PostMapping("/import-quovadis")
   void importQuoVadisData(MultipartFile file);
 
-  // todo: remove after maintenance execution after prod release of ATLAS-3254
-  @Secured(Role.SECURED_FOR_ATLAS_ADMIN)
-  @PostMapping("merge-all-versions")
-  @Async
-  void mergeAllVersions();
 }
