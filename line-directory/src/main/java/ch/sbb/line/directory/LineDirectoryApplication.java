@@ -1,15 +1,16 @@
 package ch.sbb.line.directory;
 
-import ch.sbb.atlas.kafka.KafkaTruststorePreparation;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.time.ZoneId;
-import java.util.TimeZone;
-
 import static ch.sbb.atlas.api.AtlasApiConstants.ZURICH_ZONE_ID;
 
+import ch.sbb.atlas.kafka.KafkaTruststorePreparation;
+import java.time.ZoneId;
+import java.util.TimeZone;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
 @SpringBootApplication
+@EnableFeignClients
 public class LineDirectoryApplication {
 
   public static void main(String[] args) {

@@ -2,7 +2,9 @@ package ch.sbb.workflow.module.lidi.tth.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -98,5 +100,25 @@ class TthDossierControllerTest {
 
     tthDossierController.answerQuestion(1L, BoAnswerModel.builder().answerToCanton(answerToCanton).build());
     verify(tthDossierService).answerQuestion(1L, answerToCanton, dossier);
+  }
+
+  @Test
+  void shouldGetStatementIdsFromStatus() {
+    // given
+    when(tthDossierService.getStatementIdsFromDossierStatus(anyList())).thenReturn(null);
+    // when
+    tthDossierController.getStatementIdsFromStatus(List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_CANTON_CHECK));
+    // then
+    verify(tthDossierService).getStatementIdsFromDossierStatus(List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_CANTON_CHECK));
+  }
+
+  @Test
+  void shouldPatchDossierStatusClosingYear() {
+    // given
+    doNothing().when(tthDossierService).updateDossierStatusClosingYear();
+    // when
+    tthDossierController.patchDossierStatusClosingYear();
+    // then
+    verify(tthDossierService).updateDossierStatusClosingYear();
   }
 }

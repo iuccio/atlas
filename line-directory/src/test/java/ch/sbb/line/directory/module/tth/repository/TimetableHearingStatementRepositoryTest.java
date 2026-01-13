@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.controller.IntegrationTest;
-import ch.sbb.line.directory.shared.transportcompany.entity.SharedTransportCompany;
 import ch.sbb.line.directory.module.tth.entity.StatementDocument;
 import ch.sbb.line.directory.module.tth.entity.StatementSender;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
+import ch.sbb.line.directory.shared.transportcompany.entity.SharedTransportCompany;
 import ch.sbb.line.directory.shared.transportcompany.repository.SharedTransportCompanyRepository;
 import java.util.List;
 import java.util.Objects;
@@ -23,11 +23,16 @@ import org.springframework.transaction.TransactionSystemException;
 @IntegrationTest
 class TimetableHearingStatementRepositoryTest {
 
-  @Autowired
-  private TimetableHearingStatementRepository timetableHearingStatementRepository;
+  private final TimetableHearingStatementRepository timetableHearingStatementRepository;
+  private final SharedTransportCompanyRepository sharedTransportCompanyRepository;
 
   @Autowired
-  private SharedTransportCompanyRepository sharedTransportCompanyRepository;
+  TimetableHearingStatementRepositoryTest(
+      TimetableHearingStatementRepository timetableHearingStatementRepository,
+      SharedTransportCompanyRepository sharedTransportCompanyRepository) {
+    this.timetableHearingStatementRepository = timetableHearingStatementRepository;
+    this.sharedTransportCompanyRepository = sharedTransportCompanyRepository;
+  }
 
   private static TimetableHearingStatement getMinimalTimetableHearingStatement() {
     return TimetableHearingStatement.builder()
@@ -238,4 +243,20 @@ class TimetableHearingStatementRepositoryTest {
         statement2.getTimetableYear())));
   }
 
+  @Test
+  void shouldUpdateStatementStatusByIdsCorrectly() {
+    // given
+    long firstId = timetableHearingStatementRepository.save(getMinimalTimetableHearingStatement()).getId();
+    long secondId = timetableHearingStatementRepository.save(getMinimalTimetableHearingStatement()).getId();
+    long thirdId = timetableHearingStatementRepository.save(getMinimalTimetableHearingStatement()).getId();
+    // when
+    timetableHearingStatementRepository.updateStatementStatusByIds(List.of(firstId, secondId), StatementStatus.ACCEPTED);
+    // then
+    assertThat(timetableHearingStatementRepository.findById(firstId).get().getStatementStatus()).isEqualTo(
+        StatementStatus.ACCEPTED);
+    assertThat(timetableHearingStatementRepository.findById(secondId).get().getStatementStatus()).isEqualTo(
+        StatementStatus.ACCEPTED);
+    assertThat(timetableHearingStatementRepository.findById(thirdId).get().getStatementStatus()).isEqualTo(
+        StatementStatus.RECEIVED);
+  }
 }

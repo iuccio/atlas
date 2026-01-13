@@ -10,6 +10,7 @@ import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
 import ch.sbb.workflow.module.lidi.tth.search.TthDossierRequestParams;
 import ch.sbb.workflow.module.lidi.tth.search.TthDossierSearchRestrictions;
 import ch.sbb.workflow.module.lidi.tth.service.TthDossierService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,5 +65,15 @@ public class TthDossierController implements TthDossierApiInternal {
   public TthDossierModel updateDossier(Long dossierId, TthDossierModel dossierModel) {
     dossierModel.setId(dossierId);
     return TthDossierMapper.toModel(tthDossierService.updateDossier(dossierId, TthDossierMapper.toEntity(dossierModel)));
+  }
+
+  @Override
+  public List<Long> getStatementIdsFromStatus(List<DossierStatus> dossierStatus) {
+    return tthDossierService.getStatementIdsFromDossierStatus(dossierStatus);
+  }
+
+  @Override
+  public void patchDossierStatusClosingYear() {
+    tthDossierService.updateDossierStatusClosingYear();
   }
 }

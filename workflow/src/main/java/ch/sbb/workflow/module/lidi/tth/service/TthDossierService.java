@@ -34,6 +34,16 @@ public class TthDossierService {
   private final TthDossierNotificationService notificationService;
   private final BoContactPermissionService boContactPermissionService;
 
+  public List<Long> getStatementIdsFromDossierStatus(List<DossierStatus> dossierStatus) {
+    return dossierRepository.findStatementIdsByDossierStatusIn(dossierStatus);
+  }
+
+  @Transactional
+  public void updateDossierStatusClosingYear() {
+    dossierRepository.updateDossierStatusFromAddedToCanceled();
+    dossierRepository.updateDossierStatusFromCheckToDissolved();
+  }
+
   @TthRedacted
   @PostAuthorize("@cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin"
       + ".ApplicationType).TIMETABLE_HEARING) || @boUserMailCheckService.isCurrentUserMailAssignedTo(returnObject)")
