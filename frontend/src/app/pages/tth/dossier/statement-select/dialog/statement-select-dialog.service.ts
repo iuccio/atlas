@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { StatementSelectDialogComponent } from './statement-select-dialog.component';
@@ -12,7 +12,7 @@ import { filter } from 'rxjs/operators';
 export class StatementSelectDialogService {
   private dialogRef?: MatDialogRef<StatementSelectDialogComponent>;
 
-  constructor(private dialog: MatDialog) {}
+  private readonly dialog = inject(MatDialog);
 
   select(
     selectedStatements: number[],

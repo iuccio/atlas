@@ -47,6 +47,7 @@
     "REVOKE": "Revocare",
     "DELETE": "Eliminare",
     "CANCEL": "Annulla",
+    "APPLY": "Applicare",
     "NODATAFOUND": "Nessun dato trovato.",
     "TYPE_TO_SEARCH": "Digitare almeno 2 caratteri per iniziare la ricerca.",
     "TYPE_TO_SEARCH_SHORT": "Digitare almeno 2 caratteri...",
@@ -1079,6 +1080,38 @@
       "STATEMENT_TRANSFER_CANTON": "Trasferimento in un altro cantone",
       "STATEMENT_TRANSFER_CANTON_INFO": "Selezionare il cantone a cui inviare la dichiarazione.",
       "STATEMENT_PDF_ANONYMOUS_CHECKBOX": "L'allegato può essere inoltrato (ad esempio a un'azienda di trasporti)."
+    },
+    "DOSSIER": {
+      "DOSSIER": "Dossier",
+      "NEW": "Nuovo Dossier",
+      "INTERNAL_FEEDBACK": "Domanda di chiarimento interna",
+      "INTERNAL_FEEDBACK_HINT": "((ai suoi collaboratori))",
+      "INTERNAL_FEEDBACK_INFO": "Trasferisci il contenuto del dossier a un esperto per una domanda. I contenuti appaiono come link diretto nella tua e-mail",
+      "EXTERNAL_FEEDBACK": "Domanda esterna",
+      "EXTERNAL_FEEDBACK_HINT": "(presso l’impresa di trasporto)",
+      "EXTERNAL_FEEDBACK_INFO": "Qui è possibile trasmettere all’impresa di trasporto le informazioni del suo dossier in caso di domande. L’impresa di trasporto riceve un link al dossier. Per motivi legati alla protezione dei dati, non trasmettiamo queste informazioni a terzi:",
+      "EXTERNAL_FEEDBACK_CONTACT": "Dati di contatto",
+      "EXTERNAL_FEEDBACK_ORIGINAL_TEXT": "Testi originali",
+      "EXTERNAL_FEEDBACK_ATTATCHMENTS": "Allegati (file PDF)",
+      "BO_CONTACT_MAIL": "E-Mail",
+      "BO_CONTACT_MAIL_INFO": "Inserire l’indirizzo e-mail della persona di riferimento dell’impresa di trasporto.",
+      "BO_DEADLINE_TO_ANSWER": "Termine per la risposta da parte dell’IT",
+      "BO_QUESTION": "Domanda all’impresa di trasporto",
+      "BO_QUESTION_INFO": "Nel suo testo si accerti che la persona di riferimento abbia tutti i dati necessari.",
+      "INTERNAL_COMMENT": "Motivazione interna ai fini della documentazione",
+      "PUBLIC_COMMENT": "Motivazione pubblica dei pareri",
+      "COMPLETION": "Conclusione",
+      "NO_STATEMENTS": "Il dossier non contiene prese di posizione.",
+      "STATEMENTS": "Pareri del fascicolo",
+      "ADD_STATEMENTS": "Aggiungere ulteriori prese di posizione sul dossier",
+      "STATEMENT_SELECT": {
+        "CURRENT_STATEMENTS": "Pareri attualmente selezionati",
+        "ADDITIONAL_STATEMENTS": "Altre prese di posizione"
+      },
+      "NOTIFICATION": {
+        "ADD_SUCCESS": "Nuovo dossier salvato con successo.",
+        "EDIT_SUCCESS": "Il dossier è stato salvato con successo."
+      }
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Chiusura dell'anno di calendario",
