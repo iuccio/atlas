@@ -2,7 +2,6 @@ package ch.sbb.line.directory.module.ttfn.service;
 
 import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.revoke.service.RevokeService;
-import ch.sbb.atlas.versioning.exception.VersioningNoChangesException;
 import ch.sbb.atlas.versioning.model.VersionedObject;
 import ch.sbb.atlas.versioning.service.VersionableService;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumber;
@@ -11,13 +10,9 @@ import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberReposito
 import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberVersionRepository;
 import ch.sbb.line.directory.module.ttfn.search.TimetableFieldNumberSearchRestrictions;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.StaleObjectStateException;
@@ -36,35 +31,6 @@ public class TimetableFieldNumberService extends RevokeService<TimetableFieldNum
   private final TimetableFieldNumberRepository timetableFieldNumberRepository;
   private final TimetableFieldNumberValidationService timetableFieldNumberValidationService;
   private final VersionableService versionableService;
-
-  // todo: remove after maintenance execution after prod release of ATLAS-3254
-  public void mergeAllVersions() {
-    List<TimetableFieldNumberVersion> allVersions = versionRepository.findAll();
-    Map<String, List<TimetableFieldNumberVersion>> versionsGroupedByTtfnId = allVersions.stream()
-        .sorted(Comparator.comparing(TimetableFieldNumberVersion::getValidFrom))
-        .collect(Collectors.groupingBy(TimetableFieldNumberVersion::getTtfnid));
-    AtomicInteger mergedElements = new AtomicInteger();
-    versionsGroupedByTtfnId.forEach((ttfnid, versionsOfTtfnId) -> {
-      if (versionsOfTtfnId.size() == 1) {
-        log.info("No merging of versions necessary for element: {}", ttfnid);
-        return;
-      }
-      try {
-        List<VersionedObject> versionedObjects = versionableService.versioningObjectsDeletingNullProperties(
-            versionsOfTtfnId.getFirst(),
-            versionsOfTtfnId.getFirst(),
-            versionsOfTtfnId);
-
-        versionableService.applyVersioning(TimetableFieldNumberVersion.class, versionedObjects, this::save, this::deleteById);
-
-        mergedElements.getAndIncrement();
-        log.info("Merging of versions done for element: {}", ttfnid);
-      } catch (VersioningNoChangesException e) {
-        log.info("No merging of versions necessary for element: {}", ttfnid);
-      }
-    });
-    log.info("Number of merged elements: {}", mergedElements.get());
-  }
 
   public List<TimetableFieldNumberVersion> getAllVersionsVersioned(String ttfnId) {
     return findBySid4ptOrderByValidFrom(ttfnId);
