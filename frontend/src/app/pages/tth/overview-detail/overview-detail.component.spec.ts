@@ -367,7 +367,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
     it('should open dialog', () => {
       dialogSpy.open.and.returnValue({
         afterClosed: () => of(null),
-      } as any);
+      });
 
       component.openTthExportAnonymizationChoiceDialog();
 
@@ -379,7 +379,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
       dialogSpy.open.and.returnValue({
         afterClosed: () => of({ isAnonymized: true }),
-      } as any);
+      });
 
       component.openTthExportAnonymizationChoiceDialog();
 
@@ -391,7 +391,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
       dialogSpy.open.and.returnValue({
         afterClosed: () => of({ isAnonymized: false }),
-      } as any);
+      });
 
       component.openTthExportAnonymizationChoiceDialog();
 
