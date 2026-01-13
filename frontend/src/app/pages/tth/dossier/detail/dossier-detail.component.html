@@ -30,19 +30,27 @@
         </div>
 
         <div class="mt-3">
-          <atlas-statement-select [(selectedStatements)]="selectedStatements">
+          <div class="font-bold-xl">
+            {{ 'TTH.DOSSIER.STATEMENTS' | translate }}
+          </div>
+          <atlas-statement-select
+            [(selectedStatements)]="selectedStatements"
+            [removeOptionEnabled]="form.enabled"
+          >
           </atlas-statement-select>
 
-          <atlas-button
-            (buttonClicked)="openAddStatementsDialog()"
-            buttonDataCy="add-statements"
-            buttonText="TTH.DOSSIER.ADD_STATEMENTS"
-            buttonType="defaultPrimary"
-          >
-            <ng-template #rightIcon>
-              <i class="ps-2 bi bi-file-earmark-plus"></i>
-            </ng-template>
-          </atlas-button>
+          @if (form.enabled) {
+            <atlas-button
+              (buttonClicked)="openAddStatementsDialog()"
+              buttonDataCy="add-statements"
+              buttonText="TTH.DOSSIER.ADD_STATEMENTS"
+              buttonType="defaultPrimary"
+            >
+              <ng-template #rightIcon>
+                <i class="ps-2 bi bi-file-earmark-plus"></i>
+              </ng-template>
+            </atlas-button>
+          }
         </div>
 
         @if (!isNew) {

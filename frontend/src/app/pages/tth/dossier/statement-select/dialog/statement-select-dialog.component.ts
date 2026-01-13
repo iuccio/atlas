@@ -93,13 +93,17 @@ export class StatementSelectDialogComponent implements OnInit {
         icon: 'bi bi-file-earmark-plus',
         clickCallback: this.addStatement,
         applicationType: 'TIMETABLE_HEARING',
-        buttonDataCy: 'duplicate-hearing',
-        title: 'TTH.BUTTON.DUPLICATE',
+        buttonDataCy: 'addStatement',
+        title: 'COMMON.ADD',
         buttonType: 'icon',
-        disabled: false,
+        disabled: this.selectedIncludes.bind(this),
       },
     },
   ];
+
+  selectedIncludes(row: TimetableHearingStatementV2) {
+    return this.selectedStatements.includes(row.id!);
+  }
 
   mapToLastname(statementSender: TimetableHearingStatementSenderV2) {
     return statementSender.lastName;

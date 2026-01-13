@@ -108,14 +108,16 @@
               (buttonClicked)="buttonClickEvent.emit(row)"
               [applicationType]="column.button.applicationType"
               [buttonType]="column.button.buttonType"
-              [disabled]="column.button.disabled"
+              [disabled]="column.button.disabled(row)"
               buttonDataCy="{{ column.button.buttonType }}"
-              title="{{ !column.button.disabled ? column.button.title : '' }}"
+              title="{{
+                !column.button.disabled(row) ? column.button.title : ''
+              }}"
               wrapperStyleClass="text-align-center"
             >
               <ng-template #rightIcon>
                 <i
-                  [ngClass]="!column.button.disabled ? 'icon-enabled' : ''"
+                  [ngClass]="!column.button.disabled(row) ? 'icon-enabled' : ''"
                   class=" {{ column.button.icon }}"
                 ></i>
               </ng-template>
