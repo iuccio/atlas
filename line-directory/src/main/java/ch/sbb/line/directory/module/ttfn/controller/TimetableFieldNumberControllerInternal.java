@@ -82,9 +82,4 @@ public class TimetableFieldNumberControllerInternal implements TimetableFieldNum
     quoVadisDataImportService.importDataFromQuoVadis(fileService.getFileFromMultipart(file));
   }
 
-  // todo: remove after maintenance execution after prod release of ATLAS-3254
-  @Override
-  public void mergeAllVersions() {
-    timetableFieldNumberService.mergeAllVersions();
-  }
 }
