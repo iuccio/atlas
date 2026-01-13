@@ -1,30 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StatementSelectDialogComponent } from './statement-select-dialog.component';
-import { DialogService } from '../../../../core/components/dialog/dialog.service';
-import { of } from 'rxjs';
-import { AppTestingModule } from '../../../../app.testing.module';
-import { FormModule } from '../../../../core/module/form.module';
+import { AppTestingModule } from '../../../../../app.testing.module';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import {
-  MAT_SNACK_BAR_DATA,
-  MatSnackBarRef,
-} from '@angular/material/snack-bar';
 import { TranslatePipe } from '@ngx-translate/core';
-import { SwissCanton, TimetableHearingStatementV2 } from '../../../../api';
-import { FormControl, FormGroup } from '@angular/forms';
-import { TthChangeStatusFormGroup } from '../tth-change-status-dialog/model/tth-change-status-form-group';
-import { AtlasFieldLengthValidator } from '../../../../core/validation/field-lengths/atlas-field-length-validator';
-import { WhitespaceValidator } from '../../../../core/validation/whitespace/whitespace-validator';
-import { By } from '@angular/platform-browser';
+import { DialogService } from '../../../../../core/components/dialog/dialog.service';
+import { of } from 'rxjs';
+import { StatementSelectData } from './statement-select-dialog.service';
+import { SwissCanton } from '../../../../../api';
+import { TimetableHearingStatementInternalService } from '../../../../../api/service/lidi/timetable-hearing-statement-internal.service';
+import { FormatPipe } from '../../../../../core/components/table/pipe/format.pipe';
+import { Component, input, model } from '@angular/core';
+import { StatementSelectComponent } from '../statement-select.component';
 
-const statement: TimetableHearingStatementV2 = {
-  id: 1,
+const dialogData: StatementSelectData = {
+  title: 'TTH.DIALOG.STATUS_CHANGE',
+  message: 'TTH.DIALOG.STATUS_CHANGE',
+  cancelText: 'COMMON.CANCEL',
+  confirmText: 'COMMON.APPLY',
+  selectedStatements: [1000],
   swissCanton: SwissCanton.Bern,
-  statement: 'Öper isch am YB-Match gsi',
-  publicComment: 'Napoli ist besser als YB',
-  statementSender: {
-    emails: new Set('fan@yb.ch'),
-  },
+  timetableHearingYear: 2020,
 };
 
 const dialogServiceSpy = jasmine.createSpyObj(DialogService, {
@@ -32,90 +27,71 @@ const dialogServiceSpy = jasmine.createSpyObj(DialogService, {
 });
 const dialogRefSpy = jasmine.createSpyObj('dialogRef', ['close']);
 
+const timetableHearingStatementInternalService = jasmine.createSpyObj(
+  'TimetableHearingStatementInternalService',
+  {
+    getStatements: of({
+      objects: [],
+      totalCount: 0,
+    }),
+    getStatement: of({
+      id: 456,
+      swissCanton: SwissCanton.Bern,
+      statement: 'Mehr Bös pls',
+      statementSender: {
+        emails: new Set('me@sbb.ch'),
+      },
+      documents: [],
+    }),
+  }
+);
+
+@Component({
+  selector: 'atlas-statement-select',
+  template: '<p>Mock statement selection</p>',
+})
+export class MockStatementSelectComponent {
+  selectedStatements = model.required<number[]>();
+  removeOptionEnabled = input(true);
+}
+
 describe('StatementSelectDialogComponent', () => {
   let component: StatementSelectDialogComponent;
   let fixture: ComponentFixture<StatementSelectDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppTestingModule, FormModule, StatementSelectDialogComponent],
+      imports: [AppTestingModule, StatementSelectDialogComponent],
       providers: [
-        { provide: MatSnackBarRef, useValue: {} },
-        { provide: MAT_SNACK_BAR_DATA, useValue: {} },
         { provide: DialogService, useValue: dialogServiceSpy },
         { provide: MatDialogRef, useValue: dialogRefSpy },
         {
           provide: MAT_DIALOG_DATA,
-          useValue: {
-            title: 'Title',
-            message: 'message',
-            tths: [statement],
-            justification: 'Forza Napoli',
-            type: 'SINGLE',
-            id: 1,
-          },
+          useValue: dialogData,
+        },
+        {
+          provide: TimetableHearingStatementInternalService,
+          useValue: timetableHearingStatementInternalService,
         },
         { provide: TranslatePipe },
+        { provide: FormatPipe },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(StatementSelectDialogComponent, {
+        remove: { imports: [StatementSelectComponent] },
+        add: { imports: [MockStatementSelectComponent] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(StatementSelectDialogComponent);
     component = fixture.componentInstance;
-    component.controlName = 'publicComment';
-    component.dialogRef = dialogRefSpy;
-    component.formGroup = new FormGroup<TthChangeStatusFormGroup>({
-      publicComment: new FormControl('', [
-        AtlasFieldLengthValidator.statement,
-        WhitespaceValidator.blankOrEmptySpaceSurrounding,
-      ]),
-    });
     fixture.detectChanges();
   });
 
-  it('should close dialog when form is not dirty', () => {
+  it('should close dialog', () => {
     //when
-    component.closeDialog();
+    component.cancel();
     //then
     expect(dialogRefSpy.close).toHaveBeenCalled();
-  });
-
-  it('should close dialog when form is dirty', () => {
-    //when
-    component.formGroup.markAsDirty();
-    component.closeDialog();
-    //then
-    expect(dialogServiceSpy.confirmLeave).toHaveBeenCalled();
-    expect(dialogRefSpy.close).toHaveBeenCalled();
-  });
-
-  it('should render tth change status dialog', () => {
-    component.formGroup.controls['publicComment'].setValue('Forza Napoli');
-
-    const title = fixture.debugElement.query(
-      By.css('div.dialog > div.mb-5 > span.font-bold-4xl')
-    );
-    expect(title.nativeElement.innerText).toBe('Title');
-
-    const content = fixture.debugElement.query(
-      By.css('div.dialog > div > span.message')
-    );
-    expect(content.nativeElement.innerText).toBe('message');
-
-    const publicComment = fixture.debugElement.query(
-      By.css('atlas-form-comment')
-    );
-    const publicCommentValue =
-      publicComment.nativeNode.querySelector('textarea').value;
-    expect(publicCommentValue).toBe('Forza Napoli');
-
-    const cancelButton = fixture.debugElement.query(
-      By.css('mat-dialog-actions button.me-3')
-    );
-    expect(cancelButton.nativeElement.innerText).toBe('DIALOG.CANCEL');
-
-    const confirmButton = fixture.debugElement.query(
-      By.css('mat-dialog-actions button.primary-color-btn')
-    );
-    expect(confirmButton.nativeElement.innerText).toBe('DIALOG.OK');
   });
 });

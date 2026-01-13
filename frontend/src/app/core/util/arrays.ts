@@ -4,7 +4,12 @@ export function addElementsToArrayWhenNotUndefined<T>(
   return elements.filter((value): value is T => !!value);
 }
 
-export function toNumberArrayStrict(input: string | string[]): number[] {
+export function toNumberArrayStrict(
+  input: string | string[] | undefined
+): number[] {
+  if (input === undefined) {
+    return [];
+  }
   const arr = typeof input === 'string' ? [input] : input;
   return arr.map((s) => {
     const n = Number(s);

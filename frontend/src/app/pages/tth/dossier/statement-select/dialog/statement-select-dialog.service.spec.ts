@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { StatementSelectDialogService } from './statement-select-dialog.service';
-import { StatementStatus } from '../../../../../api';
+import { SwissCanton } from '../../../../../api';
 
 describe('StatementSelectDialogService', () => {
   let service: StatementSelectDialogService;
@@ -19,11 +19,11 @@ describe('StatementSelectDialogService', () => {
   });
 
   it('should open confirmation dialog', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
+    dialogSpy.open.and.returnValue({ afterClosed: () => of([1000]) });
 
     service
-      .onClick(StatementStatus.Accepted, [], undefined, 'SINGLE')
-      .subscribe((result) => expect(result).toBeTrue());
+      .select([1000], SwissCanton.Bern, 2020)
+      .subscribe((result) => expect(result).toEqual([1000]));
 
     expect(dialogSpy.open).toHaveBeenCalled();
   });

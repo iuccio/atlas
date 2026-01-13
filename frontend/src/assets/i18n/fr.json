@@ -47,6 +47,7 @@
     "REVOKE": "Saisie des erreurs",
     "DELETE": "Effacer",
     "CANCEL": "Annuler",
+    "APPLY": "Appliquer",
     "NODATAFOUND": "Aucune donnée n’a été trouvée.",
     "TYPE_TO_SEARCH": "Entrez au moins 2 caractères pour commencer la recherche.",
     "TYPE_TO_SEARCH_SHORT": "Entrez au moins 2 caractères...",
@@ -1079,6 +1080,38 @@
       "STATEMENT_TRANSFER_CANTON": "Transfert vers un autre canton",
       "STATEMENT_TRANSFER_CANTON_INFO": "Sélectionnez le canton auquel vous soumettez la déclaration.",
       "STATEMENT_PDF_ANONYMOUS_CHECKBOX": "La pièce jointe peut être transmise (par exemple à une entreprise de transport)."
+    },
+    "DOSSIER": {
+      "DOSSIER": "Dossier",
+      "NEW": "Nouveau dossier",
+      "INTERNAL_FEEDBACK": "Interne Rückfrage",
+      "INTERNAL_FEEDBACK_HINT": "(à vos collaborateurs)",
+      "INTERNAL_FEEDBACK_INFO": "Transmettez le contenu de votre dossier à un spécialiste pour lui poser une question. Les contenus apparaissent sous forme de lien direct dans votre e-mail.",
+      "EXTERNAL_FEEDBACK": "Demande externe",
+      "EXTERNAL_FEEDBACK_HINT": "(chez l’entreprise de transport)",
+      "EXTERNAL_FEEDBACK_INFO": "Cette rubrique vous permet de transmettre le contenu du dossier à l’entreprise de transport en cas de questions. L’entreprise de transport reçoit un lien vers le dossier. Pour des raisons de protection des données, nous ne transmettons pas ces informations:",
+      "EXTERNAL_FEEDBACK_CONTACT": "Coordonnées",
+      "EXTERNAL_FEEDBACK_ORIGINAL_TEXT": "Textes originaux",
+      "EXTERNAL_FEEDBACK_ATTATCHMENTS": "Pièces jointes (fichiers PDF)",
+      "BO_CONTACT_MAIL": "E-mail",
+      "BO_CONTACT_MAIL_INFO": "Saisissez l’adresse e-mail de la personne de contact dans l’entreprise de transport.",
+      "BO_DEADLINE_TO_ANSWER": "Délai de réponse par TU",
+      "BO_QUESTION": "Question à l’entreprise de transport",
+      "BO_QUESTION_INFO": "Dans votre texte, assurez-vous que la personne de contact dispose de toutes les informations dont elle a besoin.",
+      "INTERNAL_COMMENT": "Justification interne aux fins de la documentation",
+      "PUBLIC_COMMENT": "Motivation publique des personnes appelées à prendre position",
+      "COMPLETION": "Clôture",
+      "NO_STATEMENTS": "Aucune prise de position n’est contenue dans le dossier.",
+      "STATEMENTS": "prises de position sur le dossier",
+      "ADD_STATEMENTS": "Ajouter d’autres prises de position au dossier",
+      "STATEMENT_SELECT": {
+        "CURRENT_STATEMENTS": "Prises de position actuellement sélectionnées",
+        "ADDITIONAL_STATEMENTS": "Autres prises de position"
+      },
+      "NOTIFICATION": {
+        "ADD_SUCCESS": "Nouveau dossier enregistré avec succès.",
+        "EDIT_SUCCESS": "Le dossier a été enregistré avec succès."
+      }
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Clôture de l'année horaire",
