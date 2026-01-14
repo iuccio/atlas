@@ -70,7 +70,7 @@ export class DossierFormGroupBuilder {
     if (form.controls.question.value) {
       dossier.questions = [
         {
-          question: form.controls.question.value!,
+          question: form.controls.question.value,
         },
       ];
     }

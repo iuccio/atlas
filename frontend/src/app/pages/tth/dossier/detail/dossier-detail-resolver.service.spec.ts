@@ -64,4 +64,18 @@ describe('DossierDetailResolver', () => {
       expect(statement!.id).toBe(1234);
     });
   });
+
+  it('should be undefined on add', () => {
+    const mockRoute = {
+      paramMap: convertToParamMap({ id: 'add' }),
+    } as ActivatedRouteSnapshot;
+
+    const result = TestBed.runInInjectionContext(() =>
+      dossierResolver(mockRoute, {} as RouterStateSnapshot)
+    ) as Observable<TthDossier | undefined>;
+
+    result.subscribe((statement) => {
+      expect(statement).toBeUndefined();
+    });
+  });
 });

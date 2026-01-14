@@ -28,6 +28,11 @@ class BoContactPermissionServiceTest {
   private BoContactPermissionService boContactPermissionService;
 
   @Test
+  void shouldNotThrowExceptionWhenNoMailIsGiven() {
+    assertThatNoException().isThrownBy(() -> boContactPermissionService.checkPermissionForBoContactMail(null));
+  }
+
+  @Test
   void shouldNotThrowExceptionWhenPermissionIsValid() {
     when(userAdministrationClient.getUserByMail(any())).thenReturn(UserModel.builder()
         .permissions(Set.of(PermissionModel.builder()

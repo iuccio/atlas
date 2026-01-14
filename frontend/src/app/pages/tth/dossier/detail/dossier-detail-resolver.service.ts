@@ -12,11 +12,11 @@ export class DossierDetailResolver {
 
   resolve(route: ActivatedRouteSnapshot): Observable<TthDossier | undefined> {
     const idParameter = route.paramMap.get('id') || '0';
-    const hearingStatus = route.data['hearingStatus'];
     return idParameter === 'add'
       ? of(undefined)
       : this.dossierInternalService.getDossier(parseInt(idParameter)).pipe(
           catchError(() => {
+            const hearingStatus = route.data['hearingStatus'];
             this.router
               .navigate(
                 [

@@ -6,7 +6,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { DialogService } from '../../../../../core/components/dialog/dialog.service';
 import { of } from 'rxjs';
 import { StatementSelectData } from './statement-select-dialog.service';
-import { SwissCanton } from '../../../../../api';
+import { SwissCanton, TimetableHearingStatementV2 } from '../../../../../api';
 import { TimetableHearingStatementInternalService } from '../../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { FormatPipe } from '../../../../../core/components/table/pipe/format.pipe';
 import { Component, input, model } from '@angular/core';
@@ -27,6 +27,15 @@ const dialogServiceSpy = jasmine.createSpyObj(DialogService, {
 });
 const dialogRefSpy = jasmine.createSpyObj('dialogRef', ['close']);
 
+const statement: TimetableHearingStatementV2 = {
+  id: 456,
+  swissCanton: SwissCanton.Bern,
+  statement: 'Mehr Bös pls',
+  statementSender: {
+    emails: new Set('me@sbb.ch'),
+  },
+  documents: [],
+};
 const timetableHearingStatementInternalService = jasmine.createSpyObj(
   'TimetableHearingStatementInternalService',
   {
@@ -34,15 +43,7 @@ const timetableHearingStatementInternalService = jasmine.createSpyObj(
       objects: [],
       totalCount: 0,
     }),
-    getStatement: of({
-      id: 456,
-      swissCanton: SwissCanton.Bern,
-      statement: 'Mehr Bös pls',
-      statementSender: {
-        emails: new Set('me@sbb.ch'),
-      },
-      documents: [],
-    }),
+    getStatement: of(statement),
   }
 );
 
@@ -92,6 +93,22 @@ describe('StatementSelectDialogComponent', () => {
     //when
     component.cancel();
     //then
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+    expect(dialogRefSpy.close).toHaveBeenCalledWith();
+  });
+
+  it('should confirm dialog', () => {
+    expect(component.selectedStatements).toEqual([1000]);
+    //when
+    component.confirm();
+    //then
+    expect(dialogRefSpy.close).toHaveBeenCalledWith([1000]);
+  });
+
+  it('should add statement to selection dialog', () => {
+    component.addStatement(statement);
+    //when
+    component.confirm();
+    //then
+    expect(dialogRefSpy.close).toHaveBeenCalledWith([1000, 456]);
   });
 });
