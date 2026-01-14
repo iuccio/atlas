@@ -54,13 +54,13 @@ class TimetableHearingYearServiceUnitTest {
   @Test
   void shouldTransitionStatusAccordingDossierWithCorrectFlow() {
     // given
-    when(workflowClient.getStatementIdsFromStatus(anyList())).thenReturn(List.of(1L, 5L, 7L));
+    when(workflowClient.getStatementIdsFromDossierStatus(anyList())).thenReturn(List.of(1L, 5L, 7L));
     doNothing().when(timetableHearingStatementService).updateStatementsToReceived(anyList());
     doNothing().when(workflowClient).patchDossierStatusClosingYear();
     // when
     timetableHearingYearService.transitionStatusAccordingDossier();
     // then
-    verify(workflowClient).getStatementIdsFromStatus(
+    verify(workflowClient).getStatementIdsFromDossierStatus(
         List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK));
     verify(timetableHearingStatementService).updateStatementsToReceived(List.of(1L, 5L, 7L));
     verify(workflowClient).patchDossierStatusClosingYear();

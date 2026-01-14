@@ -63,13 +63,8 @@ public class TimetableHearingYearControllerInternal implements TimetableHearingY
     TimetableHearingYear hearingYear = timetableHearingYearService.getHearingYear(year);
     timetableHearingYearService.mayTransitionToHearingStatus(hearingYear, HearingStatus.ARCHIVED);
     timetableHearingStatementService.deleteSpamMailFromYear(year);
-
-    // status step in transaction
     timetableHearingYearService.transitionStatusAccordingDossier();
-
-    // move step in transaction
     TimetableHearingYear closedHearing = timetableHearingYearService.closeTimetableHearing(hearingYear);
-
     return TimeTableHearingYearMapper.toModel(closedHearing);
   }
 }
