@@ -81,7 +81,7 @@ public interface TimetableHearingStatementApiInternal {
 
   @GetMapping(path = BASE_PATH + "/csv/{language}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
   @PreAuthorize("@cantonBasedUserAdministrationService"
-      + ".isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING, #statementRequestParams)")
+      + ".isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)")
   Resource getStatementsAsCsv(@PathVariable String language,
       @ParameterObject TimetableHearingStatementRequestParams statementRequestParams);
 
