@@ -24,7 +24,8 @@ public interface TimetableHearingStatementRepository extends JpaRepository<Timet
   @Transactional
   @Modifying
   @Query("""
-      update ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement tths set tths.statementStatus = :status
+      update ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement tths
+      set tths.statementStatus = :status
       where tths.id in :statementIds""")
   void updateStatementStatusByIds(Collection<Long> statementIds, StatementStatus status);
 }

@@ -73,15 +73,10 @@ public class TimetableHearingYearService {
 
   @Transactional
   public void transitionStatusAccordingDossier() {
-    // request statement ids
-    List<Long> statementIdsFromStatus = workflowClient.getStatementIdsFromStatus(
+    List<Long> statementIdsFromStatus = workflowClient.getStatementIdsFromDossierStatus(
         List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK)
     );
-
-    // update statements to status received (bulk)
     timetableHearingStatementService.updateStatementsToReceived(statementIdsFromStatus);
-
-    // call patch endpoint
     workflowClient.patchDossierStatusClosingYear();
   }
 
@@ -111,5 +106,4 @@ public class TimetableHearingYearService {
       throw new IllegalStateException("Cannot close hearing, since it is not active");
     }
   }
-
 }

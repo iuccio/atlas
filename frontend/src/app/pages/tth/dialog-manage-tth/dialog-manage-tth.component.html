@@ -21,18 +21,30 @@
       </div>
 
       <div class="slide-toggle-row-wrapper pb-3">
-        <span>{{ 'TTH.MANAGE_TIMETABLE_HEARING.CREATE_STATEMENT_EXTERNAL' | translate }}</span>
-        <atlas-slide-toggle [(toggle)]="statementCreatableExternalSliderValue"></atlas-slide-toggle>
+        <span>{{
+          'TTH.MANAGE_TIMETABLE_HEARING.CREATE_STATEMENT_EXTERNAL' | translate
+        }}</span>
+        <atlas-slide-toggle
+          [(toggle)]="statementCreatableExternalSliderValue"
+        ></atlas-slide-toggle>
       </div>
 
       <div class="slide-toggle-row-wrapper">
-        <span>{{ 'TTH.MANAGE_TIMETABLE_HEARING.CREATE_STATEMENT_INTERNAL' | translate }}</span>
-        <atlas-slide-toggle [(toggle)]="statementCreatableInternalSliderValue"></atlas-slide-toggle>
+        <span>{{
+          'TTH.MANAGE_TIMETABLE_HEARING.CREATE_STATEMENT_INTERNAL' | translate
+        }}</span>
+        <atlas-slide-toggle
+          [(toggle)]="statementCreatableInternalSliderValue"
+        ></atlas-slide-toggle>
       </div>
 
       <div class="slide-toggle-row-wrapper pt-3">
-        <span>{{ 'TTH.MANAGE_TIMETABLE_HEARING.EDIT_STATEMENT' | translate }}</span>
-        <atlas-slide-toggle [(toggle)]="statementEditableSliderValue"></atlas-slide-toggle>
+        <span>{{
+          'TTH.MANAGE_TIMETABLE_HEARING.EDIT_STATEMENT' | translate
+        }}</span>
+        <atlas-slide-toggle
+          [(toggle)]="statementEditableSliderValue"
+        ></atlas-slide-toggle>
       </div>
 
       <div class="one-action-btn-wrapper-right mt-3 pt-5">
@@ -69,19 +81,89 @@
         {{ 'TTH.CLOSE_TIMETABLE_HEARING.POPUP_TITLE' | translate }}
       </div>
 
-      <span>{{ 'TTH.CLOSE_TIMETABLE_HEARING.CONFIRMATION_MESSAGE' | translate }}</span>
+      <span>{{
+        'TTH.CLOSE_TIMETABLE_HEARING.CONFIRMATION_MESSAGE' | translate
+      }}</span>
 
-      <ul class="pt-3 pb-3">
+      <h5 class="mt-4">
+        {{ 'TTH.CLOSE_TIMETABLE_HEARING.DOSSIER_CHANGES_TITLE' | translate }}
+      </h5>
+      <ul>
         <li>
-          {{ 'TTH.CLOSE_TIMETABLE_HEARING.MOVEMENTS_TO_ARCHIVED' | translate }}
+          <dt>
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.FROM_STATUS_ADDED' | translate }}
+          </dt>
+          <dd>
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.TO_STATUS_CANCELED' | translate }}
+          </dd>
         </li>
         <li>
-          {{ 'TTH.CLOSE_TIMETABLE_HEARING.MOVEMENTS_TO_NEXT_YEAR' | translate }}
-        </li>
-        <li>
-          {{ 'TTH.CLOSE_TIMETABLE_HEARING.MOVEMENTS_TO_DELETED' | translate }}
+          <dt>
+            {{
+              'TTH.CLOSE_TIMETABLE_HEARING.FROM_STATUS_CHECK_OR_MOVED'
+                | translate
+            }}
+          </dt>
+          <dd>
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.TO_STATUS_DISSOLVED' | translate }}
+          </dd>
         </li>
       </ul>
+
+      <h5 class="mt-2">
+        {{ 'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_CHANGES_TITLE' | translate }}
+      </h5>
+      <ul>
+        <li>
+          <dt>
+            {{
+              'TTH.CLOSE_TIMETABLE_HEARING.FROM_STATUS_MOVED_OR_BELONGS_TO_DOSSIER'
+                | translate
+            }}
+          </dt>
+          <dd>
+            {{
+              'TTH.CLOSE_TIMETABLE_HEARING.TO_STATUS_RECEIVED_AND_NEXT_YEAR'
+                | translate
+            }}
+          </dd>
+        </li>
+        <li>
+          <dt>
+            {{
+              'TTH.CLOSE_TIMETABLE_HEARING.FROM_STATUS_RECEIVED_OR_IN_REVIEW'
+                | translate
+            }}
+          </dt>
+          <dd>{{ 'TTH.CLOSE_TIMETABLE_HEARING.TO_NEXT_YEAR' | translate }}</dd>
+        </li>
+        <li>
+          <dt>
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.FROM_STATUS_JUNK' | translate }}
+          </dt>
+          <dd>
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.WILL_BE_DELETED' | translate }}
+          </dd>
+        </li>
+        <li>
+          <dt>
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.FROM_OTHER_STATUS' | translate }}
+          </dt>
+          <dd>{{ 'TTH.CLOSE_TIMETABLE_HEARING.TO_ARCHIVE' | translate }}</dd>
+        </li>
+      </ul>
+
+      <!--      <ul class="pt-3 pb-3">-->
+      <!--        <li>-->
+      <!--          {{ 'TTH.CLOSE_TIMETABLE_HEARING.MOVEMENTS_TO_ARCHIVED' | translate }}-->
+      <!--        </li>-->
+      <!--        <li>-->
+      <!--          {{ 'TTH.CLOSE_TIMETABLE_HEARING.MOVEMENTS_TO_NEXT_YEAR' | translate }}-->
+      <!--        </li>-->
+      <!--        <li>-->
+      <!--          {{ 'TTH.CLOSE_TIMETABLE_HEARING.MOVEMENTS_TO_DELETED' | translate }}-->
+      <!--        </li>-->
+      <!--      </ul>-->
 
       <div class="two-action-btn-wrapper pt-3">
         <atlas-button

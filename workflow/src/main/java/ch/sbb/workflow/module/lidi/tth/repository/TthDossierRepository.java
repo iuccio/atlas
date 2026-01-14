@@ -13,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface TthDossierRepository extends JpaRepository<TthDossier, Long>, JpaSpecificationExecutor<TthDossier> {
 
-  @Query("select sIds from ch.sbb.workflow.module.lidi.tth.entity.TthDossier tthd join tthd.statementIds sIds where tthd"
-      + ".dossierStatus in :dossierStatus")
+  @Query("""
+      select sIds from ch.sbb.workflow.module.lidi.tth.entity.TthDossier tthd
+      join tthd.statementIds sIds
+      where tthd.dossierStatus in :dossierStatus""")
   List<Long> findStatementIdsByDossierStatusIn(List<DossierStatus> dossierStatus);
 
   @Transactional
