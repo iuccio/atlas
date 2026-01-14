@@ -15,7 +15,9 @@ import ch.sbb.atlas.api.user.administration.UserPermissionCreateModel;
 import ch.sbb.atlas.api.user.administration.enumeration.UserAccountStatus;
 import ch.sbb.atlas.kafka.model.user.admin.ApplicationRole;
 import ch.sbb.atlas.kafka.model.user.admin.ApplicationType;
+import ch.sbb.atlas.kafka.model.user.admin.PermissionRestrictionType;
 import ch.sbb.atlas.user.administration.exception.UserPermissionConflictException;
+import ch.sbb.atlas.user.administration.module.useradministration.entity.PermissionRestriction;
 import ch.sbb.atlas.user.administration.module.useradministration.entity.UserPermission;
 import java.util.Arrays;
 import java.util.Collections;
@@ -117,5 +119,24 @@ class UserAdministrationServiceTest {
     assertThat(user1.getSbbUserId()).isEqualTo(permittedUsers.getFirst().getSbbUserId());
 
     verify(userPermissionRepositoryMock, times(3)).findBySbbUserIdIgnoreCaseAndApplication(anyString(), eq(applicationType));
+  }
+
+  @Test
+  void shouldFilterForBoDossierAnsweringPermission() {
+    String sbbUserId = "u123456";
+    UserPermission userPermission = UserPermission.builder()
+        .sbbUserId(sbbUserId)
+        .role(ApplicationRole.WRITER)
+        .permissionRestrictions(
+            Set.of(PermissionRestriction.builder().type(PermissionRestrictionType.TRANSPORT_COMPANY_DOSSIER_ANSWER).build()))
+        .build();
+
+    when(userPermissionRepositoryMock.findBySbbUserIdIgnoreCaseAndApplication(sbbUserId, ApplicationType.TIMETABLE_HEARING))
+        .thenReturn(Optional.of(userPermission));
+
+    List<UserModel> permittedUsers = userAdministrationService.filterForBoDossierAnsweringPermission(List.of(UserModel.builder()
+        .sbbUserId(sbbUserId).build()));
+
+    assertThat(permittedUsers).hasSize(1);
   }
 }

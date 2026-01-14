@@ -1,9 +1,10 @@
 <atlas-form-search-select
   (changeTrigger)="selectionChange.emit($event)"
   (searchTrigger)="search($event)"
-  [controlName]="'userSearch'"
+  [controlName]="controlName()"
   [formGroup]="form"
   [items$]="userSearchResults$"
+  [bindValueInp]="bindValue()"
 >
   <ng-template #labelOptionTemplates let-item>
     {{ item | userSelectFormat }}

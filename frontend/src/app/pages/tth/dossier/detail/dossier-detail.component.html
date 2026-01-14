@@ -13,12 +13,12 @@
         </h1>
 
         <div class="d-flex flex-column col-8 mt-3">
-          <div class="label-input-row">
+          <div class="d-flex">
             <atlas-label-field
               fieldLabel="TTH.STATEMENT.TOPIC"
               [required]="true"
             />
-            <div class="col-8">
+            <div class="col-8 ms-2">
               <atlas-text-field
                 [formGroup]="form"
                 controlName="topic"
@@ -112,18 +112,21 @@
 
             <div class="d-flex flex-column mt-5">
               <div>
-                <atlas-text-field
+                <atlas-label-field
+                  fieldLabel="TTH.DOSSIER.BO_CONTACT_MAIL"
                   [fieldExamples]="[
                     {
                       label: 'TTH.DOSSIER.BO_CONTACT_MAIL_INFO',
                       translate: true,
                     },
                   ]"
-                  [formGroup]="form"
+                ></atlas-label-field>
+                <atlas-user-select
+                  [form]="form"
                   controlName="boContactMail"
-                  fieldLabel="TTH.DOSSIER.BO_CONTACT_MAIL"
-                >
-                </atlas-text-field>
+                  searchMode="boDossierAnsweringUsers"
+                  bindValue="mail"
+                ></atlas-user-select>
               </div>
 
               <div>

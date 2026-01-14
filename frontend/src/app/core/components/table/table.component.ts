@@ -36,7 +36,6 @@ import {
   MatRow,
   MatRowDef,
   MatTable,
-  MatTableModule,
 } from '@angular/material/table';
 import { MouseOverTitleDirective } from './directive/mouse-over-title.directive';
 import { SelectComponent } from '../../form-components/select/select.component';
@@ -75,7 +74,6 @@ import { FormatPipe } from './pipe/format.pipe';
     ShowTitlePipe,
     FormatPipe,
     NgTemplateOutlet,
-    MatTableModule,
   ],
   providers: [TranslatePipe],
 })

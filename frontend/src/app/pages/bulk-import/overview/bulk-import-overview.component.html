@@ -58,7 +58,7 @@
           @if (isUserSelectEnabled) {
             <atlas-user-select
               [form]="form.controls.userSearchForm"
-              [searchInAtlas]="true"
+              searchMode="inAtlas"
               [applicationType]="form.controls.applicationType.value!"
             ></atlas-user-select>
           }

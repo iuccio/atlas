@@ -111,4 +111,13 @@ describe('StatementSelectDialogComponent', () => {
     //then
     expect(dialogRefSpy.close).toHaveBeenCalledWith([1000, 456]);
   });
+
+  it('should add statement unique to selection dialog', () => {
+    component.addStatement(statement);
+    component.addStatement(statement);
+    //when
+    component.confirm();
+    //then
+    expect(dialogRefSpy.close).toHaveBeenCalledWith([1000, 456]);
+  });
 });

@@ -2,13 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
+  Router,
   RouterStateSnapshot,
 } from '@angular/router';
 import {
   DossierDetailResolver,
   dossierResolver,
 } from './dossier-detail-resolver.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { TthDossier } from '../../../../api/model/tthDossier';
 import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
 import { HearingStatus, SwissCanton } from '../../../../api';
@@ -28,7 +29,9 @@ describe('DossierDetailResolver', () => {
     'DossierInternalService',
     ['getDossier']
   );
-  dossierInternalService.getDossier.and.returnValue(of(dossier));
+  const router = jasmine.createSpyObj('Router', {
+    navigate: Promise.resolve(true),
+  });
 
   let resolver: DossierDetailResolver;
 
@@ -40,9 +43,15 @@ describe('DossierDetailResolver', () => {
           provide: DossierInternalService,
           useValue: dossierInternalService,
         },
+        {
+          provide: Router,
+          useValue: router,
+        },
       ],
     });
     resolver = TestBed.inject(DossierDetailResolver);
+
+    dossierInternalService.getDossier.and.returnValue(of(dossier));
   });
 
   it('should create', () => {
@@ -77,5 +86,24 @@ describe('DossierDetailResolver', () => {
     result.subscribe((statement) => {
       expect(statement).toBeUndefined();
     });
+  });
+
+  it('should route on error', () => {
+    dossierInternalService.getDossier.and.returnValue(
+      throwError(() => 'Dossier not found')
+    );
+
+    const mockRoute = {
+      paramMap: convertToParamMap({ id: '1234' }),
+    } as ActivatedRouteSnapshot;
+    mockRoute.data = { hearingStatus: HearingStatus.Archived };
+
+    const result = TestBed.runInInjectionContext(() =>
+      dossierResolver(mockRoute, {} as RouterStateSnapshot)
+    ) as Observable<TthDossier | undefined>;
+    result.subscribe((statement) => {
+      expect(statement).toBeUndefined();
+    });
+    expect(router.navigate).toHaveBeenCalled();
   });
 });
