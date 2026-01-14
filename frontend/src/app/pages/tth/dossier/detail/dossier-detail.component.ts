@@ -32,6 +32,7 @@ import { StatementSelectDialogService } from '../statement-select/dialog/stateme
 import { SwissCanton } from '../../../../api';
 import { TimetableHearingStatementInternalService } from '../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { AtlasFieldErrorComponent } from '../../../../core/form-components/atlas-field-error/atlas-field-error.component';
+import { UserSelectComponent } from '../../../user-administration/user/user-select/user-select.component';
 
 @Component({
   selector: 'atlas-dossier-detail',
@@ -51,6 +52,7 @@ import { AtlasFieldErrorComponent } from '../../../../core/form-components/atlas
     CommentComponent,
     StatementSelectComponent,
     AtlasFieldErrorComponent,
+    UserSelectComponent,
   ],
   templateUrl: './dossier-detail.component.html',
   styleUrls: ['./dossier-detail.component.scss'],
@@ -84,7 +86,6 @@ export class DossierDetailComponent
   set selectedStatements(value: number[]) {
     this._selectedStatements = value;
     this.form.controls.statementIds.setValue(value);
-    this.form.controls.statementIds.markAsDirty();
   }
 
   ngOnInit() {
@@ -172,6 +173,9 @@ export class DossierDetailComponent
         this.swissCanton,
         this.timetableHearingYear
       )
-      .subscribe((selected) => (this.selectedStatements = selected));
+      .subscribe((selected) => {
+        this.selectedStatements = selected;
+        this.form.controls.statementIds.markAsDirty();
+      });
   }
 }
