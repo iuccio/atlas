@@ -1165,6 +1165,7 @@
         "METRO": "Metro",
         "ELEVATOR": "Aufzug",
         "UNKNOWN": "Unbekannt",
+        "ON_DEMAND": "On demand",
         "ALL": "Alle Verkehrsmittel"
       },
       "FREIGHT_SERVICE_POINT": "Bedienpunkt",

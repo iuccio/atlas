@@ -7,10 +7,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { PermissionRestriction } from './permissionRestriction';
+import {PermissionRestriction} from './permissionRestriction';
 
 
 export interface TransportCompanyDossierAnswerPermissionRestrictionModel extends PermissionRestriction {
 }
 export namespace TransportCompanyDossierAnswerPermissionRestrictionModel {
 }
+
+
