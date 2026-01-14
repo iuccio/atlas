@@ -117,7 +117,7 @@
         @if (form.controls.spTypeGroup.controls.stopPointGroup) {
           <div class="d-flex col-12 mb-3 mt-2">
             <atlas-select
-              class="col-6 pe-3"
+              class="col-5 pe-3"
               [formGroup]="form.controls.spTypeGroup.controls.stopPointGroup"
               controlName="stopPointType"
               dataCy="stopPointType"
@@ -128,7 +128,7 @@
               [required]="true"
             >
             </atlas-select>
-            <div class="col-6">
+            <div class="col-6 ps-2">
               <atlas-means-of-transport-picker
                 [formGroup]="form.controls.spTypeGroup.controls.stopPointGroup"
                 controlName="meansOfTransport"

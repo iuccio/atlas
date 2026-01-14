@@ -30,7 +30,7 @@ class PrmMeansOfTransportHelperTest {
     assertThat(errorResponse.getError()).isEqualTo("""
         The given Means of Transport combination [BUS, TRAIN] is not allowed.
         Allowed combination:
-        Reduced: [ELEVATOR, BUS, CHAIRLIFT, CABLE_CAR, CABLE_RAILWAY, BOAT, TRAM]
+        Reduced: [ELEVATOR, BUS, CHAIRLIFT, CABLE_CAR, CABLE_RAILWAY, BOAT, TRAM, ON_DEMAND]
         Complete: [METRO, TRAIN, RACK_RAILWAY]""");
   }
 
