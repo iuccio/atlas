@@ -1104,14 +1104,33 @@
       "NO_STATEMENTS": "Il dossier non contiene prese di posizione.",
       "STATEMENTS": "Pareri del fascicolo",
       "ADD_STATEMENTS": "Aggiungere ulteriori prese di posizione sul dossier",
+      "SEND_TO_BO": "Invia domanda",
       "STATEMENT_SELECT": {
         "CURRENT_STATEMENTS": "Pareri attualmente selezionati",
         "ADDITIONAL_STATEMENTS": "Altre prese di posizione"
       },
       "NOTIFICATION": {
         "ADD_SUCCESS": "Nuovo dossier salvato con successo.",
-        "EDIT_SUCCESS": "Il dossier è stato salvato con successo."
-      }
+        "EDIT_SUCCESS": "Il dossier è stato salvato con successo.",
+        "SENT_TO_BO": "Il dossier è stato inoltrato all’impresa di trasporto.",
+        "COMPLETE_TITLE": "Il dossier viene chiuso",
+        "COMPLETE_MESSAGE": "Con questa azione si chiude il dossier. Le prese di posizione possono poi essere nuovamente elaborate individualmente. Si desidera proseguire?"
+      },
+      "STATUS": "Stato dossier",
+      "STATUS_CHANGE": "Modifica stato",
+      "STATUS_CHANGE_INFO": "Lo stato viene trasferito ai relativi pareri.",
+      "DOSSIER_STATUS": {
+        "ADDED": "Registrato",
+        "CANCELED": "Annullato",
+        "DOSSIER_BO_CHECK": "In fase di chiarimento presso l’IT",
+        "DOSSIER_CANTON_CHECK": "Feedback IT arrivato",
+        "ACCEPTED": "Accettata",
+        "REJECTED": "Rifiutato",
+        "MOVED": "Spostato",
+        "DISSOLVED": "Risolto"
+      },
+      "CANCEL_DOSSIER": "Revoca dossier",
+      "DISSOLVE_DOSSIER": "Sciogliere dossier"
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Chiusura dell'anno di calendario",

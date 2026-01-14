@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AtlasApiService } from '../atlas-api.service';
 import { TthDossier } from '../../model/tthDossier';
+import { DossierStatus } from '../../model/dossierStatus';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,19 @@ export class DossierInternalService {
   public createDossier(tthDossier: TthDossier): Observable<TthDossier> {
     this.atlasApiService.validateParams({ tthDossier });
     return this.atlasApiService.post(`${this.BASE_PATH}`, tthDossier);
+  }
+
+  public updateDossier(tthDossier: TthDossier): Observable<TthDossier> {
+    this.atlasApiService.validateParams({ tthDossier });
+    return this.atlasApiService.put(`${this.BASE_PATH}/${tthDossier.id}`,tthDossier);
+  }
+
+  public sendDossierToBo(dossierId: number): Observable<void> {
+    return this.atlasApiService.post(`${this.BASE_PATH}/${dossierId}/send-to-bo`);
+  }
+
+  public completeDossier(dossierId: number, status: DossierStatus): Observable<void> {
+    return this.atlasApiService.post(`${this.BASE_PATH}/${dossierId}/complete/${status}`);
   }
 
 }

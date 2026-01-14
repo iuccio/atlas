@@ -1104,14 +1104,33 @@
       "NO_STATEMENTS": "Aucune prise de position n’est contenue dans le dossier.",
       "STATEMENTS": "prises de position sur le dossier",
       "ADD_STATEMENTS": "Ajouter d’autres prises de position au dossier",
+      "SEND_TO_BO": "Envoyer la question",
       "STATEMENT_SELECT": {
         "CURRENT_STATEMENTS": "Prises de position actuellement sélectionnées",
         "ADDITIONAL_STATEMENTS": "Autres prises de position"
       },
       "NOTIFICATION": {
         "ADD_SUCCESS": "Nouveau dossier enregistré avec succès.",
-        "EDIT_SUCCESS": "Le dossier a été enregistré avec succès."
-      }
+        "EDIT_SUCCESS": "Le dossier a été enregistré avec succès.",
+        "SENT_TO_BO": "Das Dossier wurde an das Transportunternehmen weitergegeben.",
+        "COMPLETE_TITLE": "Dossier wird abgeschlossen",
+        "COMPLETE_MESSAGE": "Mit dieser Aktion wird das Dossier geschlossen. Die Stellungnahmen können danach wieder einzeln bearbeitet werden. Möchten Sie fortfahren?"
+      },
+      "STATUS": "Dossier-Status",
+      "STATUS_CHANGE": "Status ändern",
+      "STATUS_CHANGE_INFO": "Der Status wird auf die zugehörigen Stellungnahmen übertragen.",
+      "DOSSIER_STATUS": {
+        "ADDED": "Erfasst",
+        "CANCELED": "Abgebrochen",
+        "DOSSIER_BO_CHECK": "In Abklärung bei TU",
+        "DOSSIER_CANTON_CHECK": "Rückmeldung TU eingetroffen",
+        "ACCEPTED": "Angenommen",
+        "REJECTED": "Abgelehnt",
+        "MOVED": "Verschoben",
+        "DISSOLVED": "Aufgelöst"
+      },
+      "CANCEL_DOSSIER": "Dossier aufheben",
+      "DISSOLVE_DOSSIER": "Dossier auflösen"
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Clôture de l'année horaire",

@@ -1104,14 +1104,33 @@
       "NO_STATEMENTS": "Es sind keine Stellungnahmen im Dossier enthalten.",
       "STATEMENTS": "Stellungnahmen des Dossiers",
       "ADD_STATEMENTS": "Weitere Stellungnahmen zum Dossier hinzufügen",
+      "SEND_TO_BO": "Frage senden",
       "STATEMENT_SELECT": {
         "CURRENT_STATEMENTS": "Aktuell ausgewählte Stellungnahmen",
         "ADDITIONAL_STATEMENTS": "Weitere Stellungnahmen"
       },
       "NOTIFICATION": {
         "ADD_SUCCESS": "Neues Dossier erfolgreich gespeichert.",
-        "EDIT_SUCCESS": "Das Dossier wurde erfolgreich gespeichert."
-      }
+        "EDIT_SUCCESS": "Das Dossier wurde erfolgreich gespeichert.",
+        "SENT_TO_BO": "Das Dossier wurde an das Transportunternehmen weitergegeben.",
+        "COMPLETE_TITLE": "Dossier wird abgeschlossen",
+        "COMPLETE_MESSAGE": "Mit dieser Aktion wird das Dossier geschlossen. Die Stellungnahmen können danach wieder einzeln bearbeitet werden. Möchten Sie fortfahren?"
+      },
+      "STATUS": "Dossier-Status",
+      "STATUS_CHANGE": "Status ändern",
+      "STATUS_CHANGE_INFO": "Der Status wird auf die zugehörigen Stellungnahmen übertragen.",
+      "DOSSIER_STATUS": {
+        "ADDED": "Erfasst",
+        "CANCELED": "Abgebrochen",
+        "DOSSIER_BO_CHECK": "In Abklärung bei TU",
+        "DOSSIER_CANTON_CHECK": "Rückmeldung TU eingetroffen",
+        "ACCEPTED": "Angenommen",
+        "REJECTED": "Abgelehnt",
+        "MOVED": "Verschoben",
+        "DISSOLVED": "Aufgelöst"
+      },
+      "CANCEL_DOSSIER": "Dossier aufheben",
+      "DISSOLVE_DOSSIER": "Dossier auflösen"
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Fahrplanjahr schliessen",

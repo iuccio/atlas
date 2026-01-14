@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, Input } from '@angular/core';
 import { MAX_DATE, MIN_DATE } from '../../date/date.service';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
@@ -37,8 +37,8 @@ export class DateComponent {
   @Input() controlName = 'validFrom';
   @Input() controlNameTo = 'validTo';
 
-  MIN_DATE = MIN_DATE;
-  MAX_DATE = MAX_DATE;
+  minDate = input(MIN_DATE);
+  maxDate = input(MAX_DATE);
 
   readonly EXAMPLE_DATE = '21.01.2021';
 
