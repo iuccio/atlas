@@ -38,6 +38,9 @@
             [removeOptionEnabled]="form.enabled"
           >
           </atlas-statement-select>
+          <atlas-field-error
+            [control]="form.controls.statementIds"
+          ></atlas-field-error>
 
           @if (form.enabled) {
             <atlas-button

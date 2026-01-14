@@ -42,15 +42,13 @@ import { Pages } from '../../../../pages';
   providers: [TranslatePipe],
 })
 export class StatementSelectDialogComponent implements OnInit {
-  data = inject<StatementSelectData>(MAT_DIALOG_DATA);
-  selectedStatements: number[] = [];
-
   private readonly dialogRef =
     inject<MatDialogRef<StatementSelectDialogComponent>>(MatDialogRef);
   private readonly timetableHearingStatementsService = inject(
     TimetableHearingStatementInternalService
   );
   private readonly tableService = inject(TableService);
+
   readonly tableColumns: TableColumn<TimetableHearingStatementV2>[] = [
     { headerTitle: 'ID', value: 'id' },
     {
@@ -100,6 +98,9 @@ export class StatementSelectDialogComponent implements OnInit {
       },
     },
   ];
+
+  readonly data = inject<StatementSelectData>(MAT_DIALOG_DATA);
+  selectedStatements: number[] = [];
 
   selectedIncludes(row: TimetableHearingStatementV2) {
     return this.selectedStatements.includes(row.id!);
@@ -156,6 +157,7 @@ export class StatementSelectDialogComponent implements OnInit {
             (numberOrUndefined): numberOrUndefined is number =>
               !!numberOrUndefined
           ),
+        false,
         pagination.page,
         pagination.size,
         addElementsToArrayWhenNotUndefined(

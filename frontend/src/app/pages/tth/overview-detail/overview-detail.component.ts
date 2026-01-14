@@ -221,6 +221,7 @@ export class OverviewDetailComponent implements OnInit {
             (numberOrUndefined): numberOrUndefined is number =>
               !!numberOrUndefined
           ),
+        undefined,
         pagination.page,
         pagination.size,
         addElementsToArrayWhenNotUndefined(

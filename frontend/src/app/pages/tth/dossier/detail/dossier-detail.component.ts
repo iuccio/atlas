@@ -31,6 +31,7 @@ import { StatementSelectComponent } from '../statement-select/statement-select.c
 import { StatementSelectDialogService } from '../statement-select/dialog/statement-select-dialog.service';
 import { SwissCanton } from '../../../../api';
 import { TimetableHearingStatementInternalService } from '../../../../api/service/lidi/timetable-hearing-statement-internal.service';
+import { AtlasFieldErrorComponent } from '../../../../core/form-components/atlas-field-error/atlas-field-error.component';
 
 @Component({
   selector: 'atlas-dossier-detail',
@@ -49,6 +50,7 @@ import { TimetableHearingStatementInternalService } from '../../../../api/servic
     DateComponent,
     CommentComponent,
     StatementSelectComponent,
+    AtlasFieldErrorComponent,
   ],
   templateUrl: './dossier-detail.component.html',
   styleUrls: ['./dossier-detail.component.scss'],

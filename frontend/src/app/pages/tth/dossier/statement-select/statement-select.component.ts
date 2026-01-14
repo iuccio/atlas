@@ -17,7 +17,6 @@ import { forkJoin } from 'rxjs';
   selector: 'atlas-statement-select',
   imports: [FormsModule, ReactiveFormsModule, TableComponent, TranslatePipe],
   templateUrl: './statement-select.component.html',
-  styleUrls: ['./statement-select.component.scss'],
 })
 export class StatementSelectComponent {
   selectedStatements = model.required<number[]>();
