@@ -54,7 +54,7 @@ describe('DateComponent', () => {
   });
 
   it('MIN_DATE and MAX_DATE should be defined', () => {
-    expect(component.MIN_DATE).toBeDefined();
-    expect(component.MAX_DATE).toBeDefined();
+    expect(component.minDate()).toBeDefined();
+    expect(component.maxDate()).toBeDefined();
   });
 });

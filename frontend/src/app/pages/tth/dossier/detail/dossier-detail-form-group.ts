@@ -5,6 +5,7 @@ import { AtlasFieldLengthValidator } from '../../../../core/validation/field-len
 import { WhitespaceValidator } from '../../../../core/validation/whitespace/whitespace-validator';
 import moment, { Moment } from 'moment/moment';
 import { TthDossier } from '../../../../api/model/tthDossier';
+import { DossierStatus } from '../../../../api/model/dossierStatus';
 
 export interface DossierDetailFormGroup {
   id: FormControl<number | null | undefined>;
@@ -16,6 +17,7 @@ export interface DossierDetailFormGroup {
   boContactMail: FormControl<string | null | undefined>;
   boDeadlineToAnswer: FormControl<Moment | null | undefined>;
   question: FormControl<string | null | undefined>;
+  dossierStatus: FormControl<DossierStatus | null | undefined>;
 }
 
 export class DossierFormGroupBuilder {
@@ -52,6 +54,7 @@ export class DossierFormGroupBuilder {
         Validators.maxLength(5000),
         WhitespaceValidator.blankOrEmptySpaceSurrounding,
       ]),
+      dossierStatus: new FormControl(dossier?.dossierStatus),
     });
   }
 
@@ -65,6 +68,7 @@ export class DossierFormGroupBuilder {
       publicComment: form.controls.publicComment.value!,
       boContactMail: form.controls.boContactMail.value!,
       boDeadlineToAnswer: form.controls.boDeadlineToAnswer.value?.toDate(),
+      dossierStatus: form.controls.dossierStatus.value!,
       questions: [],
     };
     if (form.controls.question.value) {

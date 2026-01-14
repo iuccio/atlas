@@ -16,8 +16,8 @@
     <div class="text-field-flex">
       <input
         [matDatepicker]="datePicker"
-        [max]="MAX_DATE"
-        [min]="MIN_DATE"
+        [max]="maxDate()"
+        [min]="minDate()"
         [attr.data-cy]="controlName"
         [formControlName]="controlName"
       />

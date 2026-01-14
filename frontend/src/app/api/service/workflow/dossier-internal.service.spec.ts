@@ -5,6 +5,7 @@ import { UserService } from '../../../core/auth/user/user.service';
 import { DossierInternalService } from './dossier-internal.service';
 import { TthDossier } from '../../model/tthDossier';
 import { SwissCanton } from '../../model/swissCanton';
+import { DossierStatus } from '../../model/dossierStatus';
 
 describe('DossierInternalService', () => {
   let service: DossierInternalService;
@@ -33,6 +34,7 @@ describe('DossierInternalService', () => {
     apiService = TestBed.inject(AtlasApiService);
     spyOn(apiService, 'get');
     spyOn(apiService, 'post');
+    spyOn(apiService, 'put');
     spyOn(apiService, 'validateParams').and.callThrough();
     spyOn(apiService, 'paramsOf').and.callThrough();
   });
@@ -51,6 +53,30 @@ describe('DossierInternalService', () => {
 
     // then
     expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier', dossier);
+  });
+
+  it('should update dossier', () => {
+    // when
+    service.updateDossier(dossier);
+
+    // then
+    expect(apiService.put).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier/1234', dossier);
+  });
+
+  it('should send dossier to bo', () => {
+    // when
+    service.sendDossierToBo(5);
+
+    // then
+    expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier/5/send-to-bo');
+  });
+
+  it('should complete dossier', () => {
+    // when
+    service.completeDossier(5, DossierStatus.Accepted);
+
+    // then
+    expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier/5/complete/ACCEPTED');
   });
 
 });

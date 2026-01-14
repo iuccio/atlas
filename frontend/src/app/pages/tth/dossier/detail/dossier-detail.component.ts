@@ -33,6 +33,10 @@ import { SwissCanton } from '../../../../api';
 import { TimetableHearingStatementInternalService } from '../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { AtlasFieldErrorComponent } from '../../../../core/form-components/atlas-field-error/atlas-field-error.component';
 import { UserSelectComponent } from '../../../user-administration/user/user-select/user-select.component';
+import { Cantons } from '../../../../core/cantons/Cantons';
+import { DossierStatus } from '../../../../api/model/dossierStatus';
+import { SelectComponent } from '../../../../core/form-components/select/select.component';
+import { DialogService } from '../../../../core/components/dialog/dialog.service';
 
 @Component({
   selector: 'atlas-dossier-detail',
@@ -53,6 +57,7 @@ import { UserSelectComponent } from '../../../user-administration/user/user-sele
     StatementSelectComponent,
     AtlasFieldErrorComponent,
     UserSelectComponent,
+    SelectComponent,
   ],
   templateUrl: './dossier-detail.component.html',
   styleUrls: ['./dossier-detail.component.scss'],
@@ -71,10 +76,36 @@ export class DossierDetailComponent
   private readonly timetableHearingStatementInternalService = inject(
     TimetableHearingStatementInternalService
   );
+  private readonly dialogService = inject(DialogService);
+
+  readonly editableStates = [
+    DossierStatus.Added,
+    DossierStatus.DossierCantonCheck,
+    DossierStatus.Accepted,
+    DossierStatus.Rejected,
+    DossierStatus.Moved,
+  ];
+  readonly cancelableStates = [DossierStatus.Added];
+  readonly dissolvableStates = [
+    DossierStatus.DossierCantonCheck,
+    DossierStatus.Accepted,
+    DossierStatus.Rejected,
+    DossierStatus.Moved,
+  ];
+  readonly formStatusOptions: DossierStatus[] = [
+    DossierStatus.Accepted,
+    DossierStatus.Rejected,
+    DossierStatus.Moved,
+  ];
 
   form!: FormGroup<DossierDetailFormGroup>;
+  currentDossier?: TthDossier;
   isNew = false;
-  swissCanton!: SwissCanton;
+  swissCanton?: SwissCanton;
+
+  get cantonShort() {
+    return Cantons.fromSwissCanton(this.swissCanton)?.short;
+  }
   timetableHearingYear!: number;
 
   private _selectedStatements!: number[];
@@ -89,12 +120,11 @@ export class DossierDetailComponent
   }
 
   ngOnInit() {
-    const dossier: TthDossier | undefined =
-      this.activatedRoute.snapshot.data.dossier;
-    this.form = DossierFormGroupBuilder.buildFormGroup(dossier);
-    if (dossier) {
+    this.currentDossier = this.activatedRoute.snapshot.data.dossier;
+    this.form = DossierFormGroupBuilder.buildFormGroup(this.currentDossier);
+    if (this.currentDossier) {
       this.isNew = false;
-      this.selectedStatements = dossier.statementIds;
+      this.selectedStatements = this.currentDossier.statementIds;
       this.form.disable();
     } else {
       this.isNew = true;
@@ -117,6 +147,13 @@ export class DossierDetailComponent
       });
   }
 
+  get isEditable(): boolean {
+    return (
+      !!this.currentDossier &&
+      this.editableStates.includes(this.currentDossier.dossierStatus!)
+    );
+  }
+
   toggleEdit() {
     if (this.form.enabled) {
       this.detailHelperService.showCancelEditDialog(this);
@@ -137,7 +174,7 @@ export class DossierDetailComponent
       if (this.isNew) {
         this.createDossier(dossier);
       } else {
-        console.log('Dossier Update not implemented yet');
+        this.updateDossier(dossier);
       }
     }
   }
@@ -159,6 +196,27 @@ export class DossierDetailComponent
       });
   }
 
+  private updateDossier(dossier: TthDossier) {
+    this.dossierInternalService
+      .updateDossier(dossier)
+      .pipe(catchError(this.handleError()))
+      .subscribe((dossier) => {
+        this.notificationService.success(
+          'TTH.DOSSIER.NOTIFICATION.EDIT_SUCCESS'
+        );
+        this.goToDossier(dossier.id!);
+      });
+  }
+
+  private goToDossier(dossierId: number) {
+    this.router
+      .navigate(['..', dossierId], {
+        relativeTo: this.activatedRoute,
+        queryParams: {},
+      })
+      .then(() => this.ngOnInit());
+  }
+
   private handleError() {
     return () => {
       this.form.enable();
@@ -170,12 +228,52 @@ export class DossierDetailComponent
     this.statementSelectDialogService
       .select(
         this.selectedStatements,
-        this.swissCanton,
+        this.swissCanton!,
         this.timetableHearingYear
       )
       .subscribe((selected) => {
         this.selectedStatements = selected;
         this.form.controls.statementIds.markAsDirty();
+      });
+  }
+
+  get isSendableToBo(): boolean {
+    return (
+      this.currentDossier?.dossierStatus === DossierStatus.Added &&
+      !!this.form.controls.boContactMail.value &&
+      !!this.form.controls.boDeadlineToAnswer.value &&
+      !!this.form.controls.question.value
+    );
+  }
+
+  sendToBo() {
+    this.dossierInternalService
+      .sendDossierToBo(this.currentDossier!.id!)
+      .subscribe(() => {
+        this.notificationService.success('TTH.DOSSIER.NOTIFICATION.SENT_TO_BO');
+        this.goToDossier(this.currentDossier!.id!);
+      });
+  }
+
+  completeDossier(status: DossierStatus) {
+    this.dialogService
+      .confirm({
+        title: 'TTH.DOSSIER.NOTIFICATION.COMPLETE_TITLE',
+        message: 'TTH.DOSSIER.NOTIFICATION.COMPLETE_MESSAGE',
+        confirmText: 'DIALOG.OK',
+        cancelText: 'DIALOG.CANCEL',
+      })
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.dossierInternalService
+            .completeDossier(this.currentDossier!.id!, status)
+            .subscribe(() => {
+              this.notificationService.success(
+                'TTH.DOSSIER.NOTIFICATION.EDIT_SUCCESS'
+              );
+              this.goToDossier(this.currentDossier!.id!);
+            });
+        }
       });
   }
 }

@@ -72,7 +72,7 @@
               <atlas-button
                 buttonDataCy="open-in-mail"
                 buttonText="TTH.STATEMENT.CLARIFICATION_MAIL"
-                buttonType="create"
+                buttonType="defaultPrimary"
               >
                 <ng-template #rightIcon>
                   <i class="ps-2 bi bi-envelope"></i>
@@ -150,6 +150,21 @@
                 >
                 </atlas-form-comment>
               </div>
+              @if (this.cantonShort && form.disabled && isSendableToBo) {
+                <div class="mt-3">
+                  <atlas-button
+                    (buttonClicked)="sendToBo()"
+                    buttonDataCy="send-to-bo"
+                    buttonText="TTH.DOSSIER.SEND_TO_BO"
+                    [canton]="cantonShort"
+                    applicationType="TIMETABLE_HEARING"
+                    buttonStyleClass="atlas-primary-btn"
+                    buttonType="cantonWritePermission"
+                    wrapperStyleClass="me-3"
+                  >
+                  </atlas-button>
+                </div>
+              }
             </div>
           </div>
         </div>
@@ -181,6 +196,34 @@
           >
           </atlas-form-comment>
         </div>
+        @if (!isNew) {
+          <div class="mt-5">
+            <span class="font-bold-lg pe-1"
+              >{{ 'TTH.DOSSIER.STATUS' | translate }}:</span
+            >
+            <span>{{
+              'TTH.DOSSIER.DOSSIER_STATUS.' + currentDossier?.dossierStatus
+                | translate
+            }}</span>
+            @if (form.enabled) {
+              <div class="mt-3">
+                <atlas-select
+                  [formGroup]="form"
+                  controlName="dossierStatus"
+                  [additionalLabelspace]="0"
+                  [options]="formStatusOptions"
+                  optionTranslateLabelPrefix="TTH.DOSSIER.DOSSIER_STATUS."
+                  dataCy="selectTthYear"
+                  label="TTH.DOSSIER.STATUS_CHANGE"
+                >
+                </atlas-select>
+                <div class="mt-2">
+                  {{ 'TTH.DOSSIER.STATUS_CHANGE_INFO' | translate }}
+                </div>
+              </div>
+            }
+          </div>
+        }
       </div>
     </atlas-detail-page-content>
 
@@ -194,6 +237,19 @@
         wrapperStyleClass="me-3"
       >
       </atlas-button>
+      @if (form.disabled && cantonShort && isEditable) {
+        <atlas-button
+          (buttonClicked)="toggleEdit()"
+          [canton]="cantonShort"
+          applicationType="TIMETABLE_HEARING"
+          buttonDataCy="edit"
+          buttonStyleClass="atlas-primary-btn"
+          buttonText="COMMON.EDIT"
+          buttonType="cantonWritePermission"
+          wrapperStyleClass="me-3"
+        >
+        </atlas-button>
+      }
       <atlas-button
         (buttonClicked)="toggleEdit()"
         [footerEdit]="form.enabled"
@@ -213,6 +269,34 @@
         buttonType="whiteFooterEdit"
       >
       </atlas-button>
+      @if (this.cantonShort && form.disabled && currentDossier) {
+        @if (cancelableStates.includes(currentDossier.dossierStatus!)) {
+          <atlas-button
+            (buttonClicked)="completeDossier('CANCELED')"
+            [canton]="cantonShort"
+            applicationType="TIMETABLE_HEARING"
+            buttonDataCy="cancel-dossier"
+            buttonStyleClass="atlas-primary-btn"
+            buttonText="TTH.DOSSIER.CANCEL_DOSSIER"
+            buttonType="cantonWritePermission"
+            wrapperStyleClass="me-3"
+          >
+          </atlas-button>
+        }
+        @if (dissolvableStates.includes(currentDossier.dossierStatus!)) {
+          <atlas-button
+            (buttonClicked)="completeDossier('DISSOLVED')"
+            [canton]="cantonShort"
+            applicationType="TIMETABLE_HEARING"
+            buttonDataCy="dissolve-dossier"
+            buttonStyleClass="atlas-primary-btn"
+            buttonText="TTH.DOSSIER.DISSOLVE_DOSSIER"
+            buttonType="cantonWritePermission"
+            wrapperStyleClass="me-3"
+          >
+          </atlas-button>
+        }
+      }
     </atlas-detail-footer>
   </atlas-detail-page-container>
 </div>

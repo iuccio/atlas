@@ -98,11 +98,13 @@ public class TthDossierService {
   public TthDossier updateDossier(Long dossierId, TthDossier dossier) {
     TthDossier currentDossier = getDossierById(dossierId);
     checkDossierIsInEditableStatus(currentDossier);
+    if (!dossier.getDossierStatus().isAllowedForUpdate()) {
+      dossier.setDossierStatus(currentDossier.getDossierStatus());
+    }
     boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
 
     updateRemovedStatements(currentDossier, dossier);
 
-    dossier.setDossierStatus(currentDossier.getDossierStatus());
     TthDossier updatedDossier = dossierRepository.saveAndFlush(dossier);
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(updatedDossier));
 
