@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { StatementSelectDialogComponent } from './statement-select-dialog.component';
 import { DialogData } from '../../../../../core/components/dialog/dialog.data';
@@ -10,8 +10,6 @@ import { filter } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class StatementSelectDialogService {
-  private dialogRef?: MatDialogRef<StatementSelectDialogComponent>;
-
   private readonly dialog = inject(MatDialog);
 
   select(
@@ -28,14 +26,14 @@ export class StatementSelectDialogService {
       swissCanton: swissCanton,
       timetableHearingYear: timetableHearingYear,
     };
-    this.dialogRef = this.dialog.open(StatementSelectDialogComponent, {
+    const dialogRef = this.dialog.open(StatementSelectDialogComponent, {
       data: selectStatementsData,
       disableClose: true,
       panelClass: 'atlas-dialog-panel',
       backdropClass: 'atlas-dialog-backdrop',
     });
 
-    return this.dialogRef.afterClosed().pipe(filter((i) => i));
+    return dialogRef.afterClosed().pipe(filter((i) => i));
   }
 }
 

@@ -23,6 +23,7 @@ import ch.sbb.line.directory.exception.TtfnidNotFoundException;
 import ch.sbb.line.directory.helper.PdfFiles;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumberVersion;
 import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberVersionRepository;
+import ch.sbb.line.directory.module.tth.entity.StatementSender;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.exception.StatementPartOfDossierException;
@@ -668,6 +669,44 @@ class TimetableHearingStatementServiceTest {
         .build();
 
     hearingStatements = timetableHearingStatementService.getHearingStatements(searchRestrictions);
+    assertThat(hearingStatements.getTotalElements()).isZero();
+  }
+
+  @Test
+  void shouldFindStatementByPartOfDossier() {
+    TimetableHearingStatement timetableHearingStatementModel = TimetableHearingStatement.builder()
+        .statementStatus(StatementStatus.RECEIVED)
+        .timetableYear(YEAR)
+        .swissCanton(SwissCanton.BERN)
+        .statementSender(StatementSender.builder()
+            .emails(List.of("mail@be.ch"))
+            .build())
+        .statement("Ich hätte gerne mehrere Verbindungen am Abend.")
+        .dossierId(1L)
+        .build();
+    timetableHearingStatementRepository.save(timetableHearingStatementModel);
+
+    TimetableHearingStatementSearchRestrictions searchRestrictions = TimetableHearingStatementSearchRestrictions.builder()
+        .statementRequestParams(TimetableHearingStatementRequestParams.builder()
+            .partOfDossier(true)
+            .build())
+        .pageable(Pageable.unpaged())
+        .build();
+
+    Page<TimetableHearingStatement> hearingStatements = timetableHearingStatementService.getHearingStatements(searchRestrictions);
+
+    assertThat(hearingStatements.getTotalElements()).isEqualTo(1);
+
+    // Negative Test
+    searchRestrictions = TimetableHearingStatementSearchRestrictions.builder()
+        .statementRequestParams(TimetableHearingStatementRequestParams.builder()
+            .partOfDossier(false)
+            .build())
+        .pageable(Pageable.unpaged())
+        .build();
+
+    hearingStatements = timetableHearingStatementService.getHearingStatements(searchRestrictions);
+
     assertThat(hearingStatements.getTotalElements()).isZero();
   }
 }

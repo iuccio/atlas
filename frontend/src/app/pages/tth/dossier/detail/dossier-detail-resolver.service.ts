@@ -7,8 +7,8 @@ import { TthDossier } from '../../../../api/model/tthDossier';
 
 @Injectable({ providedIn: 'root' })
 export class DossierDetailResolver {
-  readonly dossierInternalService = inject(DossierInternalService);
-  readonly router = inject(Router);
+  private readonly dossierInternalService = inject(DossierInternalService);
+  private readonly router = inject(Router);
 
   resolve(route: ActivatedRouteSnapshot): Observable<TthDossier | undefined> {
     const idParameter = route.paramMap.get('id') || '0';
