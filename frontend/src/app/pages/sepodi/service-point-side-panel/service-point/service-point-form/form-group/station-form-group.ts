@@ -2,6 +2,7 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import {
@@ -138,16 +139,24 @@ export class StationFormGroup {
   }
 
   static stopPointGroup(version?: ReadServicePointVersion) {
-    return new FormGroup<StopPointGroup>({
-      stopPointType: new FormControl(version?.stopPointType, {
-        nonNullable: true,
-        validators: this.stopPointTypeRequiredValidator,
-      }),
-      meansOfTransport: new FormControl(version?.meansOfTransport ?? [], {
-        nonNullable: true,
-        validators: Validators.required,
-      }),
-    });
+    return new FormGroup<StopPointGroup>(
+      {
+        stopPointType: new FormControl(version?.stopPointType, {
+          nonNullable: true,
+          validators: this.stopPointTypeRequiredValidator,
+        }),
+        meansOfTransport: new FormControl(version?.meansOfTransport ?? [], {
+          nonNullable: true,
+          validators: Validators.required,
+        }),
+      },
+      [
+        this.meansOfTranportOnDemandValidator(
+          'stopPointType',
+          'meansOfTransport'
+        ),
+      ]
+    );
   }
 
   static freightPointGroup(
@@ -234,4 +243,33 @@ export class StationFormGroup {
       }
     }
   };
+
+  static meansOfTranportOnDemandValidator(
+    stopPointType: string,
+    meansOfTransport: string
+  ) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const stopPointControl = control.get(stopPointType);
+      const meansOfTransportControl = control.get(meansOfTransport);
+      return this.validateMeansOfTranportOnDemand(
+        stopPointControl,
+        meansOfTransportControl
+      );
+    };
+  }
+
+  static validateMeansOfTranportOnDemand(
+    stopPointControl: AbstractControl | null,
+    meansOfTransportControl: AbstractControl | null
+  ) {
+    const stopPointValue = stopPointControl?.value;
+    const meansOfTransportValue = meansOfTransportControl?.value;
+    const containsMeansOfTransport =
+      meansOfTransportValue.length > 0 &&
+      meansOfTransportValue.includes(MeanOfTransport.OnDemand);
+    if (containsMeansOfTransport && stopPointValue !== StopPointType.OnDemand) {
+      meansOfTransportControl?.setErrors({ sepodiOnDemand: 'onDemand' });
+    }
+    return null;
+  }
 }

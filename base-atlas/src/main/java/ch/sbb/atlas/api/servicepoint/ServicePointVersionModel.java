@@ -10,6 +10,7 @@ import ch.sbb.atlas.servicepoint.enumeration.OperatingPointTrafficPointType;
 import ch.sbb.atlas.servicepoint.enumeration.OperatingPointType;
 import ch.sbb.atlas.servicepoint.enumeration.StopPointType;
 import ch.sbb.atlas.validation.DatesValidator;
+import ch.sbb.atlas.validation.ValidOnDemand;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
@@ -34,6 +35,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @FieldNameConstants
+@ValidOnDemand
 public abstract class ServicePointVersionModel extends BaseVersionModel implements DatesValidator {
 
   @Schema(description = """
@@ -153,5 +155,14 @@ public abstract class ServicePointVersionModel extends BaseVersionModel implemen
     }
     return categories;
   }
+
+  //  @JsonIgnore
+  //  @AssertTrue(message = "StopPoint.OnDemand only works if MeanOfTransport.OnDemand is also active, and vice versa.")
+  //  public boolean isOnDemand() {
+  //    boolean containsOnDemand =
+  //        getMeansOfTransport().stream().allMatch(MeanOfTransport.ON_DEMAND::equals);
+  //    boolean isStopPointTypeOnDemand = getStopPointType() == StopPointType.ON_DEMAND;
+  //    return containsOnDemand == isStopPointTypeOnDemand;
+  //  }
 
 }
