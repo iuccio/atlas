@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,6 +84,7 @@ public interface TimetableHearingStatementApiInternal {
   @PreAuthorize("@cantonBasedUserAdministrationService"
       + ".isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)")
   Resource getStatementsAsCsv(@PathVariable String language,
+      @RequestParam boolean anonymized,
       @ParameterObject TimetableHearingStatementRequestParams statementRequestParams);
 
   @GetMapping(path = BASE_PATH + "/{id}")

@@ -69,7 +69,9 @@ public class TimetableHearingStatementControllerInternal implements TimetableHea
   }
 
   @Override
-  public Resource getStatementsAsCsv(String language, TimetableHearingStatementRequestParams statementRequestParams) {
+  public Resource getStatementsAsCsv(String language,
+      boolean anonymized, TimetableHearingStatementRequestParams statementRequestParams
+  ) {
     if (statementRequestParams.getTimetableHearingYear() == null) {
       throw new BadRequestException("timetableHearingYear is mandatory here");
     }
@@ -81,7 +83,7 @@ public class TimetableHearingStatementControllerInternal implements TimetableHea
     File csvFile = timetableHearingStatementExportService.getStatementsAsCsv(
         statements.getObjects(),
         Locale.forLanguageTag(language),
-        statementRequestParams.isAnonymized()
+        anonymized
     );
 
     try {
