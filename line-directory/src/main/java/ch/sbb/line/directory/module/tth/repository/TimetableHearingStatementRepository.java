@@ -28,4 +28,14 @@ public interface TimetableHearingStatementRepository extends JpaRepository<Timet
       set tths.statementStatus = :status
       where tths.id in :statementIds""")
   void updateStatementStatusByIds(Collection<Long> statementIds, StatementStatus status);
+
+  @Transactional
+  @Modifying
+  @Query("""
+      update ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement tths
+      set tths.dossierId = null, tths.dossierContactMail = null, tths.statementStatus = ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus.RECEIVED
+      where tths.id in :statementIds""")
+  void removeDossierRelationFor(Collection<Long> statementIds); // todo: check if both attributes = null are correct
+
+  Collection<Long> id(Long id);
 }

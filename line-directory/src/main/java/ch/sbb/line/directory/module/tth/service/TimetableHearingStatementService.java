@@ -351,4 +351,8 @@ public class TimetableHearingStatementService {
         && updateModel.getDossierId() != null
         && !statement.getDossierId().equals(updateModel.getDossierId());
   }
+
+  public void removeDossierRelationsFor(List<Long> ids) {
+    timetableHearingStatementRepository.removeDossierRelationFor(ids);
+  }
 }

@@ -1,7 +1,6 @@
 package ch.sbb.line.directory.module.tth.service;
 
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
-import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.line.directory.module.tth.client.WorkflowClient;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
@@ -73,10 +72,10 @@ public class TimetableHearingYearService {
 
   @Transactional
   public void transitionStatusAccordingDossier() {
-    List<Long> statementIdsFromStatus = workflowClient.getStatementIdsFromDossierStatus(
-        List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK)
-    );
-    timetableHearingStatementService.updateStatementsToReceived(statementIdsFromStatus);
+    //    List<Long> statementIdsFromStatus = workflowClient.getStatementIdsFromDossierStatus(
+    //        List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK)
+    //    ); todo: remove also with after unused methods
+    //    timetableHearingStatementService.updateStatementsToReceived(statementIdsFromStatus);
     workflowClient.patchDossierStatusClosingYear();
   }
 

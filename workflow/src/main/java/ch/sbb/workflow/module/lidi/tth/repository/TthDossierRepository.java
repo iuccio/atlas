@@ -5,7 +5,6 @@ import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,19 +19,39 @@ public interface TthDossierRepository extends JpaRepository<TthDossier, Long>, J
   List<Long> findStatementIdsByDossierStatusIn(List<DossierStatus> dossierStatus);
 
   @Transactional
-  @Modifying
-  @Query("""
-      update ch.sbb.workflow.module.lidi.tth.entity.TthDossier tthd
-      set tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.CANCELED
-      where tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.ADDED""")
-  void updateDossierStatusFromAddedToCanceled();
+  @Query(value = """
+      with updated as (
+            update tth_dossier
+                set dossier_status = 'CANCELED'
+                where dossier_status = 'ADDED'
+            returning *
+            )
+      select * from updated
+      """, nativeQuery = true)
+  List<TthDossier> updateDossierStatusFromAddedToCanceled();
 
   @Transactional
-  @Modifying
-  @Query("""
-      update ch.sbb.workflow.module.lidi.tth.entity.TthDossier tthd
-      set tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.DISSOLVED
-      where tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.DOSSIER_BO_CHECK
-            or tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.DOSSIER_CANTON_CHECK""")
-  void updateDossierStatusFromCheckToDissolved();
+  @Query(value = """
+      with updated as (
+            update tth_dossier
+                set dossier_status = 'DISSOLVED'
+                where dossier_status = 'DOSSIER_BO_CHECK'
+                    or dossier_status = 'DOSSIER_CANTON_CHECK'
+                    or dossier_status = 'MOVED'
+            returning id
+            )
+      select id from updated
+      """, nativeQuery = true)
+  List<Long> updateDossierStatusFromCheckOrMovedToDissolved();
+
+  @Transactional
+  @Query(value = """
+      with deleted as (
+            delete from tth_dossier_statement_ids
+                where tth_dossier_id in :dossierIds
+            returning statement_ids
+            )
+      select statement_ids from deleted
+      """, nativeQuery = true)
+  List<Long> deleteDossierStatementRelationsFor(List<Long> dossierIds);
 }
