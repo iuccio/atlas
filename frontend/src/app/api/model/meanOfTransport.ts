@@ -9,7 +9,7 @@
  */
 
 
-export type MeanOfTransport = 'TRAIN' | 'BUS' | 'TRAM' | 'BOAT' | 'CABLE_CAR' | 'CHAIRLIFT' | 'CABLE_RAILWAY' | 'RACK_RAILWAY' | 'METRO' | 'ELEVATOR' | 'ON_DEMAND' |'UNKNOWN' ;
+export type MeanOfTransport = 'TRAIN' | 'BUS' | 'TRAM' | 'BOAT' | 'CABLE_CAR' | 'CHAIRLIFT' | 'CABLE_RAILWAY' | 'RACK_RAILWAY' | 'METRO' | 'ELEVATOR' | 'ON_DEMAND' | 'UNKNOWN';
 
 export const MeanOfTransport = {
 

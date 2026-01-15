@@ -33,7 +33,7 @@ class ErrorResponseMapperTest extends BaseValidatorTest {
   void shouldMapConstraintViolationExceptionToErrorResponse() {
     ErrorResponse errorResponse = ErrorResponseMapper.mapToErrorResponse(getExampleConstraintViolation());
 
-    assertThat(errorResponse.getDetails()).size().isEqualTo(2);
+    assertThat(errorResponse.getDetails()).size().isEqualTo(3);
   }
 
   private ConstraintViolationException getExampleConstraintViolation() {

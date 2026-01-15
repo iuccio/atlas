@@ -315,7 +315,8 @@
     "NOTUNIQUEEMAIL": "L'e-mail esiste già. Verificare se il destinatario è già stato inserito o modificare l'indirizzo e-mail.",
     "EXAMINANT_OR_CC_MAIL": "Inserire almeno un destinatario o un indirizzo e-mail aggiuntivo.",
     "REQUIREDANDNOTUNKNOWN": "Non può essere vuoto o non specificato.",
-    "REQ_SELECTED_ERROR": "Numero di elementi da selezionare: {{reqSelections}}"
+    "REQ_SELECTED_ERROR": "Numero di elementi da selezionare: {{reqSelections}}",
+    "SEPODIONDEMAND": "L'opzione di trasporto On Demand può essere selezionata solo in combinazione con il tipo di fermata On Demand."
   },
   "USER_ADMIN": {
     "SEARCH_FOR_FILTER": "Organizzazioni aziendali e Applicazioni",
@@ -1150,7 +1151,8 @@
         "ZONE_ON_REQUEST": "Fermata facoltativa (zona)",
         "TEMPORARY": "Fermata temporanea",
         "OUT_OF_ORDER": "Fermata fuori servizio",
-        "UNKNOWN": "Non specificata"
+        "UNKNOWN": "Non specificata",
+        "ON_DEMAND": "On Demand"
       },
       "MEANS_OF_TRANSPORT": "Mezzi di trasporto",
       "MEAN_OF_TRANSPORT": {
@@ -1165,7 +1167,7 @@
         "METRO": "Metro",
         "ELEVATOR": "Ascensore",
         "UNKNOWN": "Sconosciute",
-        "ON_DEMAND": "On demand",
+        "ON_DEMAND": "On Demand",
         "ALL": "Tutti i mezzi di trasporto"
       },
       "FREIGHT_SERVICE_POINT": "Punto di servizio",

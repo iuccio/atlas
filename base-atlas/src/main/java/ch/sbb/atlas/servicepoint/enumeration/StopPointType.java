@@ -20,6 +20,7 @@ public enum StopPointType {
   TEMPORARY(40, "Temporäre Haltestelle", "Arrêt temporaire", "Fermata temporanea", "Temporary stop", "Ht", "At", "Ft", null),
   OUT_OF_ORDER(50, "Haltestelle ausser Betrieb", "Arrêt hors service", "Fermata fuori servizio", "Station out of service", "Ha",
       "Ahs", "Ffs", null),
+  ON_DEMAND(100, "On demand", "On demand", "On demand", "On demand", "On demand", "On demand", "On demand", null),
   UNKNOWN(0, "Nicht spezifiziert", "Non spécifié", "Non specificata", "Not specified", "Hns", "Ans", "Fns", null);
 
   private final Integer id;
@@ -39,7 +40,7 @@ public enum StopPointType {
   }
 
   public static List<StopPointType> validOnInput() {
-    return List.of(ORDERLY, ON_REQUEST, ZONE_ON_REQUEST, TEMPORARY, OUT_OF_ORDER);
+    return List.of(ORDERLY, ON_REQUEST, ZONE_ON_REQUEST, TEMPORARY, OUT_OF_ORDER, ON_DEMAND);
   }
 
 }
