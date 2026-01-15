@@ -35,6 +35,4 @@ public class TimetableHearingStatementRequestParams {
   @Singular(ignoreNullCollections = true)
   private List<Long> transportCompanies = new ArrayList<>();
 
-  private boolean anonymized;
-
 }

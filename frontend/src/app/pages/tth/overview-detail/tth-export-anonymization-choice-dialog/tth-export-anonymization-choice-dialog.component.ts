@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { DialogCloseComponent } from '../../../../core/components/dialog/close/dialog-close.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -12,7 +12,6 @@ import { DialogData } from '../../../../core/components/dialog/dialog.data';
 @Component({
   selector: 'atlas-tth-export-anonymization-choice-dialog',
   templateUrl: './tth-export-anonymization-choice-dialog.component.html',
-  styleUrls: ['./tth-export-anonymization-choice-dialog.component.scss'],
   imports: [
     DialogCloseComponent,
     TranslatePipe,
@@ -28,7 +27,9 @@ export class TthExportAnonymizationChoiceDialogComponent {
   isAnonymizedExport = true;
 
   constructor(
-    public dialogRef: MatDialogRef<TthExportAnonymizationChoiceDialogComponent>,
+    private readonly dialogRef: MatDialogRef<TthExportAnonymizationChoiceDialogComponent> = inject(
+      MatDialogRef<TthExportAnonymizationChoiceDialogComponent>
+    ),
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 

@@ -863,7 +863,8 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
 
     // When
     MvcResult mvcResult = mvc.perform(
-            get("/internal/timetable-hearing/statements/csv/de?timetableHearingYear=" + statement.getTimetableYear()))
+            get("/internal/timetable-hearing/statements/csv/de?timetableHearingYear=" + statement.getTimetableYear() +
+                "&anonymized=false"))
         .andExpect(status().isOk())
         .andReturn();
 
