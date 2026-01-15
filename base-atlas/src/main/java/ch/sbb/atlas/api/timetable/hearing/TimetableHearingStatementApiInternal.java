@@ -7,9 +7,11 @@ import static ch.sbb.atlas.model.ResponseCodeDescription.VERSIONING_NOT_IMPLEMEN
 import ch.sbb.atlas.api.bodi.TransportCompanyModel;
 import ch.sbb.atlas.api.model.Container;
 import ch.sbb.atlas.api.model.ErrorResponse;
+import ch.sbb.atlas.api.timetable.hearing.model.BaseUpdateHearingModel;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.timetable.hearing.model.UpdateHearingCantonModel;
 import ch.sbb.atlas.api.timetable.hearing.model.UpdateHearingStatementStatusModel;
+import ch.sbb.atlas.configuration.Role;
 import ch.sbb.atlas.validation.CreateIdCheck;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -150,4 +153,11 @@ public interface TimetableHearingStatementApiInternal {
   @PostMapping(path = BASE_PATH + "/batch-update-statements")
   void updateStatements(@Valid @RequestBody BatchUpdateTimetableHearingStatementsModel batchUpdateModel);
 
+  @Secured(Role.SECURED_FOR_ATLAS_ADMIN)
+  @PostMapping(path = BASE_PATH + "/batch-update-statement-groups")
+  void updateStatementGroups(@Valid @RequestBody List<BatchUpdateTimetableHearingStatementsModel> batchUpdateModel);
+
+  @Secured(Role.SECURED_FOR_ATLAS_ADMIN)
+  @PostMapping(BASE_PATH + "/remove-from-dossier")
+  void removeDossierRelationsFor(@Valid @RequestBody BaseUpdateHearingModel batchUpdateModel);
 }
