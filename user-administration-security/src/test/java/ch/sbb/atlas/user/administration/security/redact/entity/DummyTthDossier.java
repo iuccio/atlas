@@ -30,7 +30,7 @@ public class DummyTthDossier {
   private DossierStatus dossierStatus;
 
   @Redacted
-  private int numberOfQuestions;
+  private Integer numberOfQuestions;
 
   @Size(min = 1, max = AtlasFieldLengths.LENGTH_5000)
   @Redacted

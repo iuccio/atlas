@@ -82,4 +82,32 @@ class TthRedactAspectTest {
     Object redactObject = TthRedactAspect.redactObject(sensitiveStatement);
     assertThat(redactObject).usingRecursiveComparison().isEqualTo(redactedStatement);
   }
+
+  @Test
+  void shouldRedactZipIntegerWhenNull() {
+    // given
+    TimetableHearingStatement sensitiveStatement = TimetableHearingStatement.builder()
+        .timetableYear(2023L)
+        .statementStatus(StatementStatus.RECEIVED)
+        .statement("Ich mag bitte mehr Bös fahren")
+        .statementSender(StatementSender.builder()
+            .zip(null)
+            .emails(List.of("mike@thebike.com"))
+            .build())
+        .build();
+
+    TimetableHearingStatement redactedStatement = TimetableHearingStatement.builder()
+        .timetableYear(2023L)
+        .statementStatus(StatementStatus.RECEIVED)
+        .statement("*****")
+        .statementSender(StatementSender.builder()
+            .zip(null)
+            .emails(List.of("*****"))
+            .build())
+        .build();
+
+    // when & then
+    Object redactObject = TthRedactAspect.redactObject(sensitiveStatement);
+    assertThat(redactObject).usingRecursiveComparison().isEqualTo(redactedStatement);
+  }
 }
