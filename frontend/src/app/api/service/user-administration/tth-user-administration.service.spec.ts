@@ -1,22 +1,22 @@
-import {TestBed} from '@angular/core/testing';
-import {AtlasApiService} from '../atlas-api.service';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {UserService} from '../../../core/auth/user/user.service';
-import {UserAdministrationService} from "./user-administration.service";
+import { TestBed } from '@angular/core/testing';
+import { AtlasApiService } from '../atlas-api.service';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { UserService } from '../../../core/auth/user/user.service';
+import { TthUserAdministrationService } from './tth-user-administration.service';
 
-describe('UserAdministrationService', () => {
-  let service: UserAdministrationService;
+describe('TthUserAdministrationService', () => {
+  let service: TthUserAdministrationService;
   let apiService: AtlasApiService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UserAdministrationService, AtlasApiService,
+      providers: [TthUserAdministrationService, AtlasApiService,
         { provide: HttpClient, useValue: {} },
         { provide: UserService, useValue: {} },
       ],
     });
 
-    service = TestBed.inject(UserAdministrationService);
+    service = TestBed.inject(TthUserAdministrationService);
     apiService = TestBed.inject(AtlasApiService);
     spyOn(apiService, 'validateParams').and.callThrough();
     spyOn(apiService, 'get');

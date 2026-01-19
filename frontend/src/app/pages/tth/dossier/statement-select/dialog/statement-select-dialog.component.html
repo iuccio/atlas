@@ -26,19 +26,21 @@
     data-cy="tthTable"
   ></atlas-table>
   <mat-dialog-actions class="justify-content-end">
-    <button
-      (click)="cancel()"
+    <atlas-button
+      buttonType="defaultPrimary"
+      (buttonClicked)="cancel()"
       class="atlas-primary-btn me-3"
       data-cy="dialog-cancel-button"
     >
       {{ data.cancelText ?? 'DIALOG.CANCEL' | translate }}
-    </button>
-    <button
-      (click)="confirm()"
+    </atlas-button>
+    <atlas-button
+      buttonType="defaultPrimary"
+      (buttonClicked)="confirm()"
       class="atlas-primary-btn primary-color-btn"
       data-cy="dialog-confirm-button"
     >
       {{ data.confirmText ?? 'DIALOG.OK' | translate }}
-    </button>
+    </atlas-button>
   </mat-dialog-actions>
 </div>

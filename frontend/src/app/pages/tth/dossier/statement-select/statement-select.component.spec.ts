@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StatementSelectComponent } from './statement-select.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { of } from 'rxjs';
 import { SwissCanton, TimetableHearingStatementV2 } from '../../../../api';
@@ -23,6 +23,9 @@ const timetableHearingStatementInternalService = jasmine.createSpyObj(
     getStatement: of(statement),
   }
 );
+const router = jasmine.createSpyObj('Router', {
+  navigate: Promise.resolve(true),
+});
 
 describe('StatementSelectComponent', () => {
   let component: StatementSelectComponent;
@@ -49,6 +52,10 @@ describe('StatementSelectComponent', () => {
           useValue: timetableHearingStatementInternalService,
         },
         {
+          provide: Router,
+          useValue: router,
+        },
+        {
           provide: FormatPipe,
         },
       ],
@@ -62,5 +69,27 @@ describe('StatementSelectComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should remove statement', () => {
+    component.selectedStatements.set([1000]);
+
+    component.removeStatement({ id: 1000 } as TimetableHearingStatementV2);
+
+    expect(component.selectedStatements()).toEqual([]);
+  });
+
+  it('should go to statement', () => {
+    component.goToStatement({
+      id: 1000,
+      swissCanton: SwissCanton.Bern,
+    } as TimetableHearingStatementV2);
+
+    expect(router.navigate).toHaveBeenCalledWith([
+      'timetable-hearing',
+      'be',
+      'active',
+      1000,
+    ]);
   });
 });

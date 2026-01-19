@@ -25,6 +25,7 @@ import { TableFilter } from '../../../../../core/components/table-filter/config/
 import { TableComponent } from '../../../../../core/components/table/table.component';
 import { TthTableFilterSettingsService } from '../../../tth-table-filter-settings.service';
 import { Pages } from '../../../../pages';
+import { AtlasButtonComponent } from '../../../../../core/components/button/atlas-button.component';
 
 @Component({
   selector: 'atlas-statement-select-dialog',
@@ -38,6 +39,7 @@ import { Pages } from '../../../../pages';
     StatementSelectComponent,
     AtlasSpacerComponent,
     TableComponent,
+    AtlasButtonComponent,
   ],
   providers: [TranslatePipe],
 })
