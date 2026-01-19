@@ -94,4 +94,32 @@ class UserInformationApiControllerTest extends BaseControllerApiTest {
     verify(userAdministrationService, times(1)).filterForPermittedUserInAtlas(userModels, ApplicationType.SEPODI);
 
   }
+
+  @Test
+  void shouldSearchBoUsers() throws Exception {
+    UserModel userModel = UserModel.builder()
+        .sbbUserId("u999999")
+        .firstName("Uwe")
+        .lastName("König")
+        .mail("uwe.koenig@sbb.ch")
+        .accountStatus(UserAccountStatus.ACTIVE)
+        .build();
+
+    List<UserModel> userModels = Collections.singletonList(userModel);
+    String searchQuery = "testQuery";
+    when(graphApiService.searchUsers(searchQuery)).thenReturn(userModels);
+
+    List<UserModel> filteredUsers = Collections.singletonList(userModel);
+
+    when(userAdministrationService.filterForPermittedUserInAtlas(userModels, ApplicationType.SEPODI))
+        .thenReturn(filteredUsers);
+
+    mvc.perform(get("/v1/search-bo-dossier-answering-users")
+            .param("searchQuery", searchQuery))
+        .andExpect(status().isOk());
+
+    verify(graphApiService, times(1)).searchUsers("testQuery");
+    verify(userAdministrationService, times(1)).filterForBoDossierAnsweringPermission(userModels);
+
+  }
 }

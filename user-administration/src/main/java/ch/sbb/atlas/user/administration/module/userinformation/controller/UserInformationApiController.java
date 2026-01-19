@@ -28,4 +28,11 @@ public class UserInformationApiController implements UserInformationApiV1 {
     List<UserModel> foundUsers = graphApiService.searchUsers(searchQuery);
     return administrationService.filterForPermittedUserInAtlas(foundUsers, applicationType);
   }
+
+  @Override
+  @Redacted
+  public List<UserModel> searchBoDossierAnsweringUsers(String searchQuery) {
+    List<UserModel> foundUsers = graphApiService.searchUsers(searchQuery);
+    return administrationService.filterForBoDossierAnsweringPermission(foundUsers);
+  }
 }

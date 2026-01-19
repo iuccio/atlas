@@ -7,8 +7,6 @@ import ch.sbb.atlas.api.model.CantonAssociated;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -63,16 +61,14 @@ public class TthDossierModel extends AuditableVersionModel implements StatementD
   private List<Long> statementIds;
 
   @Schema(description = "Mail of the business partner at the transport company", example = "urs@tu.ch")
-  @NotBlank
   @Pattern(regexp = AtlasCharacterSetsRegex.EMAIL_ADDRESS)
   @Size(max = AtlasFieldLengths.LENGTH_255)
   private String boContactMail;
 
   @Schema(description = "Deadline for the dossier to be answered")
-  @NotNull
   private LocalDate boDeadlineToAnswer;
 
-  @NotEmpty
+  @NotNull
   @Builder.Default
   @Schema(description = "Questions for the BO to answer")
   private List<@Valid TthDossierQuestionModel> questions = new ArrayList<>();

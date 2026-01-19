@@ -21,4 +21,8 @@ public interface UserInformationApiV1 {
   List<UserModel> searchUsersInAtlas(
       @RequestParam String searchQuery,
       @RequestParam ApplicationType applicationType);
+
+  @GetMapping("search-bo-dossier-answering-users")
+  @Operation(description = "Look up Users in atlas who may answer dossiers")
+  List<UserModel> searchBoDossierAnsweringUsers(@RequestParam String searchQuery);
 }

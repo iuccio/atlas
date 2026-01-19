@@ -1,0 +1,302 @@
+<div atlasScrollToTop>
+  <atlas-detail-page-container>
+    <atlas-detail-page-content>
+      <div class="dossier-form">
+        <h1 class="font-bold-4xl mt-5">
+          {{
+            isNew
+              ? ('TTH.DOSSIER.NEW' | translate)
+              : ('TTH.DOSSIER.DOSSIER' | translate) +
+                ' ' +
+                form.controls.id.value
+          }}
+        </h1>
+
+        <div class="d-flex flex-column col-8 mt-3">
+          <div class="d-flex">
+            <atlas-label-field
+              fieldLabel="TTH.STATEMENT.TOPIC"
+              [required]="true"
+            />
+            <div class="col-8 ms-2">
+              <atlas-text-field
+                [formGroup]="form"
+                controlName="topic"
+                [required]="true"
+              >
+              </atlas-text-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <div class="font-bold-xl">
+            {{ 'TTH.DOSSIER.STATEMENTS' | translate }}
+          </div>
+          <atlas-statement-select
+            [(selectedStatements)]="selectedStatements"
+            [removeOptionEnabled]="form.enabled"
+          >
+          </atlas-statement-select>
+          <atlas-field-error
+            [control]="form.controls.statementIds"
+          ></atlas-field-error>
+
+          @if (form.enabled) {
+            <atlas-button
+              (buttonClicked)="openAddStatementsDialog()"
+              buttonDataCy="add-statements"
+              buttonText="TTH.DOSSIER.ADD_STATEMENTS"
+              buttonType="defaultPrimary"
+            >
+              <ng-template #rightIcon>
+                <i class="ps-2 bi bi-file-earmark-plus"></i>
+              </ng-template>
+            </atlas-button>
+          }
+        </div>
+
+        @if (!isNew) {
+          <div class="mt-5">
+            <span class="font-bold-xl">
+              {{ 'TTH.DOSSIER.INTERNAL_FEEDBACK' | translate }}
+            </span>
+            <span class="font-base-xl">
+              {{ 'TTH.DOSSIER.INTERNAL_FEEDBACK_HINT' | translate }}
+            </span>
+            <atlas-spacer [divider]="true" height="10px"></atlas-spacer>
+            <span class="font-regular-base">
+              {{ 'TTH.DOSSIER.INTERNAL_FEEDBACK_INFO' | translate }}
+            </span>
+            <div class="d-flex flex-column col-6 mt-2">
+              <atlas-button
+                buttonDataCy="open-in-mail"
+                buttonText="TTH.STATEMENT.CLARIFICATION_MAIL"
+                buttonType="defaultPrimary"
+              >
+                <ng-template #rightIcon>
+                  <i class="ps-2 bi bi-envelope"></i>
+                </ng-template>
+              </atlas-button>
+            </div>
+          </div>
+        }
+
+        <div class="mt-5">
+          <span class="font-bold-xl">
+            {{ 'TTH.DOSSIER.EXTERNAL_FEEDBACK' | translate }}
+          </span>
+          <span class="font-base-xl">
+            {{ 'TTH.DOSSIER.EXTERNAL_FEEDBACK_HINT' | translate }}
+          </span>
+          <atlas-spacer [divider]="true" height="10px"></atlas-spacer>
+          <div class="col-6">
+            <div class="mt-3">
+              <span>
+                {{ 'TTH.DOSSIER.EXTERNAL_FEEDBACK_INFO' | translate }}
+              </span>
+              <ul class="mt-3">
+                <li>
+                  {{ 'TTH.DOSSIER.EXTERNAL_FEEDBACK_CONTACT' | translate }}
+                </li>
+                <li>
+                  {{
+                    'TTH.DOSSIER.EXTERNAL_FEEDBACK_ORIGINAL_TEXT' | translate
+                  }}
+                </li>
+                <li>
+                  {{ 'TTH.DOSSIER.EXTERNAL_FEEDBACK_ATTATCHMENTS' | translate }}
+                </li>
+              </ul>
+            </div>
+
+            <div class="d-flex flex-column mt-5">
+              <div>
+                <atlas-label-field
+                  fieldLabel="TTH.DOSSIER.BO_CONTACT_MAIL"
+                  [fieldExamples]="[
+                    {
+                      label: 'TTH.DOSSIER.BO_CONTACT_MAIL_INFO',
+                      translate: true,
+                    },
+                  ]"
+                ></atlas-label-field>
+                <atlas-user-select
+                  [form]="form"
+                  controlName="boContactMail"
+                  searchMode="boDossierAnsweringUsers"
+                  bindValue="mail"
+                ></atlas-user-select>
+              </div>
+
+              <div>
+                <atlas-form-date
+                  [formGroup]="form"
+                  controlName="boDeadlineToAnswer"
+                  label="TTH.DOSSIER.BO_DEADLINE_TO_ANSWER"
+                  [required]="false"
+                >
+                </atlas-form-date>
+              </div>
+
+              <div class="mt-3">
+                <atlas-form-comment
+                  [formGroup]="form"
+                  [displayLabel]="true"
+                  label="TTH.DOSSIER.BO_QUESTION"
+                  subLabel="TTH.DOSSIER.BO_QUESTION_INFO"
+                  controlName="question"
+                  maxChars="5000"
+                >
+                </atlas-form-comment>
+              </div>
+              @if (this.cantonShort && form.disabled && isSendableToBo) {
+                <div class="mt-3">
+                  <atlas-button
+                    (buttonClicked)="sendToBo()"
+                    buttonDataCy="send-to-bo"
+                    buttonText="TTH.DOSSIER.SEND_TO_BO"
+                    [canton]="cantonShort"
+                    applicationType="TIMETABLE_HEARING"
+                    buttonStyleClass="atlas-primary-btn"
+                    buttonType="cantonWritePermission"
+                    wrapperStyleClass="me-3"
+                  >
+                  </atlas-button>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <span class="font-bold-xl">
+            {{ 'TTH.DOSSIER.COMPLETION' | translate }}
+          </span>
+          <atlas-spacer [divider]="true" height="10px"></atlas-spacer>
+          <div class="d-flex flex-column mt-3">
+            <atlas-form-comment
+              [formGroup]="form"
+              [displayLabel]="true"
+              label="TTH.DOSSIER.INTERNAL_COMMENT"
+              controlName="internalComment"
+              maxChars="5000"
+            >
+            </atlas-form-comment>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <atlas-form-comment
+            [formGroup]="form"
+            [displayLabel]="true"
+            label="TTH.DOSSIER.PUBLIC_COMMENT"
+            controlName="publicComment"
+            maxChars="5000"
+          >
+          </atlas-form-comment>
+        </div>
+        @if (!isNew) {
+          <div class="mt-5">
+            <span class="font-bold-lg pe-1"
+              >{{ 'TTH.DOSSIER.STATUS' | translate }}:</span
+            >
+            <span>{{
+              'TTH.DOSSIER.DOSSIER_STATUS.' + currentDossier?.dossierStatus
+                | translate
+            }}</span>
+            @if (form.enabled) {
+              <div class="mt-3">
+                <atlas-select
+                  [formGroup]="form"
+                  controlName="dossierStatus"
+                  [additionalLabelspace]="0"
+                  [options]="formStatusOptions"
+                  optionTranslateLabelPrefix="TTH.DOSSIER.DOSSIER_STATUS."
+                  dataCy="selectTthYear"
+                  label="TTH.DOSSIER.STATUS_CHANGE"
+                >
+                </atlas-select>
+                <div class="mt-2">
+                  {{ 'TTH.DOSSIER.STATUS_CHANGE_INFO' | translate }}
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </atlas-detail-page-content>
+
+    <atlas-detail-footer>
+      <atlas-button
+        (buttonClicked)="back()"
+        [footerEdit]="form.enabled"
+        buttonDataCy="back-to-overview"
+        buttonText="COMMON.BACK_TO_OVERVIEW"
+        buttonType="whiteFooterNonEdit"
+        wrapperStyleClass="me-3"
+      >
+      </atlas-button>
+      @if (form.disabled && cantonShort && isEditable) {
+        <atlas-button
+          (buttonClicked)="toggleEdit()"
+          [canton]="cantonShort"
+          applicationType="TIMETABLE_HEARING"
+          buttonDataCy="edit"
+          buttonStyleClass="atlas-primary-btn"
+          buttonText="COMMON.EDIT"
+          buttonType="cantonWritePermission"
+          wrapperStyleClass="me-3"
+        >
+        </atlas-button>
+      }
+      <atlas-button
+        (buttonClicked)="toggleEdit()"
+        [footerEdit]="form.enabled"
+        buttonDataCy="cancel"
+        buttonText="COMMON.CANCEL"
+        buttonType="whiteFooterEdit"
+        wrapperStyleClass="me-3"
+      >
+      </atlas-button>
+      <atlas-button
+        (buttonClicked)="save()"
+        [disabled]="!form.dirty"
+        [footerEdit]="form.enabled"
+        [submitButton]="true"
+        buttonDataCy="save-item"
+        buttonText="COMMON.SAVE"
+        buttonType="whiteFooterEdit"
+      >
+      </atlas-button>
+      @if (this.cantonShort && form.disabled && currentDossier) {
+        @if (cancelableStates.includes(currentDossier.dossierStatus!)) {
+          <atlas-button
+            (buttonClicked)="completeDossier('CANCELED')"
+            [canton]="cantonShort"
+            applicationType="TIMETABLE_HEARING"
+            buttonDataCy="cancel-dossier"
+            buttonStyleClass="atlas-primary-btn"
+            buttonText="TTH.DOSSIER.CANCEL_DOSSIER"
+            buttonType="cantonWritePermission"
+            wrapperStyleClass="me-3"
+          >
+          </atlas-button>
+        }
+        @if (dissolvableStates.includes(currentDossier.dossierStatus!)) {
+          <atlas-button
+            (buttonClicked)="completeDossier('DISSOLVED')"
+            [canton]="cantonShort"
+            applicationType="TIMETABLE_HEARING"
+            buttonDataCy="dissolve-dossier"
+            buttonStyleClass="atlas-primary-btn"
+            buttonText="TTH.DOSSIER.DISSOLVE_DOSSIER"
+            buttonType="cantonWritePermission"
+            wrapperStyleClass="me-3"
+          >
+          </atlas-button>
+        }
+      }
+    </atlas-detail-footer>
+  </atlas-detail-page-container>
+</div>

@@ -47,6 +47,7 @@
     "REVOKE": "Fehlerfassung",
     "DELETE": "Löschen",
     "CANCEL": "Abbrechen",
+    "APPLY": "Anwenden",
     "NODATAFOUND": "Es wurden keine Daten gefunden.",
     "TYPE_TO_SEARCH": "Tippen Sie mindestens 2 Zeichen ein, um die Suche zu beginnen.",
     "TYPE_TO_SEARCH_SHORT": "Tippen Sie mindestens 2 Zeichen ein...",
@@ -855,7 +856,9 @@
       "ADD_NEW_TIMETABLE_HEARING": "Neue Fahrplananhörung anlegen",
       "START_TIMETABLE_HEARING": "Dieses Fahrplanjahr starten",
       "CANCEL_COLLECTING_ACTION": "Sammelaktion beenden",
-      "CLOSE_TIMETABLE_HEARING": "Fahrplanjahr schliessen"
+      "CLOSE_TIMETABLE_HEARING": "Fahrplanjahr schliessen",
+      "CREATE_DOSSIER": "Dossier erstellen",
+      "ADD_TO_DOSSIER": "Hinzufügen zu einem Dossier"
     },
     "DROPDOWN": {
       "COLLECTING_STATUS_CHANGE_ACTION": {
@@ -1077,6 +1080,57 @@
       "STATEMENT_TRANSFER_CANTON": "Übergabe an einen anderen Kanton",
       "STATEMENT_TRANSFER_CANTON_INFO": "Wählen Sie den Kanton aus, an den Sie die Stellungnahme übergeben.",
       "STATEMENT_PDF_ANONYMOUS_CHECKBOX": "Der Anhang darf weitergeleitet werden (z.B. an ein Transportunternehmen)"
+    },
+    "DOSSIER": {
+      "DOSSIER": "Dossier",
+      "NEW": "Neues Dossier",
+      "INTERNAL_FEEDBACK": "Interne Rückfrage",
+      "INTERNAL_FEEDBACK_HINT": "(an Ihre Mitarbeiter*innen)",
+      "INTERNAL_FEEDBACK_INFO": "Geben Sie die Inhalte des Dossiers an eine Fachperson für eine Frage weiter. Die Inhalte erscheinen als Direkt-Link in Ihrer E-Mail.",
+      "EXTERNAL_FEEDBACK": "Externe Rückfrage",
+      "EXTERNAL_FEEDBACK_HINT": "(beim Transportunternehmen)",
+      "EXTERNAL_FEEDBACK_INFO": "Hier geben Sie Inhalte des Dossiers an das Transportunternehmen für Fragen weiter. Das Transportunternehmen erhält einen Link zum Dossier. Wegen des Datenschutzes leiten wir diese Informationen nicht weiter:",
+      "EXTERNAL_FEEDBACK_CONTACT": "Kontaktdaten",
+      "EXTERNAL_FEEDBACK_ORIGINAL_TEXT": "Originaltexte",
+      "EXTERNAL_FEEDBACK_ATTATCHMENTS": "Anhänge (PDF-Dateien)",
+      "BO_CONTACT_MAIL": "E-Mail",
+      "BO_CONTACT_MAIL_INFO": "Geben Sie die E-Mail-Adresse der Kontaktperson im Transportunternehmen ein.",
+      "BO_DEADLINE_TO_ANSWER": "Frist zur Beantwortung durch TU",
+      "BO_QUESTION": "Frage an das Transportunternehmen",
+      "BO_QUESTION_INFO": "Stellen Sie in Ihrem Text sicher, dass die Kontaktperson alle Angaben hat, die sie braucht.",
+      "INTERNAL_COMMENT": "Interne Begründung zum Zweck der Dokumentation",
+      "PUBLIC_COMMENT": "Öffentliche Begründung für Stellungnehmende",
+      "COMPLETION": "Abschluss",
+      "NO_STATEMENTS": "Es sind keine Stellungnahmen im Dossier enthalten.",
+      "STATEMENTS": "Stellungnahmen des Dossiers",
+      "ADD_STATEMENTS": "Weitere Stellungnahmen zum Dossier hinzufügen",
+      "SEND_TO_BO": "Frage senden",
+      "STATEMENT_SELECT": {
+        "CURRENT_STATEMENTS": "Aktuell ausgewählte Stellungnahmen",
+        "ADDITIONAL_STATEMENTS": "Weitere Stellungnahmen"
+      },
+      "NOTIFICATION": {
+        "ADD_SUCCESS": "Neues Dossier erfolgreich gespeichert.",
+        "EDIT_SUCCESS": "Das Dossier wurde erfolgreich gespeichert.",
+        "SENT_TO_BO": "Das Dossier wurde an das Transportunternehmen weitergegeben.",
+        "COMPLETE_TITLE": "Dossier wird abgeschlossen",
+        "COMPLETE_MESSAGE": "Mit dieser Aktion wird das Dossier geschlossen. Die Stellungnahmen können danach wieder einzeln bearbeitet werden. Möchten Sie fortfahren?"
+      },
+      "STATUS": "Dossier-Status",
+      "STATUS_CHANGE": "Status ändern",
+      "STATUS_CHANGE_INFO": "Der Status wird auf die zugehörigen Stellungnahmen übertragen.",
+      "DOSSIER_STATUS": {
+        "ADDED": "Erfasst",
+        "CANCELED": "Abgebrochen",
+        "DOSSIER_BO_CHECK": "In Abklärung bei TU",
+        "DOSSIER_CANTON_CHECK": "Rückmeldung TU eingetroffen",
+        "ACCEPTED": "Angenommen",
+        "REJECTED": "Abgelehnt",
+        "MOVED": "Verschoben",
+        "DISSOLVED": "Aufgelöst"
+      },
+      "CANCEL_DOSSIER": "Dossier aufheben",
+      "DISSOLVE_DOSSIER": "Dossier auflösen"
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Fahrplanjahr schliessen",

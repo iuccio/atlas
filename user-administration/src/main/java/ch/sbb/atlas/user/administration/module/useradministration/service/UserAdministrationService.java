@@ -113,4 +113,19 @@ public class UserAdministrationService {
 
     return permittedUser;
   }
+
+  public List<UserModel> filterForBoDossierAnsweringPermission(List<UserModel> foundUsers) {
+    List<UserModel> permittedUser = new ArrayList<>();
+    for (UserModel userModel : foundUsers) {
+      Optional<UserPermission> userPermission = userPermissionRepository.findBySbbUserIdIgnoreCaseAndApplication(
+          userModel.getSbbUserId(), ApplicationType.TIMETABLE_HEARING);
+      userPermission.ifPresent(permission -> {
+        if (permission.getPermissionRestrictions().stream()
+            .anyMatch(i -> i.getType() == PermissionRestrictionType.TRANSPORT_COMPANY_DOSSIER_ANSWER)) {
+          permittedUser.add(userModel);
+        }
+      });
+    }
+    return permittedUser;
+  }
 }

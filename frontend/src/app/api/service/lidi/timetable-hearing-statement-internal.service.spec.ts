@@ -58,6 +58,7 @@ describe('TimetableHearingStatementInternalService', () => {
       searchCriterias: undefined,
       ttfnid: undefined,
       transportCompanies: undefined,
+      partOfDossier: undefined,
       page: undefined,
       size: undefined,
       sort: undefined,

@@ -140,7 +140,6 @@
 
     @if (!noTimetableHearingYearFound && isTableColumnsInitialized) {
       <atlas-table
-        (buttonClickEvent)="duplicate($event)"
         (changeDropdownEvent)="changeSelectedStatus($event)"
         (checkedBoxEvent)="checkedBoxEvent($event)"
         (editElementEvent)="editStatement($event)"
@@ -153,6 +152,14 @@
         [tableFilterConfig]="tableFilterConfig"
         data-cy="tthTable"
       >
+        <ng-template #customCell let-row let-column="column">
+          <atlas-statement-overview-menu
+            [row]="row"
+            [column]="column"
+            [hearingStatus]="hearingStatus"
+            (reloadTable)="ngOnInit()"
+          ></atlas-statement-overview-menu>
+        </ng-template>
         @if (!noTimetableHearingYearFound) {
           <div class="d-flex flex-row col-12 mb-3 mt-5">
             <div class="d-flex flex-column col-6 pt-2">

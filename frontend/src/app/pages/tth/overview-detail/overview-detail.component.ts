@@ -31,7 +31,6 @@ import { FileDownloadService } from '../../../core/components/file-upload/file/f
 import { MatDialog } from '@angular/material/dialog';
 import { DialogManageTthComponent } from '../dialog-manage-tth/dialog-manage-tth.component';
 import { DialogService } from '../../../core/components/dialog/dialog.service';
-import { StatementShareService } from './statement-share-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TableService } from '../../../core/components/table/table.service';
 import { TableFilter } from '../../../core/components/table-filter/config/table-filter';
@@ -47,8 +46,9 @@ import { AtlasButtonComponent } from '../../../core/components/button/atlas-butt
 import { DownloadIconComponent } from '../../../core/form-components/download-icon/download-icon.component';
 import { TableComponent } from '../../../core/components/table/table.component';
 import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
-import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
 import { DialogData } from '../../../core/components/dialog/dialog.data';
+import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
+import { StatementOverviewMenuComponent } from './statement-overview-menu/statement-overview-menu.component';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-detail',
@@ -65,6 +65,7 @@ import { DialogData } from '../../../core/components/dialog/dialog.data';
     DisplayDatePipe,
     TranslatePipe,
     NgOptimizedImage,
+    StatementOverviewMenuComponent,
   ],
 })
 export class OverviewDetailComponent implements OnInit {
@@ -131,7 +132,6 @@ export class OverviewDetailComponent implements OnInit {
     private readonly newTimetableHearingYearDialogService: NewTimetableHearingYearDialogService,
     private readonly translateService: TranslateService,
     private readonly permissionService: PermissionService,
-    private readonly statementShareService: StatementShareService,
     private readonly matDialog: MatDialog
   ) {}
 
@@ -208,14 +208,10 @@ export class OverviewDetailComponent implements OnInit {
         this.tableService.filter.chipSearch.getActiveSearch(),
         this.tableService.filter.multiSelectStatementStatus.getActiveSearch(),
         this.tableService.filter.searchSelectTTFN.getActiveSearch()?.ttfnid,
-        (
+        TthUtils.toTransportCompanyIds(
           this.tableService.filter.searchSelectTU.getActiveSearch() as TransportCompany[]
-        )
-          ?.map((tu) => tu.id)
-          .filter(
-            (numberOrUndefined): numberOrUndefined is number =>
-              !!numberOrUndefined
-          ),
+        ),
+        undefined,
         pagination.page,
         pagination.size,
         addElementsToArrayWhenNotUndefined(
@@ -255,7 +251,7 @@ export class OverviewDetailComponent implements OnInit {
       .then();
   }
 
-  downloadCsv(anonymizedExport: boolean): void {
+  downloadCsv(anonymizedExport: boolean) {
     this.timetableHearingStatementsService
       .getStatementsAsCsv(
         this.translateService.currentLang,
@@ -452,30 +448,6 @@ export class OverviewDetailComponent implements OnInit {
     this.selectedItems = $event.selected;
   }
 
-  duplicate($event: TimetableHearingStatementV2) {
-    this.dialogService
-      .confirm({
-        title: 'TTH.DUPLICATE.DIALOG.TITLE',
-        message: 'TTH.DUPLICATE.DIALOG.MESSAGE',
-        cancelText: 'TTH.DUPLICATE.DIALOG.CANCEL',
-        confirmText: 'TTH.DUPLICATE.DIALOG.CONFIRM',
-      })
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          this.duplicateStatement($event);
-        }
-      });
-  }
-
-  duplicateStatement(statement: TimetableHearingStatementV2) {
-    this.statementShareService.statement = statement;
-    this.router
-      .navigate([this.hearingStatus.toLowerCase(), 'add'], {
-        relativeTo: this.route.parent,
-      })
-      .then();
-  }
-
   private removeCheckBoxViewMode() {
     this.isCheckBoxModeActive = false;
     this.showCollectingActionButton = true;
@@ -506,7 +478,7 @@ export class OverviewDetailComponent implements OnInit {
       });
       this.tableColumns.forEach((value) => (value.disabled = true));
       this.disableChangeStatementStatusSelect();
-      this.disableDuplicateButtonAction();
+      this.disableMenuButton();
       this.tableService.filterConfig?.disableFilters();
     } else {
       this.removeCheckBoxViewMode();
@@ -522,13 +494,11 @@ export class OverviewDetailComponent implements OnInit {
     }
   }
 
-  private disableDuplicateButtonAction() {
+  private disableMenuButton() {
     const duplicateButtonAction = this.tableColumns.filter(
       (value) => value.value === 'etagVersion'
     )[0];
-    if (duplicateButtonAction.button) {
-      duplicateButtonAction.button.disabled = true;
-    }
+    duplicateButtonAction.disabled = true;
   }
 
   private navigateTo(canton: string, timetableYear: number) {
@@ -757,16 +727,8 @@ export class OverviewDetailComponent implements OnInit {
       {
         headerTitle: '',
         value: 'etagVersion',
-        disabled: true,
-        button: {
-          icon: 'bi bi-files',
-          clickCallback: this.duplicate,
-          applicationType: 'TIMETABLE_HEARING',
-          buttonDataCy: 'duplicate-hearing',
-          title: 'TTH.BUTTON.DUPLICATE',
-          buttonType: 'icon',
-          disabled: false,
-        },
+        disabled: false,
+        customCell: true,
       },
     ];
   }

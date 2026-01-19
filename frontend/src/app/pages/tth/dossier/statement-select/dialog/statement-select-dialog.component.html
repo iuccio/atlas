@@ -1,0 +1,46 @@
+<div class="dialog-close-panel dialog-close-icon-container">
+  <button [mat-dialog-close]="false" class="close-icon-btn">
+    <em class="bi bi-x fs-2"></em>
+  </button>
+</div>
+<div class="dialog" data-cy="dialog">
+  <div class="font-bold-2xl">
+    {{ 'TTH.DOSSIER.STATEMENT_SELECT.CURRENT_STATEMENTS' | translate }}
+  </div>
+  <atlas-statement-select
+    [(selectedStatements)]="selectedStatements"
+  ></atlas-statement-select>
+  <atlas-spacer [divider]="true"></atlas-spacer>
+  <div class="font-bold-2xl mt-5">
+    {{ 'TTH.DOSSIER.STATEMENT_SELECT.ADDITIONAL_STATEMENTS' | translate }}
+  </div>
+  <atlas-table
+    (buttonClickEvent)="addStatement($event)"
+    (editElementEvent)="addStatement($event)"
+    (tableChanged)="getAdditionalStatements($event)"
+    (tableInitialized)="getAdditionalStatements($event)"
+    [tableColumns]="tableColumns"
+    [tableData]="statements"
+    [totalCount]="totalCount$"
+    [tableFilterConfig]="tableFilterConfig"
+    data-cy="tthTable"
+  ></atlas-table>
+  <mat-dialog-actions class="justify-content-end">
+    <atlas-button
+      buttonType="defaultPrimary"
+      (buttonClicked)="cancel()"
+      class="atlas-primary-btn me-3"
+      data-cy="dialog-cancel-button"
+    >
+      {{ data.cancelText ?? 'DIALOG.CANCEL' | translate }}
+    </atlas-button>
+    <atlas-button
+      buttonType="defaultPrimary"
+      (buttonClicked)="confirm()"
+      class="atlas-primary-btn primary-color-btn"
+      data-cy="dialog-confirm-button"
+    >
+      {{ data.confirmText ?? 'DIALOG.OK' | translate }}
+    </atlas-button>
+  </mat-dialog-actions>
+</div>

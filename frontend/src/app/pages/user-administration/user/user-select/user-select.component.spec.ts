@@ -17,6 +17,7 @@ class MockFormSearchSelectComponent {
   @Input() items$ = of([]);
   @Input() formGroup = undefined;
   @Input() controlName = '';
+  @Input() bindValueInp = '';
   @Input() getSelectOption = undefined;
 }
 
@@ -66,7 +67,7 @@ describe('UserSelectComponent', () => {
       ])
     );
     component.search('testQuery');
-    component.searchInAtlas = false;
+    fixture.componentRef.setInput('searchMode', 'default');
     fixture.detectChanges();
     expect(userAdministrationServiceSpy.searchUsers).toHaveBeenCalledOnceWith(
       'testQuery'
@@ -91,7 +92,7 @@ describe('UserSelectComponent', () => {
         },
       ])
     );
-    component.searchInAtlas = true;
+    fixture.componentRef.setInput('searchMode', 'inAtlas');
     component.applicationType = ApplicationType.Sepodi;
     fixture.detectChanges();
     component.search('testQuery');

@@ -10,6 +10,7 @@ export interface TableColumn<TYPE> {
   dropdown?: ColumnDropDown;
   checkbox?: ColumnCheckbox;
   button?: Button;
+  customCell?: boolean;
   icon?: Icon;
   callback?: (...args: any[]) => any;
   valuePath?: string;
@@ -44,7 +45,7 @@ export interface Button {
   applicationType: ApplicationType;
   buttonDataCy: string;
   buttonType: AtlasButtonType;
-  disabled: boolean;
+  disabled: (...args: any[]) => any;
 }
 
 export interface Icon {
