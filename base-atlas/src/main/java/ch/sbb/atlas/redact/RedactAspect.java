@@ -101,8 +101,8 @@ public class RedactAspect {
         performRedact(StringRedactor.redactString((String) currentFieldValue, showFirstChar));
       }
 
-      if (currentFieldValue instanceof Integer integer) {
-        performRedact(IntegerRedactor.redactInteger(integer));
+      if (field.getGenericType().equals(Integer.class)) {
+        performRedact(IntegerRedactor.redactInteger(currentFieldValue));
       }
 
       if (field.getGenericType() instanceof ParameterizedType parameterizedType) {

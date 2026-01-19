@@ -20,7 +20,7 @@ class RedactTarget {
   private String mail;
 
   @Redacted
-  private int age;
+  private Integer age;
 
   @Redacted
   private Set<NestedRedactTarget> examinants;
