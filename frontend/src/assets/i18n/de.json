@@ -827,7 +827,14 @@
       "COMMENT_LABEL": "Kommentar dazu",
       "BACK": "Zurück",
       "STATUS_CHANGE_MESSAGE": "Sie ändern die ausgewählte Stellungnahme.",
-      "MULTIPLE_STATUS_CHANGE_MESSAGE": "Sie ändern {{tthsLength}} ausgewählte Stellungnahme."
+      "MULTIPLE_STATUS_CHANGE_MESSAGE": "Sie ändern {{tthsLength}} ausgewählte Stellungnahme.",
+      "EXPORT_TYPE_TITLE": "Exporttyp auswählen",
+      "EXPORT_TYPE_MESSAGE": "Bitte wählen Sie den gewünschten Exporttyp für die Stellungnahmen aus.",
+      "EXPORT_TYPE_INFO": "Anonymisierte Exporte entfernen alle personenbezogenen Daten",
+      "EXPORT_TYPE_ANONYMIZED": "Anonymisiert",
+      "EXPORT_TYPE_NOT_ANONYMIZED": "Nicht Anonymisiert",
+      "EXPORT_TYPE_RESPONSIBILITY_INFO": "Für nicht anonymisierte Daten liegt die Verantwortung vollständig beim Benutzer.",
+      "CONFIRM": "Auswählen"
     },
     "START_HEARING_DIALOG": {
       "TITLE": "Fahrplanjahr starten?",

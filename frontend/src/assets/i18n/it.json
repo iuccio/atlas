@@ -827,7 +827,14 @@
       "COMMENT_LABEL": "Commento",
       "BACK": "Indietro",
       "STATUS_CHANGE_MESSAGE": "Modifica la dichiarazioni per l'orario selezionata.",
-      "MULTIPLE_STATUS_CHANGE_MESSAGE": "Modifica le {{tthsLength}} audizione selezionate"
+      "MULTIPLE_STATUS_CHANGE_MESSAGE": "Modifica le {{tthsLength}} audizione selezionate",
+      "EXPORT_TYPE_TITLE": "Seleziona tipo di esportazione",
+      "EXPORT_TYPE_MESSAGE": "Seleziona il tipo di esportazione desiderato per le osservazioni.",
+      "EXPORT_TYPE_INFO": "Le esportazioni anonimizzate rimuovono tutti i dati personali",
+      "EXPORT_TYPE_ANONYMIZED": "Anonimo",
+      "EXPORT_TYPE_NOT_ANONYMIZED": "Non anonimo",
+      "EXPORT_TYPE_RESPONSIBILITY_INFO": "Per i dati non anonimi, la responsabilità ricade interamente sull'utente.",
+      "CONFIRM": "Seleziona"
     },
     "START_HEARING_DIALOG": {
       "TITLE": "Iniziare l'audizione?",

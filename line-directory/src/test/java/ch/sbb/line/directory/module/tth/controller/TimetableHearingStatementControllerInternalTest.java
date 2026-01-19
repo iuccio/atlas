@@ -69,7 +69,7 @@ class TimetableHearingStatementControllerInternalTest {
         .build();
 
     BadRequestException exception = assertThrows(BadRequestException.class,
-        () -> timetableHearingStatementControllerInternal.getStatementsAsCsv("de", params));
+        () -> timetableHearingStatementControllerInternal.getStatementsAsCsv("de", false, params));
 
     assertThat(exception.getErrorResponse().getMessage()).isEqualTo("timetableHearingYear is mandatory here");
   }
@@ -81,7 +81,7 @@ class TimetableHearingStatementControllerInternalTest {
         .build();
 
     BadRequestException exception = assertThrows(BadRequestException.class,
-        () -> timetableHearingStatementControllerInternal.getStatementsAsCsv("en", params));
+        () -> timetableHearingStatementControllerInternal.getStatementsAsCsv("en", false, params));
 
     assertThat(exception.getErrorResponse().getMessage()).isEqualTo("Language must be either de,fr,it");
   }

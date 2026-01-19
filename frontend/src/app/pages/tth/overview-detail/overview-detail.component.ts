@@ -47,6 +47,8 @@ import { AtlasButtonComponent } from '../../../core/components/button/atlas-butt
 import { DownloadIconComponent } from '../../../core/form-components/download-icon/download-icon.component';
 import { TableComponent } from '../../../core/components/table/table.component';
 import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
+import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
+import { DialogData } from '../../../core/components/dialog/dialog.data';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-detail',
@@ -253,7 +255,7 @@ export class OverviewDetailComponent implements OnInit {
       .then();
   }
 
-  downloadCsv() {
+  downloadCsv(anonymizedExport: boolean): void {
     this.timetableHearingStatementsService
       .getStatementsAsCsv(
         this.translateService.currentLang,
@@ -269,11 +271,36 @@ export class OverviewDetailComponent implements OnInit {
           .filter(
             (numberOrUndefined): numberOrUndefined is number =>
               !!numberOrUndefined
-          )
+          ),
+        anonymizedExport
       )
       .subscribe((response) =>
         FileDownloadService.downloadFile('statements.csv', response)
       );
+  }
+
+  openTthExportAnonymizationChoiceDialog(): void {
+    const data: DialogData = {
+      title: 'TTH.DIALOG.EXPORT_ANONYMIZATION_CHOICE_TITLE',
+      message: 'TTH.DIALOG.EXPORT_ANONYMIZATION_CHOICE_MESSAGE',
+      cancelText: 'TTH.DIALOG.CANCEL',
+      confirmText: 'TTH.DIALOG.CONFIRM',
+    };
+
+    this.matDialog
+      .open(TthExportAnonymizationChoiceDialogComponent, {
+        data: data,
+        disableClose: true,
+        panelClass: 'atlas-dialog-panel',
+        backdropClass: 'atlas-dialog-backdrop',
+      })
+      .afterClosed()
+      .pipe()
+      .subscribe((result: { isAnonymized: boolean }) => {
+        if (result != null) {
+          this.downloadCsv(result.isAnonymized);
+        }
+      });
   }
 
   manageTimetableHearing() {
