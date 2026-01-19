@@ -23,6 +23,7 @@ public class TthDossierMapper {
         .statementIds(model.getStatementIds())
         .boContactMail(model.getBoContactMail())
         .boDeadlineToAnswer(model.getBoDeadlineToAnswer())
+        .dossierStatus(model.getDossierStatus())
         .build();
 
     dossier.setDossierQuestions(model.getQuestions().stream().map(i -> TthDossierQuestionMapper.toEntity(i, dossier)).toList());

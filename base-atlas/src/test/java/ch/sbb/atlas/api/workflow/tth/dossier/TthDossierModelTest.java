@@ -28,7 +28,7 @@ class TthDossierModelTest extends BaseValidatorTest {
   }
 
   @Test
-  void shouldNotAllowDossierWithoutQuestion() {
+  void shouldAllowDossierWithoutQuestion() {
     TthDossierModel tthDossierModel = TthDossierModel.builder()
         .statementIds(List.of(1L, 2L))
         .swissCanton(SwissCanton.BERN)
@@ -38,7 +38,7 @@ class TthDossierModelTest extends BaseValidatorTest {
         .questions(Collections.emptyList())
         .build();
     Set<ConstraintViolation<TthDossierModel>> constraintViolations = validator.validate(tthDossierModel);
-    assertThat(constraintViolations).hasSize(1);
+    assertThat(constraintViolations).isEmpty();
   }
 
   @Test

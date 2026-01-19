@@ -29,7 +29,7 @@ export class TimetableHearingStatementInternalService {
 
   public getStatements(
     timetableHearingYear?: number, canton?: SwissCanton, searchCriterias?: Array<string>, statusRestrictions?: Array<StatementStatus>,
-    ttfnid?: string, transportCompanies?: Array<number>, page?: number, size?: number, sort?: Array<string>,
+    ttfnid?: string, transportCompanies?: Array<number>, partOfDossier?:boolean, page?: number, size?: number, sort?: Array<string>,
   ): Observable<ContainerTimetableHearingStatementV2> {
     const httpParams = this.atlasApiService.paramsOf({
       timetableHearingYear,
@@ -38,6 +38,7 @@ export class TimetableHearingStatementInternalService {
       statusRestrictions,
       ttfnid,
       transportCompanies,
+      partOfDossier,
       page,
       size,
       sort,

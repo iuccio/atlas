@@ -2,6 +2,7 @@ package ch.sbb.line.directory.module.tth.model;
 
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementRequestParams;
 import ch.sbb.atlas.searching.specification.EnumSpecification;
+import ch.sbb.atlas.searching.specification.IsNotNullSpecification;
 import ch.sbb.atlas.searching.specification.LongSpecification;
 import ch.sbb.atlas.searching.specification.SearchCriteriaSpecification;
 import ch.sbb.atlas.searching.specification.SingleStringSpecification;
@@ -30,6 +31,7 @@ public class TimetableHearingStatementSearchRestrictions {
         .and(new EnumSpecification<>(statementRequestParams.getStatusRestrictions(), TimetableHearingStatement_.statementStatus))
         .and(new SingleStringSpecification<>(statementRequestParams.getTtfnid(), Fields.ttfnid))
         .and(new ResponsibleTransportCompanySpecification(statementRequestParams.getTransportCompanies()))
+        .and(new IsNotNullSpecification<>(TimetableHearingStatement_.dossierId, statementRequestParams.getPartOfDossier()))
         .and(new SearchCriteriaSpecification<>(statementRequestParams.getSearchCriterias(),
             List.of(Fields.id, Fields.statement, Fields.publicComment, Fields.stopPlace,
                 "statementSender.firstName", "statementSender.lastName",

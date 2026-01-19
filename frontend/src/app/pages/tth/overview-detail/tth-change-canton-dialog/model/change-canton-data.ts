@@ -3,5 +3,5 @@ import { SwissCanton, TimetableHearingStatementV2 } from '../../../../../api';
 
 export interface ChangeCantonData extends DialogData {
   tths: TimetableHearingStatementV2[];
-  swissCanton: SwissCanton;
+  swissCanton?: SwissCanton;
 }
