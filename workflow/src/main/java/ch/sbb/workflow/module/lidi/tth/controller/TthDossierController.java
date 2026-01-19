@@ -1,13 +1,18 @@
 package ch.sbb.workflow.module.lidi.tth.controller;
 
+import ch.sbb.atlas.api.model.Container;
 import ch.sbb.atlas.api.workflow.tth.dossier.BoAnswerModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
 import ch.sbb.workflow.module.lidi.tth.api.TthDossierApiInternal;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
+import ch.sbb.workflow.module.lidi.tth.search.TthDossierRequestParams;
+import ch.sbb.workflow.module.lidi.tth.search.TthDossierSearchRestrictions;
 import ch.sbb.workflow.module.lidi.tth.service.TthDossierService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -15,6 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class TthDossierController implements TthDossierApiInternal {
 
   private final TthDossierService tthDossierService;
+
+  @Override
+  public Container<TthDossierModel> getOverview(Pageable pageable, TthDossierRequestParams requestParams) {
+    Page<TthDossier> dossiers = tthDossierService.getDossiers(TthDossierSearchRestrictions.builder()
+        .pageable(pageable)
+        .requestParams(requestParams)
+        .build());
+    return Container.<TthDossierModel>builder()
+        .objects(dossiers.stream().map(TthDossierMapper::toModel).toList())
+        .totalCount(dossiers.getTotalElements())
+        .build();
+  }
 
   @Override
   public TthDossierModel getDossier(Long dossierId) {
