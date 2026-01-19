@@ -1377,7 +1377,8 @@
       "SERVICE_POINT": "Dienststelle",
       "BOARDING_PLATFORM": "Haltekante",
       "BOARDING_AREA": "Haltestellenbereich",
-      "SECTOR": "Sektor"
+      "SECTOR": "Sektor",
+      "ON_DEMAND": "On Demand"
     },
     "BACK_TO_MAP": "Schliessen",
     "ZOOM_IN_HINT": "Zum Anzeigen von Dienststellen, zoomen Sie näher heran.",

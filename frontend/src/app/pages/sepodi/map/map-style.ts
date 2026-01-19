@@ -196,6 +196,8 @@ export const MAP_STYLE_SPEC: StyleSpecification = {
           '#e3bd63',
           'OPERATING_POINT_TECHNICAL',
           '#008000',
+          'ON_DEMAND',
+          '#02f5f5',
           'rgba(0, 0, 0, 0)', // Default 100% transparentes Schwarz
         ],
       },

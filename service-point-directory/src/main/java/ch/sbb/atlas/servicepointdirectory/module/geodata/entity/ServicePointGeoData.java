@@ -7,6 +7,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,6 @@ import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
-
-import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,6 +39,7 @@ public class ServicePointGeoData extends GeolocationBaseEntity {
       sp.designation_official,
       case
           when sp.operating_point_technical_timetable_type is not null then 'OPERATING_POINT_TECHNICAL'
+          when sp.stop_point_type = 'ON_DEMAND' then 'ON_DEMAND'
           when spvmot.means_of_transport is not null then
               (case
                 when sp.freight_service_point then 'STOP_POINT_AND_FREIGHT_SERVICE_POINT'

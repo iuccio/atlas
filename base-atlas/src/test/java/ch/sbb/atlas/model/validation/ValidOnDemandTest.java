@@ -14,7 +14,7 @@ import java.util.Set;
 import lombok.experimental.SuperBuilder;
 import org.junit.jupiter.api.Test;
 
-public class ValidOnDemandTest extends BaseValidatorTest {
+class ValidOnDemandTest extends BaseValidatorTest {
 
   @Test
   void shouldValidateOnDemandWhenStopPointTypeAndMeanOfTransportAreBothOnDemand() {
