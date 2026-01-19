@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum MeanOfTransport {
-
+  
   TRAIN(0, "Z", "Zug", "Zug", "Train", "Train", "Treno"),
   BUS(1, "B", "Bus", "Bus", "Bus", "Bus", "Bus"),
   TRAM(2, "T", "Tram", "Tram", "Tram", "Tram", "Tram"),
@@ -21,6 +21,7 @@ public enum MeanOfTransport {
   RACK_RAILWAY(7, "H", "Zahnradbahn", "Zahnradbahn", "Chemin de fer à crémaillère", "Rack Railway", "Ferrovia a cremagliera"),
   METRO(8, "M", "Metro", "Metro", "Métro", "Metro", "Metro"),
   ELEVATOR(9, "A", "Aufzug", "Aufzug", "Ascenseur", "Elevator", "Ascensore"),
+  ON_DEMAND(11, "O", "On Demand", "On Demand", "On Demand", "On Demand", "On Demand"),
   UNKNOWN(10, "U", "Unbekannt", "Unbekannt", "Inconnu", "Unknown", "Sconosciute");
 
   private final Integer rank;

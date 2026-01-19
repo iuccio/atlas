@@ -3,6 +3,7 @@ import {
   Input,
   OnChanges,
   OnInit,
+  output,
   SimpleChanges,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -39,6 +40,7 @@ export class MeansOfTransportPickerComponent implements OnInit, OnChanges {
   @Input() meansOfTransportToShow: MeanOfTransport[] | undefined;
   @Input() showSectorWarning = false;
   @Input() multiSelectMode = true;
+  selectChange = output<MeanOfTransport[]>();
 
   protected selectedMeans$ = of([]);
   protected means!: MeanOfTransport[];
@@ -71,6 +73,7 @@ export class MeansOfTransportPickerComponent implements OnInit, OnChanges {
       this.setControlForSingleSelect(meanOfTransport);
     }
     this.formControl.markAsDirty();
+    this.selectChange.emit([...this.formControl.value]);
   }
 
   private setControlForMultiSelect(meanOfTransport: MeanOfTransport) {

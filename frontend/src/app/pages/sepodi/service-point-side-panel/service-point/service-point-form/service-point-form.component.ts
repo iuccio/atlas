@@ -17,6 +17,7 @@ import {
   ApplicationRole,
   ApplicationType,
   Category,
+  MeanOfTransport,
   OperatingPointTechnicalTimetableType,
   OperatingPointType,
   ReadServicePointVersion,
@@ -42,6 +43,7 @@ import { KilometerMasterSearchComponent } from '../search/kilometer-master-searc
 import { DisplayCantonPipe } from '../../../../../core/cantons/display-canton.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ServicePointGeoDataInternalService } from '../../../../../api/service/sepodi/service-point-geo-data-internal.service';
+import { StationGroup } from './form-group/station-form-group';
 
 @Component({
   selector: 'atlas-service-point-form',
@@ -75,6 +77,8 @@ export class ServicePointFormComponent implements OnInit, OnDestroy {
   operatingPointTypes: string[] = [];
   categories = Object.values(Category);
   isNew = false;
+  private _isMeanOfTransportOnDemandSelected: boolean = false;
+  private _isStopPointOnDemandSelected: boolean = false;
 
   selectableStopPointTypes = input.required<StopPointType[]>();
 
@@ -112,6 +116,22 @@ export class ServicePointFormComponent implements OnInit, OnDestroy {
 
   get currentVersion(): ReadServicePointVersion | undefined {
     return this._currentVersion;
+  }
+
+  get isStopPointOnDemandSelected(): boolean {
+    return this._isStopPointOnDemandSelected;
+  }
+
+  set isStopPointOnDemandSelected(value: boolean) {
+    this._isStopPointOnDemandSelected = value;
+  }
+
+  get isMeanOfTransportOnDemandSelected(): boolean {
+    return this._isMeanOfTransportOnDemandSelected;
+  }
+
+  set isMeanOfTransportOnDemandSelected(value: boolean) {
+    this._isMeanOfTransportOnDemandSelected = value;
   }
 
   private _currentVersion?: ReadServicePointVersion;
@@ -181,6 +201,18 @@ export class ServicePointFormComponent implements OnInit, OnDestroy {
       'SEPODI.SERVICE_POINTS.OPERATING_POINT_TYPES.'
     );
   };
+
+  onStopPointChange(stopPointType: StopPointType) {
+    const meansOfTransportForm = (
+      this.form?.controls?.spTypeGroup as FormGroup<StationGroup>
+    ).controls.stopPointGroup?.controls.meansOfTransport;
+    if (stopPointType === StopPointType.OnDemand) {
+      meansOfTransportForm?.setValue([MeanOfTransport.OnDemand]);
+      this.isMeanOfTransportOnDemandSelected = true;
+    } else {
+      this.isMeanOfTransportOnDemandSelected = false;
+    }
+  }
 
   private initTypeChangeInformationDialog(
     selectedTypeCtrl: FormControl<ServicePointType | null | undefined>

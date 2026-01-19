@@ -9,7 +9,7 @@
  */
 
 
-export type StopPointType = 'ORDERLY' | 'ON_REQUEST' | 'ZONE_ON_REQUEST' | 'TEMPORARY' | 'OUT_OF_ORDER' | 'UNKNOWN';
+export type StopPointType = 'ORDERLY' | 'ON_REQUEST' | 'ZONE_ON_REQUEST' | 'TEMPORARY' | 'OUT_OF_ORDER' | 'ON_DEMAND' | 'UNKNOWN';
 
 export const StopPointType = {
 
@@ -22,6 +22,8 @@ export const StopPointType = {
     Temporary: 'TEMPORARY' as StopPointType,
 
     OutOfOrder: 'OUT_OF_ORDER' as StopPointType,
+
+    OnDemand: 'ON_DEMAND' as StopPointType,
 
     Unknown: 'UNKNOWN' as StopPointType
 };
