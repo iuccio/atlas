@@ -4,18 +4,20 @@ import {
   ApplicationType,
   CoordinatePair,
   Country,
+  MeanOfTransport,
   Permission,
   PermissionRestrictionType,
   ReadServicePointVersion,
   SpatialReference,
+  StopPointType,
   SwissCanton,
 } from '../../../../../api';
 import { EventEmitter } from '@angular/core';
 import { GeographyComponent } from '../../../geography/geography.component';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TextFieldComponent } from '../../../../../core/form-components/text-field/text-field.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DateRangeComponent } from '../../../../../core/form-components/date-range/date-range.component';
 import { BusinessOrganisationSelectComponent } from '../../../../../core/form-components/bo-select/business-organisation-select.component';
 import { MatLabel } from '@angular/material/form-field';
@@ -32,6 +34,9 @@ import { TranslationSortingService } from '../../../../../core/translation/trans
 import { DialogService } from '../../../../../core/components/dialog/dialog.service';
 import { PermissionService } from '../../../../../core/auth/permission/permission.service';
 import { ServicePointGeoDataInternalService } from '../../../../../api/service/sepodi/service-point-geo-data-internal.service';
+import { ServicePointFormGroupBuilder } from './form-group/service-point-detail-form-group';
+import { BERN_WYLEREGG } from '../../../../../../test/data/service-point';
+import { StationGroup } from './form-group/station-form-group';
 import SpyObj = jasmine.SpyObj;
 import Spy = jasmine.Spy;
 
@@ -167,5 +172,38 @@ describe('ServicePointFormComponent', () => {
 
     expect(component.isNew).toBeTrue();
     expect(component.boSboidRestriction).toHaveSize(1);
+  });
+
+  it('should select is StopPoint OnDemand', () => {
+    //given
+    component.form = ServicePointFormGroupBuilder.buildFormGroup(
+      BERN_WYLEREGG,
+      EMPTY
+    );
+    //when
+    component.onStopPointChange(StopPointType.OnDemand);
+    //then
+    const meansOfTransportForm = (
+      component.form?.controls?.spTypeGroup as FormGroup<StationGroup>
+    ).controls.stopPointGroup?.controls.meansOfTransport;
+    expect(component.isMeanOfTransportOnDemandSelected).toBeTrue();
+    expect(meansOfTransportForm?.value).toHaveSize(1);
+    expect(meansOfTransportForm?.value).toEqual([MeanOfTransport.OnDemand]);
+  });
+
+  it('should not select is StopPoint OnDemand', () => {
+    //given
+    component.form = ServicePointFormGroupBuilder.buildFormGroup(
+      BERN_WYLEREGG,
+      EMPTY
+    );
+    //when
+    component.onStopPointChange(StopPointType.Orderly);
+    //then
+    const meansOfTransportForm = (
+      component.form?.controls?.spTypeGroup as FormGroup<StationGroup>
+    ).controls.stopPointGroup?.controls.meansOfTransport;
+    expect(component.isMeanOfTransportOnDemandSelected).toBeFalse();
+    expect(meansOfTransportForm?.value).not.toEqual([MeanOfTransport.OnDemand]);
   });
 });

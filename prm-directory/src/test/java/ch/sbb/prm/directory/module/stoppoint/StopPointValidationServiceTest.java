@@ -128,7 +128,7 @@ class StopPointValidationServiceTest {
     assertThat(errorResponse.getStatus()).isEqualTo(412);
     assertThat(errorResponse.getMessage()).isEqualTo(
         "Changing from Reduced to Complete not allowed! Allowed means of transport: [ELEVATOR, BUS, CHAIRLIFT, CABLE_CAR, "
-            + "CABLE_RAILWAY, BOAT, TRAM]");
+            + "CABLE_RAILWAY, BOAT, TRAM, ON_DEMAND]");
   }
 
   @Test

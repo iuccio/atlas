@@ -8,6 +8,7 @@ export const reducedMeansOfTransport: MeanOfTransport[] = [
   MeanOfTransport.Boat,
   MeanOfTransport.Tram,
   MeanOfTransport.CableRailway,
+  MeanOfTransport.OnDemand,
 ];
 
 export const completeMeansOfTransport: MeanOfTransport[] = [

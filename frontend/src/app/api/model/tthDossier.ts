@@ -8,6 +8,7 @@
  * Do not edit the class manually.
  */
 import { DossierStatus } from './dossierStatus';
+import { SwissCanton } from './swissCanton';
 import { TthDossierQuestion } from './tthDossierQuestion';
 
 
@@ -32,6 +33,7 @@ export interface TthDossier {
      * Generated DB id
      */
     readonly id?: number;
+    swissCanton: SwissCanton;
     /**
      * Topic of the dossier
      */

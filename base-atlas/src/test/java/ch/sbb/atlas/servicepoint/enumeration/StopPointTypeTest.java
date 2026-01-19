@@ -13,6 +13,7 @@ class StopPointTypeTest {
     assertEquals(StopPointType.ZONE_ON_REQUEST, StopPointType.from(30));
     assertEquals(StopPointType.TEMPORARY, StopPointType.from(40));
     assertEquals(StopPointType.OUT_OF_ORDER, StopPointType.from(50));
+    assertEquals(StopPointType.ON_DEMAND, StopPointType.from(100));
     assertEquals(StopPointType.UNKNOWN, StopPointType.from(0));
   }
 

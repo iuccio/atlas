@@ -315,7 +315,8 @@
     "NOTUNIQUEEMAIL": "E-Mail bereits vorhanden. Bitte prüfen Sie ob der Empfänger bereits erfasst ist oder ändern Sie die E-Mail Adresse.",
     "EXAMINANT_OR_CC_MAIL": "Bitte mindestens einen Empfänger oder eine zusätzliche cc-Mail erfassen.",
     "REQUIREDANDNOTUNKNOWN": "Darf nicht leer oder unspezifiziert sein.",
-    "REQ_SELECTED_ERROR": "Anzahl auszuwählender Elemente: {{reqSelections}}"
+    "REQ_SELECTED_ERROR": "Anzahl auszuwählender Elemente: {{reqSelections}}",
+    "SEPODIONDEMAND": "Das Verkehrsmittel On Demand darf nur in Kombination mit dem Haltestellentyp On Demand selektioniert werden."
   },
   "USER_ADMIN": {
     "SEARCH_FOR_FILTER": "Geschäftsorganisationen und Applikationen",
@@ -1157,7 +1158,8 @@
         "ZONE_ON_REQUEST": "Bedarfshaltestelle (Gebiet)",
         "TEMPORARY": "Temporäre Haltestelle",
         "OUT_OF_ORDER": "Haltestelle ausser Betrieb",
-        "UNKNOWN": "Nicht spezifiziert"
+        "UNKNOWN": "Nicht spezifiziert",
+        "ON_DEMAND": "On Demand"
       },
       "MEANS_OF_TRANSPORT": "Verkehrsmittel",
       "MEAN_OF_TRANSPORT": {
@@ -1172,6 +1174,7 @@
         "METRO": "Metro",
         "ELEVATOR": "Aufzug",
         "UNKNOWN": "Unbekannt",
+        "ON_DEMAND": "On Demand",
         "ALL": "Alle Verkehrsmittel"
       },
       "FREIGHT_SERVICE_POINT": "Bedienpunkt",
@@ -1381,7 +1384,8 @@
       "SERVICE_POINT": "Dienststelle",
       "BOARDING_PLATFORM": "Haltekante",
       "BOARDING_AREA": "Haltestellenbereich",
-      "SECTOR": "Sektor"
+      "SECTOR": "Sektor",
+      "ON_DEMAND": "On Demand"
     },
     "BACK_TO_MAP": "Schliessen",
     "ZOOM_IN_HINT": "Zum Anzeigen von Dienststellen, zoomen Sie näher heran.",

@@ -7,6 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { SwissCanton } from './swissCanton';
 import { StatementStatus } from './statementStatus';
 
 
@@ -15,6 +16,7 @@ export interface BatchUpdateTimetableHearingStatements {
      * List of Statements id
      */
     ids: Array<number>;
+    dossierCanton?: SwissCanton;
     statementStatus?: StatementStatus;
     dossierId?: number;
     dossierContactMail?: string;
