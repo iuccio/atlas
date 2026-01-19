@@ -40,7 +40,7 @@ import { PermissionService } from '../../../core/auth/permission/permission.serv
 import { TimetableHearingStatementInternalService } from '../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
 import { OverviewTabHeadingComponent } from '../overview-tab/overview-tab-heading/overview-tab-heading.component';
-import { NgOptimizedImage } from '@angular/common';
+import { NgClass, NgOptimizedImage } from '@angular/common';
 import { SelectComponent } from '../../../core/form-components/select/select.component';
 import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
 import { AtlasButtonComponent } from '../../../core/components/button/atlas-button.component';
@@ -49,6 +49,8 @@ import { TableComponent } from '../../../core/components/table/table.component';
 import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatIconButton } from '@angular/material/button';
+import { DialogData } from '../../../core/components/dialog/dialog.data';
+import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-detail',
@@ -261,7 +263,7 @@ export class OverviewDetailComponent implements OnInit {
       .then();
   }
 
-  downloadCsv() {
+  downloadCsv(anonymizedExport: boolean) {
     this.timetableHearingStatementsService
       .getStatementsAsCsv(
         this.translateService.currentLang,
@@ -277,11 +279,36 @@ export class OverviewDetailComponent implements OnInit {
           .filter(
             (numberOrUndefined): numberOrUndefined is number =>
               !!numberOrUndefined
-          )
+          ),
+        anonymizedExport
       )
       .subscribe((response) =>
         FileDownloadService.downloadFile('statements.csv', response)
       );
+  }
+
+  openTthExportAnonymizationChoiceDialog(): void {
+    const data: DialogData = {
+      title: 'TTH.DIALOG.EXPORT_ANONYMIZATION_CHOICE_TITLE',
+      message: 'TTH.DIALOG.EXPORT_ANONYMIZATION_CHOICE_MESSAGE',
+      cancelText: 'TTH.DIALOG.CANCEL',
+      confirmText: 'TTH.DIALOG.CONFIRM',
+    };
+
+    this.matDialog
+      .open(TthExportAnonymizationChoiceDialogComponent, {
+        data: data,
+        disableClose: true,
+        panelClass: 'atlas-dialog-panel',
+        backdropClass: 'atlas-dialog-backdrop',
+      })
+      .afterClosed()
+      .pipe()
+      .subscribe((result: { isAnonymized: boolean }) => {
+        if (result != null) {
+          this.downloadCsv(result.isAnonymized);
+        }
+      });
   }
 
   manageTimetableHearing() {
