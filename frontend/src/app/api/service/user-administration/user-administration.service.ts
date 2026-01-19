@@ -36,11 +36,6 @@ export class UserAdministrationService {
     return this.atlasApiService.get('/user-administration/v1/search-in-atlas', httpParams);
   }
 
-  searchBoDossierAnsweringUsers(searchQuery: string): Observable<User[]> {
-    const httpParams = this.atlasApiService.paramsOf({searchQuery});
-    return this.atlasApiService.get('/user-administration/v1/search-bo-dossier-answering-users', httpParams);
-  }
-
   getUsers(
     page: number,
     size: number,

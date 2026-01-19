@@ -215,14 +215,9 @@ export class OverviewDetailComponent implements OnInit {
         this.tableService.filter.chipSearch.getActiveSearch(),
         this.tableService.filter.multiSelectStatementStatus.getActiveSearch(),
         this.tableService.filter.searchSelectTTFN.getActiveSearch()?.ttfnid,
-        (
+        TthUtils.toTransportCompanyIds(
           this.tableService.filter.searchSelectTU.getActiveSearch() as TransportCompany[]
-        )
-          ?.map((tu) => tu.id)
-          .filter(
-            (numberOrUndefined): numberOrUndefined is number =>
-              !!numberOrUndefined
-          ),
+        ),
         undefined,
         pagination.page,
         pagination.size,
