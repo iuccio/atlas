@@ -33,6 +33,7 @@ import { TimetableHearingYearInternalService } from '../../../api/service/lidi/t
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { TableComponent } from '../../../core/components/table/table.component';
 import { TthChangeCantonDialogService } from './tth-change-canton-dialog/service/tth-change-canton-dialog.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-tab-heading',
@@ -56,6 +57,11 @@ const mockTimetableHearingStatementsService = jasmine.createSpyObj(
   'TimetableHearingStatementInternalService',
   ['getStatements']
 );
+const tthChangeCantonDialogService = jasmine.createSpyObj(
+  'TthChangeCantonDialogService',
+  { onClick: of(true) }
+);
+const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
 
 let router: Router;
 
@@ -139,7 +145,12 @@ async function baseTestConfiguration() {
       { provide: TranslatePipe },
       { provide: DisplayDatePipe },
       { provide: PermissionService, useValue: adminPermissionServiceMock },
+      { provide: MatDialog, useValue: dialogSpy },
       TableService,
+      {
+        provide: TthChangeCantonDialogService,
+        useValue: tthChangeCantonDialogService,
+      },
     ],
   })
     .overrideComponent(OverviewDetailComponent, {
