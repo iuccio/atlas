@@ -28,6 +28,8 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")//get this dependency from :kafka use as api does not work
     implementation(project(":user-administration-security"))
 
+    annotationProcessor("org.hibernate.orm:hibernate-jpamodelgen")
+
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -1,11 +1,19 @@
 package ch.sbb.workflow.module.lidi.tth.api;
 
 import ch.sbb.atlas.api.AtlasApiConstants;
+import ch.sbb.atlas.api.model.Container;
 import ch.sbb.atlas.api.workflow.tth.dossier.BoAnswerModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
+import ch.sbb.workflow.module.lidi.tth.search.TthDossierRequestParams;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +26,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface TthDossierApiInternal {
 
   String BASE_PATH = "/internal/tth/dossier";
+
+  @GetMapping
+  @PageableAsQueryParam
+  Container<TthDossierModel> getOverview(@Parameter(hidden = true) @PageableDefault(sort = {TthDossier.Fields.id,
+      TthDossier.Fields.topic}) Pageable pageable, @ParameterObject TthDossierRequestParams requestParams);
 
   @GetMapping("{dossierId}")
   TthDossierModel getDossier(@PathVariable Long dossierId);
