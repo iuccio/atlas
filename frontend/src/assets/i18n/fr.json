@@ -1377,7 +1377,8 @@
       "SERVICE_POINT": "Service",
       "BOARDING_PLATFORM": "Bordure d'arrêt",
       "BOARDING_AREA": "Zone d’arrêt",
-      "SECTOR": "Secteur"
+      "SECTOR": "Secteur",
+      "ON_DEMAND": "On Demand"
     },
     "BACK_TO_MAP": "Fermer",
     "ZOOM_IN_HINT": "Pour afficher les services, zoomez plus près.",
