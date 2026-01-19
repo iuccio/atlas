@@ -31,7 +31,6 @@ import { FileDownloadService } from '../../../core/components/file-upload/file/f
 import { MatDialog } from '@angular/material/dialog';
 import { DialogManageTthComponent } from '../dialog-manage-tth/dialog-manage-tth.component';
 import { DialogService } from '../../../core/components/dialog/dialog.service';
-import { StatementShareService } from './statement-share-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TableService } from '../../../core/components/table/table.service';
 import { TableFilter } from '../../../core/components/table-filter/config/table-filter';
@@ -40,17 +39,16 @@ import { PermissionService } from '../../../core/auth/permission/permission.serv
 import { TimetableHearingStatementInternalService } from '../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
 import { OverviewTabHeadingComponent } from '../overview-tab/overview-tab-heading/overview-tab-heading.component';
-import { NgClass, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { SelectComponent } from '../../../core/form-components/select/select.component';
 import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
 import { AtlasButtonComponent } from '../../../core/components/button/atlas-button.component';
 import { DownloadIconComponent } from '../../../core/form-components/download-icon/download-icon.component';
 import { TableComponent } from '../../../core/components/table/table.component';
 import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
-import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
-import { MatIconButton } from '@angular/material/button';
 import { DialogData } from '../../../core/components/dialog/dialog.data';
 import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
+import { StatementOverviewMenuComponent } from './statement-overview-menu/statement-overview-menu.component';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-detail',
@@ -67,11 +65,7 @@ import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonym
     DisplayDatePipe,
     TranslatePipe,
     NgOptimizedImage,
-    MatMenuTrigger,
-    MatIconButton,
-    MatMenu,
-    MatMenuItem,
-    NgClass,
+    StatementOverviewMenuComponent,
   ],
 })
 export class OverviewDetailComponent implements OnInit {
@@ -138,7 +132,6 @@ export class OverviewDetailComponent implements OnInit {
     private readonly newTimetableHearingYearDialogService: NewTimetableHearingYearDialogService,
     private readonly translateService: TranslateService,
     private readonly permissionService: PermissionService,
-    private readonly statementShareService: StatementShareService,
     private readonly matDialog: MatDialog
   ) {}
 
@@ -453,30 +446,6 @@ export class OverviewDetailComponent implements OnInit {
 
   checkedBoxEvent($event: SelectionModel<TimetableHearingStatementV2>) {
     this.selectedItems = $event.selected;
-  }
-
-  duplicate($event: TimetableHearingStatementV2) {
-    this.dialogService
-      .confirm({
-        title: 'TTH.DUPLICATE.DIALOG.TITLE',
-        message: 'TTH.DUPLICATE.DIALOG.MESSAGE',
-        cancelText: 'TTH.DUPLICATE.DIALOG.CANCEL',
-        confirmText: 'TTH.DUPLICATE.DIALOG.CONFIRM',
-      })
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          this.duplicateStatement($event);
-        }
-      });
-  }
-
-  duplicateStatement(statement: TimetableHearingStatementV2) {
-    this.statementShareService.statement = statement;
-    this.router
-      .navigate([this.hearingStatus.toLowerCase(), 'add'], {
-        relativeTo: this.route.parent,
-      })
-      .then();
   }
 
   private removeCheckBoxViewMode() {
@@ -828,32 +797,6 @@ export class OverviewDetailComponent implements OnInit {
       .subscribe((timetableHearingYears) => {
         if (timetableHearingYears.length > 0) {
           this.showStartTimetableHearingButton = false;
-        }
-      });
-  }
-
-  createDossier(statement: TimetableHearingStatementV2) {
-    this.router
-      .navigate([Pages.TTH_DOSSIERS.path, 'add'], {
-        relativeTo: this.route,
-        queryParams: { statementIds: [statement.id!] },
-      })
-      .then();
-  }
-
-  addToDossier(statement: TimetableHearingStatementV2) {
-    console.log(
-      'ATLAS-3226 - Adding to dossier not implemented yet.',
-      statement
-    );
-  }
-
-  switchCanton(statement: TimetableHearingStatementV2) {
-    this.tthChangeCantonDialogService
-      .onClick(undefined, [statement])
-      .subscribe((result) => {
-        if (result) {
-          this.ngOnInit();
         }
       });
   }
