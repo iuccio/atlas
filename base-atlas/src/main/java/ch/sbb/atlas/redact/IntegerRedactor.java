@@ -7,7 +7,7 @@ public class IntegerRedactor {
 
   private static final Integer REPLACEMENT = 0;
 
-  public static Integer redactInteger(Integer number) {
+  public static Integer redactInteger(Object number) {
     if (number == null) {
       return null;
     }
