@@ -1,0 +1,44 @@
+<button
+  matIconButton
+  [matMenuTriggerFor]="menu"
+  [disabled]="column().disabled"
+  [ngClass]="column().disabled ? 'color-gray-400' : 'color-primary-400'"
+>
+  <i class="icon bi bi-three-dots-vertical"></i>
+</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item class="color-primary-400" (click)="duplicate(row())">
+    <i class="icon bi bi-files me-2"></i>
+    <span>{{ 'TTH.BUTTON.DUPLICATE' | translate }}</span>
+  </button>
+  @if (!row().dossierId) {
+    <button
+      mat-menu-item
+      class="color-primary-400"
+      (click)="createDossier(row())"
+    >
+      <i class="icon bi bi-folder me-2"></i>
+      <span>{{ 'TTH.BUTTON.CREATE_DOSSIER' | translate }}</span>
+    </button>
+    <button
+      mat-menu-item
+      class="color-primary-400"
+      (click)="addToDossier(row())"
+    >
+      <i class="icon bi bi-folder-plus me-2"></i>
+      <span>{{ 'TTH.BUTTON.ADD_TO_DOSSIER' | translate }}</span>
+    </button>
+  }
+  <button mat-menu-item class="color-primary-400" (click)="switchCanton(row())">
+    <img
+      class="pe-2"
+      height="22"
+      ngSrc="assets/images/collecting_action/CANTON_DELIVERY.svg"
+      width="22"
+      alt="canton-delivery-icon"
+    />
+    <span>{{
+      'TTH.DROPDOWN.COLLECTING_ACTION.OPTION.CANTON_DELIVERY' | translate
+    }}</span>
+  </button>
+</mat-menu>
