@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  inject,
   input,
   Input,
   OnInit,
@@ -12,6 +13,7 @@ import { ApplicationType, User } from '../../../../api';
 import { SearchSelectComponent } from '../../../../core/form-components/search-select/search-select.component';
 import { UserSelectFormatPipe } from './user-select-format.pipe';
 import { UserAdministrationService } from '../../../../api/service/user-administration/user-administration.service';
+import { TthUserAdministrationService } from '../../../../api/service/user-administration/tth-user-administration.service';
 
 export type SearchMode = 'default' | 'inAtlas' | 'boDossierAnsweringUsers';
 
@@ -21,7 +23,8 @@ export type SearchMode = 'default' | 'inAtlas' | 'boDossierAnsweringUsers';
   imports: [SearchSelectComponent, ReactiveFormsModule, UserSelectFormatPipe],
 })
 export class UserSelectComponent implements OnInit {
-  constructor(private readonly userService: UserAdministrationService) {}
+  private readonly userService = inject(UserAdministrationService);
+  private readonly tthUserService = inject(TthUserAdministrationService);
 
   @Input() form!: FormGroup;
   @Input() applicationType?: ApplicationType;
@@ -54,7 +57,7 @@ export class UserSelectComponent implements OnInit {
         break;
       case 'boDossierAnsweringUsers':
         this.userSearchResults$ =
-          this.userService.searchBoDossierAnsweringUsers(searchQuery);
+          this.tthUserService.searchBoDossierAnsweringUsers(searchQuery);
         break;
     }
   }

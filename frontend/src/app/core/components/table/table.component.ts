@@ -218,4 +218,14 @@ export class TableComponent<DATATYPE> implements OnInit {
       sort: this.sortString,
     });
   }
+
+  protected isActionColumn(column: TableColumn<DATATYPE>): boolean {
+    return (
+      !column.checkbox &&
+      !column.dropdown &&
+      !column.button &&
+      !column.customCell &&
+      !column.icon
+    );
+  }
 }

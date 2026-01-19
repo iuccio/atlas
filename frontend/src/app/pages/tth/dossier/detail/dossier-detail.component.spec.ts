@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DossierDetailComponent } from './dossier-detail.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { SwissCanton, TimetableHearingStatementV2 } from '../../../../api';
 import { of } from 'rxjs';
@@ -60,6 +60,9 @@ const notificationService = jasmine.createSpyObj('NotificationService', [
 ]);
 const dialogService = jasmine.createSpyObj('DialogService', {
   confirm: of(true),
+});
+const router = jasmine.createSpyObj('Router', {
+  navigate: Promise.resolve(true),
 });
 
 describe('DossierDetailComponent', () => {
@@ -128,6 +131,16 @@ describe('DossierDetailComponent', () => {
       expect(component.isSendableToBo).toBeTrue();
     });
 
+    it('should toggle edit', () => {
+      expect(component.form.enabled).toBeFalse();
+
+      component.toggleEdit();
+      expect(component.form.enabled).toBeTrue();
+
+      component.toggleEdit();
+      expect(component.form.enabled).toBeFalse();
+    });
+
     it('should update', () => {
       expect(component.form.enabled).toBeFalse();
       component.toggleEdit();
@@ -150,6 +163,12 @@ describe('DossierDetailComponent', () => {
 
       expect(dialogService.confirm).toHaveBeenCalled();
       expect(dossierInternalService.completeDossier).toHaveBeenCalled();
+    });
+
+    it('should go back', () => {
+      component.back();
+
+      expect(router.navigate).toHaveBeenCalled();
     });
   });
 
@@ -180,6 +199,10 @@ describe('DossierDetailComponent', () => {
         {
           provide: DialogService,
           useValue: dialogService,
+        },
+        {
+          provide: Router,
+          useValue: router,
         },
         FormatPipe,
       ],
