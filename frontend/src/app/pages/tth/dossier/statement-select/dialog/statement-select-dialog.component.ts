@@ -26,6 +26,7 @@ import { TableComponent } from '../../../../../core/components/table/table.compo
 import { TthTableFilterSettingsService } from '../../../tth-table-filter-settings.service';
 import { Pages } from '../../../../pages';
 import { AtlasButtonComponent } from '../../../../../core/components/button/atlas-button.component';
+import { TthUtils } from '../../../util/tth-utils';
 
 @Component({
   selector: 'atlas-statement-select-dialog',
@@ -151,14 +152,9 @@ export class StatementSelectDialogComponent implements OnInit {
         this.tableService.filter.chipSearch.getActiveSearch(),
         this.tableService.filter.multiSelectStatementStatus.getActiveSearch(),
         this.tableService.filter.searchSelectTTFN.getActiveSearch()?.ttfnid,
-        (
+        TthUtils.toTransportCompanyIds(
           this.tableService.filter.searchSelectTU.getActiveSearch() as TransportCompany[]
-        )
-          ?.map((tu) => tu.id)
-          .filter(
-            (numberOrUndefined): numberOrUndefined is number =>
-              !!numberOrUndefined
-          ),
+        ),
         false,
         pagination.page,
         pagination.size,

@@ -83,4 +83,15 @@ describe('TthUtils', () => {
     expect(result[1].timetableYear).toBe(2004);
     expect(result[0].timetableYear).toBe(2005);
   });
+
+  it('should map transportcompanies to id and filter undefined values', () => {
+    //when
+    const result = TthUtils.toTransportCompanyIds([
+      { id: 1 },
+      { id: undefined },
+      { id: 3 },
+    ]);
+    //then
+    expect(result).toEqual([1, 3]);
+  });
 });
