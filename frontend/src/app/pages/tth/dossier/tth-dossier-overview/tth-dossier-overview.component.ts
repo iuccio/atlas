@@ -6,7 +6,6 @@ import { TableColumn } from '../../../../core/components/table/table-column';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableFilter } from '../../../../core/components/table-filter/config/table-filter';
 import { TthDossier } from '../../../../api/model/tthDossier';
-import { ContainerTthDossier } from '../../../../api/model/containerTthDossier';
 
 @Component({
   selector: 'atlas-tth-dossier-overview',
@@ -32,8 +31,9 @@ export class TthDossierOverviewComponent implements OnInit {
     this.dossierInternalService
       .getOverview()
       .pipe(catchError(this.handleError()))
-      .subscribe((container: ContainerTthDossier[]) => {
-        console.log('Dossier overview:', container);
+      .subscribe((container) => {
+        this.tthDossiers = container.objects!;
+        console.log('Dossier overview:', container.objects);
       });
   }
 
