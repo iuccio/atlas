@@ -1144,7 +1144,7 @@
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Chiusura dell'anno di calendario",
-      "CONFIRMATION_MESSAGE": "Volete terminare l'anno di calendario? L'operazione non può essere annullata.  Quando l'anno solare si chiude, i pareri vengono rimandati:",
+      "CONFIRMATION_MESSAGE": "Volete terminare l'anno di calendario? L'operazione non può essere annullata. Quando l'anno solare si chiude, nei dossier e nei pareri vengono eseguite le seguenti azioni:",
       "DOSSIER_CHANGES_TITLE": "Modifiche dossier",
       "DOSSIER_ADDED": {
         "FROM": "Dallo stato 'Inizializzato'",
@@ -1155,13 +1155,9 @@
         "TO": "Per stato 'Svincolato'"
       },
       "STATEMENT_CHANGES_TITLE": "Modifiche pareri",
-      "BELONGS_TO_DOSSIER_CHECK_OR_MOVED": {
-        "FROM": "Relativo al dossier con stato 'In fase di chiarimento presso AT'/'Riscontro AT pervenuto'/'Spostato'",
+      "BELONGS_TO_DOSSIER_CHECK_OR_MOVED_OR_ADDED": {
+        "FROM": "Relativo al dossier con stato 'In fase di chiarimento presso AT'/'Riscontro AT pervenuto'/'Spostato'/'Inizializzato'",
         "TO": "Viene rimosso dal dossier, nello stato 'Arrivato' e spostato all’anno successivo"
-      },
-      "BELONGS_TO_DOSSIER_ADDED": {
-        "FROM": "Relativo al dossier con stato 'Inizializzato'",
-        "TO": "Rimosso dal dossier con acquisizione della tematica e dei commenti, stato 'Arrivato' e spostato all’anno successivo"
       },
       "STATEMENT_MOVED": {
         "FROM": "Dallo stato 'Spostato'",

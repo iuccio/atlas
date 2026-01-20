@@ -24,7 +24,7 @@ public interface TthDossierRepository extends JpaRepository<TthDossier, Long>, J
   @Transactional
   @Modifying
   @Query("""
-       update ch.sbb.workflow.module.lidi.tth.entity.TthDossier tthd
+      update ch.sbb.workflow.module.lidi.tth.entity.TthDossier tthd
       set tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.CANCELED
       where tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.ADDED""")
   void updateDossierStatusFromAddedToCanceled();

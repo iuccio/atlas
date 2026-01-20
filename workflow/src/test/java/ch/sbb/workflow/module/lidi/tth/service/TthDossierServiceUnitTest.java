@@ -5,11 +5,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
-import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
-import ch.sbb.atlas.kafka.model.SwissCanton;
-import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -47,30 +43,5 @@ class TthDossierServiceUnitTest {
     // then
     verify(dossierRepository).updateDossierStatusFromAddedToCanceled();
     verify(dossierRepository).updateDossierStatusFromCheckOrMovedToDissolved();
-  }
-
-  @Test
-  void shouldGetBatchUpdateOfClosingAddedDossiersForStatements() {
-    // given
-    when(dossierRepository.findByDossierStatus(DossierStatus.ADDED)).thenReturn(List.of(
-        TthDossier.builder()
-            .statementIds(List.of(2L, 3L))
-            .swissCanton(SwissCanton.BERN)
-            .publicComment("Public comment")
-            .internalComment("Internal comment")
-            .topic("topic")
-            .build()));
-    // when
-    var batchUpdateOfClosingAddedDossiersForStatements = tthDossierService.getBatchUpdateOfClosingAddedDossiersForStatements();
-    // then
-    assertThat(batchUpdateOfClosingAddedDossiersForStatements).hasSize(1);
-    assertThat(batchUpdateOfClosingAddedDossiersForStatements.getFirst())
-        .returns(List.of(2L, 3L), BatchUpdateTimetableHearingStatementsModel::getIds)
-        .returns(SwissCanton.BERN, BatchUpdateTimetableHearingStatementsModel::getDossierCanton)
-        .returns(StatementStatus.RECEIVED, BatchUpdateTimetableHearingStatementsModel::getStatementStatus)
-        .returns("Public comment", BatchUpdateTimetableHearingStatementsModel::getPublicComment)
-        .returns("Internal comment", BatchUpdateTimetableHearingStatementsModel::getInternalComment)
-        .returns("topic", BatchUpdateTimetableHearingStatementsModel::getTopic);
-
   }
 }

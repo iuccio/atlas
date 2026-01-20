@@ -90,5 +90,4 @@ public class TthDossierMapper {
       default -> StatementStatus.IN_REVIEW;
     };
   }
-
 }

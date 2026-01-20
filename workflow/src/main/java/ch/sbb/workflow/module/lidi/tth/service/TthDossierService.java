@@ -189,18 +189,4 @@ public class TthDossierService {
   public TthDossier findDossier(Long id) {
     return dossierRepository.findById(id).orElseThrow(() -> new IdNotFoundException(id));
   }
-
-  public List<BatchUpdateTimetableHearingStatementsModel> getBatchUpdateOfClosingAddedDossiersForStatements() {
-    List<TthDossier> dossiersWithStatusAdded = dossierRepository.findByDossierStatus(DossierStatus.ADDED);
-    return dossiersWithStatusAdded.stream()
-        .<BatchUpdateTimetableHearingStatementsModel>map(dossier -> BatchUpdateTimetableHearingStatementsModel.builder()
-            .ids(dossier.getStatementIds())
-            .dossierCanton(dossier.getSwissCanton())
-            .statementStatus(StatementStatus.RECEIVED)
-            .publicComment(dossier.getPublicComment())
-            .internalComment(dossier.getInternalComment())
-            .topic(dossier.getTopic())
-            .build()
-        ).toList();
-  }
 }

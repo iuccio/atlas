@@ -1155,13 +1155,9 @@
         "TO": "Zu Status 'Aufgelöst'"
       },
       "STATEMENT_CHANGES_TITLE": "Stellungnahmen Änderungen",
-      "BELONGS_TO_DOSSIER_CHECK_OR_MOVED": {
-        "FROM": "Zugehörig zu Dossier mit Status 'In Abklärung bei TU'/'Rückmeldung TU eingetroffen'/'Verschoben'",
+      "BELONGS_TO_DOSSIER_CHECK_OR_MOVED_OR_ADDED": {
+        "FROM": "Zugehörig zu Dossier mit Status 'In Abklärung bei TU'/'Rückmeldung TU eingetroffen'/'Verschoben'/'Erfasst'",
         "TO": "Wird aus Dossier entfernt, zu Status 'Eingetroffen' und zum nächsten Jahr verschoben"
-      },
-      "BELONGS_TO_DOSSIER_ADDED": {
-        "FROM": "Zugehörig zu Dossier mit Status 'Erfasst'",
-        "TO": "Wird aus Dossier entfernt mit Übernahme des Themas und der Kommentare, zu Status 'Eingetroffen' und zum nächsten Jahr verschoben"
       },
       "STATEMENT_MOVED": {
         "FROM": "Von Status 'Verschoben'",
