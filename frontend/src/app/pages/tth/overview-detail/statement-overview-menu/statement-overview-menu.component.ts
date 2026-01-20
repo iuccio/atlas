@@ -10,6 +10,7 @@ import { DialogService } from '../../../../core/components/dialog/dialog.service
 import { StatementShareService } from '../statement-share-service';
 import { NgClass, NgOptimizedImage } from '@angular/common';
 import { TableColumn } from '../../../../core/components/table/table-column';
+import { AddToDossierDialogService } from '../../dossier/add-to-dossier-dialog/add-to-dossier-dialog.service';
 
 @Component({
   selector: 'atlas-statement-overview-menu',
@@ -32,6 +33,9 @@ export class StatementOverviewMenuComponent {
   private readonly statementShareService = inject(StatementShareService);
   private readonly tthChangeCantonDialogService = inject(
     TthChangeCantonDialogService
+  );
+  private readonly addToDossierDialogService = inject(
+    AddToDossierDialogService
   );
 
   hearingStatus = input(HearingStatus.Active);
@@ -74,10 +78,11 @@ export class StatementOverviewMenuComponent {
   }
 
   addToDossier(statement: TimetableHearingStatementV2) {
-    console.log(
-      'ATLAS-3226 - Adding to dossier not implemented yet.',
-      statement
-    );
+    this.addToDossierDialogService.openDialog(statement).subscribe((result) => {
+      if (result) {
+        this.reloadTable.emit();
+      }
+    });
   }
 
   switchCanton(statement: TimetableHearingStatementV2) {

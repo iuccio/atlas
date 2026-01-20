@@ -1129,8 +1129,10 @@
         "MOVED": "Verschoben",
         "DISSOLVED": "Aufgelöst"
       },
-      "CANCEL_DOSSIER": "Dossier aufheben",
-      "DISSOLVE_DOSSIER": "Dossier auflösen"
+      "CANCEL_DOSSIER": "Supprimer le dossier",
+      "DISSOLVE_DOSSIER": "Fermer le dossier",
+      "TOPIC": "Thème",
+      "ADD_TO_DOSSIER_INFO": "Après l’ajout, il n’est plus possible d’éditer individuellement. Les modifications concernent toujours toutes les prises de position d’un dossier."
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Clôture de l'année horaire",

@@ -1130,7 +1130,9 @@
         "DISSOLVED": "Aufgelöst"
       },
       "CANCEL_DOSSIER": "Dossier aufheben",
-      "DISSOLVE_DOSSIER": "Dossier auflösen"
+      "DISSOLVE_DOSSIER": "Dossier auflösen",
+      "TOPIC": "Thema",
+      "ADD_TO_DOSSIER_INFO": "Nach dem Hinzufügen, ist individuelles Editieren nicht mehr möglich. Änderungen betreffen immer alle Stellungnahmen in einem Dossier."
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Fahrplanjahr schliessen",
