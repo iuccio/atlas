@@ -3,8 +3,9 @@ import {Observable} from 'rxjs';
 import {AtlasApiService} from '../atlas-api.service';
 import {TthDossier} from '../../model/tthDossier';
 import {DossierStatus} from '../../model/dossierStatus';
-import {ContainerTthDossier} from "../../model/containerTthDossier";
 import {SwissCanton} from "../../model/swissCanton";
+import {BoAnswer} from "../../model/boAnswer";
+import {ContainerTthDossier} from "../../model/containerTthDossier";
 
 @Injectable({
   providedIn: 'root',
@@ -48,6 +49,10 @@ export class DossierInternalService {
 
   public completeDossier(dossierId: number, status: DossierStatus): Observable<void> {
     return this.atlasApiService.post(`${this.BASE_PATH}/${dossierId}/complete/${status}`);
+  }
+
+  public answerQuestion(dossierId: number, boAnswer: BoAnswer): Observable<void> {
+    return this.atlasApiService.post(`${this.BASE_PATH}/answer/${dossierId}`, boAnswer);
   }
 
 }

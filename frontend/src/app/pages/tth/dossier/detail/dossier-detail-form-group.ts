@@ -81,3 +81,19 @@ export class DossierFormGroupBuilder {
     return dossier;
   }
 }
+
+export interface BoAnswerFormGroup {
+  answerToCanton: FormControl<string | null>;
+}
+
+export class BoAnswerFormGroupBuilder {
+  static buildFormGroup(boAnswer: string | null): FormGroup<BoAnswerFormGroup> {
+    return new FormGroup<BoAnswerFormGroup>({
+      answerToCanton: new FormControl(boAnswer, [
+        Validators.required,
+        Validators.maxLength(5000),
+        WhitespaceValidator.blankOrEmptySpaceSurrounding,
+      ]),
+    });
+  }
+}

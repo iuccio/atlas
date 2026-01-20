@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DossierDetailComponent } from './dossier-detail.component';
+import { CantonDossierDetailComponent } from './canton-dossier-detail.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AppTestingModule } from '../../../../app.testing.module';
-import { SwissCanton, TimetableHearingStatementV2 } from '../../../../api';
+import { AppTestingModule } from '../../../../../app.testing.module';
+import { SwissCanton, TimetableHearingStatementV2 } from '../../../../../api';
 import { of } from 'rxjs';
-import { TimetableHearingStatementInternalService } from '../../../../api/service/lidi/timetable-hearing-statement-internal.service';
-import { TthDossier } from '../../../../api/model/tthDossier';
-import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
-import { StatementSelectDialogService } from '../statement-select/dialog/statement-select-dialog.service';
-import { NotificationService } from '../../../../core/notification/notification.service';
-import { ActivatedRouteMockType } from '../../../../app.testing.mocks';
-import { DossierStatus } from '../../../../api/model/dossierStatus';
-import { FormatPipe } from '../../../../core/components/table/pipe/format.pipe';
-import { DialogService } from '../../../../core/components/dialog/dialog.service';
+import { TimetableHearingStatementInternalService } from '../../../../../api/service/lidi/timetable-hearing-statement-internal.service';
+import { TthDossier } from '../../../../../api/model/tthDossier';
+import { DossierInternalService } from '../../../../../api/service/workflow/dossier-internal.service';
+import { StatementSelectDialogService } from '../../statement-select/dialog/statement-select-dialog.service';
+import { NotificationService } from '../../../../../core/notification/notification.service';
+import { ActivatedRouteMockType } from '../../../../../app.testing.mocks';
+import { DossierStatus } from '../../../../../api/model/dossierStatus';
+import { FormatPipe } from '../../../../../core/components/table/pipe/format.pipe';
+import { DialogService } from '../../../../../core/components/dialog/dialog.service';
 
 const statement: TimetableHearingStatementV2 = {
   id: 456,
@@ -66,8 +66,8 @@ const router = jasmine.createSpyObj('Router', {
 });
 
 describe('DossierDetailComponent', () => {
-  let component: DossierDetailComponent;
-  let fixture: ComponentFixture<DossierDetailComponent>;
+  let component: CantonDossierDetailComponent;
+  let fixture: ComponentFixture<CantonDossierDetailComponent>;
 
   describe('on create', () => {
     beforeEach(async () => {
@@ -174,7 +174,7 @@ describe('DossierDetailComponent', () => {
 
   async function setupTestBed(activatedRoute: ActivatedRouteMockType) {
     await TestBed.configureTestingModule({
-      imports: [DossierDetailComponent, AppTestingModule],
+      imports: [CantonDossierDetailComponent, AppTestingModule],
       providers: [
         {
           provide: ActivatedRoute,
@@ -208,7 +208,7 @@ describe('DossierDetailComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DossierDetailComponent);
+    fixture = TestBed.createComponent(CantonDossierDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }

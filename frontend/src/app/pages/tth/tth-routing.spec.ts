@@ -1,6 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { loadStatementDetailRoute, routes } from './tth-routing';
+import {
+  loadDossierDetailRoute,
+  loadStatementDetailRoute,
+  routes,
+} from './tth-routing';
 import { provideHttpClient } from '@angular/common/http';
 import { PermissionService } from '../../core/auth/permission/permission.service';
 
@@ -65,6 +69,62 @@ describe('TTH Routing', () => {
       const result = loadStatementDetailRoute().then((component) => {
         expect(component).toBeDefined();
         expect(component.name).toBe('BoStatementDetailComponent');
+      });
+
+      expect(result).toBeDefined();
+    });
+  });
+
+  it('should load BoDossierDetailComponent', () => {
+    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(routes),
+        provideHttpClient(),
+        {
+          provide: PermissionService,
+          useValue: permissionServiceSpy,
+        },
+      ],
+    }).runInInjectionContext(async () => {
+      const router = TestBed.inject(Router);
+      expect(router).toBeTruthy();
+      const result = loadDossierDetailRoute().then((component) => {
+        expect(component).toBeDefined();
+        expect(component.name).toBe('BoDossierDetailComponent');
+      });
+
+      expect(result).toBeDefined();
+    });
+  });
+
+  it('should load CantonDossierDetailComponent', () => {
+    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(routes),
+        provideHttpClient(),
+        {
+          provide: PermissionService,
+          useValue: permissionServiceSpy,
+        },
+      ],
+    }).runInInjectionContext(async () => {
+      const router = TestBed.inject(Router);
+      expect(router).toBeTruthy();
+      const result = loadDossierDetailRoute().then((component) => {
+        expect(component).toBeDefined();
+        expect(component.name).toBe('CantonDossierDetailComponent');
       });
 
       expect(result).toBeDefined();

@@ -1,42 +1,42 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { DetailFormComponent } from '../../../../core/leave-guard/leave-dirty-form-guard.service';
+import { DetailFormComponent } from '../../../../../core/leave-guard/leave-dirty-form-guard.service';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TthDossier } from '../../../../api/model/tthDossier';
-import { DetailPageContainerComponent } from '../../../../core/components/detail-page-container/detail-page-container.component';
-import { DetailPageContentComponent } from '../../../../core/components/detail-page-content/detail-page-content.component';
-import { ScrollToTopDirective } from '../../../../core/scroll-to-top/scroll-to-top.directive';
-import { DetailFooterComponent } from '../../../../core/components/detail-footer/detail-footer.component';
+import { TthDossier } from '../../../../../api/model/tthDossier';
+import { DetailPageContainerComponent } from '../../../../../core/components/detail-page-container/detail-page-container.component';
+import { DetailPageContentComponent } from '../../../../../core/components/detail-page-content/detail-page-content.component';
+import { ScrollToTopDirective } from '../../../../../core/scroll-to-top/scroll-to-top.directive';
+import { DetailFooterComponent } from '../../../../../core/components/detail-footer/detail-footer.component';
 import {
   DossierDetailFormGroup,
   DossierFormGroupBuilder,
-} from './dossier-detail-form-group';
+} from '../dossier-detail-form-group';
 import { AtlasLabelFieldComponent } from '@atlas/form';
-import { TextFieldComponent } from '../../../../core/form-components/text-field/text-field.component';
+import { TextFieldComponent } from '../../../../../core/form-components/text-field/text-field.component';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AtlasSpacerComponent } from '../../../../core/components/spacer/atlas-spacer.component';
-import { AtlasButtonComponent } from '../../../../core/components/button/atlas-button.component';
-import { DateComponent } from '../../../../core/form-components/date/date.component';
-import { CommentComponent } from '../../../../core/form-components/comment/comment.component';
+import { AtlasSpacerComponent } from '../../../../../core/components/spacer/atlas-spacer.component';
+import { AtlasButtonComponent } from '../../../../../core/components/button/atlas-button.component';
+import { DateComponent } from '../../../../../core/form-components/date/date.component';
+import { CommentComponent } from '../../../../../core/form-components/comment/comment.component';
 import {
   DetailDialogHelperService,
   DetailWithCancelEdit,
-} from '../../../../core/detail/detail-dialog-helper.service';
-import { ValidationService } from '../../../../core/validation/validation.service';
-import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
+} from '../../../../../core/detail/detail-dialog-helper.service';
+import { ValidationService } from '../../../../../core/validation/validation.service';
+import { DossierInternalService } from '../../../../../api/service/workflow/dossier-internal.service';
 import { catchError, EMPTY } from 'rxjs';
-import { NotificationService } from '../../../../core/notification/notification.service';
-import { toNumberArrayStrict } from '../../../../core/util/arrays';
-import { StatementSelectComponent } from '../statement-select/statement-select.component';
-import { StatementSelectDialogService } from '../statement-select/dialog/statement-select-dialog.service';
-import { SwissCanton } from '../../../../api';
-import { TimetableHearingStatementInternalService } from '../../../../api/service/lidi/timetable-hearing-statement-internal.service';
-import { AtlasFieldErrorComponent } from '../../../../core/form-components/atlas-field-error/atlas-field-error.component';
-import { UserSelectComponent } from '../../../user-administration/user/user-select/user-select.component';
-import { Cantons } from '../../../../core/cantons/Cantons';
-import { DossierStatus } from '../../../../api/model/dossierStatus';
-import { SelectComponent } from '../../../../core/form-components/select/select.component';
-import { DialogService } from '../../../../core/components/dialog/dialog.service';
+import { NotificationService } from '../../../../../core/notification/notification.service';
+import { toNumberArrayStrict } from '../../../../../core/util/arrays';
+import { StatementSelectComponent } from '../../statement-select/statement-select.component';
+import { StatementSelectDialogService } from '../../statement-select/dialog/statement-select-dialog.service';
+import { SwissCanton } from '../../../../../api';
+import { TimetableHearingStatementInternalService } from '../../../../../api/service/lidi/timetable-hearing-statement-internal.service';
+import { AtlasFieldErrorComponent } from '../../../../../core/form-components/atlas-field-error/atlas-field-error.component';
+import { UserSelectComponent } from '../../../../user-administration/user/user-select/user-select.component';
+import { Cantons } from '../../../../../core/cantons/Cantons';
+import { DossierStatus } from '../../../../../api/model/dossierStatus';
+import { SelectComponent } from '../../../../../core/form-components/select/select.component';
+import { DialogService } from '../../../../../core/components/dialog/dialog.service';
 
 export const DOSSIER_EDITABLE_STATES = [
   DossierStatus.Added,
@@ -67,10 +67,10 @@ export const DOSSIER_EDITABLE_STATES = [
     UserSelectComponent,
     SelectComponent,
   ],
-  templateUrl: './dossier-detail.component.html',
-  styleUrls: ['./dossier-detail.component.scss'],
+  templateUrl: './canton-dossier-detail.component.html',
+  styleUrls: ['./canton-dossier-detail.component.scss'],
 })
-export class DossierDetailComponent
+export class CantonDossierDetailComponent
   implements DetailFormComponent, DetailWithCancelEdit, OnInit
 {
   private readonly activatedRoute = inject(ActivatedRoute);
