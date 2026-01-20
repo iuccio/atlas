@@ -32,4 +32,5 @@ public class BatchUpdateTimetableHearingStatementsModel extends BaseUpdateHearin
   private String internalComment;
 
   private String topic;
+
 }

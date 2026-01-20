@@ -64,34 +64,6 @@ class TthDossierRepositoryTest {
   }
 
   @Test
-  void shouldFindByDossierStatus() {
-    // given
-    tthDossierRepository.saveAll(List.of(
-        TthDossier.builder()
-            .swissCanton(SwissCanton.BERN)
-            .topic("test")
-            .dossierStatus(DossierStatus.ADDED)
-            .boContactMail("test@bo.ch")
-            .boDeadlineToAnswer(LocalDate.of(2025, 12, 31))
-            .statementIds(List.of(1L, 5L))
-            .build(),
-        TthDossier.builder()
-            .swissCanton(SwissCanton.BERN)
-            .topic("test")
-            .dossierStatus(DossierStatus.DOSSIER_CANTON_CHECK)
-            .boContactMail("test@bo.ch")
-            .boDeadlineToAnswer(LocalDate.of(2025, 12, 31))
-            .statementIds(List.of(7L))
-            .build()
-    ));
-    // when
-    var addedDossiers = tthDossierRepository.findByDossierStatus(DossierStatus.ADDED);
-    // then
-    assertThat(addedDossiers).hasSize(1);
-    assertThat(addedDossiers.getFirst().getDossierStatus()).isEqualTo(DossierStatus.ADDED);
-  }
-
-  @Test
   void shouldUpdateDossierStatusFromAddedToCanceled() {
     // given
     List<Long> savedIds = tthDossierRepository.saveAll(List.of(

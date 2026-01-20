@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @FieldNameConstants
-public class BaseUpdateHearingModel {
+public abstract class BaseUpdateHearingModel {
 
   @NotEmpty
   @Schema(description = "List of Statements id")
