@@ -43,16 +43,6 @@ class TthDossierControllerTest {
   }
 
   @Test
-  void shouldGetDossierForBo() {
-    when(tthDossierService.getDossierForBo(1L)).thenReturn(TthDossier.builder().id(1L).topic(TOPIC).build());
-
-    TthDossierModel dossier = tthDossierController.getDossierForBo(1L);
-
-    assertThat(dossier.getId()).isEqualTo(1L);
-    verify(tthDossierService).getDossierForBo(1L);
-  }
-
-  @Test
   void shouldCreateDossier() {
     String question = "Ist es möglich?";
     when(tthDossierService.createDossier(any())).thenReturn(TthDossier.builder().id(1L).topic(TOPIC).dossierQuestions(List.of(

@@ -1,0 +1,128 @@
+<div atlasScrollToTop>
+  <atlas-detail-page-container>
+    <atlas-detail-page-content>
+      <div class="dossier-form">
+        <h1 class="font-bold-4xl mt-5">
+          {{ ('TTH.DOSSIER.DOSSIER' | translate) + ' ' + dossierForm.controls.id.value }}
+        </h1>
+
+        <div class="d-flex flex-column col-8 mt-3">
+          <div class="d-flex">
+            <atlas-label-field
+              fieldLabel="TTH.STATEMENT.TOPIC"
+              [required]="true"
+            />
+            <div class="col-8 ms-2">
+              <atlas-text-field
+                [formGroup]="dossierForm"
+                controlName="topic"
+                [required]="true"
+              >
+              </atlas-text-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <div class="font-bold-xl">
+            {{ 'TTH.DOSSIER.STATEMENTS' | translate }}
+          </div>
+          <atlas-statement-select
+            [(selectedStatements)]="selectedStatements"
+            [removeOptionEnabled]="dossierForm.enabled"
+            [showRemoveOption]="false"
+          >
+          </atlas-statement-select>
+        </div>
+
+        <div>
+          <span class="font-bold-xl">
+            {{ 'TTH.DOSSIER.BO_EXTERNAL_FEEDBACK' | translate }}
+          </span>
+          <span class="font-base-xl">
+            {{ 'TTH.DOSSIER.BO_EXTERNAL_FEEDBACK_HINT' | translate }}
+          </span>
+          <atlas-spacer [divider]="true" height="10px"></atlas-spacer>
+          <div class="mt-4">
+            <atlas-form-date
+              [formGroup]="dossierForm"
+              controlName="boDeadlineToAnswer"
+              label="TTH.DOSSIER.BO_DEADLINE_TO_ANSWER"
+              [required]="false"
+              [readonly]="true"
+            >
+            </atlas-form-date>
+          </div>
+          <div class="d-flex flex-column col-12 mt-3">
+            <span>{{ cantonQuestion }}</span>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <span class="font-bold-xl">
+            {{ 'TTH.DOSSIER.BO_EXTERNAL_FEEDBACK_ANSWER' | translate }}
+          </span>
+          <atlas-spacer [divider]="true" height="10px"></atlas-spacer>
+          <div class="font-regular mt-4 mb-2">
+            {{ 'TTH.DOSSIER.BO_EXTERNAL_FEEDBACK_ANSWER_INFO' | translate }}
+          </div>
+
+          <div class="d-flex flex-column col-12 mb-4">
+            <atlas-form-comment
+              [formGroup]="form"
+              controlName="answerToCanton"
+              label="TTH.STATEMENT.INTERNAL_COMMENT"
+              maxChars="5000"
+            >
+            </atlas-form-comment>
+          </div>
+
+          <div class="d-flex flex-column col-6 mt-2">
+            <atlas-button
+              buttonText="TTH.DOSSIER.BO_SEND_ANSWER_BUTTON"
+              buttonType="defaultPrimary"
+              (buttonClicked)="sendAnswer()"
+              [disabled]="!isDossierStatusBoCheck"
+            />
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <span class="font-bold-xl">
+            {{ 'TTH.DOSSIER.INTERNAL_FEEDBACK' | translate }}
+          </span>
+          <span class="font-base-xl">
+            {{ 'TTH.DOSSIER.INTERNAL_FEEDBACK_HINT' | translate }}
+          </span>
+          <atlas-spacer [divider]="true" height="10px"></atlas-spacer>
+          <div class="d-flex flex-column col-8 font-regular mt-4 mb-2">
+            {{ 'TTH.DOSSIER.INTERNAL_FEEDBACK_INFO' | translate }}
+          </div>
+          <div class="d-flex flex-column col-6 mt-2">
+            <atlas-button
+              buttonDataCy="open-in-mail"
+              buttonText="TTH.STATEMENT.CLARIFICATION_MAIL"
+              buttonType="defaultPrimary"
+            >
+              <ng-template #rightIcon>
+                <i class="ps-2 bi bi-envelope"></i>
+              </ng-template>
+            </atlas-button>
+          </div>
+        </div>
+      </div>
+    </atlas-detail-page-content>
+
+    <atlas-detail-footer>
+      <atlas-button
+        (buttonClicked)="back()"
+        [footerEdit]="dossierForm.enabled"
+        buttonDataCy="back-to-overview"
+        buttonText="COMMON.BACK_TO_OVERVIEW"
+        buttonType="whiteFooterNonEdit"
+        wrapperStyleClass="me-3"
+      >
+      </atlas-button>
+    </atlas-detail-footer>
+  </atlas-detail-page-container>
+</div>

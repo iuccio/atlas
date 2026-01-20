@@ -1,7 +1,7 @@
 <div [formGroup]="formGroup" class="col-12 d-flex mt-3">
   <div class="d-flex flex-column">
     <atlas-label-field
-      [fieldExamples]="[
+      [fieldExamples]=" readonly ? [] : [
         { label: 'FORM.FOR_EXAMPLE', translate: true },
         { label: ' ', translate: false },
         {

@@ -28,6 +28,21 @@ export async function loadStatementDetailRoute() {
   throw new Error('No component statement found for you!!!');
 }
 
+export async function loadDossierDetailRoute() {
+  const permissionService = inject(PermissionService);
+  if (permissionService.getTthApplicationUserType() === 'BO_TTH') {
+    const m =
+      await import('./dossier/detail/bo-dossier-detail/bo-dossier-detail.component');
+    return m.BoDossierDetailComponent;
+  }
+  if (permissionService.getTthApplicationUserType() === 'CANTON_TTH') {
+    const m =
+      await import('./dossier/detail/canton-dossier-detail/canton-dossier-detail.component');
+    return m.CantonDossierDetailComponent;
+  }
+  throw new Error('No component statement found for you!!!');
+}
+
 export const routes: Routes = [
   {
     path: '',
@@ -52,10 +67,9 @@ export const routes: Routes = [
   },
   {
     path: `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ACTIVE.path}/${Pages.TTH_DOSSIERS.path}/:id`,
-    loadComponent: () =>
-      import('./dossier/detail/dossier-detail.component').then(
-        (m) => m.DossierDetailComponent
-      ),
+    loadComponent: async () => {
+      return await loadDossierDetailRoute();
+    },
     canDeactivate: [canLeaveDirtyForm],
     resolve: {
       dossier: dossierResolver,

@@ -1,11 +1,12 @@
-import { TestBed } from '@angular/core/testing';
-import { AtlasApiService } from '../atlas-api.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { UserService } from '../../../core/auth/user/user.service';
-import { DossierInternalService } from './dossier-internal.service';
-import { TthDossier } from '../../model/tthDossier';
-import { SwissCanton } from '../../model/swissCanton';
-import { DossierStatus } from '../../model/dossierStatus';
+import {TestBed} from '@angular/core/testing';
+import {AtlasApiService} from '../atlas-api.service';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {UserService} from '../../../core/auth/user/user.service';
+import {DossierInternalService} from './dossier-internal.service';
+import {TthDossier} from '../../model/tthDossier';
+import {SwissCanton} from '../../model/swissCanton';
+import {DossierStatus} from '../../model/dossierStatus';
+import {BoAnswer} from '../../model/boAnswer';
 
 describe('DossierInternalService', () => {
   let service: DossierInternalService;
@@ -85,6 +86,16 @@ describe('DossierInternalService', () => {
 
     // then
     expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier/5/complete/ACCEPTED');
+  });
+
+
+  it('should answer question', () => {
+    // when
+    const baAnswer: BoAnswer = {answerToCanton: "Alles gut!"}
+    service.answerQuestion(5, baAnswer);
+
+    // then
+    expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier/answer/5', baAnswer);
   });
 
 });

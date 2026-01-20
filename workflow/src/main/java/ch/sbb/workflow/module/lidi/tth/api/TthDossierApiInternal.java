@@ -35,9 +35,6 @@ public interface TthDossierApiInternal {
   @GetMapping("{dossierId}")
   TthDossierModel getDossier(@PathVariable Long dossierId);
 
-  @GetMapping("/bo/{dossierId}")
-  TthDossierModel getDossierForBo(@PathVariable Long dossierId);
-
   @PostMapping
   TthDossierModel createDossier(@Valid @RequestBody TthDossierModel dossierModel);
 
