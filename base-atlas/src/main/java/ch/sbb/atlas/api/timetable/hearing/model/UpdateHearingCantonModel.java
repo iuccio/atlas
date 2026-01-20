@@ -33,4 +33,5 @@ public class UpdateHearingCantonModel extends BaseUpdateHearingModel {
   @Pattern(regexp = AtlasCharacterSetsRegex.ISO_8859_1)
   @Schema(description = "Statement comment", example = "I am changing my statement from the canton Geneva to the canton Bern.")
   private String comment;
+
 }

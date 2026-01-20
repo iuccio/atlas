@@ -19,8 +19,6 @@ public interface TthDossierRepository extends JpaRepository<TthDossier, Long>, J
       where tthd.dossierStatus in :dossierStatus""")
   List<Long> findStatementIdsByDossierStatusIn(List<DossierStatus> dossierStatus);
 
-  List<TthDossier> findByDossierStatus(DossierStatus dossierStatus);
-
   @Transactional
   @Modifying
   @Query("""
