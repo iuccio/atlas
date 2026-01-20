@@ -8,7 +8,6 @@ import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementApiInternal;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementModelV2;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementRequestParams;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
-import ch.sbb.atlas.api.timetable.hearing.model.BaseUpdateHearingModel;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.timetable.hearing.model.UpdateHearingCantonModel;
 import ch.sbb.atlas.api.timetable.hearing.model.UpdateHearingStatementStatusModel;
@@ -212,16 +211,5 @@ public class TimetableHearingStatementControllerInternal implements TimetableHea
       TimetableHearingStatement statement = timetableHearingStatementService.getTimetableHearingStatementsById(id);
       timetableHearingStatementService.updateStatementFromDossier(statement, batchUpdateModel);
     });
-  }
-
-  @Override
-  public void updateStatementGroups(List<BatchUpdateTimetableHearingStatementsModel> batchUpdateModel) {
-    // todo: transaction is broken
-    batchUpdateModel.forEach(this::updateStatements);
-  }
-
-  @Override
-  public void removeDossierRelationsFor(BaseUpdateHearingModel batchUpdateModel) {
-    timetableHearingStatementService.removeDossierRelationsFor(batchUpdateModel.getIds());
   }
 }

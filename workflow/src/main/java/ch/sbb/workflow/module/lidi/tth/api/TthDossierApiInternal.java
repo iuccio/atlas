@@ -2,6 +2,7 @@ package ch.sbb.workflow.module.lidi.tth.api;
 
 import ch.sbb.atlas.api.AtlasApiConstants;
 import ch.sbb.atlas.api.model.Container;
+import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.BoAnswerModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
@@ -57,6 +58,10 @@ public interface TthDossierApiInternal {
   @Secured(Role.SECURED_FOR_ATLAS_ADMIN)
   @GetMapping("statementIdsFromStatus")
   List<Long> getStatementIdsFromStatus(@RequestParam List<DossierStatus> dossierStatus);
+
+  @Secured(Role.SECURED_FOR_ATLAS_ADMIN)
+  @GetMapping("statementBatchUpdateFromAddedDossiers")
+  List<BatchUpdateTimetableHearingStatementsModel> getBatchUpdateOfAddedDossiersForStatements();
 
   @Secured(Role.SECURED_FOR_ATLAS_ADMIN)
   @PostMapping("closing-year-status")

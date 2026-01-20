@@ -2,7 +2,6 @@ package ch.sbb.workflow.module.lidi.tth.service;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
-import ch.sbb.atlas.api.timetable.hearing.model.BaseUpdateHearingModel;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
@@ -41,28 +40,8 @@ public class TthDossierService {
 
   @Transactional
   public void updateDossierStatusClosingYear() {
-    // Dossier auflösen
-    List<Long> updatedDossierIds = dossierRepository.updateDossierStatusFromCheckOrMovedToDissolved();
-    List<Long> deletedStatementRelationsIds = dossierRepository.deleteDossierStatementRelationsFor(updatedDossierIds);
-    timetableHearingStatementClient.removeDossierRelationsFor(
-        BaseUpdateHearingModel.builder().ids(deletedStatementRelationsIds).build());
-
-    // Dossier aufheben todo: mby split this use case into other transaction and call from lidi to have unbroken transaction
-    List<TthDossier> updatedDossiers = dossierRepository.updateDossierStatusFromAddedToCanceled();
-    dossierRepository.deleteDossierStatementRelationsFor(updatedDossiers.stream().map(TthDossier::getId).toList());
-    List<BatchUpdateTimetableHearingStatementsModel> batchStatementGroupUpdates = updatedDossiers.stream()
-        .<BatchUpdateTimetableHearingStatementsModel>map(dossier -> BatchUpdateTimetableHearingStatementsModel.builder()
-            .ids(dossier.getStatementIds())
-            .dossierCanton(dossier.getSwissCanton())
-            .statementStatus(StatementStatus.RECEIVED)
-            .dossierId(null)
-            .dossierContactMail(null)
-            .publicComment(dossier.getPublicComment())
-            .internalComment(dossier.getInternalComment())
-            .topic(dossier.getTopic())
-            .build()
-        ).toList();
-    timetableHearingStatementClient.updateStatementGroups(batchStatementGroupUpdates);
+    dossierRepository.updateDossierStatusFromAddedToCanceled();
+    dossierRepository.updateDossierStatusFromCheckOrMovedToDissolved();
   }
 
   @TthRedacted
@@ -209,5 +188,19 @@ public class TthDossierService {
 
   public TthDossier findDossier(Long id) {
     return dossierRepository.findById(id).orElseThrow(() -> new IdNotFoundException(id));
+  }
+
+  public List<BatchUpdateTimetableHearingStatementsModel> getBatchUpdateOfClosingAddedDossiersForStatements() {
+    List<TthDossier> dossiersWithStatusAdded = dossierRepository.findByDossierStatus(DossierStatus.ADDED);
+    return dossiersWithStatusAdded.stream()
+        .<BatchUpdateTimetableHearingStatementsModel>map(dossier -> BatchUpdateTimetableHearingStatementsModel.builder()
+            .ids(dossier.getStatementIds())
+            .dossierCanton(dossier.getSwissCanton())
+            .statementStatus(StatementStatus.RECEIVED)
+            .publicComment(dossier.getPublicComment())
+            .internalComment(dossier.getInternalComment())
+            .topic(dossier.getTopic())
+            .build()
+        ).toList();
   }
 }

@@ -11,8 +11,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
+import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.line.directory.module.tth.client.WorkflowClient;
+import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.exception.HearingCurrentlyActiveException;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingYearRepository;
@@ -55,14 +57,27 @@ class TimetableHearingYearServiceUnitTest {
   void shouldTransitionStatusAccordingDossierWithCorrectFlow() {
     // given
     when(workflowClient.getStatementIdsFromDossierStatus(anyList())).thenReturn(List.of(1L, 5L, 7L));
-    doNothing().when(timetableHearingStatementService).updateStatementsToReceived(anyList());
+    var batchUpdateStatementsModel = BatchUpdateTimetableHearingStatementsModel.builder().ids(List.of(6L)).build();
+    when(workflowClient.getBatchUpdateOfAddedDossiers()).thenReturn(List.of(
+        batchUpdateStatementsModel
+    ));
+    doNothing().when(timetableHearingStatementService).removeDossierRelationsAndStatusToReceivedFor(anyList());
+    var timetableHearingStatement = TimetableHearingStatement.builder().build();
+    when(timetableHearingStatementService.getTimetableHearingStatementsById(anyLong())).thenReturn(
+        timetableHearingStatement
+    );
+    doNothing().when(timetableHearingStatementService).updateStatementFromDossier(any(TimetableHearingStatement.class),
+        any(BatchUpdateTimetableHearingStatementsModel.class));
     doNothing().when(workflowClient).patchDossierStatusClosingYear();
     // when
     timetableHearingYearService.transitionStatusAccordingDossier();
     // then
     verify(workflowClient).getStatementIdsFromDossierStatus(
-        List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK));
-    verify(timetableHearingStatementService).updateStatementsToReceived(List.of(1L, 5L, 7L));
+        List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK, DossierStatus.MOVED));
+    verify(workflowClient).getBatchUpdateOfAddedDossiers();
+    verify(timetableHearingStatementService).removeDossierRelationsAndStatusToReceivedFor(List.of(1L, 5L, 7L));
+    verify(timetableHearingStatementService).getTimetableHearingStatementsById(6L);
+    verify(timetableHearingStatementService).updateStatementFromDossier(timetableHearingStatement, batchUpdateStatementsModel);
     verify(workflowClient).patchDossierStatusClosingYear();
   }
 

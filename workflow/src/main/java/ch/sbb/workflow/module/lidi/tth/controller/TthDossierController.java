@@ -1,5 +1,6 @@
 package ch.sbb.workflow.module.lidi.tth.controller;
 
+import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.model.Container;
 import ch.sbb.atlas.api.workflow.tth.dossier.BoAnswerModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
@@ -70,6 +71,11 @@ public class TthDossierController implements TthDossierApiInternal {
   @Override
   public List<Long> getStatementIdsFromStatus(List<DossierStatus> dossierStatus) {
     return tthDossierService.getStatementIdsFromDossierStatus(dossierStatus);
+  }
+
+  @Override
+  public List<BatchUpdateTimetableHearingStatementsModel> getBatchUpdateOfAddedDossiersForStatements() {
+    return tthDossierService.getBatchUpdateOfClosingAddedDossiersForStatements();
   }
 
   @Override

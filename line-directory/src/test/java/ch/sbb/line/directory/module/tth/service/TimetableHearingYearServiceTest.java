@@ -27,6 +27,7 @@ import ch.sbb.line.directory.module.tth.repository.TimetableHearingStatementRepo
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingYearRepository;
 import feign.FeignException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -216,17 +217,23 @@ class TimetableHearingYearServiceTest {
             .swissCanton(SwissCanton.BERN)
             .statement("test")
             .timetableYear(2025L)
+            .dossierId(2L)
+            .dossierContactMail("test@atlas.ch")
             .build()
     ).getId();
     when(workflowClient.getStatementIdsFromDossierStatus(anyList())).thenReturn(List.of(savedId));
+    when(workflowClient.getBatchUpdateOfAddedDossiers()).thenReturn(Collections.emptyList());
     doThrow(FeignException.class).when(workflowClient).patchDossierStatusClosingYear();
     // when
     assertThrows(FeignException.class, timetableHearingYearService::transitionStatusAccordingDossier);
     // then
-    assertThat(timetableHearingStatementRepository.findById(savedId).get().getStatementStatus()).isEqualTo(
-        StatementStatus.ACCEPTED);
+    var rolledBackStatement = timetableHearingStatementRepository.findById(savedId).get();
+    assertThat(rolledBackStatement.getDossierId()).isEqualTo(2L);
+    assertThat(rolledBackStatement.getDossierContactMail()).isEqualTo("test@atlas.ch");
+
     verify(workflowClient).getStatementIdsFromDossierStatus(
-        List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK));
+        List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK, DossierStatus.MOVED));
+    verify(workflowClient).getBatchUpdateOfAddedDossiers();
     verify(workflowClient).patchDossierStatusClosingYear();
   }
 }
