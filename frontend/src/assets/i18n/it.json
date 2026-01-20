@@ -1130,7 +1130,9 @@
         "DISSOLVED": "Risolto"
       },
       "CANCEL_DOSSIER": "Revoca dossier",
-      "DISSOLVE_DOSSIER": "Sciogliere dossier"
+      "DISSOLVE_DOSSIER": "Sciogliere dossier",
+      "TOPIC": "Tema",
+      "ADD_TO_DOSSIER_INFO": "Dopo aver aggiunto, non è più possibile effettuare modifiche individuali. Le modifiche riguardano sempre tutte le prese di posizione in un dossier."
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Chiusura dell'anno di calendario",

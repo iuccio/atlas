@@ -1,0 +1,55 @@
+import { Component, inject } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { TranslatePipe } from '@ngx-translate/core';
+import { AddToDossierData } from './add-to-dossier-dialog.service';
+import { AtlasButtonComponent } from '../../../../core/components/button/atlas-button.component';
+import { DossierSelectComponent } from './dossier-select/dossier-select.component';
+import { TthDossier } from '../../../../api/model/tthDossier';
+import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
+import { NotificationService } from '../../../../core/notification/notification.service';
+
+@Component({
+  selector: 'atlas-statement-select-dialog',
+  templateUrl: './add-to-dossier-dialog.component.html',
+  imports: [
+    MatDialogClose,
+    ReactiveFormsModule,
+    MatDialogActions,
+    TranslatePipe,
+    AtlasButtonComponent,
+    DossierSelectComponent,
+  ],
+  providers: [TranslatePipe],
+})
+export class AddToDossierDialogComponent {
+  private readonly dialogRef =
+    inject<MatDialogRef<AddToDossierDialogComponent>>(MatDialogRef);
+  private readonly dossierInternalService = inject(DossierInternalService);
+  private readonly notificationService = inject(NotificationService);
+
+  readonly data = inject<AddToDossierData>(MAT_DIALOG_DATA);
+
+  form = new FormGroup({
+    dossier: new FormControl(),
+  });
+
+  confirm() {
+    const updatedDossier: TthDossier = this.form.controls.dossier.value;
+    updatedDossier.statementIds.push(this.data.statement.id!);
+
+    this.dossierInternalService.updateDossier(updatedDossier).subscribe(() => {
+      this.notificationService.success('TTH.DOSSIER.NOTIFICATION.EDIT_SUCCESS');
+      this.dialogRef.close(true);
+    });
+  }
+
+  cancel() {
+    this.dialogRef.close(false);
+  }
+}
