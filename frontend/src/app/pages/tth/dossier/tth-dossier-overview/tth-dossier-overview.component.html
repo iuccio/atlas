@@ -1,0 +1,14 @@
+<atlas-table
+  (changeDropdownEvent)="test()"
+  (checkedBoxEvent)="test()"
+  (editElementEvent)="test()"
+  (tableChanged)="getOverview()"
+  [checkBoxModeEnabled]="isCheckBoxModeActive"
+  [checkBoxSelection]="selectedCheckBox"
+  [tableColumns]="tableColumns"
+  [tableData]="tthDossiers"
+  [totalCount]="totalCount$"
+  [tableFilterConfig]="tableFilterConfig"
+  data-cy="tthTable"
+>
+</atlas-table>

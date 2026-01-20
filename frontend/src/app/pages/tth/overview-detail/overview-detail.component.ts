@@ -50,6 +50,7 @@ import { DialogData } from '../../../core/components/dialog/dialog.data';
 import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
 import { StatementOverviewMenuComponent } from './statement-overview-menu/statement-overview-menu.component';
 import { TableFilterBoolean } from '../../../core/components/table-filter/config/table-filter-boolean';
+import { TthDossierOverviewComponent } from '../dossier/tth-dossier-overview/tth-dossier-overview.component';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-detail',
@@ -67,6 +68,7 @@ import { TableFilterBoolean } from '../../../core/components/table-filter/config
     TranslatePipe,
     NgOptimizedImage,
     StatementOverviewMenuComponent,
+    TthDossierOverviewComponent,
   ],
 })
 export class OverviewDetailComponent implements OnInit {
