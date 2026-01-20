@@ -1144,7 +1144,7 @@
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Clôture de l'année horaire",
-      "CONFIRMATION_MESSAGE": "Vous souhaitez fermer l'année horaire? Cette action ne peut pas être annulée. Lors de la clôture de l'année d'horaire, les avis sont déplacées:",
+      "CONFIRMATION_MESSAGE": "Vous souhaitez fermer l'année horaire? Cette action ne peut pas être annulée. À la clôture de l’année d’horaire, les actions suivantes sont effectuées sur les dossiers et les avis:",
       "DOSSIER_CHANGES_TITLE": "Modifications du dossier",
       "DOSSIER_ADDED": {
         "FROM": "Du statut 'Saisi'",
@@ -1155,13 +1155,9 @@
         "TO": "Pour le statut 'Détaché'"
       },
       "STATEMENT_CHANGES_TITLE": "Modifications des avis",
-      "BELONGS_TO_DOSSIER_CHECK_OR_MOVED": {
-        "FROM": "Appartenant au dossier avec le statut 'En cours de clarification auprès de l’ET'/'Réponse de l’ET reçue'/'Décalé'",
+      "BELONGS_TO_DOSSIER_CHECK_OR_MOVED_OR_ADDED": {
+        "FROM": "Appartenant au dossier avec le statut 'En cours de clarification auprès de l’ET'/'Réponse de l’ET reçue'/'Décalé'/'Saisi'",
         "TO": "Est retiré du dossier, défini sur le statut 'Réceptionné' et reporté à l’année suivante"
-      },
-      "BELONGS_TO_DOSSIER_ADDED": {
-        "FROM": "Appartenant au dossier avec le statut 'Saisi'",
-        "TO": "Sera retiré du dossier avec prise en charge du thème et des commentaires, au statut 'Réceptionné' et reporté à l’année suivante"
       },
       "STATEMENT_MOVED": {
         "FROM": "Du statut 'Décalé'",
