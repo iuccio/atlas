@@ -244,19 +244,31 @@ class TimetableHearingStatementRepositoryTest {
   }
 
   @Test
-  void shouldUpdateStatementStatusByIdsCorrectly() {
+  void shouldRemoveDossierRelationAndSetReceivedForSpecificStatements() {
     // given
-    long firstId = timetableHearingStatementRepository.save(getMinimalTimetableHearingStatement()).getId();
-    long secondId = timetableHearingStatementRepository.save(getMinimalTimetableHearingStatement()).getId();
-    long thirdId = timetableHearingStatementRepository.save(getMinimalTimetableHearingStatement()).getId();
+    var statementOne = getMinimalTimetableHearingStatement();
+    statementOne.setDossierId(1L);
+    statementOne.setDossierContactMail("test@atlas.ch");
+    statementOne.setStatementStatus(StatementStatus.ACCEPTED);
+
+    var statementTwo = getMinimalTimetableHearingStatement();
+    statementTwo.setDossierId(2L);
+    statementTwo.setDossierContactMail("test@atlas.ch");
+    statementTwo.setStatementStatus(StatementStatus.IN_REVIEW);
+
+    long firstId = timetableHearingStatementRepository.save(statementOne).getId();
+    long secondId = timetableHearingStatementRepository.save(statementTwo).getId();
     // when
-    timetableHearingStatementRepository.updateStatementStatusByIds(List.of(firstId, secondId), StatementStatus.ACCEPTED);
+    timetableHearingStatementRepository.removeDossierRelationAndSetReceivedFor(List.of(firstId, secondId));
     // then
-    assertThat(timetableHearingStatementRepository.findById(firstId).get().getStatementStatus()).isEqualTo(
-        StatementStatus.ACCEPTED);
-    assertThat(timetableHearingStatementRepository.findById(secondId).get().getStatementStatus()).isEqualTo(
-        StatementStatus.ACCEPTED);
-    assertThat(timetableHearingStatementRepository.findById(thirdId).get().getStatementStatus()).isEqualTo(
-        StatementStatus.RECEIVED);
+    statementOne = timetableHearingStatementRepository.findById(firstId).get();
+    assertThat(statementOne.getDossierId()).isNull();
+    assertThat(statementOne.getDossierContactMail()).isNull();
+    assertThat(statementOne.getStatementStatus()).isEqualTo(StatementStatus.RECEIVED);
+
+    statementTwo = timetableHearingStatementRepository.findById(secondId).get();
+    assertThat(statementTwo.getDossierId()).isNull();
+    assertThat(statementTwo.getDossierContactMail()).isNull();
+    assertThat(statementTwo.getStatementStatus()).isEqualTo(StatementStatus.RECEIVED);
   }
 }

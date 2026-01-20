@@ -1,5 +1,6 @@
 package ch.sbb.line.directory.module.tth.client;
 
+import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.line.directory.configuration.OAuthFeignConfig;
 import java.util.List;
@@ -14,6 +15,9 @@ public interface WorkflowClient {
 
   @GetMapping("internal/tth/dossier/statementIdsFromStatus")
   List<Long> getStatementIdsFromDossierStatus(@RequestParam List<DossierStatus> dossierStatus);
+
+  @GetMapping("internal/tth/dossier/statementBatchUpdateFromAddedDossiers")
+  List<BatchUpdateTimetableHearingStatementsModel> getBatchUpdateOfAddedDossiers();
 
   @PostMapping("internal/tth/dossier/closing-year-status")
   void patchDossierStatusClosingYear();

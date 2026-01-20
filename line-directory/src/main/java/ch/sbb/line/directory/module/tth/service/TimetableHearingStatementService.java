@@ -64,8 +64,8 @@ public class TimetableHearingStatementService {
     return timetableHearingStatementRepository.findAll(searchRestrictions.getSpecification(), searchRestrictions.getPageable());
   }
 
-  public void updateStatementsToReceived(List<Long> statementIds) {
-    timetableHearingStatementRepository.updateStatementStatusByIds(statementIds, StatementStatus.RECEIVED);
+  public void removeDossierRelationsAndStatusToReceivedFor(List<Long> statementIds) {
+    timetableHearingStatementRepository.removeDossierRelationAndSetReceivedFor(statementIds);
   }
 
   @TthRedacted
@@ -350,9 +350,5 @@ public class TimetableHearingStatementService {
     return statement.isPartOfDossier()
         && updateModel.getDossierId() != null
         && !statement.getDossierId().equals(updateModel.getDossierId());
-  }
-
-  public void removeDossierRelationsFor(List<Long> ids) {
-    timetableHearingStatementRepository.removeDossierRelationFor(ids);
   }
 }

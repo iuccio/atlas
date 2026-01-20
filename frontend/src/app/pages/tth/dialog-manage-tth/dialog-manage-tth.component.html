@@ -91,18 +91,24 @@
       <ul>
         <li>
           <dt>
-            {{ 'TTH.CLOSE_TIMETABLE_HEARING.FROM_STATUS_ADDED' | translate }}
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.DOSSIER_ADDED.FROM' | translate }}
           </dt>
           <dd>
-            {{ 'TTH.CLOSE_TIMETABLE_HEARING.TO_STATUS_CANCELED' | translate }}
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.DOSSIER_ADDED.TO' | translate }}
           </dd>
         </li>
         <li>
           <dt>
-            {{ 'TTH.CLOSE_TIMETABLE_HEARING.FROM_STATUS_CHECK' | translate }}
+            {{
+              'TTH.CLOSE_TIMETABLE_HEARING.DOSSIER_CHECK_OR_MOVED.FROM'
+                | translate
+            }}
           </dt>
           <dd>
-            {{ 'TTH.CLOSE_TIMETABLE_HEARING.TO_STATUS_DISSOLVED' | translate }}
+            {{
+              'TTH.CLOSE_TIMETABLE_HEARING.DOSSIER_CHECK_OR_MOVED.TO'
+                | translate
+            }}
           </dd>
         </li>
       </ul>
@@ -114,13 +120,13 @@
         <li>
           <dt>
             {{
-              'TTH.CLOSE_TIMETABLE_HEARING.FROM_STATUS_MOVED_OR_BELONGS_TO_DOSSIER'
+              'TTH.CLOSE_TIMETABLE_HEARING.BELONGS_TO_DOSSIER_CHECK_OR_MOVED.FROM'
                 | translate
             }}
           </dt>
           <dd>
             {{
-              'TTH.CLOSE_TIMETABLE_HEARING.TO_STATUS_RECEIVED_AND_NEXT_YEAR'
+              'TTH.CLOSE_TIMETABLE_HEARING.BELONGS_TO_DOSSIER_CHECK_OR_MOVED.TO'
                 | translate
             }}
           </dd>
@@ -128,25 +134,54 @@
         <li>
           <dt>
             {{
-              'TTH.CLOSE_TIMETABLE_HEARING.FROM_STATUS_RECEIVED_OR_IN_REVIEW'
+              'TTH.CLOSE_TIMETABLE_HEARING.BELONGS_TO_DOSSIER_ADDED.FROM'
                 | translate
             }}
           </dt>
-          <dd>{{ 'TTH.CLOSE_TIMETABLE_HEARING.TO_NEXT_YEAR' | translate }}</dd>
-        </li>
-        <li>
-          <dt>
-            {{ 'TTH.CLOSE_TIMETABLE_HEARING.FROM_STATUS_JUNK' | translate }}
-          </dt>
           <dd>
-            {{ 'TTH.CLOSE_TIMETABLE_HEARING.WILL_BE_DELETED' | translate }}
+            {{
+              'TTH.CLOSE_TIMETABLE_HEARING.BELONGS_TO_DOSSIER_ADDED.TO'
+                | translate
+            }}
           </dd>
         </li>
         <li>
           <dt>
-            {{ 'TTH.CLOSE_TIMETABLE_HEARING.FROM_OTHER_STATUS' | translate }}
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_MOVED.FROM' | translate }}
           </dt>
-          <dd>{{ 'TTH.CLOSE_TIMETABLE_HEARING.TO_ARCHIVE' | translate }}</dd>
+          <dd>
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_MOVED.TO' | translate }}
+          </dd>
+        </li>
+        <li>
+          <dt>
+            {{
+              'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_RECEIVED_OR_CHECK.FROM'
+                | translate
+            }}
+          </dt>
+          <dd>
+            {{
+              'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_RECEIVED_OR_CHECK.TO'
+                | translate
+            }}
+          </dd>
+        </li>
+        <li>
+          <dt>
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_SPAM.FROM' | translate }}
+          </dt>
+          <dd>
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_SPAM.TO' | translate }}
+          </dd>
+        </li>
+        <li>
+          <dt>
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_REST.FROM' | translate }}
+          </dt>
+          <dd>
+            {{ 'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_REST.TO' | translate }}
+          </dd>
         </li>
       </ul>
 

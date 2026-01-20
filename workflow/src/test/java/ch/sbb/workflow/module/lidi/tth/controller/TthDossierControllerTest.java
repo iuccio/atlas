@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.BoAnswerModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.TthDossierModel;
@@ -110,6 +111,15 @@ class TthDossierControllerTest {
     tthDossierController.getStatementIdsFromStatus(List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_CANTON_CHECK));
     // then
     verify(tthDossierService).getStatementIdsFromDossierStatus(List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_CANTON_CHECK));
+  }
+
+  @Test
+  void shouldGetBatchUpdateOfAddedDossiersForStatements() {
+    // given
+    var batchUpdateStatementsModel = BatchUpdateTimetableHearingStatementsModel.builder().build();
+    when(tthDossierService.getBatchUpdateOfClosingAddedDossiersForStatements()).thenReturn(List.of(batchUpdateStatementsModel));
+    // when & then
+    assertThat(tthDossierController.getBatchUpdateOfAddedDossiersForStatements()).containsExactly(batchUpdateStatementsModel);
   }
 
   @Test

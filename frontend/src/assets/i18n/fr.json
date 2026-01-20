@@ -1146,19 +1146,39 @@
       "POPUP_TITLE": "Clôture de l'année horaire",
       "CONFIRMATION_MESSAGE": "Vous souhaitez fermer l'année horaire? Cette action ne peut pas être annulée. Lors de la clôture de l'année d'horaire, les avis sont déplacées:",
       "DOSSIER_CHANGES_TITLE": "Modifications du dossier",
-      "FROM_STATUS_ADDED": "Du statut 'Saisi'",
-      "TO_STATUS_CANCELED": "Pour le statut 'Annulé'",
-      "FROM_STATUS_CHECK": "Du statut 'En cours de clarification auprès de l’ET' ou 'Réponse de l’ET reçue'",
-      "TO_STATUS_DISSOLVED": "Pour le statut 'Détaché'",
+      "DOSSIER_ADDED": {
+        "FROM": "Du statut 'Saisi'",
+        "TO": "Pour le statut 'Annulé'"
+      },
+      "DOSSIER_CHECK_OR_MOVED": {
+        "FROM": "Du statut 'En cours de clarification auprès de l’ET'/'Réponse de l’ET reçue'/'Décalé'",
+        "TO": "Pour le statut 'Détaché'"
+      },
       "STATEMENT_CHANGES_TITLE": "Modifications des avis",
-      "FROM_STATUS_MOVED_OR_BELONGS_TO_DOSSIER": "Du statut 'Décalé' ou appartenant au dossier avec le statut 'En cours de clarification auprès de l’ET'/'Réponse de l’ET reçue'/'Saisi'",
-      "TO_STATUS_RECEIVED_AND_NEXT_YEAR": "Pour le statut 'Réceptionné' et pour l’année suivante",
-      "FROM_STATUS_RECEIVED_OR_IN_REVIEW": "Du statut 'Réceptionné' ou 'En cours de traitement'",
-      "TO_NEXT_YEAR": "Vers l’année suivante",
-      "FROM_STATUS_JUNK": "Du statut 'Spam-Mail'",
-      "WILL_BE_DELETED": "Sera définitivement supprimé",
-      "FROM_OTHER_STATUS": "Du reste du statut",
-      "TO_ARCHIVE": "Vers les archives",
+      "BELONGS_TO_DOSSIER_CHECK_OR_MOVED": {
+        "FROM": "Appartenant au dossier avec le statut 'En cours de clarification auprès de l’ET'/'Réponse de l’ET reçue'/'Décalé'",
+        "TO": "Est retiré du dossier, défini sur le statut 'Réceptionné' et reporté à l’année suivante"
+      },
+      "BELONGS_TO_DOSSIER_ADDED": {
+        "FROM": "Appartenant au dossier avec le statut 'Saisi'",
+        "TO": "Sera retiré du dossier avec prise en charge du thème et des commentaires, au statut 'Réceptionné' et reporté à l’année suivante"
+      },
+      "STATEMENT_MOVED": {
+        "FROM": "Du statut 'Décalé'",
+        "TO": "Pour le statut 'Réceptionné' et reporté à l’année suivante"
+      },
+      "STATEMENT_RECEIVED_OR_CHECK": {
+        "FROM": "Du statut 'Réceptionné' ou 'En cours de traitement'",
+        "TO": "Vers l’année suivante"
+      },
+      "STATEMENT_SPAM": {
+        "FROM": "Du statut 'Spam-Mail'",
+        "TO": "Sera définitivement supprimé"
+      },
+      "STATEMENT_REST": {
+        "FROM": "Du reste du statut",
+        "TO": "Vers les archives"
+      },
       "SUCCESSFUL_CLOSE_NOTIFICATION": "Année d'horaire clôturée avec succès"
     },
     "MANAGE_TIMETABLE_HEARING": {

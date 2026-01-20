@@ -1,8 +1,11 @@
 package ch.sbb.line.directory.module.tth.service;
 
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
+import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
+import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.line.directory.module.tth.client.WorkflowClient;
+import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.exception.HearingCurrentlyActiveException;
 import ch.sbb.line.directory.module.tth.exception.NoHearingCurrentlyActiveException;
@@ -10,6 +13,7 @@ import ch.sbb.line.directory.module.tth.model.TimetableHearingYearSearchRestrict
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingYearRepository;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -72,10 +76,23 @@ public class TimetableHearingYearService {
 
   @Transactional
   public void transitionStatusAccordingDossier() {
-    //    List<Long> statementIdsFromStatus = workflowClient.getStatementIdsFromDossierStatus(
-    //        List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK)
-    //    ); todo: remove also with after unused methods
-    //    timetableHearingStatementService.updateStatementsToReceived(statementIdsFromStatus);
+    CompletableFuture<List<Long>> statementIdsWhereDossierRelationNeedsToBeRemoved = CompletableFuture.supplyAsync(
+        () -> workflowClient.getStatementIdsFromDossierStatus(
+            List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK,
+                DossierStatus.MOVED)));
+
+    CompletableFuture<List<BatchUpdateTimetableHearingStatementsModel>> statementsToBulkUpdate = CompletableFuture.supplyAsync(
+        workflowClient::getBatchUpdateOfAddedDossiers);
+
+    CompletableFuture.allOf(statementIdsWhereDossierRelationNeedsToBeRemoved, statementsToBulkUpdate).join();
+
+    timetableHearingStatementService.removeDossierRelationsAndStatusToReceivedFor(
+        statementIdsWhereDossierRelationNeedsToBeRemoved.join());
+    statementsToBulkUpdate.join().forEach(batchUpdateModel -> batchUpdateModel.getIds().forEach(id -> {
+      TimetableHearingStatement statement = timetableHearingStatementService.getTimetableHearingStatementsById(id);
+      timetableHearingStatementService.updateStatementFromDossier(statement, batchUpdateModel);
+    }));
+
     workflowClient.patchDossierStatusClosingYear();
   }
 

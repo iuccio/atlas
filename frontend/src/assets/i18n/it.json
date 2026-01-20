@@ -1146,19 +1146,39 @@
       "POPUP_TITLE": "Chiusura dell'anno di calendario",
       "CONFIRMATION_MESSAGE": "Volete terminare l'anno di calendario? L'operazione non può essere annullata.  Quando l'anno solare si chiude, i pareri vengono rimandati:",
       "DOSSIER_CHANGES_TITLE": "Modifiche dossier",
-      "FROM_STATUS_ADDED": "Dallo stato 'Inizializzato'",
-      "TO_STATUS_CANCELED": "Per stato 'Cancellato'",
-      "FROM_STATUS_CHECK": "Dallo stato 'In fase di chiarimento presso AT' o 'Riscontro AT pervenuto'",
-      "TO_STATUS_DISSOLVED": "Per stato 'Svincolato'",
+      "DOSSIER_ADDED": {
+        "FROM": "Dallo stato 'Inizializzato'",
+        "TO": "Per stato 'Cancellato'"
+      },
+      "DOSSIER_CHECK_OR_MOVED": {
+        "FROM": "Dallo stato 'In fase di chiarimento presso AT'/'Riscontro AT pervenuto'/'Spostato'",
+        "TO": "Per stato 'Svincolato'"
+      },
       "STATEMENT_CHANGES_TITLE": "Modifiche pareri",
-      "FROM_STATUS_MOVED_OR_BELONGS_TO_DOSSIER": "Dallo stato 'Spostato' o correlato a un dossier con stato 'In fase di chiarimento presso AT'/'Riscontro AT pervenuto'/'Inizializzato'",
-      "TO_STATUS_RECEIVED_AND_NEXT_YEAR": "Per stato 'Arrivato' e anno successivo",
-      "FROM_STATUS_RECEIVED_OR_IN_REVIEW": "Dallo stato 'Arrivato' o 'In esame'",
-      "TO_NEXT_YEAR": "Prossimo anno",
-      "FROM_STATUS_JUNK": "Dallo stato 'Spam-Mail'",
-      "WILL_BE_DELETED": "Sarà eliminato definitivamente",
-      "FROM_OTHER_STATUS": "Da restanti stati",
-      "TO_ARCHIVE": "Vai all’archivio",
+      "BELONGS_TO_DOSSIER_CHECK_OR_MOVED": {
+        "FROM": "Relativo al dossier con stato 'In fase di chiarimento presso AT'/'Riscontro AT pervenuto'/'Spostato'",
+        "TO": "Viene rimosso dal dossier, nello stato 'Arrivato' e spostato all’anno successivo"
+      },
+      "BELONGS_TO_DOSSIER_ADDED": {
+        "FROM": "Relativo al dossier con stato 'Inizializzato'",
+        "TO": "Rimosso dal dossier con acquisizione della tematica e dei commenti, stato 'Arrivato' e spostato all’anno successivo"
+      },
+      "STATEMENT_MOVED": {
+        "FROM": "Dallo stato 'Spostato'",
+        "TO": "Per stato 'Arrivato' e anno successivo"
+      },
+      "STATEMENT_RECEIVED_OR_CHECK": {
+        "FROM": "Dallo stato 'Arrivato' o 'In esame'",
+        "TO": "Prossimo anno"
+      },
+      "STATEMENT_SPAM": {
+        "FROM": "Dallo stato 'Spam-Mail'",
+        "TO": "Sarà eliminato definitivamente"
+      },
+      "STATEMENT_REST": {
+        "FROM": "Da restanti stati",
+        "TO": "Vai all’archivio"
+      },
       "SUCCESSFUL_CLOSE_NOTIFICATION": "Anno di calendario chiuso con successo"
     },
     "MANAGE_TIMETABLE_HEARING": {
