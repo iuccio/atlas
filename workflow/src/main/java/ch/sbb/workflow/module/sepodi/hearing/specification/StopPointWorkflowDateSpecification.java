@@ -14,12 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class ValidFromAndCreatedAtSpecification<T> implements Specification<T> {
+public class StopPointWorkflowDateSpecification<T> implements Specification<T> {
 
     @Serial
     private static final long serialVersionUID = 1;
     private final LocalDate versionValidFrom;
     private final LocalDateTime createdAt;
+    private final LocalDateTime modifiedAfter;
 
 
     @Override
@@ -31,6 +32,9 @@ public class ValidFromAndCreatedAtSpecification<T> implements Specification<T> {
         }
         if (createdAt != null) {
             predicates.add(criteriaBuilder.equal(root.get("creationDate"), createdAt));
+        }
+        if (modifiedAfter != null) {
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("editionDate"), modifiedAfter));
         }
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
     }
