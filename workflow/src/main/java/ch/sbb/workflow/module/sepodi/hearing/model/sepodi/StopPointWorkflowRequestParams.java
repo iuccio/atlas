@@ -56,6 +56,12 @@ public class StopPointWorkflowRequestParams {
     @DateTimeFormat(pattern = AtlasApiConstants.DATE_TIME_FORMAT_PATTERN, fallbackPatterns = { AtlasApiConstants.DATE_TIME_FORMAT_PATTERN_WITH_T, AtlasApiConstants.ISO_DATE_TIME_PARSE_PATTERN})
     private LocalDateTime createdAt;
 
+    @Parameter(description = "editionDate >= [modifiedAfter]. DateTime format: " + AtlasApiConstants.DATE_TIME_FORMAT_PATTERN + ", "
+        + AtlasApiConstants.DATE_TIME_FORMAT_PATTERN_WITH_T + ", " + AtlasApiConstants.ISO_DATE_TIME_PARSE_PATTERN)
+    @DateTimeFormat(pattern = AtlasApiConstants.DATE_TIME_FORMAT_PATTERN, fallbackPatterns = {
+        AtlasApiConstants.DATE_TIME_FORMAT_PATTERN_WITH_T, AtlasApiConstants.ISO_DATE_TIME_PARSE_PATTERN})
+    private LocalDateTime modifiedAfter;
+
     @Parameter(description = "Service Point version valid from."
             + " Date format: " + AtlasApiConstants.DATE_FORMAT_PATTERN)
     @DateTimeFormat(pattern = AtlasApiConstants.DATE_FORMAT_PATTERN, fallbackPatterns = { AtlasApiConstants.DATE_FORMAT_PATTERN_CH })

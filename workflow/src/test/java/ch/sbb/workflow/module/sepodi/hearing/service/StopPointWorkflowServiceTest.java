@@ -9,9 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.atlas.workflow.model.WorkflowStatus;
 import ch.sbb.workflow.entity.Person;
+import ch.sbb.workflow.module.sepodi.hearing.enity.StopPointWorkflow;
 import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowExaminantEmailNotUniqueException;
 import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowPreconditionStatusException;
-import ch.sbb.workflow.module.sepodi.hearing.enity.StopPointWorkflow;
 import ch.sbb.workflow.module.sepodi.hearing.mapper.StopPointClientPersonMapper;
 import ch.sbb.workflow.module.sepodi.hearing.model.search.StopPointWorkflowSearchRestrictions;
 import ch.sbb.workflow.module.sepodi.hearing.model.sepodi.AddExaminantsModel;
@@ -20,6 +20,7 @@ import ch.sbb.workflow.module.sepodi.hearing.model.sepodi.StopPointClientPersonM
 import ch.sbb.workflow.module.sepodi.hearing.model.sepodi.StopPointWorkflowRequestParams;
 import ch.sbb.workflow.module.sepodi.hearing.repository.StopPointWorkflowRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -76,6 +77,27 @@ class StopPointWorkflowServiceTest {
                 .build()).build()).getContent();
 
     assertThat(searchResult).isEmpty();
+  }
+
+  @Test
+  void shouldFindWorkflowByModifiedAfter() {
+    List<StopPointWorkflow> searchResult = workflowService.getWorkflows(
+            StopPointWorkflowSearchRestrictions.builder().pageable(Pageable.unpaged()).stopPointWorkflowRequestParams(
+                StopPointWorkflowRequestParams.builder()
+                    .modifiedAfter(LocalDateTime.now().plusDays(1))
+                    .build()).build())
+        .getContent();
+
+    assertThat(searchResult).isEmpty();
+
+    searchResult = workflowService.getWorkflows(
+            StopPointWorkflowSearchRestrictions.builder().pageable(Pageable.unpaged()).stopPointWorkflowRequestParams(
+                StopPointWorkflowRequestParams.builder()
+                    .modifiedAfter(LocalDateTime.now().minusDays(1))
+                    .build()).build())
+        .getContent();
+
+    assertThat(searchResult).hasSize(1);
   }
 
   @Test
