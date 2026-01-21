@@ -2,6 +2,7 @@ package ch.sbb.line.directory.module.tth.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -12,6 +13,7 @@ import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.service.TimetableHearingStatementService;
 import ch.sbb.line.directory.module.tth.service.TimetableHearingYearService;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,23 +34,19 @@ class TimetableHearingYearControllerInternalUnitTest {
   @Test
   void shouldCloseTimetableHearingCorrectly() {
     // given
-    long year = 2026;
-    var tthYearActive = TimetableHearingYear.builder().hearingStatus(HearingStatus.ACTIVE).build();
-    var tthYearClosed = TimetableHearingYear.builder().hearingStatus(HearingStatus.ARCHIVED).build();
+    TimetableHearingYear tthYearActive = TimetableHearingYear.builder().hearingStatus(HearingStatus.ACTIVE).build();
+    TimetableHearingYear tthYearClosed = TimetableHearingYear.builder().hearingStatus(HearingStatus.ARCHIVED).build();
     when(timetableHearingYearService.getHearingYear(anyLong())).thenReturn(tthYearActive);
     doNothing().when(timetableHearingYearService)
         .mayTransitionToHearingStatus(any(TimetableHearingYear.class), any(HearingStatus.class));
-    doNothing().when(timetableHearingStatementService).deleteSpamMailFromYear(anyLong());
-    doNothing().when(timetableHearingYearService).transitionStatusAccordingDossier();
-    when(timetableHearingYearService.closeTimetableHearing(any(TimetableHearingYear.class))).thenReturn(tthYearClosed);
+    when(timetableHearingYearService.closeTimetableHearing(any(TimetableHearingYear.class), anyList())).thenReturn(tthYearClosed);
     // when
-    TimetableHearingYearModel closedHearingYear = timetableHearingYearControllerInternal.closeTimetableHearing(year);
+    TimetableHearingYearModel closedHearingYear = timetableHearingYearControllerInternal.closeTimetableHearing(2026L,
+        List.of(1L, 3L, 5L));
     // then
     assertThat(closedHearingYear.getHearingStatus()).isEqualTo(HearingStatus.ARCHIVED);
-    verify(timetableHearingYearService).getHearingYear(year);
+    verify(timetableHearingYearService).getHearingYear(2026L);
     verify(timetableHearingYearService).mayTransitionToHearingStatus(tthYearActive, HearingStatus.ARCHIVED);
-    verify(timetableHearingStatementService).deleteSpamMailFromYear(year);
-    verify(timetableHearingYearService).transitionStatusAccordingDossier();
-    verify(timetableHearingYearService).closeTimetableHearing(tthYearActive);
+    verify(timetableHearingYearService).closeTimetableHearing(tthYearActive, List.of(1L, 3L, 5L));
   }
 }
