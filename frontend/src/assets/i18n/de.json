@@ -924,7 +924,12 @@
       "PARTLY_IMPLEMENTED": "teilweise umgesetzt",
       "MOVED": "verschoben",
       "JUNK": "*Spam-Mail*",
-      "REVOKED": "Fehlerfassung"
+      "REVOKED": "Fehlerfassung",
+      "ADDED": "erfasst",
+      "CANCELED": "abgebrochen",
+      "DOSSIER_BO_CHECK": "Dossier in BO Prüfung",
+      "DOSSIER_CANTON_CHECK": "Dossier in Kanton Prüfung",
+      "DISSOLVED": "aufgelöst"
     },
     "CANTON": {
       "CH": "Gesamtschweiz",

@@ -1,10 +1,7 @@
 <atlas-table
-  (changeDropdownEvent)="test()"
-  (checkedBoxEvent)="test()"
-  (editElementEvent)="test()"
-  (tableChanged)="getOverview()"
-  [checkBoxModeEnabled]="isCheckBoxModeActive"
-  [checkBoxSelection]="selectedCheckBox"
+  (editElementEvent)="editDossier($event.id!)"
+  (tableInitialized)="getOverview($event)"
+  (tableChanged)="getOverview($event)"
   [tableColumns]="tableColumns"
   [tableData]="tthDossiers"
   [totalCount]="totalCount$"
