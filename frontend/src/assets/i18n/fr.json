@@ -1079,7 +1079,8 @@
       "STATEMENT_ANONYMOUS": "Transmission à des tiers – Confirmation relative à la protection des données : Le texte ci-joint ne contient aucune donnée personnelle. Cela inclut, par exemple, les numéros de téléphone, les adresses électroniques, les nom et prénom, et les adresses postales.",
       "STATEMENT_TRANSFER_CANTON": "Transfert vers un autre canton",
       "STATEMENT_TRANSFER_CANTON_INFO": "Sélectionnez le canton auquel vous soumettez la déclaration.",
-      "STATEMENT_PDF_ANONYMOUS_CHECKBOX": "La pièce jointe peut être transmise (par exemple à une entreprise de transport)."
+      "STATEMENT_PDF_ANONYMOUS_CHECKBOX": "La pièce jointe peut être transmise (par exemple à une entreprise de transport).",
+      "DOSSIER_LINK": "Cette prise de position fait partie du dossier {{dossierId}}."
     },
     "DOSSIER": {
       "DOSSIER": "Dossier",

@@ -17,6 +17,7 @@ import {
 } from '../../../../api';
 import { TimetableHearingStatementInternalService } from '../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { of } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 const transportCompany: TransportCompany = {
   id: 1234,
@@ -31,6 +32,9 @@ const mockTimetableHearingStatementsService = jasmine.createSpyObj(
 mockTimetableHearingStatementsService.getResponsibleTransportCompanies.and.returnValue(
   of([transportCompany])
 );
+const router = jasmine.createSpyObj('Router', {
+  navigate: Promise.resolve(true),
+});
 
 describe('StatementData', () => {
   let component: StatementDataComponent;
@@ -45,6 +49,14 @@ describe('StatementData', () => {
         {
           provide: TimetableHearingStatementInternalService,
           useValue: mockTimetableHearingStatementsService,
+        },
+        {
+          provide: Router,
+          useValue: router,
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {},
         },
       ],
     })
@@ -75,6 +87,7 @@ describe('StatementData', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should ttfnSelectionChanged', () => {
     //given
     const ttfn: TimetableFieldNumber = {
@@ -100,5 +113,13 @@ describe('StatementData', () => {
       expect(transportCompanies.length).toBe(1);
       expect(transportCompanies[0]).toBe(transportCompany);
     }
+  });
+
+  it('should go to dossier with id', () => {
+    component.goToDossier(5);
+
+    expect(router.navigate).toHaveBeenCalledWith(['..', 'dossiers', 5], {
+      relativeTo: {},
+    });
   });
 });

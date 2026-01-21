@@ -9,6 +9,7 @@ import { SearchSelectComponent } from '../../../../../core/form-components/searc
 import { DossierInternalService } from '../../../../../api/service/workflow/dossier-internal.service';
 import { ContainerTthDossier } from '../../../../../api/model/containerTthDossier';
 import { SwissCanton } from '../../../../../api';
+import { DossierStatus } from '../../../../../api/model/dossierStatus';
 
 @Component({
   selector: 'atlas-form-search-select',
@@ -51,6 +52,7 @@ describe('DossierSelectComponent', () => {
     fixture = TestBed.createComponent(DossierSelectComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('canton', SwissCanton.Bern);
+    fixture.componentRef.setInput('statusRestriction', [DossierStatus.Added]);
     fixture.componentRef.setInput(
       'form',
       new FormGroup({
@@ -78,7 +80,8 @@ describe('DossierSelectComponent', () => {
     fixture.detectChanges();
     expect(dossierInternalService.getOverview).toHaveBeenCalledOnceWith(
       SwissCanton.Bern,
-      ['testQuery']
+      ['testQuery'],
+      [DossierStatus.Added]
     );
     component.searchResults$.subscribe((val) => {
       expect(val).toEqual(searchResult.objects!);
