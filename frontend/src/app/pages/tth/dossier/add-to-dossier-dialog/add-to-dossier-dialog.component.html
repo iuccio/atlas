@@ -5,10 +5,10 @@
 </div>
 <div class="dialog" data-cy="dialog">
   <div class="font-bold-2xl">
-    {{ 'TTH.BUTTON.ADD_TO_DOSSIER' | translate }}
+    {{ data.title | translate }}
   </div>
   <div>
-    {{ 'TTH.DOSSIER.ADD_TO_DOSSIER_INFO' | translate }}
+    {{ data.message | translate }}
   </div>
   <atlas-dossier-select
     [form]="form"

@@ -2,26 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DossierSelectComponent } from './dossier-select.component';
 import { of } from 'rxjs';
-import { Component, Input } from '@angular/core';
-import { TranslatePipe } from '@ngx-translate/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SearchSelectComponent } from '../../../../../core/form-components/search-select/search-select.component';
 import { DossierInternalService } from '../../../../../api/service/workflow/dossier-internal.service';
 import { ContainerTthDossier } from '../../../../../api/model/containerTthDossier';
 import { SwissCanton } from '../../../../../api';
 import { DossierStatus } from '../../../../../api/model/dossierStatus';
-
-@Component({
-  selector: 'atlas-form-search-select',
-  template: '<p>form-search-select</p>',
-})
-class MockFormSearchSelectComponent {
-  @Input() items$ = of([]);
-  @Input() formGroup = undefined;
-  @Input() controlName = '';
-  @Input() bindValueInp = '';
-  @Input() getSelectOption = undefined;
-}
+import { translateServiceProvider } from '../../../../../app.testing.mocks';
 
 describe('DossierSelectComponent', () => {
   let component: DossierSelectComponent;
@@ -36,18 +22,13 @@ describe('DossierSelectComponent', () => {
     await TestBed.configureTestingModule({
       imports: [DossierSelectComponent],
       providers: [
-        TranslatePipe,
+        translateServiceProvider,
         {
           provide: DossierInternalService,
           useValue: dossierInternalService,
         },
       ],
-    })
-      .overrideComponent(DossierSelectComponent, {
-        remove: { imports: [SearchSelectComponent] },
-        add: { imports: [MockFormSearchSelectComponent] },
-      })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DossierSelectComponent);
     component = fixture.componentInstance;
