@@ -29,7 +29,7 @@ public interface TthDossierApiInternal {
 
   @GetMapping
   @PageableAsQueryParam
-  Container<TthDossierModel> getOverview(@Parameter(hidden = true) @PageableDefault(sort = {TthDossier.Fields.id,
+  Container<TthDossierModel> getDossiers(@Parameter(hidden = true) @PageableDefault(sort = {TthDossier.Fields.id,
       TthDossier.Fields.topic}) Pageable pageable, @ParameterObject TthDossierRequestParams requestParams);
 
   @GetMapping("{dossierId}")
