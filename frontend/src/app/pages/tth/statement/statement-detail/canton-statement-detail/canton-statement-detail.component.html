@@ -240,7 +240,8 @@
       @if (
         !isHearingStatusArchived &&
         !form.enabled &&
-        (isStatementEditable | async) === true
+        (isStatementEditable | async) === true &&
+        !statement?.dossierId
       ) {
         <atlas-button
           (buttonClicked)="toggleEdit()"

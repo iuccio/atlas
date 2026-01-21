@@ -14,6 +14,7 @@ import { DossierInternalService } from '../../../../../api/service/workflow/doss
 import { map } from 'rxjs/operators';
 import { DossierSelectFormatPipe } from './dossier-select-format.pipe';
 import { SwissCanton } from '../../../../../api';
+import { DossierStatus } from '../../../../../api/model/dossierStatus';
 
 @Component({
   selector: 'atlas-dossier-select',
@@ -31,6 +32,7 @@ export class DossierSelectComponent implements OnInit {
 
   controlName = input<string>('dossier');
   canton = input<SwissCanton>();
+  statusRestriction = input<DossierStatus[]>();
   bindValue = input<string>('');
 
   @Output() selectionChange: EventEmitter<TthDossier> =
@@ -47,7 +49,7 @@ export class DossierSelectComponent implements OnInit {
       return;
     }
     this.searchResults$ = this.dossierInternalService
-      .getOverview(this.canton(), [searchQuery])
+      .getOverview(this.canton(), [searchQuery], this.statusRestriction())
       .pipe(map((response) => response.objects ?? []));
   }
 }

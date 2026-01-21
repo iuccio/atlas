@@ -13,6 +13,7 @@ import { DossierSelectComponent } from './dossier-select/dossier-select.componen
 import { TthDossier } from '../../../../api/model/tthDossier';
 import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
 import { NotificationService } from '../../../../core/notification/notification.service';
+import { DOSSIER_EDITABLE_STATES } from '../detail/dossier-detail.component';
 
 @Component({
   selector: 'atlas-statement-select-dialog',
@@ -34,6 +35,7 @@ export class AddToDossierDialogComponent {
   private readonly notificationService = inject(NotificationService);
 
   readonly data = inject<AddToDossierData>(MAT_DIALOG_DATA);
+  readonly addableDossierStates = DOSSIER_EDITABLE_STATES;
 
   form = new FormGroup({
     dossier: new FormControl(),
