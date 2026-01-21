@@ -1079,7 +1079,8 @@
       "STATEMENT_ANONYMOUS": "Weiterleitung an Dritte - Bestätigung Datenschutz: Der Begleittext enthält keine persönlichen Daten. Dazu zählen etwa Telefonnummern, E-Mail-Adressen, Vor- und Nachnamen sowie Adressen.",
       "STATEMENT_TRANSFER_CANTON": "Übergabe an einen anderen Kanton",
       "STATEMENT_TRANSFER_CANTON_INFO": "Wählen Sie den Kanton aus, an den Sie die Stellungnahme übergeben.",
-      "STATEMENT_PDF_ANONYMOUS_CHECKBOX": "Der Anhang darf weitergeleitet werden (z.B. an ein Transportunternehmen)"
+      "STATEMENT_PDF_ANONYMOUS_CHECKBOX": "Der Anhang darf weitergeleitet werden (z.B. an ein Transportunternehmen)",
+      "DOSSIER_LINK": "Diese Stellungnahme ist Teil des Dossiers {{dossierId}}."
     },
     "DOSSIER": {
       "DOSSIER": "Dossier",
@@ -1130,7 +1131,9 @@
         "DISSOLVED": "Aufgelöst"
       },
       "CANCEL_DOSSIER": "Dossier aufheben",
-      "DISSOLVE_DOSSIER": "Dossier auflösen"
+      "DISSOLVE_DOSSIER": "Dossier auflösen",
+      "TOPIC": "Thema",
+      "ADD_TO_DOSSIER_INFO": "Nach dem Hinzufügen, ist individuelles Editieren nicht mehr möglich. Änderungen betreffen immer alle Stellungnahmen in einem Dossier."
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Fahrplanjahr schliessen",

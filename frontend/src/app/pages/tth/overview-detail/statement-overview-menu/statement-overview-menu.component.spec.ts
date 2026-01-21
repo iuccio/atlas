@@ -8,10 +8,15 @@ import { StatementShareService } from '../statement-share-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
+import { AddToDossierDialogService } from '../../dossier/add-to-dossier-dialog/add-to-dossier-dialog.service';
 
 const tthChangeCantonDialogService = jasmine.createSpyObj(
   'TthChangeCantonDialogService',
   { onClick: of(true) }
+);
+const addToDossierDialogService = jasmine.createSpyObj(
+  'AddToDossierDialogService',
+  { openDialog: of(true) }
 );
 const dialogService = jasmine.createSpyObj('dialogService', {
   confirm: of(true),
@@ -66,6 +71,10 @@ describe('StatementOverviewMenuComponent', () => {
         {
           provide: TthChangeCantonDialogService,
           useValue: tthChangeCantonDialogService,
+        },
+        {
+          provide: AddToDossierDialogService,
+          useValue: addToDossierDialogService,
         },
         {
           provide: DialogService,
@@ -135,6 +144,8 @@ describe('StatementOverviewMenuComponent', () => {
       },
     };
     component.addToDossier(statement);
+
+    expect(addToDossierDialogService.openDialog).toHaveBeenCalled();
   });
 
   it('should change canton via dialog', () => {

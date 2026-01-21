@@ -1,0 +1,55 @@
+import {
+  Component,
+  EventEmitter,
+  inject,
+  input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { SearchSelectComponent } from '../../../../../core/form-components/search-select/search-select.component';
+import { TthDossier } from '../../../../../api/model/tthDossier';
+import { DossierInternalService } from '../../../../../api/service/workflow/dossier-internal.service';
+import { map } from 'rxjs/operators';
+import { DossierSelectFormatPipe } from './dossier-select-format.pipe';
+import { SwissCanton } from '../../../../../api';
+import { DossierStatus } from '../../../../../api/model/dossierStatus';
+
+@Component({
+  selector: 'atlas-dossier-select',
+  templateUrl: './dossier-select.component.html',
+  imports: [
+    SearchSelectComponent,
+    ReactiveFormsModule,
+    DossierSelectFormatPipe,
+  ],
+})
+export class DossierSelectComponent implements OnInit {
+  private readonly dossierInternalService = inject(DossierInternalService);
+
+  form = input.required<FormGroup>();
+
+  controlName = input<string>('dossier');
+  canton = input<SwissCanton>();
+  statusRestriction = input<DossierStatus[]>();
+  bindValue = input<string>('');
+
+  @Output() selectionChange: EventEmitter<TthDossier> =
+    new EventEmitter<TthDossier>();
+  searchResults$: Observable<TthDossier[]> = of([]);
+
+  ngOnInit() {
+    const initialValue = this.form().controls[this.controlName()]?.value;
+    this.search(initialValue);
+  }
+
+  search(searchQuery: string): void {
+    if (!searchQuery) {
+      return;
+    }
+    this.searchResults$ = this.dossierInternalService
+      .getOverview(this.canton(), [searchQuery], this.statusRestriction())
+      .pipe(map((response) => response.objects ?? []));
+  }
+}
