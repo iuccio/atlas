@@ -22,7 +22,7 @@ public class TthDossierController implements TthDossierApiInternal {
   private final TthDossierService tthDossierService;
 
   @Override
-  public Container<TthDossierModel> getOverview(Pageable pageable, TthDossierRequestParams requestParams) {
+  public Container<TthDossierModel> getDossiers(Pageable pageable, TthDossierRequestParams requestParams) {
     Page<TthDossier> dossiers = tthDossierService.getDossiers(TthDossierSearchRestrictions.builder()
         .pageable(pageable)
         .requestParams(requestParams)
