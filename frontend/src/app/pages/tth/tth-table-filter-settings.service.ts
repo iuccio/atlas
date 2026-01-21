@@ -8,6 +8,8 @@ import { TableFilterMultiSelect } from '../../core/components/table-filter/confi
 import { TableFilterSearchSelect } from '../../core/components/table-filter/config/table-filter-search-select';
 import { TableFilterChip } from '../../core/components/table-filter/config/table-filter-chip';
 import { TableFilterSearchType } from '../../core/components/table-filter/config/table-filter-search-type';
+import { DossierStatus } from '../../api/model/dossierStatus';
+import { Cantons } from '../../core/cantons/Cantons';
 
 export class TthTableFilterSettingsService {
   static createSettings() {
@@ -36,6 +38,28 @@ export class TthTableFilterSettingsService {
         new FormGroup({
           ttfnid: new FormControl(),
         })
+      ),
+    };
+  }
+
+  static createDossierSettings() {
+    return {
+      chipSearch: new TableFilterChip(0, 'col-6'),
+      multiSelectDossierStatus: new TableFilterMultiSelect(
+        'TTH.STATEMENT_STATUS.',
+        'COMMON.STATUS',
+        Object.values(DossierStatus),
+        1,
+        'filter-width',
+        []
+      ),
+      multiSelectDossierCanton: new TableFilterMultiSelect(
+        'TTH.CANTON.',
+        'SEPODI.GEOLOCATION.CANTON',
+        Object.values(Cantons.cantons.map((canton) => canton.short)),
+        1,
+        'filter-width',
+        []
       ),
     };
   }

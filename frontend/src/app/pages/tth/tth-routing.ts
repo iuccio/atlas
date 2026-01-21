@@ -118,6 +118,16 @@ export const routes: Routes = [
         },
       },
       {
+        path: Pages.TTH_DOSSIERS.path,
+        loadComponent: () =>
+          import('./dossier/tth-dossier-overview/tth-dossier-overview.component').then(
+            (m) => m.TthDossierOverviewComponent
+          ),
+        data: {
+          hearingStatus: HearingStatus.Active,
+        },
+      },
+      {
         path: Pages.TTH_PLANNED.path,
         loadComponent: () =>
           import('./overview-detail/overview-detail.component').then(

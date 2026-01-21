@@ -924,7 +924,9 @@
       "PARTLY_IMPLEMENTED": "partiellement acceptée",
       "MOVED": "reportée",
       "JUNK": "*spam-mail*",
-      "REVOKED": "saisie des erreurs"
+      "REVOKED": "saisie des erreurs",
+      "ADDED": "Erfasst",
+      "CANCELLED": "Abgebrochen"
     },
     "CANTON": {
       "CH": "Suisse entière",

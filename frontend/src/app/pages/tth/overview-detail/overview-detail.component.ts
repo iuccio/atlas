@@ -63,12 +63,11 @@ import { TthDossierOverviewComponent } from '../dossier/tth-dossier-overview/tth
     AtlasButtonComponent,
     DownloadIconComponent,
     TableComponent,
-    RouterOutlet,
     DisplayDatePipe,
     TranslatePipe,
     NgOptimizedImage,
     StatementOverviewMenuComponent,
-    TthDossierOverviewComponent,
+    RouterOutlet,
   ],
 })
 export class OverviewDetailComponent implements OnInit {
@@ -834,4 +833,8 @@ export class OverviewDetailComponent implements OnInit {
       'TTH.OVERVIEW_TAB.STATEMENT_IN_DOSSIER_SLIDE'
     ),
   };
+  test() {
+    this.router.navigate(['dossiers'], { relativeTo: this.route });
+    console.log('thisroute ', this.route);
+  }
 }
