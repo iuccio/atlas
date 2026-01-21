@@ -11,7 +11,6 @@ import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.kafka.model.transport.company.SharedTransportCompanyModel;
 import ch.sbb.atlas.model.controller.IntegrationTest;
-import ch.sbb.line.directory.module.tth.client.WorkflowClient;
 import ch.sbb.line.directory.module.tth.controller.TimetableHearingStatementControllerInternal;
 import ch.sbb.line.directory.module.tth.controller.TimetableHearingYearControllerInternal;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
@@ -26,16 +25,12 @@ import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @IntegrationTest
 class TimetableHearingYearClosingTest {
 
   private static final long YEAR = 2023L;
   private static final long TRANSPORT_COMPANY_ID = 7L;
-
-  @MockitoBean
-  private WorkflowClient workflowClient;
 
   private final TimetableHearingYearRepository timetableHearingYearRepository;
   private final TimetableHearingYearControllerInternal timetableHearingYearController;
@@ -123,7 +118,7 @@ class TimetableHearingYearClosingTest {
         Collections.emptyList());
 
     // when closing
-    TimetableHearingYearModel closed = timetableHearingYearController.closeTimetableHearing(YEAR);
+    TimetableHearingYearModel closed = timetableHearingYearController.closeTimetableHearing(YEAR, Collections.emptyList());
 
     // then
     assertThat(closed.getHearingStatus()).isEqualTo(HearingStatus.ARCHIVED);

@@ -6,20 +6,16 @@ import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.mapper.TimeTableHearingYearMapper;
 import ch.sbb.line.directory.module.tth.model.TimetableHearingYearSearchRestrictions;
-import ch.sbb.line.directory.module.tth.service.TimetableHearingStatementService;
 import ch.sbb.line.directory.module.tth.service.TimetableHearingYearService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class TimetableHearingYearControllerInternal implements TimetableHearingYearApiInternal {
 
   private final TimetableHearingYearService timetableHearingYearService;
-  private final TimetableHearingStatementService timetableHearingStatementService;
 
   @Override
   public List<TimetableHearingYearModel> getHearingYears(List<HearingStatus> statusChoices) {
@@ -59,12 +55,11 @@ public class TimetableHearingYearControllerInternal implements TimetableHearingY
   }
 
   @Override
-  public TimetableHearingYearModel closeTimetableHearing(Long year) {
+  public TimetableHearingYearModel closeTimetableHearing(Long year, List<Long> statementIdsToRemoveFromDossier) {
     TimetableHearingYear hearingYear = timetableHearingYearService.getHearingYear(year);
     timetableHearingYearService.mayTransitionToHearingStatus(hearingYear, HearingStatus.ARCHIVED);
-    timetableHearingStatementService.deleteSpamMailFromYear(year);
-    timetableHearingYearService.transitionStatusAccordingDossier();
-    TimetableHearingYear closedHearing = timetableHearingYearService.closeTimetableHearing(hearingYear);
+    TimetableHearingYear closedHearing = timetableHearingYearService.closeTimetableHearing(hearingYear,
+        statementIdsToRemoveFromDossier);
     return TimeTableHearingYearMapper.toModel(closedHearing);
   }
 }

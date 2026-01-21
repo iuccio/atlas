@@ -11,79 +11,49 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
-import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
-import ch.sbb.line.directory.module.tth.client.WorkflowClient;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.exception.HearingCurrentlyActiveException;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingYearRepository;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class TimetableHearingYearServiceUnitTest {
 
+  @InjectMocks
   private TimetableHearingYearService timetableHearingYearService;
 
   @Mock
   private TimetableHearingYearRepository timetableHearingYearRepository;
   @Mock
   private TimetableHearingStatementService timetableHearingStatementService;
-  @Mock
-  private WorkflowClient workflowClient;
-
-  private AutoCloseable closeable;
-
-  @BeforeEach
-  void setUp() {
-    closeable = MockitoAnnotations.openMocks(this);
-    timetableHearingYearService = new TimetableHearingYearService(
-        timetableHearingYearRepository,
-        timetableHearingStatementService,
-        workflowClient
-    );
-  }
-
-  @AfterEach
-  void tearDown() throws Exception {
-    closeable.close();
-  }
-
-  @Test
-  void shouldTransitionStatusAccordingDossierWithCorrectFlow() {
-    // given
-    when(workflowClient.getStatementIdsFromDossierStatus(anyList())).thenReturn(List.of(1L, 5L, 7L));
-    doNothing().when(timetableHearingStatementService).removeDossierRelationsAndStatusToReceivedFor(anyList());
-    doNothing().when(workflowClient).patchDossierStatusClosingYear();
-    // when
-    timetableHearingYearService.transitionStatusAccordingDossier();
-    // then
-    verify(workflowClient).getStatementIdsFromDossierStatus(
-        List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK, DossierStatus.MOVED));
-    verify(timetableHearingStatementService).removeDossierRelationsAndStatusToReceivedFor(List.of(1L, 5L, 7L));
-    verify(workflowClient).patchDossierStatusClosingYear();
-  }
 
   @Test
   void shouldCloseTimetableHearingCorrectly() {
     // given
-    var tthYear = TimetableHearingYear.builder()
+    TimetableHearingYear tthYear = TimetableHearingYear.builder()
         .timetableYear(2026L)
         .build();
+    doNothing().when(timetableHearingStatementService).deleteSpamMailFromYear(anyLong());
+    doNothing().when(timetableHearingStatementService).removeDossierRelationsAndStatusToReceivedFor(anyList());
     doNothing().when(timetableHearingStatementService).moveClosedStatementsToNextYearWithStatusUpdates(anyLong());
     when(timetableHearingYearRepository.save(any(TimetableHearingYear.class))).thenReturn(null);
     // when
-    timetableHearingYearService.closeTimetableHearing(tthYear);
+    timetableHearingYearService.closeTimetableHearing(tthYear, List.of(1L, 3L, 5L));
     // then
+    verify(timetableHearingStatementService).deleteSpamMailFromYear(2026L);
+    verify(timetableHearingStatementService).removeDossierRelationsAndStatusToReceivedFor(List.of(1L, 3L, 5L));
     verify(timetableHearingStatementService).moveClosedStatementsToNextYearWithStatusUpdates(2026L);
     verify(timetableHearingYearRepository).save(assertArg(arg -> {
       assertThat(arg.isStatementCreatableInternal()).isFalse();
       assertThat(arg.isStatementCreatableExternal()).isFalse();
       assertThat(arg.isStatementEditable()).isFalse();
       assertThat(arg.getHearingStatus()).isEqualTo(HearingStatus.ARCHIVED);
-      assertThat(arg.getTimetableYear()).isEqualTo(tthYear.getTimetableYear());
+      assertThat(arg.getTimetableYear()).isEqualTo(2026);
     }));
   }
 
@@ -99,7 +69,7 @@ class TimetableHearingYearServiceUnitTest {
   @Test
   void shouldThrowWhenTransitionToActiveWhenNotCurrentlyActiveAndYearNotPlanned() {
     // given
-    var activeYear = TimetableHearingYear.builder()
+    TimetableHearingYear activeYear = TimetableHearingYear.builder()
         .hearingStatus(HearingStatus.ACTIVE)
         .build();
     when(timetableHearingYearRepository.hearingActive()).thenReturn(false);
@@ -111,7 +81,7 @@ class TimetableHearingYearServiceUnitTest {
   @Test
   void shouldThrowWhenTransitionToArchivedWhenYearNotActive() {
     // given
-    var plannedYear = TimetableHearingYear.builder()
+    TimetableHearingYear plannedYear = TimetableHearingYear.builder()
         .hearingStatus(HearingStatus.PLANNED)
         .build();
     // when

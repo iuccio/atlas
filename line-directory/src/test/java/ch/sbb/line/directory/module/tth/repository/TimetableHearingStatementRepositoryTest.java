@@ -246,12 +246,12 @@ class TimetableHearingStatementRepositoryTest {
   @Test
   void shouldRemoveDossierRelationAndSetReceivedForSpecificStatements() {
     // given
-    var statementOne = getMinimalTimetableHearingStatement();
+    TimetableHearingStatement statementOne = getMinimalTimetableHearingStatement();
     statementOne.setDossierId(1L);
     statementOne.setDossierContactMail("test@atlas.ch");
     statementOne.setStatementStatus(StatementStatus.ACCEPTED);
 
-    var statementTwo = getMinimalTimetableHearingStatement();
+    TimetableHearingStatement statementTwo = getMinimalTimetableHearingStatement();
     statementTwo.setDossierId(2L);
     statementTwo.setDossierContactMail("test@atlas.ch");
     statementTwo.setStatementStatus(StatementStatus.IN_REVIEW);

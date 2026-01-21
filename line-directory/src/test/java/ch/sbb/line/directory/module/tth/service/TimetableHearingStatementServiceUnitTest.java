@@ -23,7 +23,7 @@ class TimetableHearingStatementServiceUnitTest {
   @Test
   void shouldCallRepositoryOnDeleteSpamMailFromYear() {
     // given
-    Long year = 2022L;
+    long year = 2022;
     // when
     timetableHearingStatementService.deleteSpamMailFromYear(year);
     // then

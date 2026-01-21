@@ -2,21 +2,14 @@ package ch.sbb.line.directory.module.tth.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementModelV2;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementSenderModelV2;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
-import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.controller.IntegrationTest;
-import ch.sbb.line.directory.module.tth.client.WorkflowClient;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.exception.HearingCurrentlyActiveException;
@@ -25,23 +18,19 @@ import ch.sbb.line.directory.module.tth.mapper.TimetableHearingStatementMapperV2
 import ch.sbb.line.directory.module.tth.model.TimetableHearingYearSearchRestrictions;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingStatementRepository;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingYearRepository;
-import feign.FeignException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @IntegrationTest
 class TimetableHearingYearServiceTest {
 
   private static final long YEAR = 2023L;
-
-  @MockitoBean
-  private WorkflowClient workflowClient;
 
   private final TimetableHearingYearRepository timetableHearingYearRepository;
   private final TimetableHearingYearService timetableHearingYearService;
@@ -170,7 +159,8 @@ class TimetableHearingYearServiceTest {
   void shouldCloseHearingStatus() {
     TimetableHearingYear timetableHearing = timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
     TimetableHearingYear startedTimetableHearing = timetableHearingYearService.startTimetableHearing(timetableHearing);
-    TimetableHearingYear closed = timetableHearingYearService.closeTimetableHearing(startedTimetableHearing);
+    TimetableHearingYear closed = timetableHearingYearService.closeTimetableHearing(startedTimetableHearing,
+        Collections.emptyList());
 
     assertThat(closed.getHearingStatus()).isEqualTo(HearingStatus.ARCHIVED);
   }
@@ -194,7 +184,8 @@ class TimetableHearingYearServiceTest {
 
     // when
     timetableHearingStatementService.deleteSpamMailFromYear(startedTimetableHearing.getTimetableYear());
-    TimetableHearingYear closed = timetableHearingYearService.closeTimetableHearing(startedTimetableHearing);
+    TimetableHearingYear closed = timetableHearingYearService.closeTimetableHearing(startedTimetableHearing,
+        Collections.emptyList());
 
     // then
     assertThat(closed.getHearingStatus()).isEqualTo(HearingStatus.ARCHIVED);
@@ -205,33 +196,5 @@ class TimetableHearingYearServiceTest {
     Stream<TimetableHearingStatement> resultStream = timetableHearingStatementRepository.findAll().stream();
     assertTrue(resultStream.noneMatch(resultStatement ->
         resultStatement.getStatementStatus() == StatementStatus.JUNK || resultStatement.getTimetableYear() == YEAR));
-  }
-
-  @Test
-  void shouldRollbackTransitionStatusAccordingDossierWhenPatchRequestThrows() {
-    // given
-    Long savedId = timetableHearingStatementRepository.save(
-        TimetableHearingStatement.builder()
-            .statementStatus(StatementStatus.ACCEPTED)
-            .swissCanton(SwissCanton.BERN)
-            .statement("test")
-            .timetableYear(2025L)
-            .dossierId(2L)
-            .dossierContactMail("test@atlas.ch")
-            .build()
-    ).getId();
-    when(workflowClient.getStatementIdsFromDossierStatus(anyList())).thenReturn(List.of(savedId));
-    doThrow(FeignException.class).when(workflowClient).patchDossierStatusClosingYear();
-    // when
-    assertThrows(FeignException.class, timetableHearingYearService::transitionStatusAccordingDossier);
-    // then
-    var rolledBackStatement = timetableHearingStatementRepository.findById(savedId).get();
-    assertThat(rolledBackStatement.getDossierId()).isEqualTo(2L);
-    assertThat(rolledBackStatement.getDossierContactMail()).isEqualTo("test@atlas.ch");
-    assertThat(rolledBackStatement.getStatementStatus()).isEqualTo(StatementStatus.ACCEPTED);
-
-    verify(workflowClient).getStatementIdsFromDossierStatus(
-        List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK, DossierStatus.MOVED));
-    verify(workflowClient).patchDossierStatusClosingYear();
   }
 }

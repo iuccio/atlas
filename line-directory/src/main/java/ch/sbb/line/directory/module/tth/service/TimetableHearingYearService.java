@@ -1,9 +1,7 @@
 package ch.sbb.line.directory.module.tth.service;
 
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
-import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
-import ch.sbb.line.directory.module.tth.client.WorkflowClient;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.exception.HearingCurrentlyActiveException;
 import ch.sbb.line.directory.module.tth.exception.NoHearingCurrentlyActiveException;
@@ -23,7 +21,6 @@ public class TimetableHearingYearService {
 
   private final TimetableHearingYearRepository timetableHearingYearRepository;
   private final TimetableHearingStatementService timetableHearingStatementService;
-  private final WorkflowClient workflowClient;
 
   public List<TimetableHearingYear> getHearingYears(TimetableHearingYearSearchRestrictions searchRestrictions) {
     return timetableHearingYearRepository.findAll(searchRestrictions.getSpecification());
@@ -72,18 +69,10 @@ public class TimetableHearingYearService {
   }
 
   @Transactional
-  public void transitionStatusAccordingDossier() {
-    List<Long> statementIdsWhereDossierRelationNeedsToBeRemoved = workflowClient.getStatementIdsFromDossierStatus(
-        List.of(DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK, DossierStatus.MOVED));
-
-    timetableHearingStatementService.removeDossierRelationsAndStatusToReceivedFor(
-        statementIdsWhereDossierRelationNeedsToBeRemoved);
-
-    workflowClient.patchDossierStatusClosingYear();
-  }
-
-  @Transactional
-  public TimetableHearingYear closeTimetableHearing(TimetableHearingYear timetableHearingYear) {
+  public TimetableHearingYear closeTimetableHearing(TimetableHearingYear timetableHearingYear,
+      List<Long> statementIdsToRemoveFromDossier) {
+    timetableHearingStatementService.deleteSpamMailFromYear(timetableHearingYear.getTimetableYear());
+    timetableHearingStatementService.removeDossierRelationsAndStatusToReceivedFor(statementIdsToRemoveFromDossier);
     timetableHearingStatementService.moveClosedStatementsToNextYearWithStatusUpdates(timetableHearingYear.getTimetableYear());
 
     timetableHearingYear.setStatementCreatableInternal(false);

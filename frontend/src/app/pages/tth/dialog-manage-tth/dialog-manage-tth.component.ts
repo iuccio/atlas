@@ -18,6 +18,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { AtlasSlideToggleComponent } from '../../../core/form-components/atlas-slide-toggle/atlas-slide-toggle.component';
 import { AtlasButtonComponent } from '../../../core/components/button/atlas-button.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { TthYearInternalService } from '../../../api/service/workflow/tth-year-internal.service';
 
 @Component({
   selector: 'atlas-dialog-manage-tth',
@@ -50,6 +51,7 @@ export class DialogManageTthComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) private readonly matDialogData: number,
     private readonly timetableHearingYearsService: TimetableHearingYearInternalService,
+    private readonly tthYearInternalService: TthYearInternalService,
     private readonly notificationService: NotificationService,
     private readonly dialogRef: MatDialogRef<DialogManageTthComponent, boolean>
   ) {
@@ -130,7 +132,7 @@ export class DialogManageTthComponent implements OnInit {
 
   handleCloseViewTthCloseClick(): void {
     this.actionButtonsDisabled = true;
-    this.timetableHearingYearsService
+    this.tthYearInternalService
       .closeTimetableHearing(this.year)
       .pipe(take(1))
       .subscribe({
