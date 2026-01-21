@@ -38,6 +38,14 @@ import { DossierStatus } from '../../../../api/model/dossierStatus';
 import { SelectComponent } from '../../../../core/form-components/select/select.component';
 import { DialogService } from '../../../../core/components/dialog/dialog.service';
 
+export const DOSSIER_EDITABLE_STATES = [
+  DossierStatus.Added,
+  DossierStatus.DossierCantonCheck,
+  DossierStatus.Accepted,
+  DossierStatus.Rejected,
+  DossierStatus.Moved,
+];
+
 @Component({
   selector: 'atlas-dossier-detail',
   imports: [
@@ -78,13 +86,7 @@ export class DossierDetailComponent
   );
   private readonly dialogService = inject(DialogService);
 
-  readonly editableStates = [
-    DossierStatus.Added,
-    DossierStatus.DossierCantonCheck,
-    DossierStatus.Accepted,
-    DossierStatus.Rejected,
-    DossierStatus.Moved,
-  ];
+  readonly editableStates = DOSSIER_EDITABLE_STATES;
   readonly cancelableStates = [DossierStatus.Added];
   readonly dissolvableStates = [
     DossierStatus.DossierCantonCheck,

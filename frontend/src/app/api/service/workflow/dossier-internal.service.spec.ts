@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { AtlasApiService } from '../atlas-api.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserService } from '../../../core/auth/user/user.service';
 import { DossierInternalService } from './dossier-internal.service';
 import { TthDossier } from '../../model/tthDossier';
@@ -45,6 +45,14 @@ describe('DossierInternalService', () => {
 
     // then
     expect(apiService.get).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier/5');
+  });
+
+  it('should get dossier overview', () => {
+    // when
+    service.getOverview(SwissCanton.Bern, ['Busse']);
+
+    // then
+    expect(apiService.get).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier', jasmine.any(HttpParams));
   });
 
   it('should create dossier', () => {

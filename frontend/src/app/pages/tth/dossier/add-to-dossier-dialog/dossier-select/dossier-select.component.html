@@ -1,0 +1,12 @@
+<atlas-form-search-select
+  (changeTrigger)="selectionChange.emit($event)"
+  (searchTrigger)="search($event)"
+  [controlName]="controlName()"
+  [formGroup]="form()"
+  [items$]="searchResults$"
+  [bindValueInp]="bindValue()"
+>
+  <ng-template #labelOptionTemplates let-item>
+    {{ item | dossierSelectFormat }}
+  </ng-template>
+</atlas-form-search-select>

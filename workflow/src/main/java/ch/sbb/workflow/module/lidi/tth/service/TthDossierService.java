@@ -13,9 +13,11 @@ import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
 import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierQuestionRepository;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
+import ch.sbb.workflow.module.lidi.tth.search.TthDossierSearchRestrictions;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,6 +38,13 @@ public class TthDossierService {
       + ".ApplicationType).TIMETABLE_HEARING)")
   public TthDossier getDossierById(Long dossierId) {
     return findDossier(dossierId);
+  }
+
+  @PostAuthorize("@cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin"
+      + ".ApplicationType).TIMETABLE_HEARING)")
+  public Page<TthDossier> getDossiers(TthDossierSearchRestrictions searchRestrictions) {
+    return dossierRepository.findAll(searchRestrictions.getSpecification(),
+        searchRestrictions.getPageable());
   }
 
   @TthRedacted
