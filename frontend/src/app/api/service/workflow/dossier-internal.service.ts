@@ -1,8 +1,10 @@
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { AtlasApiService } from '../atlas-api.service';
-import { TthDossier } from '../../model/tthDossier';
-import { DossierStatus } from '../../model/dossierStatus';
+import {inject, Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {AtlasApiService} from '../atlas-api.service';
+import {TthDossier} from '../../model/tthDossier';
+import {DossierStatus} from '../../model/dossierStatus';
+import {ContainerTthDossier} from "../../model/containerTthDossier";
+import {SwissCanton} from "../../model/swissCanton";
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +14,18 @@ export class DossierInternalService {
   private readonly BASE_PATH = '/workflow/internal/tth/dossier';
 
   private readonly atlasApiService = inject(AtlasApiService);
+
+  public getOverview(canton?: SwissCanton, searchCriterias?: Array<string>, statusRestrictions?: Array<DossierStatus>, page?: number, size?: number, sort?: Array<string>): Observable<ContainerTthDossier> {
+    const httpParams = this.atlasApiService.paramsOf({
+      canton,
+      searchCriterias,
+      statusRestrictions,
+      page,
+      size,
+      sort,
+    });
+    return this.atlasApiService.get(this.BASE_PATH, httpParams);
+  }
 
   public getDossier(id: number): Observable<TthDossier> {
     this.atlasApiService.validateParams({ id });

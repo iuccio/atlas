@@ -25,8 +25,9 @@ import ch.sbb.atlas.user.administration.security.service.BoUserMailCheckService;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
 import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
-import ch.sbb.workflow.module.lidi.tth.repository.TthDossierQuestionRepository;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
+import ch.sbb.workflow.module.lidi.tth.search.TthDossierRequestParams;
+import ch.sbb.workflow.module.lidi.tth.search.TthDossierSearchRestrictions;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @IntegrationTest
@@ -46,9 +48,6 @@ class TthDossierServiceTest {
 
   @Autowired
   private TthDossierRepository tthDossierRepository;
-
-  @Autowired
-  private TthDossierQuestionRepository tthDossierQuestionRepository;
 
   @MockitoBean
   private TimetableHearingStatementClient timetableHearingStatementClient;
@@ -313,5 +312,68 @@ class TthDossierServiceTest {
     Long questionId = exampleDossier.getDossierQuestions().getFirst().getId();
     TthDossier foundDossier = tthDossierService.getDossierByQuestionId(questionId);
     assertThat(foundDossier).usingRecursiveComparison().isEqualTo(exampleDossier);
+  }
+
+  @Test
+  void shouldFindDossiersBySearchCriteria() {
+    List<TthDossier> dossiers =
+        tthDossierService.getDossiers(TthDossierSearchRestrictions.builder()
+            .requestParams(TthDossierRequestParams.builder()
+                .searchCriteria("Bern")
+                .build())
+            .pageable(Pageable.unpaged())
+            .build()).getContent();
+    assertThat(dossiers).hasSize(1);
+
+    dossiers =
+        tthDossierService.getDossiers(TthDossierSearchRestrictions.builder()
+            .requestParams(TthDossierRequestParams.builder()
+                .searchCriteria("Zürich")
+                .build())
+            .pageable(Pageable.unpaged())
+            .build()).getContent();
+    assertThat(dossiers).isEmpty();
+  }
+
+  @Test
+  void shouldFindDossiersByCanton() {
+    List<TthDossier> dossiers =
+        tthDossierService.getDossiers(TthDossierSearchRestrictions.builder()
+            .requestParams(TthDossierRequestParams.builder()
+                .canton(SwissCanton.BERN)
+                .build())
+            .pageable(Pageable.unpaged())
+            .build()).getContent();
+    assertThat(dossiers).hasSize(1);
+
+    dossiers =
+        tthDossierService.getDossiers(TthDossierSearchRestrictions.builder()
+            .requestParams(TthDossierRequestParams.builder()
+                .canton(SwissCanton.ZUG)
+                .build())
+            .pageable(Pageable.unpaged())
+            .build()).getContent();
+    assertThat(dossiers).isEmpty();
+  }
+
+  @Test
+  void shouldFindDossiersByStatus() {
+    List<TthDossier> dossiers =
+        tthDossierService.getDossiers(TthDossierSearchRestrictions.builder()
+            .requestParams(TthDossierRequestParams.builder()
+                .statusRestriction(DossierStatus.ADDED)
+                .build())
+            .pageable(Pageable.unpaged())
+            .build()).getContent();
+    assertThat(dossiers).hasSize(1);
+
+    dossiers =
+        tthDossierService.getDossiers(TthDossierSearchRestrictions.builder()
+            .requestParams(TthDossierRequestParams.builder()
+                .statusRestriction(DossierStatus.DOSSIER_BO_CHECK)
+                .build())
+            .pageable(Pageable.unpaged())
+            .build()).getContent();
+    assertThat(dossiers).isEmpty();
   }
 }

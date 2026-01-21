@@ -3,6 +3,7 @@ package ch.sbb.workflow.module.lidi.tth.search;
 import ch.sbb.atlas.searching.specification.EnumSpecification;
 import ch.sbb.atlas.searching.specification.SearchCriteriaSpecification;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossier.Fields;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier_;
 import java.util.List;
 import lombok.Getter;
@@ -20,10 +21,9 @@ public class TthDossierSearchRestrictions {
 
   private final TthDossierRequestParams requestParams;
 
-  //TODO test & add more specifications if needed
   public Specification<TthDossier> getSpecification() {
     return new EnumSpecification<>(requestParams.getCanton(), TthDossier_.swissCanton)
         .and(new EnumSpecification<>(requestParams.getStatusRestrictions(), TthDossier_.dossierStatus))
-        .and(new SearchCriteriaSpecification<>(requestParams.getSearchCriterias(), List.of()));
+        .and(new SearchCriteriaSpecification<>(requestParams.getSearchCriterias(), List.of(Fields.id, Fields.topic)));
   }
 }
