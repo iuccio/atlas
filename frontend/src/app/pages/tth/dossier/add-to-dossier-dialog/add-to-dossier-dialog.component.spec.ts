@@ -18,8 +18,8 @@ const statement: TimetableHearingStatementV2 = {
   documents: [],
 };
 const dialogData: AddToDossierData = {
-  title: 'TTH.DIALOG.STATUS_CHANGE',
-  message: 'TTH.DIALOG.STATUS_CHANGE',
+  title: 'TTH.BUTTON.ADD_TO_DOSSIER',
+  message: 'TTH.DOSSIER.ADD_TO_DOSSIER_INFO',
   cancelText: 'COMMON.CANCEL',
   confirmText: 'COMMON.APPLY',
   statement: statement,
