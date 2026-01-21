@@ -3,7 +3,7 @@ package ch.sbb.workflow.module.sepodi.hearing.model.search;
 import ch.sbb.atlas.searching.SpecificationBuilder;
 import ch.sbb.workflow.module.sepodi.hearing.enity.StopPointWorkflow;
 import ch.sbb.workflow.module.sepodi.hearing.model.sepodi.StopPointWorkflowRequestParams;
-import ch.sbb.workflow.module.sepodi.hearing.specification.ValidFromAndCreatedAtSpecification;
+import ch.sbb.workflow.module.sepodi.hearing.specification.StopPointWorkflowDateSpecification;
 import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
@@ -34,9 +34,10 @@ public class StopPointWorkflowSearchRestrictions {
                 StopPointWorkflow.Fields.localityName))
             .and(specificationBuilder().inSpecification(stopPointWorkflowRequestParams.getDesignationOfficial(),
                 StopPointWorkflow.Fields.designationOfficial))
-            .and(new ValidFromAndCreatedAtSpecification<>(
+            .and(new StopPointWorkflowDateSpecification<>(
                 stopPointWorkflowRequestParams.getVersionValidFrom(),
-                stopPointWorkflowRequestParams.getCreatedAt()
+                stopPointWorkflowRequestParams.getCreatedAt(),
+                stopPointWorkflowRequestParams.getModifiedAfter()
             ));
     if (stopPointWorkflowRequestParams.isFilterByNoDecision()) {
       specification = specification.and(new NoDecisionSpecification());
