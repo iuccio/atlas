@@ -63,7 +63,6 @@ export class TimetableFieldNumberOverviewComponent
       headerTitle: 'TTFN.DESCRIPTION_OUTWARD',
       value: 'descriptionOutwardLine1',
     },
-    { headerTitle: 'TTFN.TTFNID', value: 'ttfnid' },
     {
       headerTitle: 'COMMON.STATUS',
       value: 'status',
