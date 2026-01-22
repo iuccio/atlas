@@ -2,7 +2,6 @@ package ch.sbb.workflow.module.lidi.tth.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -108,32 +107,6 @@ class TthDossierServiceTest {
 
     // then
     assertThat(dossier.getId()).isNotNull();
-  }
-
-  @Test
-  void shouldGetDossierForBo() {
-    //given
-    TthDossier dossier = tthDossierRepository.saveAndFlush(TthDossier.builder()
-        .swissCanton(SwissCanton.BERN)
-        .topic("Bern, Salem - Takt")
-        .internalComment("Noch mit Bernmobil abklären")
-        .publicComment("In Abklärung mit GO")
-        .boContactMail("bern@mobil.be")
-        .dossierStatus(DossierStatus.DOSSIER_BO_CHECK)
-        .statementIds(List.of(132L, 145L))
-        .boDeadlineToAnswer(LocalDate.now().plusDays(7))
-        .build());
-    // when
-    tthDossierService.getDossierForBo(dossier.getId());
-
-    // then
-    assertThat(dossier.getId()).isNotNull();
-  }
-
-  @Test
-  void shouldThrowExcpetionOnGetWhenStatusNotBoCheck() {
-    Long id = exampleDossier.getId();
-    assertThatThrownBy(() -> tthDossierService.getDossierForBo(id)).isInstanceOf(SimpleAtlasException.class);
   }
 
   @Test

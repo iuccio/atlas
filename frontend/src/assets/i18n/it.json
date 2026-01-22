@@ -1094,6 +1094,11 @@
       "EXTERNAL_FEEDBACK_CONTACT": "Dati di contatto",
       "EXTERNAL_FEEDBACK_ORIGINAL_TEXT": "Testi originali",
       "EXTERNAL_FEEDBACK_ATTATCHMENTS": "Allegati (file PDF)",
+      "BO_EXTERNAL_FEEDBACK": "Chiarimento/domanda",
+      "BO_EXTERNAL_FEEDBACK_HINT": "(dal Cantone)",
+      "BO_EXTERNAL_FEEDBACK_ANSWER": "Riscontro al Cantone",
+      "BO_EXTERNAL_FEEDBACK_ANSWER_INFO": "La sua risposta è visibile solo ai collaboratori del Cantone. Non è pubblica.",
+      "BO_SEND_ANSWER_BUTTON": "Inviare risposta al Cantone",
       "BO_CONTACT_MAIL": "E-Mail",
       "BO_CONTACT_MAIL_INFO": "Inserire l’indirizzo e-mail della persona di riferimento dell’impresa di trasporto.",
       "BO_DEADLINE_TO_ANSWER": "Termine per la risposta da parte dell’IT",
@@ -1106,6 +1111,7 @@
       "STATEMENTS": "Pareri del fascicolo",
       "ADD_STATEMENTS": "Aggiungere ulteriori prese di posizione sul dossier",
       "SEND_TO_BO": "Invia domanda",
+      "BO_ANSWER": "Feedback dalla compagnia di trasporto",
       "STATEMENT_SELECT": {
         "CURRENT_STATEMENTS": "Pareri attualmente selezionati",
         "ADDITIONAL_STATEMENTS": "Altre prese di posizione"
@@ -1114,6 +1120,7 @@
         "ADD_SUCCESS": "Nuovo dossier salvato con successo.",
         "EDIT_SUCCESS": "Il dossier è stato salvato con successo.",
         "SENT_TO_BO": "Il dossier è stato inoltrato all’impresa di trasporto.",
+        "SENT_TO_CANTON": "Il dossier è stato trasmesso al Cantone.",
         "COMPLETE_TITLE": "Il dossier viene chiuso",
         "COMPLETE_MESSAGE": "Con questa azione si chiude il dossier. Le prese di posizione possono poi essere nuovamente elaborate individualmente. Si desidera proseguire?"
       },

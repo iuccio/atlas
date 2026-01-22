@@ -21,13 +21,27 @@ import { forkJoin } from 'rxjs';
 export class StatementSelectComponent {
   selectedStatements = model.required<number[]>();
   removeOptionEnabled = input(true);
+  showRemoveOption = input(true);
 
   private readonly timetableHearingStatementInternalService = inject(
     TimetableHearingStatementInternalService
   );
   private readonly router = inject(Router);
 
-  tableColumns: TableColumn<TimetableHearingStatementV2>[] = [
+  eyeColumn: TableColumn<TimetableHearingStatementV2> = {
+    headerTitle: '',
+    value: 'etagVersion',
+    button: {
+      icon: 'bi bi-eye',
+      clickCallback: () => {},
+      applicationType: 'TIMETABLE_HEARING',
+      buttonDataCy: 'seeStatement',
+      buttonType: 'icon',
+      disabled: () => false,
+    },
+  };
+
+  defaultTableColumns: TableColumn<TimetableHearingStatementV2>[] = [
     { headerTitle: 'ID', value: 'id' },
     {
       headerTitle: 'TTH.TRANSPORT_COMPANY',
@@ -67,6 +81,15 @@ export class StatementSelectComponent {
     },
   ];
   statements: TimetableHearingStatementV2[] = [];
+
+  get tableColumns(): TableColumn<TimetableHearingStatementV2>[] {
+    if (this.showRemoveOption()) {
+      return this.defaultTableColumns;
+    }
+    const boTableColumns = this.defaultTableColumns.slice(0, -1);
+    boTableColumns.push(this.eyeColumn);
+    return boTableColumns;
+  }
 
   constructor() {
     effect(() => {

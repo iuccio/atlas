@@ -39,11 +39,6 @@ public class TthDossierController implements TthDossierApiInternal {
   }
 
   @Override
-  public TthDossierModel getDossierForBo(Long dossierId) {
-    return TthDossierMapper.toModel(tthDossierService.getDossierForBo(dossierId));
-  }
-
-  @Override
   public TthDossierModel createDossier(TthDossierModel dossierModel) {
     return TthDossierMapper.toModel(tthDossierService.createDossier(TthDossierMapper.toEntity(dossierModel)));
   }

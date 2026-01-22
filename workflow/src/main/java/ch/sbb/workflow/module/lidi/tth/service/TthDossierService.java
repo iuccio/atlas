@@ -34,8 +34,9 @@ public class TthDossierService {
   private final TthDossierNotificationService notificationService;
   private final BoContactPermissionService boContactPermissionService;
 
+  @TthRedacted
   @PostAuthorize("@cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin"
-      + ".ApplicationType).TIMETABLE_HEARING)")
+      + ".ApplicationType).TIMETABLE_HEARING) || @boUserMailCheckService.isCurrentUserMailAssignedTo(returnObject)")
   public TthDossier getDossierById(Long dossierId) {
     return findDossier(dossierId);
   }
