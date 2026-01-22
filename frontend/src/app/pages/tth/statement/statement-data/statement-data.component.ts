@@ -33,6 +33,7 @@ export class StatementDataComponent {
   form = input.required<FormGroup<StatementDetailFormGroup>>();
   ttfnValidOn = input.required<Date>();
   statement = input.required<TimetableHearingStatementV2>();
+  isNew = input<boolean>();
 
   private readonly timetableHearingStatementsService = inject(
     TimetableHearingStatementInternalService
