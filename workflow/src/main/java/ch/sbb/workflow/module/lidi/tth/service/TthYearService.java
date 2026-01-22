@@ -17,10 +17,10 @@ public class TthYearService {
 
   @Transactional
   public TimetableHearingYearModel closeTimetableHearingYear(Long year) {
-    tthDossierService.updateDossierStatusClosingYear();
     List<Long> statementIdsToRemoveFromDossier = tthDossierService.getStatementIdsFromDossierStatus(List.of(
         DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK, DossierStatus.MOVED
     ));
+    tthDossierService.updateDossierStatusClosingYear();
     return timetableHearingYearApiInternalClient.closeTimetableHearing(year, statementIdsToRemoveFromDossier);
   }
 }

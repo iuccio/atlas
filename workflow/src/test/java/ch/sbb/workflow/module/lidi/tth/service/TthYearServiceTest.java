@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.assertArg;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingYearApiInternalClient;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
@@ -53,5 +57,23 @@ class TthYearServiceTest {
     assertThrows(FeignException.class, () -> tthYearService.closeTimetableHearingYear(2026L));
     // then
     assertThat(tthDossierRepository.findById(dossierId).get().getDossierStatus()).isEqualTo(DossierStatus.ADDED);
+  }
+
+  @Test
+  void shouldUpdateDossierStatusAndSendRequestToLidiOnCloseYearCorrectly() {
+    // given
+    long dossierId = tthDossierRepository.save(TthDossier.builder()
+        .swissCanton(SwissCanton.BERN)
+        .topic("topic")
+        .dossierStatus(DossierStatus.ADDED)
+        .statementIds(List.of(1L, 3L))
+        .build()).getId();
+    when(timetableHearingYearApiInternalClient.closeTimetableHearing(anyLong(), anyList())).thenReturn(null);
+    // when
+    tthYearService.closeTimetableHearingYear(2026L);
+    // then
+    assertThat(tthDossierRepository.findById(dossierId).get().getDossierStatus()).isEqualTo(DossierStatus.CANCELED);
+    verify(timetableHearingYearApiInternalClient).closeTimetableHearing(eq(2026L),
+        assertArg(list -> assertThat(list).containsExactlyInAnyOrder(1L, 3L)));
   }
 }

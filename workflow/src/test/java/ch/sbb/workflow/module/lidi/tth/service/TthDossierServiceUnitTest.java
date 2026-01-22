@@ -1,6 +1,8 @@
 package ch.sbb.workflow.module.lidi.tth.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,12 +38,12 @@ class TthDossierServiceUnitTest {
   @Test
   void shouldUpdateDossierStatusClosingYear() {
     // given
-    doNothing().when(dossierRepository).updateDossierStatusFromAddedToCanceled();
-    doNothing().when(dossierRepository).updateDossierStatusFromCheckOrMovedToDissolved();
+    doNothing().when(dossierRepository).updateDossierStatus(any(DossierStatus.class), anyCollection());
     // when
     tthDossierService.updateDossierStatusClosingYear();
     // then
-    verify(dossierRepository).updateDossierStatusFromAddedToCanceled();
-    verify(dossierRepository).updateDossierStatusFromCheckOrMovedToDissolved();
+    verify(dossierRepository).updateDossierStatus(DossierStatus.CANCELED, List.of(DossierStatus.ADDED));
+    verify(dossierRepository).updateDossierStatus(DossierStatus.DISSOLVED,
+        List.of(DossierStatus.MOVED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK));
   }
 }

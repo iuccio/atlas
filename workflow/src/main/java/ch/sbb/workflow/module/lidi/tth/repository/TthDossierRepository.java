@@ -2,6 +2,7 @@ package ch.sbb.workflow.module.lidi.tth.repository;
 
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
+import java.util.Collection;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -17,23 +18,13 @@ public interface TthDossierRepository extends JpaRepository<TthDossier, Long>, J
       select sIds from ch.sbb.workflow.module.lidi.tth.entity.TthDossier tthd
       join tthd.statementIds sIds
       where tthd.dossierStatus in :dossierStatus""")
-  List<Long> findStatementIdsByDossierStatusIn(List<DossierStatus> dossierStatus);
+  List<Long> findStatementIdsByDossierStatusIn(Collection<DossierStatus> dossierStatus);
 
   @Transactional
   @Modifying
   @Query("""
       update ch.sbb.workflow.module.lidi.tth.entity.TthDossier tthd
-      set tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.CANCELED
-      where tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.ADDED""")
-  void updateDossierStatusFromAddedToCanceled();
-
-  @Transactional
-  @Modifying
-  @Query("""
-      update ch.sbb.workflow.module.lidi.tth.entity.TthDossier tthd
-      set tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.DISSOLVED
-      where tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.DOSSIER_BO_CHECK
-          or tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.DOSSIER_CANTON_CHECK
-          or tthd.dossierStatus = ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus.MOVED""")
-  void updateDossierStatusFromCheckOrMovedToDissolved();
+      set tthd.dossierStatus = :statusToSet
+      where tthd.dossierStatus in :statusToChange""")
+  void updateDossierStatus(DossierStatus statusToSet, Collection<DossierStatus> statusToChange);
 }

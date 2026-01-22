@@ -64,36 +64,7 @@ class TthDossierRepositoryTest {
   }
 
   @Test
-  void shouldUpdateDossierStatusFromAddedToCanceled() {
-    // given
-    List<Long> savedIds = tthDossierRepository.saveAll(List.of(
-        TthDossier.builder()
-            .swissCanton(SwissCanton.BERN)
-            .topic("test")
-            .dossierStatus(DossierStatus.ADDED)
-            .boContactMail("test@bo.ch")
-            .boDeadlineToAnswer(LocalDate.of(2025, 12, 31))
-            .statementIds(List.of(1L, 5L))
-            .build(),
-        TthDossier.builder()
-            .swissCanton(SwissCanton.BERN)
-            .topic("test")
-            .dossierStatus(DossierStatus.DOSSIER_CANTON_CHECK)
-            .boContactMail("test@bo.ch")
-            .boDeadlineToAnswer(LocalDate.of(2025, 12, 31))
-            .statementIds(List.of(7L))
-            .build()
-    )).stream().map(TthDossier::getId).toList();
-    // when
-    tthDossierRepository.updateDossierStatusFromAddedToCanceled();
-    // then
-    assertThat(tthDossierRepository.findById(savedIds.getFirst()).get().getDossierStatus()).isEqualTo(DossierStatus.CANCELED);
-    assertThat(tthDossierRepository.findById(savedIds.get(1)).get().getDossierStatus()).isEqualTo(
-        DossierStatus.DOSSIER_CANTON_CHECK);
-  }
-
-  @Test
-  void shouldUpdateDossierStatusFromCheckOrMovedToDissolved() {
+  void shouldUpdateDossierStatus() {
     // given
     List<Long> savedIds = tthDossierRepository.saveAll(List.of(
         TthDossier.builder()
@@ -130,7 +101,8 @@ class TthDossierRepositoryTest {
             .build()
     )).stream().map(TthDossier::getId).toList();
     // when
-    tthDossierRepository.updateDossierStatusFromCheckOrMovedToDissolved();
+    tthDossierRepository.updateDossierStatus(DossierStatus.DISSOLVED,
+        List.of(DossierStatus.MOVED, DossierStatus.DOSSIER_CANTON_CHECK, DossierStatus.DOSSIER_BO_CHECK));
     // then
     assertThat(tthDossierRepository.findById(savedIds.getFirst()).get().getDossierStatus()).isEqualTo(DossierStatus.ADDED);
     assertThat(tthDossierRepository.findById(savedIds.get(1)).get().getDossierStatus()).isEqualTo(DossierStatus.DISSOLVED);

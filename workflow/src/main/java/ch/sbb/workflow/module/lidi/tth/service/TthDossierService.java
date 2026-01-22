@@ -40,8 +40,9 @@ public class TthDossierService {
 
   @Transactional
   public void updateDossierStatusClosingYear() {
-    dossierRepository.updateDossierStatusFromAddedToCanceled();
-    dossierRepository.updateDossierStatusFromCheckOrMovedToDissolved();
+    dossierRepository.updateDossierStatus(DossierStatus.CANCELED, List.of(DossierStatus.ADDED));
+    dossierRepository.updateDossierStatus(DossierStatus.DISSOLVED,
+        List.of(DossierStatus.MOVED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK));
   }
 
   @TthRedacted
