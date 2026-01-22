@@ -1111,6 +1111,7 @@
       "STATEMENTS": "Stellungnahmen des Dossiers",
       "ADD_STATEMENTS": "Weitere Stellungnahmen zum Dossier hinzufügen",
       "SEND_TO_BO": "Frage senden",
+      "BO_ANSWER": "Rückmeldung des Transportunternehmens",
       "STATEMENT_SELECT": {
         "CURRENT_STATEMENTS": "Aktuell ausgewählte Stellungnahmen",
         "ADDITIONAL_STATEMENTS": "Weitere Stellungnahmen"

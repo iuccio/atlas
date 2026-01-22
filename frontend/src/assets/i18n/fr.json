@@ -1111,6 +1111,7 @@
       "STATEMENTS": "prises de position sur le dossier",
       "ADD_STATEMENTS": "Ajouter d’autres prises de position au dossier",
       "SEND_TO_BO": "Envoyer la question",
+      "BO_ANSWER": "Commentaires de la société de transport",
       "STATEMENT_SELECT": {
         "CURRENT_STATEMENTS": "Prises de position actuellement sélectionnées",
         "ADDITIONAL_STATEMENTS": "Autres prises de position"
