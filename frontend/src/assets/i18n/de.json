@@ -1094,6 +1094,11 @@
       "EXTERNAL_FEEDBACK_CONTACT": "Kontaktdaten",
       "EXTERNAL_FEEDBACK_ORIGINAL_TEXT": "Originaltexte",
       "EXTERNAL_FEEDBACK_ATTATCHMENTS": "Anhänge (PDF-Dateien)",
+      "BO_EXTERNAL_FEEDBACK": "Abklärung/Rückfrage",
+      "BO_EXTERNAL_FEEDBACK_HINT": "(vom Kanton)",
+      "BO_EXTERNAL_FEEDBACK_ANSWER": "Rückmeldung an den Kanton",
+      "BO_EXTERNAL_FEEDBACK_ANSWER_INFO": "Ihre Antwort sehen nur die Mitarbeitenden des Kantons. Sie ist nicht öffentlich.",
+      "BO_SEND_ANSWER_BUTTON": "Antwort an Kanton senden",
       "BO_CONTACT_MAIL": "E-Mail",
       "BO_CONTACT_MAIL_INFO": "Geben Sie die E-Mail-Adresse der Kontaktperson im Transportunternehmen ein.",
       "BO_DEADLINE_TO_ANSWER": "Frist zur Beantwortung durch TU",
@@ -1106,6 +1111,7 @@
       "STATEMENTS": "Stellungnahmen des Dossiers",
       "ADD_STATEMENTS": "Weitere Stellungnahmen zum Dossier hinzufügen",
       "SEND_TO_BO": "Frage senden",
+      "BO_ANSWER": "Rückmeldung des Transportunternehmens",
       "STATEMENT_SELECT": {
         "CURRENT_STATEMENTS": "Aktuell ausgewählte Stellungnahmen",
         "ADDITIONAL_STATEMENTS": "Weitere Stellungnahmen"
@@ -1114,6 +1120,7 @@
         "ADD_SUCCESS": "Neues Dossier erfolgreich gespeichert.",
         "EDIT_SUCCESS": "Das Dossier wurde erfolgreich gespeichert.",
         "SENT_TO_BO": "Das Dossier wurde an das Transportunternehmen weitergegeben.",
+        "SENT_TO_CANTON": "Das Dossier wurde an den Kanton weitergegeben.",
         "COMPLETE_TITLE": "Dossier wird abgeschlossen",
         "COMPLETE_MESSAGE": "Mit dieser Aktion wird das Dossier geschlossen. Die Stellungnahmen können danach wieder einzeln bearbeitet werden. Möchten Sie fortfahren?"
       },

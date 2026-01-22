@@ -36,6 +36,7 @@ export class DateComponent {
 
   @Input() controlName = 'validFrom';
   @Input() controlNameTo = 'validTo';
+  @Input() readonly = false;
 
   minDate = input(MIN_DATE);
   maxDate = input(MAX_DATE);
