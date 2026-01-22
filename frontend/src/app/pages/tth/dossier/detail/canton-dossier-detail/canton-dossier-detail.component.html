@@ -150,13 +150,24 @@
                 >
                 </atlas-form-comment>
               </div>
+              @if (form.controls.answerToCanton.getRawValue()) {
+                <div class="d-flex flex-column col-12 mt-2 mb-4">
+                  <atlas-form-comment
+                    [formGroup]="form"
+                    controlName="answerToCanton"
+                    label="TTH.DOSSIER.BO_ANSWER"
+                    maxChars="5000"
+                  >
+                  </atlas-form-comment>
+                </div>
+              }
               @if (this.cantonShort && form.disabled && isSendableToBo) {
                 <div class="mt-3">
                   <atlas-button
                     (buttonClicked)="sendToBo()"
                     buttonDataCy="send-to-bo"
                     buttonText="TTH.DOSSIER.SEND_TO_BO"
-                    [canton]="cantonShort"
+                    [canton]="cantonShort!"
                     applicationType="TIMETABLE_HEARING"
                     buttonStyleClass="atlas-primary-btn"
                     buttonType="cantonWritePermission"

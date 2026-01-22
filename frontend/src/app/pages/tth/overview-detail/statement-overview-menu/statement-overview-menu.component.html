@@ -28,17 +28,22 @@
       <i class="icon bi bi-folder-plus me-2"></i>
       <span>{{ 'TTH.BUTTON.ADD_TO_DOSSIER' | translate }}</span>
     </button>
+
+    <button
+      mat-menu-item
+      class="color-primary-400"
+      (click)="switchCanton(row())"
+    >
+      <img
+        class="pe-2"
+        height="22"
+        ngSrc="assets/images/collecting_action/CANTON_DELIVERY.svg"
+        width="22"
+        alt="canton-delivery-icon"
+      />
+      <span>{{
+        'TTH.DROPDOWN.COLLECTING_ACTION.OPTION.CANTON_DELIVERY' | translate
+      }}</span>
+    </button>
   }
-  <button mat-menu-item class="color-primary-400" (click)="switchCanton(row())">
-    <img
-      class="pe-2"
-      height="22"
-      ngSrc="assets/images/collecting_action/CANTON_DELIVERY.svg"
-      width="22"
-      alt="canton-delivery-icon"
-    />
-    <span>{{
-      'TTH.DROPDOWN.COLLECTING_ACTION.OPTION.CANTON_DELIVERY' | translate
-    }}</span>
-  </button>
 </mat-menu>
