@@ -1,6 +1,6 @@
 services:
   lidi-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5433:5432"
@@ -16,7 +16,7 @@ services:
       - "datestyle=iso, ymd"
 
   bodi-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5435:5432"
@@ -32,7 +32,7 @@ services:
       - "datestyle=iso, ymd"
 
   scheduling-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5436:5432"
@@ -48,7 +48,7 @@ services:
       - "datestyle=iso, ymd"
 
   user-administration-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5437:5432"
@@ -64,7 +64,7 @@ services:
       - "datestyle=iso, ymd"
 
   workflow-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5438:5432"
@@ -80,7 +80,7 @@ services:
       - "datestyle=iso, ymd"
 
   service-point-directory-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5439:5432"
@@ -96,7 +96,7 @@ services:
       - "datestyle=iso, ymd"
 
   bulk-import-service-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5440:5432"
@@ -112,7 +112,7 @@ services:
       - "datestyle=iso, ymd"
 
   export-service-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5441:5432"
@@ -128,7 +128,7 @@ services:
       - "datestyle=iso, ymd"
 
   prm-service-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5442:5432"
@@ -144,7 +144,7 @@ services:
       - "datestyle=iso, ymd"
 
   location-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5443:5432"
