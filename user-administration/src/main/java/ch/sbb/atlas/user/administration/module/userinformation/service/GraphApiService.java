@@ -25,7 +25,7 @@ public class GraphApiService {
   private static final int SEARCH_QUERY_LIMIT = 10;
   private static final int RESOLVE_CHUNK_SIZE = 20;
   private static final String[] USER_PROPERTIES_TO_SELECT = {"onPremisesSamAccountName", "surname", "givenName", "mail",
-      "accountEnabled", "displayName"};
+      "accountEnabled", "displayName", "userPrincipalName"};
   private static final String CONSISTENCY_LEVEL = "ConsistencyLevel";
   private static final String EVENTUAL = "eventual";
 
@@ -39,8 +39,8 @@ public class GraphApiService {
       requestConfig.queryParameters.select = USER_PROPERTIES_TO_SELECT;
       requestConfig.queryParameters.top = SEARCH_QUERY_LIMIT;
       requestConfig.queryParameters.search = """
-          "onPremisesSamAccountName:%s" OR "mail:%s" OR "displayName:%s"
-          """.formatted(searchQuery, searchQuery, searchQuery);
+          "onPremisesSamAccountName:%s" OR "mail:%s" OR "displayName:%s" OR "userPrincipalName:%s"
+          """.formatted(searchQuery, searchQuery, searchQuery, searchQuery);
       requestConfig.headers.add(CONSISTENCY_LEVEL, EVENTUAL);
     });
   }
@@ -53,8 +53,8 @@ public class GraphApiService {
       requestConfig.queryParameters.select = USER_PROPERTIES_TO_SELECT;
       requestConfig.queryParameters.top = SEARCH_QUERY_LIMIT;
       requestConfig.queryParameters.search = """
-          "mail:%s"
-          """.formatted(mail);
+          "mail:%s" OR "userPrincipalName:%s"
+          """.formatted(mail, mail);
       requestConfig.headers.add(CONSISTENCY_LEVEL, EVENTUAL);
     });
   }
