@@ -18,10 +18,10 @@ public class PostgreSQLTestContainer {
   /**
    * This Postgres Version should reflect the docker-compose.yml and the postgres version used on AWS
    */
-  private static final String POSTGRES_DOCKER_IMAGE = "dockerio.docker.bin.sbb.ch/postgres:17.1";
+  private static final String POSTGRES_DOCKER_IMAGE = "dockerio.docker.bin.sbb.ch/postgres:18.1";
 
   public static PostgreSQLContainer<?> create() {
-    return new PostgreSQLContainer<>(DockerImageName.parse(POSTGRES_DOCKER_IMAGE).asCompatibleSubstituteFor("postgres:17.1"))
+    return new PostgreSQLContainer<>(DockerImageName.parse(POSTGRES_DOCKER_IMAGE).asCompatibleSubstituteFor("postgres:18.1"))
         .withLabel(KUBEDOCK_RUNAS_USER_LABEL_NAME, KUBEDOCK_RUNAS_USER);
   }
 

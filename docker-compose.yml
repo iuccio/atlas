@@ -1,6 +1,6 @@
 services:
   lidi-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5433:5432"
@@ -9,14 +9,14 @@ services:
       POSTGRES_PASSWORD: pwd
       POSTGRES_DB: line-directory
     volumes:
-      - "/var/lib/postgresql/data"
+      - "/var/lib/postgresql"
     command:
       - "postgres"
       - "-c"
       - "datestyle=iso, ymd"
 
   bodi-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5435:5432"
@@ -25,14 +25,14 @@ services:
       POSTGRES_PASSWORD: pwd
       POSTGRES_DB: business-organisation-directory
     volumes:
-      - "/var/lib/postgresql/data"
+      - "/var/lib/postgresql"
     command:
       - "postgres"
       - "-c"
       - "datestyle=iso, ymd"
 
   scheduling-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5436:5432"
@@ -41,14 +41,14 @@ services:
       POSTGRES_PASSWORD: pwd
       POSTGRES_DB: scheduling
     volumes:
-      - "/var/lib/postgresql/data"
+      - "/var/lib/postgresql"
     command:
       - "postgres"
       - "-c"
       - "datestyle=iso, ymd"
 
   user-administration-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5437:5432"
@@ -57,14 +57,14 @@ services:
       POSTGRES_PASSWORD: pwd
       POSTGRES_DB: user-administration
     volumes:
-      - "/var/lib/postgresql/data"
+      - "/var/lib/postgresql"
     command:
       - "postgres"
       - "-c"
       - "datestyle=iso, ymd"
 
   workflow-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5438:5432"
@@ -73,14 +73,14 @@ services:
       POSTGRES_PASSWORD: pwd
       POSTGRES_DB: workflow
     volumes:
-      - "/var/lib/postgresql/data"
+      - "/var/lib/postgresql"
     command:
       - "postgres"
       - "-c"
       - "datestyle=iso, ymd"
 
   service-point-directory-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5439:5432"
@@ -89,14 +89,14 @@ services:
       POSTGRES_PASSWORD: pwd
       POSTGRES_DB: service-point-directory
     volumes:
-      - "/var/lib/postgresql/data"
+      - "/var/lib/postgresql"
     command:
       - "postgres"
       - "-c"
       - "datestyle=iso, ymd"
 
   bulk-import-service-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5440:5432"
@@ -105,14 +105,14 @@ services:
       POSTGRES_PASSWORD: pwd
       POSTGRES_DB: bulk-import-service
     volumes:
-      - "/var/lib/postgresql/data"
+      - "/var/lib/postgresql"
     command:
       - "postgres"
       - "-c"
       - "datestyle=iso, ymd"
 
   export-service-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5441:5432"
@@ -121,14 +121,14 @@ services:
       POSTGRES_PASSWORD: pwd
       POSTGRES_DB: export-service
     volumes:
-      - "/var/lib/postgresql/data"
+      - "/var/lib/postgresql"
     command:
       - "postgres"
       - "-c"
       - "datestyle=iso, ymd"
 
   prm-service-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5442:5432"
@@ -137,14 +137,14 @@ services:
       POSTGRES_PASSWORD: pwd
       POSTGRES_DB: prm-directory
     volumes:
-      - "/var/lib/postgresql/data"
+      - "/var/lib/postgresql"
     command:
       - "postgres"
       - "-c"
       - "datestyle=iso, ymd"
 
   location-db:
-    image: postgres:17.1
+    image: postgres:18.1
     restart: always
     ports:
       - "5443:5432"
@@ -153,7 +153,7 @@ services:
       POSTGRES_PASSWORD: pwd
       POSTGRES_DB: location
     volumes:
-      - "/var/lib/postgresql/data"
+      - "/var/lib/postgresql"
     command:
       - "postgres"
       - "-c"
