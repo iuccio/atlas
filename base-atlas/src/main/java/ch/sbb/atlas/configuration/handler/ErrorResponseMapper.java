@@ -14,7 +14,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.hibernate.StaleObjectStateException;
-import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;

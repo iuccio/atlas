@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.boot.data.autoconfigure.web.DataWebProperties;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -20,8 +20,8 @@ class PagingConfigTest {
   @Test
   void shouldThrowBadRequestExceptionWhenPageSizeGreaterThanMax() {
     // given
-    SpringDataWebProperties properties = Mockito.mock(SpringDataWebProperties.class);
-    Mockito.when(properties.getPageable()).thenReturn(new SpringDataWebProperties.Pageable());
+    DataWebProperties properties = Mockito.mock(DataWebProperties.class);
+    Mockito.when(properties.getPageable()).thenReturn(new DataWebProperties.Pageable());
     CustomPageableArgumentResolver customPageableArgumentResolver = new PagingConfig(
         properties).new CustomPageableArgumentResolver();
     NativeWebRequest webRequest = Mockito.mock(NativeWebRequest.class);
@@ -35,8 +35,8 @@ class PagingConfigTest {
   @Test
   void shouldReturnPageableIfPageSizeValid() {
     // given
-    SpringDataWebProperties properties = Mockito.mock(SpringDataWebProperties.class);
-    Mockito.when(properties.getPageable()).thenReturn(new SpringDataWebProperties.Pageable());
+    DataWebProperties properties = Mockito.mock(DataWebProperties.class);
+    Mockito.when(properties.getPageable()).thenReturn(new DataWebProperties.Pageable());
     CustomPageableArgumentResolver customPageableArgumentResolver = new PagingConfig(
         properties).new CustomPageableArgumentResolver();
     CustomPageableArgumentResolver customPageableArgumentResolverSpy = Mockito.spy(customPageableArgumentResolver);
@@ -57,9 +57,9 @@ class PagingConfigTest {
   @Test
   void shouldAddResolverToArgumentHandlerList() {
     // given
-    SpringDataWebProperties.Pageable propertiesPageable = new SpringDataWebProperties.Pageable();
+    DataWebProperties.Pageable propertiesPageable = new DataWebProperties.Pageable();
     propertiesPageable.setMaxPageSize(5000);
-    SpringDataWebProperties properties = Mockito.mock(SpringDataWebProperties.class);
+    DataWebProperties properties = Mockito.mock(DataWebProperties.class);
     Mockito.when(properties.getPageable()).thenReturn(propertiesPageable);
     PagingConfig pagingConfig = new PagingConfig(properties);
     PagingConfig pagingConfigSpy = Mockito.spy(pagingConfig);

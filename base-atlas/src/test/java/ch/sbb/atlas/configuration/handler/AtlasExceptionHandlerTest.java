@@ -14,8 +14,8 @@ import org.hibernate.StaleObjectStateException;
 import org.hibernate.StaleStateException;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
-import org.springframework.data.mapping.PropertyReferenceException;
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.core.PropertyReferenceException;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -191,7 +191,7 @@ public class AtlasExceptionHandlerTest {
   @Test
   void shouldHandleNoResourceFoundException() {
     // Given
-    NoResourceFoundException exception = new NoResourceFoundException(HttpMethod.GET, "/resource");
+    NoResourceFoundException exception = new NoResourceFoundException(HttpMethod.GET, "/resource", "");
 
     // When
     ResponseEntity<ErrorResponse> errorResponseEntity = atlasExceptionHandler.handleNoResourceFoundException(exception);
