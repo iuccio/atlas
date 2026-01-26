@@ -101,6 +101,26 @@ export const routes: Routes = [
     runGuardsAndResolvers: 'always',
   },
   {
+    path: Pages.TTH_PLANNED.path,
+    loadComponent: () =>
+      import('./overview-detail/overview-detail.component').then(
+        (m) => m.OverviewDetailComponent
+      ),
+    data: {
+      hearingStatus: HearingStatus.Planned,
+    },
+  },
+  {
+    path: Pages.TTH_ARCHIVED.path,
+    loadComponent: () =>
+      import('./overview-detail/overview-detail.component').then(
+        (m) => m.OverviewDetailComponent
+      ),
+    data: {
+      hearingStatus: HearingStatus.Archived,
+    },
+  },
+  {
     path: Pages.TTH_OVERVIEW_DETAIL.path,
     loadComponent: () =>
       import('./overview-tab/overview-tab.component').then(
@@ -127,26 +147,7 @@ export const routes: Routes = [
           hearingStatus: HearingStatus.Active,
         },
       },
-      {
-        path: Pages.TTH_PLANNED.path,
-        loadComponent: () =>
-          import('./overview-detail/overview-detail.component').then(
-            (m) => m.OverviewDetailComponent
-          ),
-        data: {
-          hearingStatus: HearingStatus.Planned,
-        },
-      },
-      {
-        path: Pages.TTH_ARCHIVED.path,
-        loadComponent: () =>
-          import('./overview-detail/overview-detail.component').then(
-            (m) => m.OverviewDetailComponent
-          ),
-        data: {
-          hearingStatus: HearingStatus.Archived,
-        },
-      },
+
       { path: '**', redirectTo: Pages.TTH_ACTIVE.path },
     ],
   },

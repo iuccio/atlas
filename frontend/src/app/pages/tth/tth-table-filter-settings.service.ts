@@ -46,7 +46,7 @@ export class TthTableFilterSettingsService {
     return {
       chipSearch: new TableFilterChip(0, 'col-6'),
       multiSelectDossierStatus: new TableFilterMultiSelect(
-        'TTH.STATEMENT_STATUS.',
+        'TTH.DOSSIER.DOSSIER_STATUS.',
         'COMMON.STATUS',
         Object.values(DossierStatus),
         1,

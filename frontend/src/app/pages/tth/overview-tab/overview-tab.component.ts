@@ -22,8 +22,8 @@ import { TranslatePipe } from '@ngx-translate/core';
     RouterLink,
     MatTabNavPanel,
     RouterOutlet,
-    TranslatePipe
-],
+    TranslatePipe,
+  ],
 })
 export class OverviewTabComponent implements OnInit {
   TABS: HearingOverviewTab[] = [
@@ -38,6 +38,10 @@ export class OverviewTabComponent implements OnInit {
     {
       link: Pages.TTH_ARCHIVED.path,
       title: 'TTH.TAB.ARCHIVED',
+    },
+    {
+      link: Pages.TTH_DOSSIERS.path,
+      title: 'DOSSIER',
     },
   ];
   cantonShort = Cantons.swiss.path;
