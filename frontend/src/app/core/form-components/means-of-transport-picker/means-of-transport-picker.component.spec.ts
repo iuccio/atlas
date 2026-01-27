@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MeansOfTransportPickerComponent } from './means-of-transport-picker.component';
 import { MeanOfTransport } from '../../../api';
 import { By } from '@angular/platform-browser';
-import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
+import { AtlasLabelFieldComponent } from '@atlas/form';
 import { translateServiceProvider } from '../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
 

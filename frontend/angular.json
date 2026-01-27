@@ -3,51 +3,39 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "components": {
+    "atlas-components": {
       "projectType": "library",
-      "sourceRoot": "components",
-      "root": "",
+      "root": "atlas-components",
+      "sourceRoot": "atlas-components/src",
+      "prefix": "ac",
       "architect": {
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "components/karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "styles": [
-              "src/styles/styles.scss"
-            ],
-            "scripts": []
-          },
+        "build": {
+          "builder": "@angular/build:ng-packagr",
           "configurations": {
-            "ci": {
-              "karmaConfig": "components/karma.conf.js",
-              "browsers": "ChromeHeadlessNoSandbox",
-              "codeCoverage": true,
-              "sourceMap": true,
-              "progress": true,
-              "watch": false,
-              "codeCoverageExclude": [
-                "charts/**",
-                "src/polyfills.ts",
-                "components/coverage/**/*",
-                "coverage/**/*"
-              ],
-              "reporters": [
-                "progress",
-                "sonarqube"
-              ]
+            "production": {
+              "tsConfig": "atlas-components/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "atlas-components/tsconfig.lib.json"
             }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "runner": "vitest",
+            "tsConfig": "atlas-components/tsconfig.spec.json",
+            "watch": false,
+            "coverage": true
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "components/**/*.ts",
-              "components/**/*.html"
+              "atlas-components/**/*.ts",
+              "atlas-components/**/*.html"
             ]
           }
         }
@@ -69,7 +57,7 @@
       "prefix": "atlas",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
             "outputPath": {
               "base": "dist/atlas-frontend"
@@ -133,7 +121,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "atlas-frontend:build:production"
@@ -145,44 +133,14 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "runner": "karma",
             "tsConfig": "tsconfig.spec.json",
-            "include": [
-              "src/**/*.spec.ts"
-            ],
-            "karmaConfig": "karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/assets",
-              "src/manifest.webmanifest"
-            ],
-            "styles": [
-              "src/styles/styles.scss"
-            ],
-            "scripts": []
-          },
-          "configurations": {
-            "ci": {
-              "karmaConfig": "karma.conf.js",
-              "browsers": "ChromeHeadlessNoSandbox",
-              "codeCoverage": true,
-              "sourceMap": true,
-              "progress": false,
-              "watch": false,
-              "codeCoverageExclude": [
-                "charts/**",
-                "src/polyfills.ts",
-                "components/coverage/**/*",
-                "coverage/**/*"
-              ],
-              "reporters": [
-                "progress",
-                "sonarqube"
-              ]
-            }
+            "runnerConfig": "karma.conf.js",
+            "browsers": ["ChromeHeadlessNoSandbox"],
+            "coverage": true,
+            "watch": false
           }
         },
         "lint": {

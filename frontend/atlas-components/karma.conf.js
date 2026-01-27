@@ -7,7 +7,7 @@ module.exports = function (config) {
   process.env.CHROMIUM_BIN = require('@playwright/test').chromium.executablePath();
   process.env.CHROME_BIN = require('puppeteer').executablePath();
   config.set({
-    basePath: '.',
+    basePath: 'src',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
       require('karma-jasmine'),
@@ -16,7 +16,7 @@ module.exports = function (config) {
       require('karma-jasmine-html-reporter'),
       require('karma-sonarqube-reporter'),
       require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma'),
+
     ],
     client: {
       jasmine: {

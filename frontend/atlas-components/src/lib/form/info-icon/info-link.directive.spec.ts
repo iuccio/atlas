@@ -1,10 +1,10 @@
 import { InfoLinkDirective } from './info-link.directive';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { By } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
+import { describe, expect, it } from 'vitest';
 import { of } from 'rxjs';
-import SpyObj = jasmine.SpyObj;
+import { TranslateService } from '@ngx-translate/core';
+import { By } from '@angular/platform-browser';
 
 @Component({
   imports: [InfoLinkDirective],
@@ -16,16 +16,12 @@ class TestComponent {}
 
 describe('InfoLinkDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
-  let translateServiceSpy: SpyObj<TranslateService>;
+
+  const translateServiceSpy = {
+    get: vi.fn().mockReturnValue(of('https://atlas.test.ch')),
+  };
 
   beforeEach(() => {
-    translateServiceSpy = jasmine.createSpyObj<TranslateService>(
-      'TranslateServiceMock',
-      ['get']
-    );
-    translateServiceSpy.get = jasmine
-      .createSpy()
-      .and.returnValue(of('https://atlas.test.ch'));
     fixture = TestBed.configureTestingModule({
       imports: [InfoLinkDirective, TestComponent],
       providers: [{ provide: TranslateService, useValue: translateServiceSpy }],
@@ -38,29 +34,28 @@ describe('InfoLinkDirective', () => {
     const elementsWithInfoLinkDirective = fixture.debugElement.queryAll(
       By.directive(InfoLinkDirective)
     );
-    expect(elementsWithInfoLinkDirective).toHaveSize(1);
-    expect(
-      elementsWithInfoLinkDirective[0].classes['atlas-info-link']
-    ).toBeTrue();
+    expect(elementsWithInfoLinkDirective).toHaveLength(1);
+    expect(elementsWithInfoLinkDirective[0].classes['atlas-info-link']).toBe(
+      true
+    );
   });
 
   it('should handle click event', () => {
     const elementsWithInfoLinkDirective = fixture.debugElement.queryAll(
       By.directive(InfoLinkDirective)
     );
-    expect(elementsWithInfoLinkDirective).toHaveSize(1);
+    expect(elementsWithInfoLinkDirective).toHaveLength(1);
 
-    spyOn(window, 'open');
-    spyOn(console, 'error');
+    vi.spyOn(window, 'open');
+    vi.spyOn(console, 'error');
     elementsWithInfoLinkDirective[0].nativeElement.click();
     fixture.detectChanges();
-    expect(translateServiceSpy.get).toHaveBeenCalledOnceWith(
+    expect(translateServiceSpy.get).toHaveBeenCalledTimes(1);
+    expect(translateServiceSpy.get).toHaveBeenCalledWith(
       'TEST_TRANSLATION_KEY'
     );
-    expect(window.open).toHaveBeenCalledOnceWith(
-      'https://atlas.test.ch',
-      '_blank'
-    );
+    expect(window.open).toHaveBeenCalledTimes(1);
+    expect(window.open).toHaveBeenCalledWith('https://atlas.test.ch', '_blank');
     expect(console.error).not.toHaveBeenCalled();
   });
 });

@@ -1,9 +1,4 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApplicationPermissionComponent } from './application-permission.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,6 +13,7 @@ import {
 import { of } from 'rxjs';
 import { BusinessOrganisationService } from '../../../../api/service/bodi/business-organisation.service';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
+import { tickAsync } from '../../../../../test/tick-async';
 import SpyObj = jasmine.SpyObj;
 
 export class MockUserPermissionProviderService extends UserPermissionProviderService {
@@ -76,7 +72,7 @@ describe('ApplicationPermissionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should add  and remove businessOrganisation from table', fakeAsync(() => {
+  it('should add  and remove businessOrganisation from table', async () => {
     expect(component.currentBusinessOrganisations.length).toBe(0);
     const businessOrganisation: BusinessOrganisation = {
       descriptionDe: 'de',
@@ -98,16 +94,15 @@ describe('ApplicationPermissionComponent', () => {
     );
     // Add BusinessOrganisation
     component.addBusinessOrganisation();
-
-    tick();
+    await tickAsync(1000);
     expect(component.currentBusinessOrganisations.length).toBe(1);
 
     // Remove BusinessOrganisation via index
     component.selectedBusinessOrganisationIndex = 0;
     component.removeBusinessOrganisation();
-    tick();
+    await tickAsync(1000);
     expect(component.currentBusinessOrganisations.length).toBe(0);
-  }));
+  });
 
   it('should set transportCompanyDossierAnswer to true', () => {
     // when
