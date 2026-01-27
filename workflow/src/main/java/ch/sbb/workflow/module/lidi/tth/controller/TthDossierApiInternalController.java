@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class TthDossierController implements TthDossierApiInternal {
+public class TthDossierApiInternalController implements TthDossierApiInternal {
 
   private final TthDossierService tthDossierService;
 

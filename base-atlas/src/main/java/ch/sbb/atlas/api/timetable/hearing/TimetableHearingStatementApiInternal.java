@@ -149,5 +149,4 @@ public interface TimetableHearingStatementApiInternal {
 
   @PostMapping(path = BASE_PATH + "/batch-update-statements")
   void updateStatements(@Valid @RequestBody BatchUpdateTimetableHearingStatementsModel batchUpdateModel);
-
 }

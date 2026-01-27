@@ -1144,10 +1144,37 @@
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Clôture de l'année horaire",
-      "CONFIRMATION_MESSAGE": "Vous souhaitez fermer l'année horaire? Cette action ne peut pas être annulée. Lors de la clôture de l'année d'horaire, les prises de position sont déplacées:",
-      "MOVEMENTS_TO_ARCHIVED": "\"acceptée\", \"rejeté\", \"prise de connaissance\", \"partiellement acceptée\" ou \"Saisie des erreurs\" → archives",
-      "MOVEMENTS_TO_NEXT_YEAR": "\"arriver\", \"À l'étude\" ou \"Retardé\" → l'année d'horaire suivante",
-      "MOVEMENTS_TO_DELETED": "\"Spam-Mail\" → irrévocablement supprimé",
+      "CONFIRMATION_MESSAGE": "Vous souhaitez fermer l'année horaire? Cette action ne peut pas être annulée. À la clôture de l’année d’horaire, les actions suivantes sont effectuées sur les dossiers et les avis:",
+      "DOSSIER_CHANGES_TITLE": "Modifications du dossier",
+      "DOSSIER_ADDED": {
+        "FROM": "Du statut 'Saisi'",
+        "TO": "Pour le statut 'Annulé'"
+      },
+      "DOSSIER_CHECK_OR_MOVED": {
+        "FROM": "Du statut 'En cours de clarification auprès de l’ET'/'Réponse de l’ET reçue'/'Décalé'",
+        "TO": "Pour le statut 'Détaché'"
+      },
+      "STATEMENT_CHANGES_TITLE": "Modifications des avis",
+      "BELONGS_TO_DOSSIER_CHECK_OR_MOVED_OR_ADDED": {
+        "FROM": "Appartenant au dossier avec le statut 'En cours de clarification auprès de l’ET'/'Réponse de l’ET reçue'/'Décalé'/'Saisi'",
+        "TO": "Est retiré du dossier, défini sur le statut 'Réceptionné' et reporté à l’année suivante"
+      },
+      "STATEMENT_MOVED": {
+        "FROM": "Du statut 'Décalé'",
+        "TO": "Pour le statut 'Réceptionné' et reporté à l’année suivante"
+      },
+      "STATEMENT_RECEIVED_OR_CHECK": {
+        "FROM": "Du statut 'Réceptionné' ou 'En cours de traitement'",
+        "TO": "Vers l’année suivante"
+      },
+      "STATEMENT_SPAM": {
+        "FROM": "Du statut 'Spam-Mail'",
+        "TO": "Sera définitivement supprimé"
+      },
+      "STATEMENT_REST": {
+        "FROM": "Du reste du statut",
+        "TO": "Vers les archives"
+      },
       "SUCCESSFUL_CLOSE_NOTIFICATION": "Année d'horaire clôturée avec succès"
     },
     "MANAGE_TIMETABLE_HEARING": {

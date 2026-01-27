@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.controller.IntegrationTest;
-import ch.sbb.line.directory.shared.transportcompany.entity.SharedTransportCompany;
 import ch.sbb.line.directory.module.tth.entity.StatementDocument;
 import ch.sbb.line.directory.module.tth.entity.StatementSender;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
+import ch.sbb.line.directory.shared.transportcompany.entity.SharedTransportCompany;
 import ch.sbb.line.directory.shared.transportcompany.repository.SharedTransportCompanyRepository;
 import java.util.List;
 import java.util.Objects;
@@ -23,11 +23,16 @@ import org.springframework.transaction.TransactionSystemException;
 @IntegrationTest
 class TimetableHearingStatementRepositoryTest {
 
-  @Autowired
-  private TimetableHearingStatementRepository timetableHearingStatementRepository;
+  private final TimetableHearingStatementRepository timetableHearingStatementRepository;
+  private final SharedTransportCompanyRepository sharedTransportCompanyRepository;
 
   @Autowired
-  private SharedTransportCompanyRepository sharedTransportCompanyRepository;
+  TimetableHearingStatementRepositoryTest(
+      TimetableHearingStatementRepository timetableHearingStatementRepository,
+      SharedTransportCompanyRepository sharedTransportCompanyRepository) {
+    this.timetableHearingStatementRepository = timetableHearingStatementRepository;
+    this.sharedTransportCompanyRepository = sharedTransportCompanyRepository;
+  }
 
   private static TimetableHearingStatement getMinimalTimetableHearingStatement() {
     return TimetableHearingStatement.builder()
@@ -238,4 +243,32 @@ class TimetableHearingStatementRepositoryTest {
         statement2.getTimetableYear())));
   }
 
+  @Test
+  void shouldRemoveDossierRelationAndSetReceivedForSpecificStatements() {
+    // given
+    TimetableHearingStatement statementOne = getMinimalTimetableHearingStatement();
+    statementOne.setDossierId(1L);
+    statementOne.setDossierContactMail("test@atlas.ch");
+    statementOne.setStatementStatus(StatementStatus.ACCEPTED);
+
+    TimetableHearingStatement statementTwo = getMinimalTimetableHearingStatement();
+    statementTwo.setDossierId(2L);
+    statementTwo.setDossierContactMail("test@atlas.ch");
+    statementTwo.setStatementStatus(StatementStatus.IN_REVIEW);
+
+    long firstId = timetableHearingStatementRepository.save(statementOne).getId();
+    long secondId = timetableHearingStatementRepository.save(statementTwo).getId();
+    // when
+    timetableHearingStatementRepository.removeDossierRelationAndSetReceivedFor(List.of(firstId, secondId));
+    // then
+    statementOne = timetableHearingStatementRepository.findById(firstId).get();
+    assertThat(statementOne.getDossierId()).isNull();
+    assertThat(statementOne.getDossierContactMail()).isNull();
+    assertThat(statementOne.getStatementStatus()).isEqualTo(StatementStatus.RECEIVED);
+
+    statementTwo = timetableHearingStatementRepository.findById(secondId).get();
+    assertThat(statementTwo.getDossierId()).isNull();
+    assertThat(statementTwo.getDossierContactMail()).isNull();
+    assertThat(statementTwo.getStatementStatus()).isEqualTo(StatementStatus.RECEIVED);
+  }
 }

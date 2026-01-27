@@ -22,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class TthDossierControllerTest {
+class TthDossierApiInternalControllerTest {
 
   private static final String TOPIC = "Takt Bern, Salem";
 
@@ -30,13 +30,13 @@ class TthDossierControllerTest {
   private TthDossierService tthDossierService;
 
   @InjectMocks
-  private TthDossierController tthDossierController;
+  private TthDossierApiInternalController tthDossierApiInternalController;
 
   @Test
   void shouldGetDossier() {
     when(tthDossierService.getDossierById(1L)).thenReturn(TthDossier.builder().id(1L).topic(TOPIC).build());
 
-    TthDossierModel dossier = tthDossierController.getDossier(1L);
+    TthDossierModel dossier = tthDossierApiInternalController.getDossier(1L);
 
     assertThat(dossier.getId()).isEqualTo(1L);
     verify(tthDossierService).getDossierById(1L);
@@ -54,7 +54,7 @@ class TthDossierControllerTest {
         .boDeadlineToAnswer(LocalDate.now().plusDays(1)).questions(List.of(TthDossierQuestionModel.builder()
             .question(question).build()))
         .build();
-    TthDossierModel dossier = tthDossierController.createDossier(model);
+    TthDossierModel dossier = tthDossierApiInternalController.createDossier(model);
 
     assertThat(dossier.getId()).isEqualTo(1L);
     verify(tthDossierService).createDossier(any());
@@ -65,7 +65,7 @@ class TthDossierControllerTest {
     TthDossier dossier = TthDossier.builder().id(1L).topic(TOPIC).build();
     when(tthDossierService.getDossierById(any())).thenReturn(dossier);
 
-    tthDossierController.completeDossier(1L, DossierStatus.CANCELED);
+    tthDossierApiInternalController.completeDossier(1L, DossierStatus.CANCELED);
 
     verify(tthDossierService).completeDossier(any(), eq(DossierStatus.CANCELED));
   }
@@ -75,7 +75,7 @@ class TthDossierControllerTest {
     TthDossier dossier = TthDossier.builder().id(1L).topic(TOPIC).build();
     when(tthDossierService.getDossierById(any())).thenReturn(dossier);
 
-    tthDossierController.sendDossierToBo(1L);
+    tthDossierApiInternalController.sendDossierToBo(1L);
 
     verify(tthDossierService).sendDossierToBo(dossier);
   }
@@ -85,7 +85,7 @@ class TthDossierControllerTest {
     TthDossier dossier = TthDossier.builder().id(1L).topic(TOPIC).build();
     when(tthDossierService.updateDossier(any(), any())).thenReturn(dossier);
 
-    tthDossierController.updateDossier(1L, TthDossierModel.builder().topic(TOPIC).build());
+    tthDossierApiInternalController.updateDossier(1L, TthDossierModel.builder().topic(TOPIC).build());
 
     verify(tthDossierService).updateDossier(eq(1L), any());
   }
@@ -96,7 +96,7 @@ class TthDossierControllerTest {
     TthDossier dossier = TthDossier.builder().id(1L).topic(TOPIC).build();
     when(tthDossierService.getDossierByQuestionId(1L)).thenReturn(dossier);
 
-    tthDossierController.answerQuestion(1L, BoAnswerModel.builder().answerToCanton(answerToCanton).build());
+    tthDossierApiInternalController.answerQuestion(1L, BoAnswerModel.builder().answerToCanton(answerToCanton).build());
     verify(tthDossierService).answerQuestion(1L, answerToCanton, dossier);
   }
 }

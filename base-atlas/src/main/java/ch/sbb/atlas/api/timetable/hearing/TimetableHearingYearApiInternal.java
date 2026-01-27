@@ -21,35 +21,35 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Tag(name = "[INTERNAL] Timetable Hearing Years")
-@RequestMapping("internal/timetable-hearing/years")
 public interface TimetableHearingYearApiInternal {
 
-  @GetMapping
+  String BASE_PATH = "internal/timetable-hearing/years";
+
+  @GetMapping(BASE_PATH)
   List<TimetableHearingYearModel> getHearingYears(
       @Parameter @RequestParam(required = false) List<HearingStatus> statusChoices);
 
-  @GetMapping("{year}")
+  @GetMapping(BASE_PATH + "/{year}")
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin"
       + ".ApplicationType).TIMETABLE_HEARING)")
   TimetableHearingYearModel getHearingYear(@PathVariable Long year);
 
   @ResponseStatus(HttpStatus.CREATED)
-  @PostMapping
+  @PostMapping(BASE_PATH)
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastSupervisor(T(ch.sbb.atlas.kafka.model.user.admin"
       + ".ApplicationType).TIMETABLE_HEARING)")
   TimetableHearingYearModel createHearingYear(@RequestBody @Valid TimetableHearingYearModel hearingYearModel);
 
-  @PostMapping("{year}/start")
+  @PostMapping(BASE_PATH + "/{year}/start")
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastSupervisor(T(ch.sbb.atlas.kafka.model.user.admin"
       + ".ApplicationType).TIMETABLE_HEARING)")
   TimetableHearingYearModel startHearingYear(@PathVariable Long year);
 
-  @PutMapping("{year}")
+  @PutMapping(BASE_PATH + "/{year}")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "412", description = ENTITY_ALREADY_UPDATED, content =
       @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -63,8 +63,9 @@ public interface TimetableHearingYearApiInternal {
   TimetableHearingYearModel updateTimetableHearingSettings(@PathVariable Long year,
       @RequestBody @Valid TimetableHearingYearModel hearingYearModel);
 
-  @PostMapping("{year}/close")
+  @PostMapping(BASE_PATH + "/{year}/close")
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastSupervisor(T(ch.sbb.atlas.kafka.model.user.admin"
       + ".ApplicationType).TIMETABLE_HEARING)")
-  TimetableHearingYearModel closeTimetableHearing(@PathVariable Long year);
+  TimetableHearingYearModel closeTimetableHearing(@PathVariable Long year,
+      @RequestBody List<Long> statementIdsToRemoveFromDossier);
 }

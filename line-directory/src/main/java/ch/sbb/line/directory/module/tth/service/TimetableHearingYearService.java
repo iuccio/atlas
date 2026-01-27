@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class TimetableHearingYearService {
 
@@ -40,6 +39,7 @@ public class TimetableHearingYearService {
     return timetableHearingYearRepository.findById(year).orElseThrow(() -> new IdNotFoundException(year));
   }
 
+  @Transactional
   public TimetableHearingYear createTimetableHearing(TimetableHearingYear timetableHearingYear) {
     timetableHearingYear.setHearingStatus(HearingStatus.PLANNED);
     timetableHearingYear.setStatementCreatableExternal(true);
@@ -48,6 +48,7 @@ public class TimetableHearingYearService {
     return timetableHearingYearRepository.save(timetableHearingYear);
   }
 
+  @Transactional
   public TimetableHearingYear startTimetableHearing(TimetableHearingYear timetableHearingYear) {
     mayTransitionToHearingStatus(timetableHearingYear, HearingStatus.ACTIVE);
 
@@ -58,6 +59,7 @@ public class TimetableHearingYearService {
     return timetableHearingYearRepository.save(timetableHearingYear);
   }
 
+  @Transactional
   public TimetableHearingYear updateTimetableHearingSettings(Long year, TimetableHearingYear timetableHearingYear) {
     TimetableHearingYear hearingYear = getHearingYear(year);
     hearingYear.setStatementEditable(timetableHearingYear.isStatementEditable());
@@ -66,22 +68,22 @@ public class TimetableHearingYearService {
     return hearingYear;
   }
 
-  public TimetableHearingYear closeTimetableHearing(TimetableHearingYear timetableHearingYear) {
-    mayTransitionToHearingStatus(timetableHearingYear, HearingStatus.ARCHIVED);
-
+  @Transactional
+  public TimetableHearingYear closeTimetableHearing(TimetableHearingYear timetableHearingYear,
+      List<Long> statementIdsToRemoveFromDossier) {
     timetableHearingStatementService.deleteSpamMailFromYear(timetableHearingYear.getTimetableYear());
-
+    timetableHearingStatementService.removeDossierRelationsAndStatusToReceivedFor(statementIdsToRemoveFromDossier);
     timetableHearingStatementService.moveClosedStatementsToNextYearWithStatusUpdates(timetableHearingYear.getTimetableYear());
 
     timetableHearingYear.setStatementCreatableInternal(false);
     timetableHearingYear.setStatementCreatableExternal(false);
     timetableHearingYear.setStatementEditable(false);
-
     timetableHearingYear.setHearingStatus(HearingStatus.ARCHIVED);
+
     return timetableHearingYearRepository.save(timetableHearingYear);
   }
 
-  private void mayTransitionToHearingStatus(TimetableHearingYear timetableHearingYear, HearingStatus hearingStatus) {
+  public void mayTransitionToHearingStatus(TimetableHearingYear timetableHearingYear, HearingStatus hearingStatus) {
     if (hearingStatus == HearingStatus.ACTIVE) {
       if (timetableHearingYearRepository.hearingActive()) {
         throw new HearingCurrentlyActiveException();
@@ -95,5 +97,4 @@ public class TimetableHearingYearService {
       throw new IllegalStateException("Cannot close hearing, since it is not active");
     }
   }
-
 }

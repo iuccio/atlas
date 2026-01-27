@@ -19,6 +19,7 @@ import ch.sbb.line.directory.module.tth.model.TimetableHearingYearSearchRestrict
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingStatementRepository;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingYearRepository;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -35,17 +36,21 @@ class TimetableHearingYearServiceTest {
   private final TimetableHearingYearService timetableHearingYearService;
   private final TimetableHearingStatementRepository timetableHearingStatementRepository;
   private final TimetableHearingStatementMapperV2 timetableHearingStatementMapperV2;
+  private final TimetableHearingStatementService timetableHearingStatementService;
 
   @Autowired
-  TimetableHearingYearServiceTest(TimetableHearingYearRepository timetableHearingYearRepository,
+  TimetableHearingYearServiceTest(
+      TimetableHearingYearRepository timetableHearingYearRepository,
       TimetableHearingYearService timetableHearingYearService,
       TimetableHearingStatementRepository timetableHearingStatementRepository,
-      TimetableHearingStatementMapperV2 timetableHearingStatementMapperV2
+      TimetableHearingStatementMapperV2 timetableHearingStatementMapperV2,
+      TimetableHearingStatementService timetableHearingStatementService
   ) {
     this.timetableHearingYearRepository = timetableHearingYearRepository;
     this.timetableHearingYearService = timetableHearingYearService;
     this.timetableHearingStatementRepository = timetableHearingStatementRepository;
     this.timetableHearingStatementMapperV2 = timetableHearingStatementMapperV2;
+    this.timetableHearingStatementService = timetableHearingStatementService;
   }
 
   private static TimetableHearingYear getTimetableHearingYear() {
@@ -70,6 +75,7 @@ class TimetableHearingYearServiceTest {
   @AfterEach
   void tearDown() {
     timetableHearingYearRepository.deleteAll();
+    timetableHearingStatementRepository.deleteAll();
   }
 
   @Test
@@ -92,7 +98,6 @@ class TimetableHearingYearServiceTest {
 
   @Test
   void shouldNotGetHearingYear() {
-
     assertThatThrownBy(timetableHearingYearService::getActiveHearingYear).isInstanceOf(
         NoHearingCurrentlyActiveException.class);
   }
@@ -153,13 +158,10 @@ class TimetableHearingYearServiceTest {
   @Test
   void shouldCloseHearingStatus() {
     TimetableHearingYear timetableHearing = timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
-
-    assertThatThrownBy(() -> timetableHearingYearService.closeTimetableHearing(timetableHearing)).isInstanceOf(
-        IllegalStateException.class);
-
     TimetableHearingYear startedTimetableHearing = timetableHearingYearService.startTimetableHearing(timetableHearing);
+    TimetableHearingYear closed = timetableHearingYearService.closeTimetableHearing(startedTimetableHearing,
+        Collections.emptyList());
 
-    TimetableHearingYear closed = timetableHearingYearService.closeTimetableHearing(startedTimetableHearing);
     assertThat(closed.getHearingStatus()).isEqualTo(HearingStatus.ARCHIVED);
   }
 
@@ -181,7 +183,9 @@ class TimetableHearingYearServiceTest {
     timetableHearingStatementRepository.save(timetableHearingStatementMapperV2.toEntity(statementModel));
 
     // when
-    TimetableHearingYear closed = timetableHearingYearService.closeTimetableHearing(startedTimetableHearing);
+    timetableHearingStatementService.deleteSpamMailFromYear(startedTimetableHearing.getTimetableYear());
+    TimetableHearingYear closed = timetableHearingYearService.closeTimetableHearing(startedTimetableHearing,
+        Collections.emptyList());
 
     // then
     assertThat(closed.getHearingStatus()).isEqualTo(HearingStatus.ARCHIVED);

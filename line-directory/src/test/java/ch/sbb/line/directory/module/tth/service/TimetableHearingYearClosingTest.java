@@ -118,7 +118,7 @@ class TimetableHearingYearClosingTest {
         Collections.emptyList());
 
     // when closing
-    TimetableHearingYearModel closed = timetableHearingYearController.closeTimetableHearing(YEAR);
+    TimetableHearingYearModel closed = timetableHearingYearController.closeTimetableHearing(YEAR, Collections.emptyList());
 
     // then
     assertThat(closed.getHearingStatus()).isEqualTo(HearingStatus.ARCHIVED);

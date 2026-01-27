@@ -64,6 +64,10 @@ public class TimetableHearingStatementService {
     return timetableHearingStatementRepository.findAll(searchRestrictions.getSpecification(), searchRestrictions.getPageable());
   }
 
+  public void removeDossierRelationsAndStatusToReceivedFor(List<Long> statementIds) {
+    timetableHearingStatementRepository.removeDossierRelationAndSetReceivedFor(statementIds);
+  }
+
   @TthRedacted
   @PostAuthorize("""
       @cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)

@@ -95,14 +95,4 @@ class TimetableHearingYearControllerInternalApiTest extends BaseControllerApiTes
         .andExpect(jsonPath("$." + Fields.hearingStatus, is(HearingStatus.PLANNED.toString())))
         .andExpect(jsonPath("$." + Fields.statementCreatableExternal, is(false)));
   }
-
-  @Test
-  void shouldCloseHearingYear() throws Exception {
-    timetableHearingYearController.createHearingYear(TIMETABLE_HEARING_YEAR);
-    timetableHearingYearController.startHearingYear(YEAR);
-
-    mvc.perform(post("/internal/timetable-hearing/years/" + YEAR + "/close"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$." + Fields.hearingStatus, is(HearingStatus.ARCHIVED.toString())));
-  }
 }

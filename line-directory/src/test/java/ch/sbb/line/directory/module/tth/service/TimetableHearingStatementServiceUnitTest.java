@@ -2,60 +2,39 @@ package ch.sbb.line.directory.module.tth.service;
 
 import static org.mockito.Mockito.verify;
 
-import ch.sbb.atlas.amazon.service.FileService;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
-import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberRepository;
-import ch.sbb.line.directory.module.tth.mapper.ResponsibleTransportCompanyMapper;
-import ch.sbb.line.directory.module.tth.mapper.TimetableHearingStatementMapperV2;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingStatementRepository;
-import ch.sbb.line.directory.module.tth.repository.TimetableHearingYearRepository;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class TimetableHearingStatementServiceUnitTest {
 
+  @Mock
+  private TimetableHearingStatementRepository timetableHearingStatementRepository;
+
+  @InjectMocks
   private TimetableHearingStatementService timetableHearingStatementService;
-
-  @Mock
-  private TimetableHearingStatementRepository timetableHearingStatementRepositoryMock;
-  @Mock
-  private TimetableHearingYearRepository timetableHearingYearRepositoryMock;
-  @Mock
-  private FileService fileServiceMock;
-  @Mock
-  private TimetableHearingPdfsAmazonService timetableHearingPdfsAmazonServiceMock;
-  @Mock
-  private StatementDocumentFilesValidationService statementDocumentFilesValidationServiceMock;
-  @Mock
-  private ResponsibleTransportCompanyMapper responsibleTransportCompanyMapper;
-
-  @Mock
-  private TimetableFieldNumberRepository timetableFieldNumberRepository;
-  @Mock
-  private TimetableHearingStatementMapperV2 timetableHearingStatementMapperV2;
-
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-    timetableHearingStatementService = new TimetableHearingStatementService(
-        timetableHearingStatementRepositoryMock,
-        timetableHearingYearRepositoryMock,
-        timetableFieldNumberRepository,
-        fileServiceMock,
-        timetableHearingPdfsAmazonServiceMock,
-        statementDocumentFilesValidationServiceMock,
-        responsibleTransportCompanyMapper,
-        timetableHearingStatementMapperV2
-    );
-  }
 
   @Test
   void shouldCallRepositoryOnDeleteSpamMailFromYear() {
-    Long year = 2022L;
+    // given
+    long year = 2022;
+    // when
     timetableHearingStatementService.deleteSpamMailFromYear(year);
-    verify(timetableHearingStatementRepositoryMock).deleteByStatementStatusAndTimetableYear(StatementStatus.JUNK, year);
+    // then
+    verify(timetableHearingStatementRepository).deleteByStatementStatusAndTimetableYear(StatementStatus.JUNK, year);
   }
 
+  @Test
+  void shouldCallRepositoryOnRemoveDossierRelations() {
+    // when
+    timetableHearingStatementService.removeDossierRelationsAndStatusToReceivedFor(List.of(1L, 2L, 3L));
+    // then
+    verify(timetableHearingStatementRepository).removeDossierRelationAndSetReceivedFor(List.of(1L, 2L, 3L));
+  }
 }

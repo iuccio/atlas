@@ -1144,10 +1144,37 @@
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Fahrplanjahr schliessen",
-      "CONFIRMATION_MESSAGE": "Möchten Sie das Fahrplanjahr abschliessen? Diese Aktion kann nicht rückgängig gemacht werden. Beim Schliessen des Fahrplanjahrs werden die Stellungnahmen verschoben:",
-      "MOVEMENTS_TO_ARCHIVED": "\"Angenommen\", \"abgelehnt\", \"zur Kenntnisnahme\", \"teilweise umgesetzt\" oder \"Fehlerfassung\" → Archiv",
-      "MOVEMENTS_TO_NEXT_YEAR": "\"Eingetroffen\", \"in Abklärung\" oder \"verschoben\" → darauffolgendes Fahrplanjahr",
-      "MOVEMENTS_TO_DELETED": "\"Spam-Mail\" → unwiderruflich gelöscht",
+      "CONFIRMATION_MESSAGE": "Möchten Sie das Fahrplanjahr abschliessen? Diese Aktion kann nicht rückgängig gemacht werden. Beim Schliessen des Fahrplanjahrs werden folgende Aktionen auf Dossiers und Stellungnahmen durchgeführt:",
+      "DOSSIER_CHANGES_TITLE": "Dossier Änderungen",
+      "DOSSIER_ADDED": {
+        "FROM": "Von Status 'Erfasst'",
+        "TO": "Zu Status 'Abgebrochen'"
+      },
+      "DOSSIER_CHECK_OR_MOVED": {
+        "FROM": "Von Status 'In Abklärung bei TU'/'Rückmeldung TU eingetroffen'/'Verschoben'",
+        "TO": "Zu Status 'Aufgelöst'"
+      },
+      "STATEMENT_CHANGES_TITLE": "Stellungnahmen Änderungen",
+      "BELONGS_TO_DOSSIER_CHECK_OR_MOVED_OR_ADDED": {
+        "FROM": "Zugehörig zu Dossier mit Status 'In Abklärung bei TU'/'Rückmeldung TU eingetroffen'/'Verschoben'/'Erfasst'",
+        "TO": "Wird aus Dossier entfernt, zu Status 'Eingetroffen' und zum nächsten Jahr verschoben"
+      },
+      "STATEMENT_MOVED": {
+        "FROM": "Von Status 'Verschoben'",
+        "TO": "Zu Status 'Eingetroffen' und zum nächsten Jahr verschoben"
+      },
+      "STATEMENT_RECEIVED_OR_CHECK": {
+        "FROM": "Von Status 'Eingetroffen' oder 'In Abklärung'",
+        "TO": "Zum nächsten Jahr verschoben"
+      },
+      "STATEMENT_SPAM": {
+        "FROM": "Von Status 'Spam-Mail'",
+        "TO": "Wird unwiderruflich gelöscht"
+      },
+      "STATEMENT_REST": {
+        "FROM": "Von restlichen Status",
+        "TO": "Zum Archiv"
+      },
       "SUCCESSFUL_CLOSE_NOTIFICATION": "Fahrplanjahr erfolgreich geschlossen"
     },
     "MANAGE_TIMETABLE_HEARING": {
