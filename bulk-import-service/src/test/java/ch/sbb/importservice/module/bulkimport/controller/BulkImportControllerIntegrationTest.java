@@ -32,7 +32,6 @@ import ch.sbb.importservice.module.bulkimport.model.BulkImportConfig;
 import ch.sbb.importservice.module.bulkimport.repository.BulkImportRepository;
 import ch.sbb.importservice.module.bulkimport.service.BulkImporterMailService;
 import ch.sbb.importservice.module.bulkimport.service.ImportFiles;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,6 +48,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import tools.jackson.databind.ObjectMapper;
 
 class BulkImportControllerIntegrationTest extends BaseControllerApiTest {
 

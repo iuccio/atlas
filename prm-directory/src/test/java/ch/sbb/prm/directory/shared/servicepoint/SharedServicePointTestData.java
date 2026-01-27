@@ -3,10 +3,10 @@ package ch.sbb.prm.directory.shared.servicepoint;
 import ch.sbb.atlas.kafka.model.service.point.SharedServicePointVersionModel;
 import ch.sbb.prm.directory.shared.servicepoint.entity.SharedServicePoint;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.Set;
 import lombok.experimental.UtilityClass;
+import tools.jackson.databind.ObjectMapper;
 
 @UtilityClass
 public class SharedServicePointTestData {

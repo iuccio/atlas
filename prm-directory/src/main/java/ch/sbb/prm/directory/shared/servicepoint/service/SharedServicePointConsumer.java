@@ -4,12 +4,12 @@ import ch.sbb.atlas.kafka.model.service.point.SharedServicePointVersionModel;
 import ch.sbb.prm.directory.shared.servicepoint.entity.SharedServicePoint;
 import ch.sbb.prm.directory.shared.servicepoint.repository.SharedServicePointRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @Service

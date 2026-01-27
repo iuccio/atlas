@@ -5,7 +5,6 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
 import ch.sbb.atlas.auto.rest.doc.AtlasAutoDoc;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +19,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import tools.jackson.databind.ObjectMapper;
 
 @EnableAutoConfiguration
 @IntegrationTest

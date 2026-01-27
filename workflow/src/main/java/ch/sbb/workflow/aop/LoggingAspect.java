@@ -2,7 +2,6 @@ package ch.sbb.workflow.aop;
 
 import ch.sbb.workflow.module.sepodi.hearing.model.sepodi.StopPointAddWorkflowModel;
 import ch.sbb.workflow.module.sepodi.termination.model.StartTerminationStopPointWorkflowModel;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.MDC;
 import org.slf4j.MDC.MDCCloseable;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
 
 @Aspect
 @Component
