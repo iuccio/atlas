@@ -18,21 +18,21 @@ import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @IntegrationTest
 class UserAdministrationLoaderTest {
 
-  @MockBean
+  @MockitoBean
   private SharedBusinessOrganisationConfig sharedBusinessOrganisationConfig;
-  @MockBean
+  @MockitoBean
   private SharedTransportCompanyConfig sharedTransportCompanyConfig;
 
   private final PermissionRepository permissionRepository;
   private final UserAdministrationLoader userAdministrationLoader;
 
   @Autowired
-   UserAdministrationLoaderTest(PermissionRepository permissionRepository,
+  UserAdministrationLoaderTest(PermissionRepository permissionRepository,
       UserAdministrationLoader userAdministrationLoader) {
     this.permissionRepository = permissionRepository;
     this.userAdministrationLoader = userAdministrationLoader;

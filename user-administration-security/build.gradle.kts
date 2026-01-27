@@ -22,7 +22,7 @@ dependencies {
     testImplementation(project(":base-atlas", "test"))
     testImplementation(project(":auto-rest-doc"))
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
 
     testRuntimeOnly("org.postgresql:postgresql")
 }
@@ -30,4 +30,3 @@ dependencies {
 tasks.bootJar {
     enabled = false
 }
-
