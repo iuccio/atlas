@@ -33,7 +33,7 @@ public class GatewayRequestLogging {
 
   private static void logRequest(ServerHttpRequest request, String loggingKey, String headerValue) {
     String correlationIdInfo = "";
-    if (request.getHeaders().containsKey(headerValue)) {
+    if (request.getHeaders().containsHeader(headerValue)) {
       correlationIdInfo = " with " + loggingKey + "=" + request.getHeaders().getFirst(headerValue);
     }
     String credentialId = HeaderUtil.getClientCredentialId(request.getHeaders());
@@ -42,7 +42,7 @@ public class GatewayRequestLogging {
   }
 
   private static void logResponse(String loggingKey, String headerValue, ServerHttpResponse response, ServerHttpRequest request) {
-    if (response.getHeaders().containsKey(headerValue)) {
+    if (response.getHeaders().containsHeader(headerValue)) {
       log.info("Routing response with {}={} from path=[{} {}] with statusCode={}", loggingKey,
           Objects.requireNonNull(response.getHeaders().get(headerValue)).getFirst(), request.getMethod(), request.getPath(),
           response.getStatusCode());
