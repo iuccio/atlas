@@ -96,7 +96,12 @@ tasks.withType<Test> {
         events("passed", "skipped", "failed", "standardOut", "standardError")
         showCauses = true
     }
-    jvmArgs = listOf("-javaagent:${mockitoAgent.asPath}", "-Xshare:off")
+    jvmArgs(
+        "-javaagent:${mockitoAgent.asPath}",
+        "-Xshare:off",
+        "-Xms512m",
+        "-Xmx2g"
+    )
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 
     if (project.hasProperty("onlyApim")) {
