@@ -5,7 +5,6 @@ import ch.sbb.exportservice.model.ExportExtensionFileType;
 import ch.sbb.exportservice.model.ExportFilePathV2;
 import ch.sbb.exportservice.model.ExportObjectV2;
 import ch.sbb.exportservice.model.ExportTypeV2;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
 import org.springframework.batch.item.json.JsonFileItemWriter;
 import org.springframework.core.io.FileSystemResource;
+import tools.jackson.databind.ObjectMapper;
 
 @RequiredArgsConstructor
 public abstract class BaseJsonWriter<T> {

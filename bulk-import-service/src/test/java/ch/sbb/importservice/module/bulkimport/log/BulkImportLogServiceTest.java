@@ -6,12 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import ch.sbb.atlas.amazon.service.FileService;
 import ch.sbb.importservice.module.bulkimport.repository.BulkImportLogRepository;
 import ch.sbb.importservice.module.bulkimport.service.BulkImportS3BucketService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import tools.jackson.databind.ObjectMapper;
 
 class BulkImportLogServiceTest {
 

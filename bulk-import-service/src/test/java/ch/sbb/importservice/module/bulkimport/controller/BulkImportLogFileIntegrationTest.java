@@ -33,7 +33,6 @@ import ch.sbb.importservice.module.bulkimport.log.BulkImportLogService;
 import ch.sbb.importservice.module.bulkimport.log.LogFile;
 import ch.sbb.importservice.module.bulkimport.repository.BulkImportRepository;
 import ch.sbb.importservice.module.bulkimport.service.ImportFiles;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -57,6 +56,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @IntegrationTest

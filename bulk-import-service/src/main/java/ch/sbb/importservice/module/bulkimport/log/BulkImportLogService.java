@@ -9,7 +9,6 @@ import ch.sbb.importservice.module.bulkimport.entity.BulkImportLog;
 import ch.sbb.importservice.module.bulkimport.repository.BulkImportLogRepository;
 import ch.sbb.importservice.module.bulkimport.service.BulkImportS3BucketService;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +19,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 @RequiredArgsConstructor

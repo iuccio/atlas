@@ -6,11 +6,11 @@ import ch.sbb.prm.directory.exception.TrafficPointElementDoesNotExistsException;
 import ch.sbb.prm.directory.shared.servicepoint.entity.SharedServicePoint;
 import ch.sbb.prm.directory.shared.servicepoint.repository.SharedServicePointRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 @Slf4j
