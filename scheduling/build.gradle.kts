@@ -14,7 +14,8 @@ description = "Atlas Scheduling Service"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-mail")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.security:spring-security-oauth2-client")
@@ -29,9 +30,9 @@ dependencies {
     implementation("org.springframework.security:spring-security-oauth2-authorization-server")
 
     implementation(project(":base-atlas"))
-    implementation("io.micrometer:micrometer-tracing")//get this dependency from :kafka use as api does not work
+    implementation("org.springframework.boot:spring-boot-micrometer-tracing")
     implementation(project(":kafka"))
-    implementation("org.springframework.kafka:spring-kafka")//get this dependency from :kafka use as api does not work
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
 
     runtimeOnly("org.postgresql:postgresql")
 
