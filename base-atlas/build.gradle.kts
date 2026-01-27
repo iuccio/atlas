@@ -40,7 +40,7 @@ dependencies {
     implementation(libs.jaxb.api)
     implementation(libs.pdfbox)
 
-    implementation("org.springframework.kafka:spring-kafka")//get this dependency from :kafka use as api does not work
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
     implementation(project(":kafka"))
 
     annotationProcessor("org.hibernate.orm:hibernate-processor")
