@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.amazon.config.AmazonConfigProps.AmazonBucketConfig;
+import ch.sbb.atlas.helper.SharingMocksConfig;
 import ch.sbb.atlas.model.exception.FileNotFoundOnS3Exception;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -43,6 +44,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
+@SharingMocksConfig
 class AmazonServiceTest {
 
   @Mock

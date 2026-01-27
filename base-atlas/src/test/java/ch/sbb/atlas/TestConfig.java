@@ -2,15 +2,20 @@ package ch.sbb.atlas;
 
 import ch.sbb.atlas.business.organisation.repository.BusinessOrganisationVersionSharingDataAccessor;
 import ch.sbb.atlas.transport.company.repository.TransportCompanySharingDataAccessor;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.Mockito;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 
-@Configuration
+@TestConfiguration
 public class TestConfig {
 
-  @MockitoBean
-  BusinessOrganisationVersionSharingDataAccessor businessOrganisationVersionSharingDataAccessor;
+  @Bean
+  public BusinessOrganisationVersionSharingDataAccessor businessOrganisationVersionSharingDataAccessor() {
+    return Mockito.mock(BusinessOrganisationVersionSharingDataAccessor.class);
+  }
 
-  @MockitoBean
-  TransportCompanySharingDataAccessor transportCompanySharingDataAccessor;
+  @Bean
+  public TransportCompanySharingDataAccessor transportCompanySharingDataAccessor() {
+    return Mockito.mock(TransportCompanySharingDataAccessor.class);
+  }
 }

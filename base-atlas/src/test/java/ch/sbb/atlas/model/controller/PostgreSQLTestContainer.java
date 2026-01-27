@@ -1,7 +1,7 @@
 package ch.sbb.atlas.model.controller;
 
 import lombok.experimental.UtilityClass;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 /**
@@ -20,12 +20,12 @@ public class PostgreSQLTestContainer {
    */
   private static final String POSTGRES_DOCKER_IMAGE = "dockerio.docker.bin.sbb.ch/postgres:18.1";
 
-  public static PostgreSQLContainer<?> create() {
-    return new PostgreSQLContainer<>(DockerImageName.parse(POSTGRES_DOCKER_IMAGE).asCompatibleSubstituteFor("postgres:18.1"))
+  public static PostgreSQLContainer create() {
+    return new PostgreSQLContainer(DockerImageName.parse(POSTGRES_DOCKER_IMAGE).asCompatibleSubstituteFor("postgres:18.1"))
         .withLabel(KUBEDOCK_RUNAS_USER_LABEL_NAME, KUBEDOCK_RUNAS_USER);
   }
 
-  public static void setSystemPropertiesForDatasource(String prefix, PostgreSQLContainer<?> container) {
+  public static void setSystemPropertiesForDatasource(String prefix, PostgreSQLContainer container) {
     System.setProperty(prefix + ".url", container.getJdbcUrl());
     System.setProperty(prefix + ".username", container.getUsername());
     System.setProperty(prefix + ".password", container.getPassword());
