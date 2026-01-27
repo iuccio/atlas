@@ -10,7 +10,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AppTestingModule } from '../../../app.testing.module';
 import { FormModule } from '../../../core/module/form.module';
 import { ErrorNotificationComponent } from '../../../core/notification/error/error-notification.component';
-import { InfoIconComponent } from '@atlas/form/info-icon/info-icon.component';
 import {
   adminPermissionServiceMock,
   MockBoSelectComponent,
@@ -18,7 +17,7 @@ import {
 import { CommentComponent } from '../../../core/form-components/comment/comment.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AtlasFieldErrorComponent } from '../../../core/form-components/atlas-field-error/atlas-field-error.component';
-import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
+import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
 import { TextFieldComponent } from '../../../core/form-components/text-field/text-field.component';
 import { PermissionService } from '../../../core/auth/permission/permission.service';
 import { TimetableFieldNumberInternalService } from '../../../api/service/lidi/timetable-field-number-internal.service';

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { InfoIconComponent } from './info-icon.component';
+import { InfoIconComponent } from '@atlas/form';
+import { describe, expect, it } from 'vitest';
 
 describe('InfoIconComponent', () => {
   let component: InfoIconComponent;

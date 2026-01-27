@@ -1,9 +1,4 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { of, Subject } from 'rxjs';
 import { ApplicationRole, ApplicationType, Permission } from '../../../../api';
@@ -13,6 +8,8 @@ import { TableService } from '../../../../core/components/table/table.service';
 import { PermissionService } from '../../../../core/auth/permission/permission.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserAdministrationService } from '../../../../api/service/user-administration/user-administration.service';
+import { tickAsync } from '../../../../../test/tick-async';
+import { FormatPipe } from '../../../../core/components/table/pipe/format.pipe';
 
 describe('UserAdministrationUserOverviewComponent', () => {
   let component: UserAdministrationUserOverviewComponent;
@@ -53,6 +50,7 @@ describe('UserAdministrationUserOverviewComponent', () => {
           provide: ActivatedRoute,
           useValue: { paramMap: new Subject() },
         },
+        FormatPipe,
       ],
     }).compileComponents();
 
@@ -66,7 +64,7 @@ describe('UserAdministrationUserOverviewComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('test loadUsers', fakeAsync(() => {
+  it('test loadUsers', async () => {
     component.userSearchForm.get('userSearch')?.setValue('test');
     component.boForm.get('boSearch')?.setValue('test');
     component.selectedApplicationOptions = ['TTFN'];
@@ -93,7 +91,7 @@ describe('UserAdministrationUserOverviewComponent', () => {
     tableService.pageIndex = 10;
 
     component.loadUsers({ page: 5, size: 5 });
-    tick();
+    await tickAsync(1000);
     expect(userAdministrationServiceMock.getUsers).toHaveBeenCalledOnceWith(
       5,
       5
@@ -116,7 +114,7 @@ describe('UserAdministrationUserOverviewComponent', () => {
     });
     expect(tableService.pageIndex).toBe(5);
     expect(tableService.pageSize).toBe(5);
-  }));
+  });
 
   it('test checkIfUserExists with undefined user', () => {
     spyOn(component, 'loadUsers');

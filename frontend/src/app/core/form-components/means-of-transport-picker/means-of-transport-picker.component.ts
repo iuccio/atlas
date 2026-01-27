@@ -9,7 +9,7 @@ import {
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MeanOfTransport } from '../../../api';
 import { AsyncPipe, NgClass, NgOptimizedImage } from '@angular/common';
-import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
+import { AtlasLabelFieldComponent } from '@atlas/form';
 import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { required } from '../../util/values';

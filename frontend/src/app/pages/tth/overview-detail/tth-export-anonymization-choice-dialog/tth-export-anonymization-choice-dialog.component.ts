@@ -5,9 +5,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { DialogContentComponent } from '../../../../core/components/dialog/content/dialog-content.component';
 import { DialogFooterComponent } from '../../../../core/components/dialog/footer/dialog-footer.component';
-import { InfoIconComponent } from '@atlas/form';
 import { FormsModule } from '@angular/forms';
 import { DialogData } from '../../../../core/components/dialog/dialog.data';
+import { InfoIconComponent } from '@atlas/form';
 
 @Component({
   selector: 'atlas-tth-export-anonymization-choice-dialog',
@@ -19,8 +19,8 @@ import { DialogData } from '../../../../core/components/dialog/dialog.data';
     MatRadioGroup,
     DialogContentComponent,
     DialogFooterComponent,
-    InfoIconComponent,
     FormsModule,
+    InfoIconComponent,
   ],
 })
 export class TthExportAnonymizationChoiceDialogComponent {

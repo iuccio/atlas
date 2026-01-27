@@ -1,7 +1,7 @@
 import { Component, input, Input } from '@angular/core';
 import { MAX_DATE, MIN_DATE } from '../../date/date.service';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
+import { AtlasLabelFieldComponent } from '@atlas/form';
 import {
   MatDatepicker,
   MatDatepickerInput,

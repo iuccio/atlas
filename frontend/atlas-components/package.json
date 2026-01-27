@@ -1,0 +1,16 @@
+{
+  "name": "atlas-components",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^21.1.0",
+    "@angular/core": "^21.1.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "scripts": {
+    "test": "ng test atlas-components -c ci"
+  },
+  "sideEffects": false,
+  "description": "Reusable form components for atlas"
+}

@@ -1,9 +1,4 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserAdministrationUserCreateComponent } from './user-administration-user-create.component';
 import { Permission } from '../../../../../api';
@@ -20,6 +15,7 @@ import { DetailPageContentComponent } from '../../../../../core/components/detai
 import { UserAdministrationService } from '../../../../../api/service/user-administration/user-administration.service';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
+import { tickAsync } from '../../../../../../test/tick-async';
 import SpyObj = jasmine.SpyObj;
 
 @Component({
@@ -116,7 +112,7 @@ describe('UserAdministrationUserCreateComponent', () => {
     );
   });
 
-  it('test createUser', fakeAsync(() => {
+  it('test createUser', async () => {
     const router = TestBed.inject(Router);
     component.selectedUser = {
       sbbUserId: 'user1',
@@ -134,9 +130,9 @@ describe('UserAdministrationUserCreateComponent', () => {
       userAdministrationServiceSpy.createUserPermission
     ).toHaveBeenCalledTimes(1);
     expect(router.navigate).toHaveBeenCalledTimes(1);
-    tick();
+    await tickAsync(1000);
     expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
       'USER_ADMIN.NOTIFICATIONS.ADD_SUCCESS'
     );
-  }));
+  });
 });
