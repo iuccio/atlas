@@ -4,17 +4,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.sbb.atlas.amazon.config.AmazonConfigProps.AmazonBucketConfig;
 import ch.sbb.atlas.amazon.service.AmazonBucketClient;
-import ch.sbb.atlas.helper.SharingMocksConfig;
+import ch.sbb.atlas.business.organisation.repository.BusinessOrganisationVersionSharingDataAccessor;
 import ch.sbb.atlas.model.controller.IntegrationTest;
+import ch.sbb.atlas.transport.company.repository.TransportCompanySharingDataAccessor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @IntegrationTest
-@SharingMocksConfig
 class AmazonAtlasConfigIntegrationTest {
+
+  @MockitoBean
+  private BusinessOrganisationVersionSharingDataAccessor businessOrganisationVersionSharingDataAccessor;
+
+  @MockitoBean
+  private TransportCompanySharingDataAccessor transportCompanySharingDataAccessor;
 
   @Value("${AMAZON_S3_ACCESS_KEY}")
   private String accessKey;
