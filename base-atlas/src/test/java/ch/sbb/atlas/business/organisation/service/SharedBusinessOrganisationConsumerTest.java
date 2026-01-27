@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 import ch.sbb.atlas.business.organisation.repository.BusinessOrganisationVersionSharingDataAccessor;
-import ch.sbb.atlas.helper.SharingMocksConfig;
 import ch.sbb.atlas.kafka.model.business.organisation.SharedBusinessOrganisationUpdate;
 import ch.sbb.atlas.kafka.model.business.organisation.SharedBusinessOrganisationVersionModel;
 import ch.sbb.atlas.kafka.model.business.organisation.UpdateAction;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-@SharingMocksConfig
 class SharedBusinessOrganisationConsumerTest {
 
   @Mock
