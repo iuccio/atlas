@@ -212,5 +212,4 @@ public class TimetableHearingStatementControllerInternal implements TimetableHea
       timetableHearingStatementService.updateStatementFromDossier(statement, batchUpdateModel);
     });
   }
-
 }

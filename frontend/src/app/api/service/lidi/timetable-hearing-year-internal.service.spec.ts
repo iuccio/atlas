@@ -27,17 +27,6 @@ describe('TimetableHearingYearInternalService', () => {
     spyOn(apiService, 'put');
   });
 
-  it('should closeTimetableHearing', () => {
-    service.closeTimetableHearing(2025);
-
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
-      year: 2025,
-    });
-    expect(apiService.post).toHaveBeenCalledOnceWith(
-      '/line-directory/internal/timetable-hearing/years/2025/close',
-    );
-  });
-
   it('should createHearingYear', () => {
     service.createHearingYear({} as TimetableHearingYear);
 

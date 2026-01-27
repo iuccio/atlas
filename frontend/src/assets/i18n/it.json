@@ -1144,10 +1144,37 @@
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Chiusura dell'anno di calendario",
-      "CONFIRMATION_MESSAGE": "Volete terminare l'anno di calendario? L'operazione non può essere annullata.  Quando l'anno solare si chiude, i pareri vengono rimandati:",
-      "MOVEMENTS_TO_ARCHIVED": "\"accetato\", \"rifiutato\", \"presa d'atto\", \"parzialmente eseguito\" o \"Revocato\" → archivio",
-      "MOVEMENTS_TO_NEXT_YEAR": "\"arrivato\", \"in esame\" o \"spostato\" → anno di calendario successivo",
-      "MOVEMENTS_TO_DELETED": "\"Spam-Mail\" → definitivamente cancellati",
+      "CONFIRMATION_MESSAGE": "Volete terminare l'anno di calendario? L'operazione non può essere annullata. Quando l'anno solare si chiude, nei dossier e nei pareri vengono eseguite le seguenti azioni:",
+      "DOSSIER_CHANGES_TITLE": "Modifiche dossier",
+      "DOSSIER_ADDED": {
+        "FROM": "Dallo stato 'Inizializzato'",
+        "TO": "Per stato 'Cancellato'"
+      },
+      "DOSSIER_CHECK_OR_MOVED": {
+        "FROM": "Dallo stato 'In fase di chiarimento presso AT'/'Riscontro AT pervenuto'/'Spostato'",
+        "TO": "Per stato 'Svincolato'"
+      },
+      "STATEMENT_CHANGES_TITLE": "Modifiche pareri",
+      "BELONGS_TO_DOSSIER_CHECK_OR_MOVED_OR_ADDED": {
+        "FROM": "Relativo al dossier con stato 'In fase di chiarimento presso AT'/'Riscontro AT pervenuto'/'Spostato'/'Inizializzato'",
+        "TO": "Viene rimosso dal dossier, nello stato 'Arrivato' e spostato all’anno successivo"
+      },
+      "STATEMENT_MOVED": {
+        "FROM": "Dallo stato 'Spostato'",
+        "TO": "Per stato 'Arrivato' e anno successivo"
+      },
+      "STATEMENT_RECEIVED_OR_CHECK": {
+        "FROM": "Dallo stato 'Arrivato' o 'In esame'",
+        "TO": "Prossimo anno"
+      },
+      "STATEMENT_SPAM": {
+        "FROM": "Dallo stato 'Spam-Mail'",
+        "TO": "Sarà eliminato definitivamente"
+      },
+      "STATEMENT_REST": {
+        "FROM": "Da restanti stati",
+        "TO": "Vai all’archivio"
+      },
       "SUCCESSFUL_CLOSE_NOTIFICATION": "Anno di calendario chiuso con successo"
     },
     "MANAGE_TIMETABLE_HEARING": {

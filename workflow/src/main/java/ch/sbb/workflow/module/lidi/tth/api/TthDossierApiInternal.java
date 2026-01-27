@@ -49,5 +49,4 @@ public interface TthDossierApiInternal {
 
   @PutMapping("{dossierId}")
   TthDossierModel updateDossier(@PathVariable Long dossierId, @Valid @RequestBody TthDossierModel dossierModel);
-
 }

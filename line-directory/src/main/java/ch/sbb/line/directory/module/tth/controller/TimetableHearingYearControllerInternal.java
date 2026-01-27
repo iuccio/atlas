@@ -3,18 +3,16 @@ package ch.sbb.line.directory.module.tth.controller;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingYearApiInternal;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingYearModel;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
+import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.mapper.TimeTableHearingYearMapper;
 import ch.sbb.line.directory.module.tth.model.TimetableHearingYearSearchRestrictions;
-import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.service.TimetableHearingYearService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class TimetableHearingYearControllerInternal implements TimetableHearingYearApiInternal {
 
   private final TimetableHearingYearService timetableHearingYearService;
@@ -57,9 +55,11 @@ public class TimetableHearingYearControllerInternal implements TimetableHearingY
   }
 
   @Override
-  public TimetableHearingYearModel closeTimetableHearing(Long year) {
+  public TimetableHearingYearModel closeTimetableHearing(Long year, List<Long> statementIdsToRemoveFromDossier) {
     TimetableHearingYear hearingYear = timetableHearingYearService.getHearingYear(year);
-    TimetableHearingYear closedHearing = timetableHearingYearService.closeTimetableHearing(hearingYear);
+    timetableHearingYearService.mayTransitionToHearingStatus(hearingYear, HearingStatus.ARCHIVED);
+    TimetableHearingYear closedHearing = timetableHearingYearService.closeTimetableHearing(hearingYear,
+        statementIdsToRemoveFromDossier);
     return TimeTableHearingYearMapper.toModel(closedHearing);
   }
 }

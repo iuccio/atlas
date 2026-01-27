@@ -11,6 +11,7 @@ import {
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AppTestingModule } from '../../../app.testing.module';
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
+import { TthYearInternalService } from '../../../api/service/workflow/tth-year-internal.service';
 
 @Component({
   selector: 'atlas-slide-toggle',
@@ -26,7 +27,8 @@ describe('DialogManageTthComponent', () => {
   let component: DialogManageTthComponent;
   let fixture: ComponentFixture<DialogManageTthComponent>;
 
-  let tthYearsServiceSpy: jasmine.SpyObj<TimetableHearingYearInternalService>;
+  let tthYearLidiServiceSpy: jasmine.SpyObj<TimetableHearingYearInternalService>;
+  let tthYearWfServiceSpy: jasmine.SpyObj<TthYearInternalService>;
   let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
   let matDialogRefSpy: jasmine.SpyObj<
     MatDialogRef<DialogManageTthComponent, boolean>
@@ -40,15 +42,14 @@ describe('DialogManageTthComponent', () => {
   };
 
   beforeEach(async () => {
-    tthYearsServiceSpy =
+    tthYearLidiServiceSpy =
       jasmine.createSpyObj<TimetableHearingYearInternalService>(
         'TthServiceSpy',
-        [
-          'getHearingYear',
-          'updateTimetableHearingSettings',
-          'closeTimetableHearing',
-        ]
+        ['getHearingYear', 'updateTimetableHearingSettings']
       );
+    tthYearWfServiceSpy = jasmine.createSpyObj<TthYearInternalService>([
+      'closeTimetableHearing',
+    ]);
     notificationServiceSpy = jasmine.createSpyObj<NotificationService>(
       'NotificationServiceSpy',
       ['success', 'error']
@@ -66,7 +67,11 @@ describe('DialogManageTthComponent', () => {
         },
         {
           provide: TimetableHearingYearInternalService,
-          useValue: tthYearsServiceSpy,
+          useValue: tthYearLidiServiceSpy,
+        },
+        {
+          provide: TthYearInternalService,
+          useValue: tthYearWfServiceSpy,
         },
         {
           provide: NotificationService,
@@ -85,7 +90,9 @@ describe('DialogManageTthComponent', () => {
       ],
     }).compileComponents();
 
-    tthYearsServiceSpy.getHearingYear.and.stub().and.returnValue(of(tthYear));
+    tthYearLidiServiceSpy.getHearingYear.and
+      .stub()
+      .and.returnValue(of(tthYear));
 
     fixture = TestBed.createComponent(DialogManageTthComponent);
     component = fixture.componentInstance;
@@ -95,18 +102,18 @@ describe('DialogManageTthComponent', () => {
   it('should create and initialize', () => {
     expect(component).toBeTruthy();
     expect(component.currentView).toEqual(component.manageView);
-    expect(tthYearsServiceSpy.getHearingYear).toHaveBeenCalledOnceWith(2020);
+    expect(tthYearLidiServiceSpy.getHearingYear).toHaveBeenCalledOnceWith(2020);
   });
 
   it('should handleSaveAndCloseClick', () => {
-    tthYearsServiceSpy.updateTimetableHearingSettings.and
+    tthYearLidiServiceSpy.updateTimetableHearingSettings.and
       .stub()
       .and.returnValue(of({}));
 
     component.handleSaveAndCloseClick();
     expect(component.actionButtonsDisabled).toBeTrue();
     expect(
-      tthYearsServiceSpy.updateTimetableHearingSettings
+      tthYearLidiServiceSpy.updateTimetableHearingSettings
     ).toHaveBeenCalledOnceWith(2020, {
       statementEditable: true,
       statementCreatableInternal: false,
@@ -119,12 +126,14 @@ describe('DialogManageTthComponent', () => {
   });
 
   it('should handleCloseViewTthCloseClick', () => {
-    tthYearsServiceSpy.closeTimetableHearing.and.stub().and.returnValue(of({}));
+    tthYearWfServiceSpy.closeTimetableHearing.and
+      .stub()
+      .and.returnValue(of({}));
 
     component.handleCloseViewTthCloseClick();
 
     expect(component.actionButtonsDisabled).toBeTrue();
-    expect(tthYearsServiceSpy.closeTimetableHearing).toHaveBeenCalledOnceWith(
+    expect(tthYearWfServiceSpy.closeTimetableHearing).toHaveBeenCalledOnceWith(
       2020
     );
     expect(matDialogRefSpy.close).toHaveBeenCalledOnceWith(true);

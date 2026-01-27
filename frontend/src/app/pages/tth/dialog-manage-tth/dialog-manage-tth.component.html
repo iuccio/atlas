@@ -21,18 +21,30 @@
       </div>
 
       <div class="slide-toggle-row-wrapper pb-3">
-        <span>{{ 'TTH.MANAGE_TIMETABLE_HEARING.CREATE_STATEMENT_EXTERNAL' | translate }}</span>
-        <atlas-slide-toggle [(toggle)]="statementCreatableExternalSliderValue"></atlas-slide-toggle>
+        <span>{{
+          'TTH.MANAGE_TIMETABLE_HEARING.CREATE_STATEMENT_EXTERNAL' | translate
+        }}</span>
+        <atlas-slide-toggle
+          [(toggle)]="statementCreatableExternalSliderValue"
+        ></atlas-slide-toggle>
       </div>
 
       <div class="slide-toggle-row-wrapper">
-        <span>{{ 'TTH.MANAGE_TIMETABLE_HEARING.CREATE_STATEMENT_INTERNAL' | translate }}</span>
-        <atlas-slide-toggle [(toggle)]="statementCreatableInternalSliderValue"></atlas-slide-toggle>
+        <span>{{
+          'TTH.MANAGE_TIMETABLE_HEARING.CREATE_STATEMENT_INTERNAL' | translate
+        }}</span>
+        <atlas-slide-toggle
+          [(toggle)]="statementCreatableInternalSliderValue"
+        ></atlas-slide-toggle>
       </div>
 
       <div class="slide-toggle-row-wrapper pt-3">
-        <span>{{ 'TTH.MANAGE_TIMETABLE_HEARING.EDIT_STATEMENT' | translate }}</span>
-        <atlas-slide-toggle [(toggle)]="statementEditableSliderValue"></atlas-slide-toggle>
+        <span>{{
+          'TTH.MANAGE_TIMETABLE_HEARING.EDIT_STATEMENT' | translate
+        }}</span>
+        <atlas-slide-toggle
+          [(toggle)]="statementEditableSliderValue"
+        ></atlas-slide-toggle>
       </div>
 
       <div class="one-action-btn-wrapper-right mt-3 pt-5">
@@ -69,17 +81,113 @@
         {{ 'TTH.CLOSE_TIMETABLE_HEARING.POPUP_TITLE' | translate }}
       </div>
 
-      <span>{{ 'TTH.CLOSE_TIMETABLE_HEARING.CONFIRMATION_MESSAGE' | translate }}</span>
+      <span>{{
+        'TTH.CLOSE_TIMETABLE_HEARING.CONFIRMATION_MESSAGE' | translate
+      }}</span>
 
-      <ul class="pt-3 pb-3">
+      <h5 class="mt-4">
+        {{ 'TTH.CLOSE_TIMETABLE_HEARING.DOSSIER_CHANGES_TITLE' | translate }}
+      </h5>
+      <ul>
         <li>
-          {{ 'TTH.CLOSE_TIMETABLE_HEARING.MOVEMENTS_TO_ARCHIVED' | translate }}
+          <dl>
+            <dt>
+              {{ 'TTH.CLOSE_TIMETABLE_HEARING.DOSSIER_ADDED.FROM' | translate }}
+            </dt>
+            <dd>
+              {{ 'TTH.CLOSE_TIMETABLE_HEARING.DOSSIER_ADDED.TO' | translate }}
+            </dd>
+          </dl>
         </li>
         <li>
-          {{ 'TTH.CLOSE_TIMETABLE_HEARING.MOVEMENTS_TO_NEXT_YEAR' | translate }}
+          <dl>
+            <dt>
+              {{
+                'TTH.CLOSE_TIMETABLE_HEARING.DOSSIER_CHECK_OR_MOVED.FROM'
+                  | translate
+              }}
+            </dt>
+            <dd>
+              {{
+                'TTH.CLOSE_TIMETABLE_HEARING.DOSSIER_CHECK_OR_MOVED.TO'
+                  | translate
+              }}
+            </dd>
+          </dl>
+        </li>
+      </ul>
+
+      <h5 class="mt-2">
+        {{ 'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_CHANGES_TITLE' | translate }}
+      </h5>
+      <ul>
+        <li>
+          <dl>
+            <dt>
+              {{
+                'TTH.CLOSE_TIMETABLE_HEARING.BELONGS_TO_DOSSIER_CHECK_OR_MOVED_OR_ADDED.FROM'
+                  | translate
+              }}
+            </dt>
+            <dd>
+              {{
+                'TTH.CLOSE_TIMETABLE_HEARING.BELONGS_TO_DOSSIER_CHECK_OR_MOVED_OR_ADDED.TO'
+                  | translate
+              }}
+            </dd>
+          </dl>
         </li>
         <li>
-          {{ 'TTH.CLOSE_TIMETABLE_HEARING.MOVEMENTS_TO_DELETED' | translate }}
+          <dl>
+            <dt>
+              {{
+                'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_MOVED.FROM' | translate
+              }}
+            </dt>
+            <dd>
+              {{ 'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_MOVED.TO' | translate }}
+            </dd>
+          </dl>
+        </li>
+        <li>
+          <dl>
+            <dt>
+              {{
+                'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_RECEIVED_OR_CHECK.FROM'
+                  | translate
+              }}
+            </dt>
+            <dd>
+              {{
+                'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_RECEIVED_OR_CHECK.TO'
+                  | translate
+              }}
+            </dd>
+          </dl>
+        </li>
+        <li>
+          <dl>
+            <dt>
+              {{
+                'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_SPAM.FROM' | translate
+              }}
+            </dt>
+            <dd>
+              {{ 'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_SPAM.TO' | translate }}
+            </dd>
+          </dl>
+        </li>
+        <li>
+          <dl>
+            <dt>
+              {{
+                'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_REST.FROM' | translate
+              }}
+            </dt>
+            <dd>
+              {{ 'TTH.CLOSE_TIMETABLE_HEARING.STATEMENT_REST.TO' | translate }}
+            </dd>
+          </dl>
         </li>
       </ul>
 
