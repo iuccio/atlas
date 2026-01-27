@@ -18,8 +18,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server")
 // For correlation id
-    implementation("io.micrometer:micrometer-tracing")
-    implementation("io.micrometer:micrometer-tracing-bridge-brave")
+    implementation("org.springframework.boot:spring-boot-micrometer-tracing")
+    implementation("org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry")
+
+    implementation("org.springframework.boot:spring-boot-micrometer-tracing-brave")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 // Feign Client Specific Micrometer
     implementation("io.github.openfeign:feign-micrometer")
@@ -54,6 +56,7 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:testcontainers-postgresql")
+    testImplementation("org.springframework.boot:spring-boot-micrometer-tracing-test")
 
     testRuntimeOnly("org.postgresql:postgresql")
 

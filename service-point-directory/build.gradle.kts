@@ -15,14 +15,15 @@ description = "ServicePointDirectory"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.hibernate.orm:hibernate-jpamodelgen")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
+    implementation("org.hibernate.orm:hibernate-processor")
     implementation(project(":base-atlas"))
-    implementation("org.springframework.kafka:spring-kafka")//get this dependency from :kafka use as api does not work
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
     implementation(project(":kafka"))
     implementation(project(":user-administration-security"))
     implementation(libs.bundles.geo.data) //optional
@@ -33,19 +34,24 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.flywaydb:flyway-core")
 
-    annotationProcessor("org.hibernate.orm:hibernate-jpamodelgen")
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-kafka-test")
+
     testImplementation(project(":base-atlas", "test"))
     testImplementation(libs.mockito.inline)
     testImplementation(project(":auto-rest-doc"))
 
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
+
+    testRuntimeOnly("org.postgresql:postgresql")
 }
 
 protobuf {
