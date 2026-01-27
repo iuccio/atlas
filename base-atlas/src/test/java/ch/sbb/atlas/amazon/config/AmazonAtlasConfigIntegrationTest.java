@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.sbb.atlas.amazon.config.AmazonConfigProps.AmazonBucketConfig;
 import ch.sbb.atlas.amazon.service.AmazonBucketClient;
+import ch.sbb.atlas.helper.SharingMocksConfig;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 
 @IntegrationTest
+@SharingMocksConfig
 class AmazonAtlasConfigIntegrationTest {
 
   @Value("${AMAZON_S3_ACCESS_KEY}")

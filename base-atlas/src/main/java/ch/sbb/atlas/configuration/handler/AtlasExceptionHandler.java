@@ -3,7 +3,6 @@ package ch.sbb.atlas.configuration.handler;
 import ch.sbb.atlas.api.model.ErrorResponse;
 import ch.sbb.atlas.model.exception.AtlasException;
 import ch.sbb.atlas.model.exception.NotFoundException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -31,6 +30,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @ControllerAdvice

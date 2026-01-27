@@ -2,12 +2,14 @@ package ch.sbb.atlas.model.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ch.sbb.atlas.helper.SharingMocksConfig;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 @IntegrationTest
+@SharingMocksConfig
 class BusinessIdGeneratorTest {
 
   private final DummyRepository repository;

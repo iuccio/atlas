@@ -2,14 +2,16 @@ package ch.sbb.atlas.api.user.administration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ch.sbb.atlas.helper.SharingMocksConfig;
 import ch.sbb.atlas.kafka.model.user.admin.PermissionRestrictionType;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import tools.jackson.databind.ObjectMapper;
 
 @IntegrationTest
+@SharingMocksConfig
 class PermissionRestrictionModelTest {
 
   @Autowired

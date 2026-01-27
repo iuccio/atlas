@@ -28,7 +28,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(project(":auto-rest-doc"))
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
     testImplementation(project(":base-atlas", "test"))
 
 }
