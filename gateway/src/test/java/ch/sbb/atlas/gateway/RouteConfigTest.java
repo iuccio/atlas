@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.webflux.autoconfigure.WebFluxProperties;
 import org.springframework.cloud.gateway.filter.factory.RewritePathGatewayFilterFactory;
 import org.springframework.cloud.gateway.handler.predicate.PathRoutePredicateFactory;
 import org.springframework.cloud.gateway.route.Route;
@@ -51,6 +52,7 @@ class RouteConfigTest {
     AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
     context.register(PathRoutePredicateFactory.class);
     context.register(RewritePathGatewayFilterFactory.class);
+    context.register(WebFluxProperties.class);
     context.refresh();
     return context;
   }
