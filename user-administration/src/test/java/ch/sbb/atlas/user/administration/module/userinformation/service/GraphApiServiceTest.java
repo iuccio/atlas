@@ -58,7 +58,7 @@ class GraphApiServiceTest {
     GetRequestConfiguration configuration = verifyGetAndReturnConfiguration();
 
     String expectedSearchFilter = """
-        "onPremisesSamAccountName:user1" OR "mail:user1" OR "displayName:user1"
+        "onPremisesSamAccountName:user1" OR "mail:user1" OR "displayName:user1" OR "userPrincipalName:user1"
         """;
     assertThat(configuration.queryParameters).isNotNull();
     assertThat(configuration.queryParameters.search).isEqualTo(expectedSearchFilter);
@@ -77,7 +77,7 @@ class GraphApiServiceTest {
     GetRequestConfiguration configuration = verifyGetAndReturnConfiguration();
 
     String expectedSearchFilter = """
-        "mail:test@test.com"
+        "mail:test@test.com" OR "userPrincipalName:test@test.com"
         """;
     assertThat(configuration.queryParameters).isNotNull();
     assertThat(configuration.queryParameters.search).isEqualTo(expectedSearchFilter);
