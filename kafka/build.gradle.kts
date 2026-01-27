@@ -6,8 +6,8 @@ group = "ch.sbb.atlas"
 version = "2.1071.0"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-logging")
     implementation(libs.swagger.core)
@@ -21,4 +21,3 @@ dependencies {
 tasks.bootJar {
     enabled = false
 }
-

@@ -13,18 +13,18 @@ description = "Atlas Mail Service"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-mail")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation(libs.swagger.core)
 
     implementation(project(":kafka"))
-    implementation("org.springframework.kafka:spring-kafka")//get this dependency from :kafka use as api does not work
+    implementation("org.springframework.boot:spring-boot-starter-kafka")//get this dependency from :kafka use as api does not work
 
     implementation(project(":base-atlas")){
-        exclude("org.hibernate.orm","hibernate-jpamodelgen")
+        exclude("org.hibernate.orm","hibernate-processor")
         exclude("org.springframework.boot","spring-boot-starter-data-jpa")
         exclude("org.springframework.boot","spring-boot-starter-security")
-        exclude("org.springframework.boot","spring-boot-starter-oauth2-resource-server")
+        exclude("org.springframework.boot","spring-boot-starter-security-oauth2-resource-server")
     }
     implementation("org.springframework.boot:spring-boot-starter-validation")//get this dependency from :kafka use as api does not work
 
