@@ -12,10 +12,15 @@ version = "2.1071.0"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.security:spring-security-oauth2-authorization-server")
+    implementation("org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
+    implementation("org.springframework.boot:spring-boot-starter-json")
+
+
     implementation(libs.aws.s3)
     implementation(libs.tika.core)
     implementation(project(":base-atlas"))
@@ -23,10 +28,10 @@ dependencies {
     implementation(project(":kafka"))
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
-    implementation("org.hibernate.orm:hibernate-jpamodelgen")
+    implementation("org.hibernate.orm:hibernate-processor")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
-    annotationProcessor("org.hibernate.orm:hibernate-jpamodelgen")
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     runtimeOnly("org.postgresql:postgresql")
 
@@ -35,7 +40,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
 
 }
 
