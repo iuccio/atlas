@@ -16,19 +16,22 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("commons-codec:commons-codec")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
 
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.flywaydb:flyway-core")
 
     implementation(project(":base-atlas"))
     implementation(project(":kafka"))
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
+
     implementation("org.springframework.kafka:spring-kafka")//get this dependency from :kafka use as api does not work
     implementation(project(":user-administration-security"))
 
-    annotationProcessor("org.hibernate.orm:hibernate-jpamodelgen")
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     runtimeOnly("org.postgresql:postgresql")
 
@@ -40,7 +43,8 @@ dependencies {
     testImplementation(project(":auto-rest-doc"))
 
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 
     testRuntimeOnly("org.postgresql:postgresql")
 
