@@ -19,9 +19,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.job.JobInstance;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.step.StepExecution;
 
 @ExtendWith(MockitoExtension.class)
 class ServicePointUpdateGeoLocationApiWriterTest {
@@ -62,8 +63,7 @@ class ServicePointUpdateGeoLocationApiWriterTest {
         .build();
     doReturn(successResultModel).when(sePoDiClientService).updateServicePointGeoLocation(swissWithGeoModel1.getSloid(),
         swissWithGeoModel1.getDetails().getFirst().getId());
-    JobExecution jobExecution = new JobExecution(132L);
-    jobExecution.setJobInstance(new JobInstance(123L, "MyJob"));
+    JobExecution jobExecution = new JobExecution(132L, new JobInstance(123L, "MyJob"), new JobParameters());
     when(stepExecution.getJobExecution()).thenReturn(jobExecution);
     //when
     geoApiWriter.doWrite(servicePointCsvModels);

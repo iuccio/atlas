@@ -11,8 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.job.JobInstance;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.step.StepExecution;
 
 @ExtendWith(MockitoExtension.class)
 class GeoLocationMailNotificationServiceTest {
@@ -32,10 +34,9 @@ class GeoLocationMailNotificationServiceTest {
     expectedMailContent.put("jobParameter", "{}");
     expectedMailContent.put("stepName", "myStep");
   expectedMailContent.put("stepExecutionInformation", "Step [myStep with id 123] executed in ");
-  JobExecution jobExecution = new JobExecution(1L);
-  StepExecution stepExecution = new StepExecution("myStep", jobExecution);
+  JobExecution jobExecution = new JobExecution(1L, new JobInstance(1L, "job"), new JobParameters());
+  StepExecution stepExecution = new StepExecution(123,"myStep", jobExecution);
   stepExecution.getExecutionContext().put("traceId", "abc123");
-  stepExecution.setId(123L);
   //when
   MailNotification result = notificationService.buildMailErrorNotification("import", stepExecution);
 
@@ -58,10 +59,9 @@ class GeoLocationMailNotificationServiceTest {
     expectedMailContent.put("jobParameter", "{}");
    expectedMailContent.put("stepName", "myStep");
    expectedMailContent.put("stepExecutionInformation", "Step [myStep with id 123] executed in ");
-   JobExecution jobExecution = new JobExecution(1L);
-   StepExecution stepExecution = new StepExecution("myStep", jobExecution);
+   JobExecution jobExecution = new JobExecution(1L, new JobInstance(1L, "job"), new JobParameters());
+   StepExecution stepExecution = new StepExecution(123L,"myStep", jobExecution);
    stepExecution.getExecutionContext().put("traceId", "abc123");
-   stepExecution.setId(123L);
    //when
    MailNotification result = notificationService.buildMailErrorNotification("import", stepExecution);
 

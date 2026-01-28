@@ -4,7 +4,7 @@ import ch.sbb.importservice.module.geo.api.ServicePointUpdateGeoApiV1;
 import ch.sbb.importservice.module.geo.service.ServicePointUpdateGeoLocationJobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.JobExecutionException;
+import org.springframework.batch.core.job.JobExecutionException;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

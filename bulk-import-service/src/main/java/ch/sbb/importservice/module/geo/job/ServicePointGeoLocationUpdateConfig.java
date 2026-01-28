@@ -12,16 +12,15 @@ import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.TaskExecutor;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -55,12 +54,11 @@ public class ServicePointGeoLocationUpdateConfig {
       ThreadSafeListItemReader<ServicePointSwissWithGeoLocationModel> servicePointListItemReader) {
     String stepName = "parseServicePointCsvStep";
     return new StepBuilder(stepName, jobRepository)
-        .<ServicePointSwissWithGeoLocationModel, ServicePointSwissWithGeoLocationModel>chunk(SERVICE_POINT_CHUNK_SIZE,
-            transactionManager)
+        .<ServicePointSwissWithGeoLocationModel, ServicePointSwissWithGeoLocationModel>chunk(SERVICE_POINT_CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(servicePointListItemReader)
         .writer(geoApiWriter)
         .faultTolerant()
-        .backOffPolicy(StepUtils.getBackOffPolicy(stepName))
         .retryPolicy(StepUtils.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .taskExecutor(asyncGeoLocationTaskExecutor())
@@ -72,7 +70,6 @@ public class ServicePointGeoLocationUpdateConfig {
       ThreadSafeListItemReader<ServicePointSwissWithGeoLocationModel> servicePointListItemReader) {
     return new JobBuilder(UPDATE_SERVICE_POINT_GEO_JOB, jobRepository)
         .listener(geoLocationJobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(updateServicePointGeoLocationStep(servicePointListItemReader))
         .end()
         .build();
@@ -80,7 +77,7 @@ public class ServicePointGeoLocationUpdateConfig {
 
   @StepScope
   @Bean
-  protected TaskExecutor asyncGeoLocationTaskExecutor() {
+  protected AsyncTaskExecutor asyncGeoLocationTaskExecutor() {
     ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
     taskExecutor.setCorePoolSize(THREAD_EXECUTION_SIZE);
     taskExecutor.setMaxPoolSize(THREAD_EXECUTION_SIZE);
