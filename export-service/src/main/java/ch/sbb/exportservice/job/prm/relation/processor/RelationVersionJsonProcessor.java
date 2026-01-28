@@ -3,7 +3,7 @@ package ch.sbb.exportservice.job.prm.relation.processor;
 import ch.sbb.atlas.api.prm.model.relation.ReadRelationVersionModel;
 import ch.sbb.exportservice.job.prm.relation.entity.RelationVersion;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class RelationVersionJsonProcessor implements ItemProcessor<RelationVersion, ReadRelationVersionModel> {

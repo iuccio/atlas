@@ -13,10 +13,11 @@ description = "Atlas Export Service"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.springframework.boot:spring-boot-starter-json")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.security:spring-security-oauth2-authorization-server")
-    implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.boot:spring-boot-starter-batch-jdbc")
     implementation("org.springframework.batch:spring-batch-integration")
     implementation("io.micrometer:micrometer-tracing")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
@@ -24,12 +25,13 @@ dependencies {
     implementation(libs.aws.s3)
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
 
     implementation(libs.bundles.geo.data)
 
-    implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
     implementation(project(":base-atlas"))
     implementation(project(":kafka"))
     implementation(project(":user-administration-security"))
@@ -37,7 +39,8 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.batch:spring-batch-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-batch-jdbc-test")
     testImplementation(project(":base-atlas", "test"))
     testImplementation(project(":auto-rest-doc"))
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")

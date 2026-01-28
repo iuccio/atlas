@@ -25,17 +25,17 @@ import ch.sbb.exportservice.tasklet.upload.UploadJsonFileTaskletV2;
 import ch.sbb.exportservice.util.StepUtil;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.json.JsonFileItemWriter;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader;
+import org.springframework.batch.infrastructure.item.file.FlatFileItemWriter;
+import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,11 +61,9 @@ public class ServicePointVersionExportBatchConfig {
   public JdbcCursorItemReader<ServicePointVersion> reader(
       @Autowired @Qualifier("servicePointDataSource") DataSource dataSource,
       @Value("#{jobParameters[exportTypeV2]}") ExportTypeV2 exportTypeV2) {
-    JdbcCursorItemReader<ServicePointVersion> itemReader = new JdbcCursorItemReader<>();
-    itemReader.setDataSource(dataSource);
-    itemReader.setSql(ServicePointVersionSqlQueryUtil.getSqlQuery(exportTypeV2));
+    JdbcCursorItemReader<ServicePointVersion> itemReader = new JdbcCursorItemReader<>(dataSource,
+        ServicePointVersionSqlQueryUtil.getSqlQuery(exportTypeV2), new ServicePointVersionRowMapper());
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
-    itemReader.setRowMapper(new ServicePointVersionRowMapper());
     return itemReader;
   }
 
@@ -75,7 +73,6 @@ public class ServicePointVersionExportBatchConfig {
   public Job exportServicePointCsvJob(ItemReader<ServicePointVersion> itemReader) {
     return new JobBuilder(EXPORT_SERVICE_POINT_CSV_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportServicePointCsvStep(itemReader))
         .next(uploadServicePointCsvFileStepV2())
         .next(deleteServicePointCsvFileStepV2())
@@ -87,12 +84,12 @@ public class ServicePointVersionExportBatchConfig {
   public Step exportServicePointCsvStep(ItemReader<ServicePointVersion> itemReader) {
     String stepName = "exportServicePointCsvStep";
     return new StepBuilder(stepName, jobRepository)
-        .<ServicePointVersion, ServicePointVersionCsvModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<ServicePointVersion, ServicePointVersionCsvModel>chunk(StepUtil.CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(servicePointVersionCsvProcessor())
         .writer(csvWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
+        
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();
@@ -156,7 +153,6 @@ public class ServicePointVersionExportBatchConfig {
   public Job exportServicePointJsonJob(ItemReader<ServicePointVersion> itemReader) {
     return new JobBuilder(EXPORT_SERVICE_POINT_JSON_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportServicePointJsonStep(itemReader))
         .next(uploadServicePointJsonFileStepV2())
         .next(deleteServicePointJsonFileStepV2())
@@ -168,12 +164,12 @@ public class ServicePointVersionExportBatchConfig {
   public Step exportServicePointJsonStep(ItemReader<ServicePointVersion> itemReader) {
     String stepName = "exportServicePointJsonStep";
     return new StepBuilder(stepName, jobRepository)
-        .<ServicePointVersion, ReadServicePointVersionModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<ServicePointVersion, ReadServicePointVersionModel>chunk(StepUtil.CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(servicePointVersionJsonProcessor())
         .writer(jsonFileItemWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
+        
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();

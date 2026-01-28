@@ -3,7 +3,7 @@ package ch.sbb.exportservice.job.prm.toilet.processor;
 import ch.sbb.atlas.api.prm.model.toilet.ReadToiletVersionModel;
 import ch.sbb.exportservice.job.prm.toilet.entity.ToiletVersion;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class ToiletVersionJsonProcessor implements ItemProcessor<ToiletVersion, ReadToiletVersionModel> {

@@ -4,7 +4,7 @@ import static ch.sbb.atlas.export.CsvExportWriter.UTF_8_BYTE_ORDER_MARK;
 
 import java.io.IOException;
 import java.io.Writer;
-import org.springframework.batch.item.file.FlatFileHeaderCallback;
+import org.springframework.batch.infrastructure.item.file.FlatFileHeaderCallback;
 
 public class CsvFlatFileHeaderCallback implements FlatFileHeaderCallback {
 

@@ -6,7 +6,7 @@ import static ch.sbb.atlas.export.utils.StringUtils.SEMICOLON;
 import ch.sbb.atlas.export.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
+import org.springframework.batch.infrastructure.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 

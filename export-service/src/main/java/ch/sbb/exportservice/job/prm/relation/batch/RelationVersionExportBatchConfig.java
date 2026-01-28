@@ -25,17 +25,17 @@ import ch.sbb.exportservice.tasklet.upload.UploadJsonFileTaskletV2;
 import ch.sbb.exportservice.util.StepUtil;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.json.JsonFileItemWriter;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader;
+import org.springframework.batch.infrastructure.item.file.FlatFileItemWriter;
+import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,11 +62,9 @@ public class RelationVersionExportBatchConfig {
       @Autowired @Qualifier("prmDataSource") DataSource dataSource,
       @Value("#{jobParameters[exportTypeV2]}") ExportTypeV2 exportTypeV2
   ) {
-    JdbcCursorItemReader<RelationVersion> itemReader = new JdbcCursorItemReader<>();
-    itemReader.setDataSource(dataSource);
-    itemReader.setSql(RelationVersionSqlQueryUtil.getSqlQuery(exportTypeV2));
+    JdbcCursorItemReader<RelationVersion> itemReader = new JdbcCursorItemReader<>(dataSource,
+        RelationVersionSqlQueryUtil.getSqlQuery(exportTypeV2),new RelationVersionRowMapper());
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
-    itemReader.setRowMapper(new RelationVersionRowMapper());
     return itemReader;
   }
 
@@ -76,7 +74,6 @@ public class RelationVersionExportBatchConfig {
   public Job exportRelationCsvJob(ItemReader<RelationVersion> itemReader) {
     return new JobBuilder(EXPORT_RELATION_CSV_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportRelationCsvStep(itemReader))
         .next(uploadRelationCsvFileStepV2())
         .next(deleteRelationCsvFileStepV2())
@@ -88,12 +85,12 @@ public class RelationVersionExportBatchConfig {
   public Step exportRelationCsvStep(ItemReader<RelationVersion> itemReader) {
     final String stepName = "exportRelationCsvStep";
     return new StepBuilder(stepName, jobRepository)
-        .<RelationVersion, RelationVersionCsvModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<RelationVersion, RelationVersionCsvModel>chunk(StepUtil.CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(relationVersionCsvProcessor())
         .writer(relationCsvWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
+        
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();
@@ -156,7 +153,6 @@ public class RelationVersionExportBatchConfig {
   public Job exportRelationJsonJob(ItemReader<RelationVersion> itemReader) {
     return new JobBuilder(EXPORT_RELATION_JSON_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportRelationJsonStep(itemReader))
         .next(uploadRelationJsonFileStepV2())
         .next(deleteRelationJsonFileStepV2())
@@ -168,12 +164,11 @@ public class RelationVersionExportBatchConfig {
   public Step exportRelationJsonStep(ItemReader<RelationVersion> itemReader) {
     String stepName = "exportRelationJsonStep";
     return new StepBuilder(stepName, jobRepository)
-        .<RelationVersion, ReadRelationVersionModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<RelationVersion, ReadRelationVersionModel>chunk(StepUtil.CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(relationVersionJsonProcessor())
         .writer(relationJsonFileItemWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();

@@ -5,7 +5,7 @@ import ch.sbb.exportservice.job.BaseExportType;
 import ch.sbb.exportservice.model.ExportObjectV2;
 import ch.sbb.exportservice.util.JobDescriptionConstant;
 import java.util.List;
-import org.springframework.batch.core.Job;
+import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

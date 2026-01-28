@@ -5,7 +5,7 @@ import ch.sbb.atlas.api.servicepoint.ReadTrafficPointElementVersionModel;
 import ch.sbb.exportservice.job.sepodi.BaseSepodiProcessor;
 import ch.sbb.exportservice.job.sepodi.trafficpoint.entity.TrafficPointElementVersion;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class TrafficPointElementVersionJsonProcessor extends BaseSepodiProcessor implements

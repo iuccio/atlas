@@ -4,7 +4,7 @@ import ch.sbb.atlas.api.bodi.BusinessOrganisationVersionModel;
 import ch.sbb.atlas.api.bodi.SboidToSaidConverter;
 import ch.sbb.exportservice.job.bodi.businessorganisation.entity.BusinessOrganisation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class BusinessOrganisationJsonProcessor implements ItemProcessor<BusinessOrganisation, BusinessOrganisationVersionModel> {

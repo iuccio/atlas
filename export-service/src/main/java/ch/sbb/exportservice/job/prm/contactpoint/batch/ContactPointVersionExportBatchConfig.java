@@ -25,17 +25,16 @@ import ch.sbb.exportservice.tasklet.upload.UploadJsonFileTaskletV2;
 import ch.sbb.exportservice.util.StepUtil;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.json.JsonFileItemWriter;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader;
+import org.springframework.batch.infrastructure.item.file.FlatFileItemWriter;
+import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,11 +61,9 @@ public class ContactPointVersionExportBatchConfig {
       @Autowired @Qualifier("prmDataSource") DataSource dataSource,
       @Value("#{jobParameters[exportTypeV2]}") ExportTypeV2 exportTypeV2
   ) {
-    JdbcCursorItemReader<ContactPointVersion> itemReader = new JdbcCursorItemReader<>();
-    itemReader.setDataSource(dataSource);
-    itemReader.setSql(ContactPointVersionSqlQueryUtil.getSqlQuery(exportTypeV2));
+    JdbcCursorItemReader<ContactPointVersion> itemReader = new JdbcCursorItemReader<>(dataSource,
+        ContactPointVersionSqlQueryUtil.getSqlQuery(exportTypeV2), new ContactPointVersionRowMapper());
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
-    itemReader.setRowMapper(new ContactPointVersionRowMapper());
     return itemReader;
   }
 
@@ -76,7 +73,6 @@ public class ContactPointVersionExportBatchConfig {
   public Job exportContactPointCsvJob(ItemReader<ContactPointVersion> itemReader) {
     return new JobBuilder(EXPORT_CONTACT_POINT_CSV_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportContactPointCsvStep(itemReader))
         .next(uploadContactPointCsvFileStepV2())
         .next(deleteContactPointCsvFileStepV2())
@@ -88,12 +84,12 @@ public class ContactPointVersionExportBatchConfig {
   public Step exportContactPointCsvStep(ItemReader<ContactPointVersion> itemReader) {
     final String stepName = "exportContactPointCsvStep";
     return new StepBuilder(stepName, jobRepository)
-        .<ContactPointVersion, ContactPointVersionCsvModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<ContactPointVersion, ContactPointVersionCsvModel>chunk(StepUtil.CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(itemReader)
         .processor(contactPointVersionCsvProcessor())
         .writer(contactPointCsvWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();
@@ -158,7 +154,6 @@ public class ContactPointVersionExportBatchConfig {
   public Job exportContactPointJsonJob(ItemReader<ContactPointVersion> itemReader) {
     return new JobBuilder(EXPORT_CONTACT_POINT_JSON_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportContactPointJsonStep(itemReader))
         .next(uploadContactPointJsonFileStepV2())
         .next(deleteContactPointJsonFileStepV2())
@@ -170,12 +165,12 @@ public class ContactPointVersionExportBatchConfig {
   public Step exportContactPointJsonStep(ItemReader<ContactPointVersion> itemReader) {
     String stepName = "exportContactPointJsonStep";
     return new StepBuilder(stepName, jobRepository)
-        .<ContactPointVersion, ReadContactPointVersionModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<ContactPointVersion, ReadContactPointVersionModel>chunk(StepUtil.CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(itemReader)
         .processor(contactPointVersionJsonProcessor())
         .writer(contactPointJsonFileItemWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();

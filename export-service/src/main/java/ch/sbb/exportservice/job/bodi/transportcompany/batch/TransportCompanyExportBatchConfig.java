@@ -25,17 +25,17 @@ import ch.sbb.exportservice.tasklet.upload.UploadJsonFileTaskletV2;
 import ch.sbb.exportservice.util.StepUtil;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.json.JsonFileItemWriter;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader;
+import org.springframework.batch.infrastructure.item.file.FlatFileItemWriter;
+import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,11 +61,8 @@ public class TransportCompanyExportBatchConfig {
   public JdbcCursorItemReader<TransportCompany> transportCompanyReader(
       @Autowired @Qualifier("businessOrganisationDirectoryDataSource") DataSource dataSource
   ) {
-    JdbcCursorItemReader<TransportCompany> itemReader = new JdbcCursorItemReader<>();
-    itemReader.setDataSource(dataSource);
-    itemReader.setSql(TransportCompanySqlQueryUtil.getSqlQuery());
+    JdbcCursorItemReader<TransportCompany> itemReader = new JdbcCursorItemReader<>(dataSource,        TransportCompanySqlQueryUtil.getSqlQuery(), new TransportCompanyRowMapper());
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
-    itemReader.setRowMapper(new TransportCompanyRowMapper());
     return itemReader;
   }
 
@@ -75,7 +72,6 @@ public class TransportCompanyExportBatchConfig {
   public Job exportTransportCompanyCsvJob(ItemReader<TransportCompany> itemReader) {
     return new JobBuilder(EXPORT_TRANSPORT_COMPANY_CSV_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportTransportCompanyCsvStep(itemReader))
         .next(uploadTransportCompanyCsvFileStep())
         .next(deleteTransportCompanyCsvFileStep())
@@ -87,12 +83,12 @@ public class TransportCompanyExportBatchConfig {
   public Step exportTransportCompanyCsvStep(ItemReader<TransportCompany> itemReader) {
     final String stepName = "exportTransportCompanyCsvStep";
     return new StepBuilder(stepName, jobRepository)
-        .<TransportCompany, TransportCompanyCsvModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<TransportCompany, TransportCompanyCsvModel>chunk(StepUtil.CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(itemReader)
         .processor(transportCompanyCsvProcessor())
         .writer(transportCompanyCsvWriter())
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();
@@ -154,7 +150,6 @@ public class TransportCompanyExportBatchConfig {
   public Job exportTransportCompanyJsonJob(ItemReader<TransportCompany> itemReader) {
     return new JobBuilder(EXPORT_TRANSPORT_COMPANY_JSON_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportTransportCompanyJsonStep(itemReader))
         .next(uploadTransportCompanyJsonFileStep())
         .next(deleteTransportCompanyJsonFileStep())
@@ -166,12 +161,12 @@ public class TransportCompanyExportBatchConfig {
   public Step exportTransportCompanyJsonStep(ItemReader<TransportCompany> itemReader) {
     String stepName = "exportTransportCompanyJsonStep";
     return new StepBuilder(stepName, jobRepository)
-        .<TransportCompany, TransportCompanyModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<TransportCompany, TransportCompanyModel>chunk(StepUtil.CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(itemReader)
         .processor(transportCompanyJsonProcessor())
         .writer(transportCompanyJsonFileItemWriter())
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();

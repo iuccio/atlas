@@ -3,7 +3,7 @@ package ch.sbb.exportservice.job.prm.parkinglot.processor;
 import ch.sbb.atlas.api.prm.model.parkinglot.ReadParkingLotVersionModel;
 import ch.sbb.exportservice.job.prm.parkinglot.entity.ParkingLotVersion;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class ParkingLotVersionJsonProcessor implements ItemProcessor<ParkingLotVersion, ReadParkingLotVersionModel> {
