@@ -86,8 +86,7 @@ class BulkImportLogFileIntegrationTest {
   @MockitoSpyBean
   private BulkImportLogService bulkImportLogService;
 
-  @Captor
-  private ArgumentCaptor<LogFile> logFileCaptor;
+  private final ArgumentCaptor<LogFile> logFileCaptor = ArgumentCaptor.forClass(LogFile.class);
 
   private String todaysDirectory;
 

@@ -7,10 +7,10 @@ import ch.sbb.atlas.amazon.service.FileService;
 import ch.sbb.importservice.module.bulkimport.repository.BulkImportLogRepository;
 import ch.sbb.importservice.module.bulkimport.service.BulkImportS3BucketService;
 import java.io.File;
-import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 class BulkImportLogServiceTest {
@@ -30,7 +30,7 @@ class BulkImportLogServiceTest {
   }
 
   @Test
-  void getLogFileFromS3() throws IOException {
+  void getLogFileFromS3() {
     File file = new File("/test.log");
     Mockito.when(bulkImportS3BucketService.downloadImportFile("/test.log")).thenReturn(file);
     Mockito.when(objectMapper.readValue(file, LogFile.class)).thenReturn(LogFile.builder()
@@ -43,9 +43,9 @@ class BulkImportLogServiceTest {
   }
 
   @Test
-  void shouldThrowRuntimeExceptionWhenFileDoesNotExistOrIsInvalid() throws IOException {
+  void shouldThrowRuntimeExceptionWhenFileDoesNotExistOrIsInvalid() {
     Mockito.when(bulkImportS3BucketService.downloadImportFile("/test.log")).thenReturn(null);
-    Mockito.when(objectMapper.readValue((File) null, LogFile.class)).thenThrow(IOException.class);
+    Mockito.when(objectMapper.readValue((File) null, LogFile.class)).thenThrow(JacksonException.class);
 
     assertThrows(RuntimeException.class, () -> bulkImportLogService.getLogFileFromS3("/test.log"),
         "Unexpected exception during parsing of Bulk Import Result Log File!");

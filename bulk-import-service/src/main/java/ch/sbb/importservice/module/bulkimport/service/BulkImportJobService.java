@@ -14,16 +14,16 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.job.parameters.InvalidJobParametersException;
+import org.springframework.batch.core.job.parameters.JobParameter;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.job.parameters.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.launch.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.launch.JobRestartException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +35,7 @@ public class BulkImportJobService {
 
   public static final String EMAILS_JOB_PARAMETER = "emails";
 
-  private final JobLauncher jobLauncher;
+  private final JobOperator jobOperator;
   private final Job bulkImportJob;
 
   @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -46,7 +46,7 @@ public class BulkImportJobService {
         .addString(BulkImport.Fields.application, bulkImport.getApplication().toString())
         .addString(BulkImport.Fields.objectType, bulkImport.getObjectType().toString())
         .addString(BulkImport.Fields.importType, bulkImport.getImportType().toString())
-        .addJobParameter(EMAILS_JOB_PARAMETER, new JobParameter(emails, List.class))
+        .addJobParameter(new JobParameter<>(EMAILS_JOB_PARAMETER,emails, List.class))
         .addLong(START_AT_JOB_PARAMETER, System.currentTimeMillis());
 
     Optional<String> inNameOf = Optional.ofNullable(bulkImport.getInNameOf());
@@ -54,10 +54,10 @@ public class BulkImportJobService {
 
     JobParameters jobParameters = jobParametersBuilder.toJobParameters();
     try {
-      JobExecution execution = jobLauncher.run(bulkImportJob, jobParameters);
+      JobExecution execution = jobOperator.start(bulkImportJob, jobParameters);
       log.info("Job executed with status: {}", execution.getExitStatus().getExitCode());
     } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
-             JobParametersInvalidException | IllegalArgumentException e) {
+             InvalidJobParametersException | IllegalArgumentException e) {
       throw new JobExecutionException(BULK_IMPORT_JOB_NAME, e);
     } finally {
       deleteFileIfExists(file);

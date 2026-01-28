@@ -4,7 +4,7 @@ import ch.sbb.atlas.kafka.SharedKafkaConfig;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ public class KafkaConfig {
 
   @Bean
   public ProducerFactory<String, Object> producerFactory() {
-    Map<String, Object> props = new HashMap<>(kafkaProperties.buildProducerProperties(null));
+    Map<String, Object> props = new HashMap<>(kafkaProperties.buildProducerProperties());
     return new DefaultKafkaProducerFactory<>(props);
   }
 
