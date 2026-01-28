@@ -12,14 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @IntegrationTest
 @AutoConfigureMockMvc(addFilters = false)
 @Slf4j
- class ApimYamlExtractionTest {
+class ApimYamlExtractionTest {
 
   @Autowired
   private MockMvc mvc;
@@ -30,8 +30,8 @@ import org.springframework.test.web.servlet.MvcResult;
   @Test
   void shouldProvideApiYaml() throws Exception {
     MvcResult mvcResult = mvc.perform(get("/v3/api-docs.yaml"))
-                             .andExpect(status().isOk())
-                             .andReturn();
+        .andExpect(status().isOk())
+        .andReturn();
     Path specYamlFile = Paths.get("..", "apim-configuration",
         "src/main/resources/apis/", appName, "spec.yaml");
 
