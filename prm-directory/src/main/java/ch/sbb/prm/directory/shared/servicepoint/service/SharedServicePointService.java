@@ -5,11 +5,11 @@ import ch.sbb.prm.directory.exception.ServicePointDoesNotExistException;
 import ch.sbb.prm.directory.exception.TrafficPointElementDoesNotExistsException;
 import ch.sbb.prm.directory.shared.servicepoint.entity.SharedServicePoint;
 import ch.sbb.prm.directory.shared.servicepoint.repository.SharedServicePointRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 @Service
@@ -31,7 +31,7 @@ public class SharedServicePointService {
           return null;
         }
         return sharedServicePointVersion;
-      } catch (JsonProcessingException e) {
+      } catch (JacksonException e) {
         throw new IllegalStateException(e);
       }
     });
