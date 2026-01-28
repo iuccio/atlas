@@ -4,7 +4,7 @@ import ch.sbb.exportservice.job.prm.parkinglot.entity.ParkingLotVersion;
 import ch.sbb.exportservice.job.prm.parkinglot.model.ParkingLotVersionCsvModel;
 import ch.sbb.exportservice.util.MapperUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class ParkingLotVersionCsvProcessor implements

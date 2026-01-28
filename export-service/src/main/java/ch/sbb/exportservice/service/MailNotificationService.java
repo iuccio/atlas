@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.job.parameters.JobParameters;
 import org.springframework.batch.core.observability.BatchMetrics;
+import org.springframework.batch.core.step.StepExecution;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +67,7 @@ public class MailNotificationService {
   String getParameters(StepExecution stepExecution) {
     StringBuilder stringBuilder = new StringBuilder();
     JobParameters jobParameters = stepExecution.getJobParameters();
-    stringBuilder.append(jobParameters.getParameters());
+    stringBuilder.append(jobParameters);
     return stringBuilder.toString();
   }
 

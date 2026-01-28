@@ -6,13 +6,15 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.job.JobInstance;
+import org.springframework.batch.core.job.parameters.JobParameter;
+import org.springframework.batch.core.repository.explore.JobExplorer;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -58,10 +60,12 @@ public class JobHelperService {
     jobInstances.forEach(jobInstance -> {
       JobExecution lastJobExecution = jobExplorer.getLastJobExecution(jobInstance);
       if (lastJobExecution != null) {
-        Map<String, JobParameter<?>> parameters = lastJobExecution.getJobParameters().getParameters();
+        Map<String, JobParameter<?>> parameters =
+            lastJobExecution.getJobParameters().parameters().stream().collect(Collectors.toMap(JobParameter::name,
+                Function.identity()));
         if (parameters.containsKey(
             JobDescriptionConstant.EXECUTION_TYPE_PARAMETER) && JobDescriptionConstant.EXECUTION_BATCH_PARAMETER.equals(
-            parameters.get(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER).getValue())) {
+            parameters.get(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER).value())) {
           jobExecutions.add(lastJobExecution);
         }
       }

@@ -15,6 +15,16 @@ import ch.sbb.exportservice.job.lidi.line.writer.CsvLineWriter;
 import ch.sbb.exportservice.job.lidi.line.writer.JsonLineWriter;
 import ch.sbb.exportservice.listener.JobCompletionListener;
 import ch.sbb.exportservice.listener.StepTracerListener;
+import ch.sbb.atlas.api.lidi.LineVersionModelV2;
+import ch.sbb.exportservice.job.lidi.line.model.LineCsvModel;
+import ch.sbb.exportservice.job.lidi.line.processor.LineCsvProcessor;
+import ch.sbb.exportservice.job.lidi.line.processor.LineJsonProcessor;
+import ch.sbb.exportservice.job.lidi.line.sql.LineRowMapper;
+import ch.sbb.exportservice.job.lidi.line.sql.LineSqlQueryUtil;
+import ch.sbb.exportservice.job.lidi.line.writer.CsvLineWriter;
+import ch.sbb.exportservice.job.lidi.line.writer.JsonLineWriter;
+import ch.sbb.exportservice.listener.JobCompletionListener;
+import ch.sbb.exportservice.listener.StepTracerListener;
 import ch.sbb.exportservice.model.ExportExtensionFileType;
 import ch.sbb.exportservice.model.ExportFilePathV2;
 import ch.sbb.exportservice.model.ExportObjectV2;
@@ -25,17 +35,17 @@ import ch.sbb.exportservice.tasklet.upload.UploadJsonFileTaskletV2;
 import ch.sbb.exportservice.util.StepUtil;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.json.JsonFileItemWriter;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader;
+import org.springframework.batch.infrastructure.item.file.FlatFileItemWriter;
+import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,11 +72,10 @@ public class LineExportBatchConfig {
       @Autowired @Qualifier("lineDirectoryDataSource") DataSource dataSource,
       @Value("#{jobParameters[exportTypeV2]}") ExportTypeV2 exportTypeV2
   ) {
-    JdbcCursorItemReader<Line> itemReader = new JdbcCursorItemReader<>();
-    itemReader.setDataSource(dataSource);
+    JdbcCursorItemReader<Line> itemReader = new JdbcCursorItemReader<>(dataSource,
+        LineSqlQueryUtil.getSqlQuery(exportTypeV2), new LineRowMapper());
     itemReader.setSql(LineSqlQueryUtil.getSqlQuery(exportTypeV2));
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
-    itemReader.setRowMapper(new LineRowMapper());
     return itemReader;
   }
 
@@ -76,7 +85,6 @@ public class LineExportBatchConfig {
   public Job exportLineCsvJob(ItemReader<Line> itemReader) {
     return new JobBuilder(EXPORT_LINE_CSV_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportLineCsvStep(itemReader))
         .next(uploadLineCsvFileStep())
         .next(deleteLineCsvFileStep())
@@ -88,12 +96,12 @@ public class LineExportBatchConfig {
   public Step exportLineCsvStep(ItemReader<Line> itemReader) {
     final String stepName = "exportLineCsvStep";
     return new StepBuilder(stepName, jobRepository)
-        .<Line, LineCsvModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<Line, LineCsvModel>chunk(StepUtil.CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(itemReader)
         .processor(lineCsvProcessor())
         .writer(lineCsvWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();
@@ -158,7 +166,6 @@ public class LineExportBatchConfig {
   public Job exportLineJsonJob(ItemReader<Line> itemReader) {
     return new JobBuilder(EXPORT_LINE_JSON_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportLineJsonStep(itemReader))
         .next(uploadLineJsonFileStep())
         .next(deleteLineJsonFileStep())
@@ -170,12 +177,12 @@ public class LineExportBatchConfig {
   public Step exportLineJsonStep(ItemReader<Line> itemReader) {
     final String stepName = "exportLineJsonStep";
     return new StepBuilder(stepName, jobRepository)
-        .<Line, LineVersionModelV2>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<Line, LineVersionModelV2>chunk(StepUtil.CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(itemReader)
         .processor(lineJsonProcessor())
         .writer(lineJsonFileItemWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();

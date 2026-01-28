@@ -8,10 +8,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.StepContribution;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.batch.infrastructure.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j

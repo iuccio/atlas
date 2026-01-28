@@ -25,17 +25,17 @@ import ch.sbb.exportservice.tasklet.upload.UploadJsonFileTaskletV2;
 import ch.sbb.exportservice.util.StepUtil;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.json.JsonFileItemWriter;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader;
+import org.springframework.batch.infrastructure.item.file.FlatFileItemWriter;
+import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,11 +62,9 @@ public class StopPointVersionExportBatchConfig {
       @Autowired @Qualifier("prmDataSource") DataSource dataSource,
       @Value("#{jobParameters[exportTypeV2]}") ExportTypeV2 exportTypeV2
   ) {
-    JdbcCursorItemReader<StopPointVersion> itemReader = new JdbcCursorItemReader<>();
-    itemReader.setDataSource(dataSource);
-    itemReader.setSql(StopPointVersionSqlQueryUtil.getSqlQuery(exportTypeV2));
+    JdbcCursorItemReader<StopPointVersion> itemReader = new JdbcCursorItemReader<>(dataSource,
+    StopPointVersionSqlQueryUtil.getSqlQuery(exportTypeV2), new StopPointVersionRowMapper());
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
-    itemReader.setRowMapper(new StopPointVersionRowMapper());
     return itemReader;
   }
 
@@ -76,7 +74,6 @@ public class StopPointVersionExportBatchConfig {
   public Job exportStopPointCsvJob(ItemReader<StopPointVersion> itemReader) {
     return new JobBuilder(EXPORT_STOP_POINT_CSV_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportStopPointCsvStep(itemReader))
         .next(uploadStopPointCsvFileStepV2())
         .next(deleteStopPointCsvFileStepV2())
@@ -88,12 +85,12 @@ public class StopPointVersionExportBatchConfig {
   public Step exportStopPointCsvStep(ItemReader<StopPointVersion> itemReader) {
     final String stepName = "exportStopPointCsvStep";
     return new StepBuilder(stepName, jobRepository)
-        .<StopPointVersion, StopPointVersionCsvModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<StopPointVersion, StopPointVersionCsvModel>chunk(StepUtil.CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(stopPointVersionCsvProcessor())
         .writer(stopPointCsvWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
+        
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();
@@ -158,7 +155,6 @@ public class StopPointVersionExportBatchConfig {
   public Job exportStopPointJsonJob(ItemReader<StopPointVersion> itemReader) {
     return new JobBuilder(EXPORT_STOP_POINT_JSON_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportStopPointJsonStep(itemReader))
         .next(uploadStopPointJsonFileStepV2())
         .next(deleteStopPointJsonFileStepV2())
@@ -170,12 +166,11 @@ public class StopPointVersionExportBatchConfig {
   public Step exportStopPointJsonStep(ItemReader<StopPointVersion> itemReader) {
     String stepName = "exportStopPointJsonStep";
     return new StepBuilder(stepName, jobRepository)
-        .<StopPointVersion, ReadStopPointVersionModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<StopPointVersion, ReadStopPointVersionModel>chunk(StepUtil.CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(stopPointVersionJsonProcessor())
         .writer(stopPointJsonFileItemWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();

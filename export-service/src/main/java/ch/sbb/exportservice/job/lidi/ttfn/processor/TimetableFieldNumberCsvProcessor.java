@@ -7,7 +7,7 @@ import ch.sbb.exportservice.job.lidi.ttfn.entity.TimetableFieldNumber;
 import ch.sbb.exportservice.job.lidi.ttfn.model.TimetableFieldNumberCsvModel;
 import ch.sbb.exportservice.util.RowMapperUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class TimetableFieldNumberCsvProcessor implements ItemProcessor<TimetableFieldNumber, TimetableFieldNumberCsvModel> {

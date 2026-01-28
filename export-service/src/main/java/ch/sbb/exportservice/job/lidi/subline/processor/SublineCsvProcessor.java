@@ -7,7 +7,7 @@ import ch.sbb.exportservice.job.lidi.subline.entity.Subline;
 import ch.sbb.exportservice.job.lidi.subline.model.SublineCsvModel;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class SublineCsvProcessor implements ItemProcessor<Subline, SublineCsvModel> {

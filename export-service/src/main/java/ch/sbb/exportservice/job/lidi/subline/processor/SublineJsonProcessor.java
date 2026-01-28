@@ -4,7 +4,7 @@ import ch.sbb.atlas.api.lidi.ReadSublineVersionModelV2;
 import ch.sbb.exportservice.job.lidi.subline.entity.Subline;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class SublineJsonProcessor implements ItemProcessor<Subline, ReadSublineVersionModelV2> {

@@ -6,7 +6,7 @@ import ch.sbb.atlas.api.servicepoint.ReadServicePointVersionModel;
 import ch.sbb.exportservice.job.sepodi.BaseSepodiProcessor;
 import ch.sbb.exportservice.job.sepodi.servicepoint.entity.ServicePointVersion;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class ServicePointVersionJsonProcessor extends BaseSepodiProcessor implements

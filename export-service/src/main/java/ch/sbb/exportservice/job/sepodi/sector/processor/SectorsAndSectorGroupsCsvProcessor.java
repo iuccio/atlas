@@ -7,7 +7,7 @@ import ch.sbb.exportservice.job.sepodi.sector.model.SectorAndSectorGroupCsvModel
 import ch.sbb.exportservice.job.sepodi.sector.model.SectorAndSectorGroupCsvModel.SectorAndSectorGroupCsvModelBuilder;
 import ch.sbb.exportservice.util.MapperUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class SectorsAndSectorGroupsCsvProcessor extends BaseSepodiProcessor implements

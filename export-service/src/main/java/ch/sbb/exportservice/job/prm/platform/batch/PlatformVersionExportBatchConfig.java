@@ -25,17 +25,17 @@ import ch.sbb.exportservice.tasklet.upload.UploadJsonFileTaskletV2;
 import ch.sbb.exportservice.util.StepUtil;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.json.JsonFileItemWriter;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader;
+import org.springframework.batch.infrastructure.item.file.FlatFileItemWriter;
+import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,11 +62,9 @@ public class PlatformVersionExportBatchConfig {
       @Autowired @Qualifier("prmDataSource") DataSource dataSource,
       @Value("#{jobParameters[exportTypeV2]}") ExportTypeV2 exportTypeV2
   ) {
-    JdbcCursorItemReader<PlatformVersion> itemReader = new JdbcCursorItemReader<>();
-    itemReader.setDataSource(dataSource);
-    itemReader.setSql(PlatformVersionSqlQueryUtil.getSqlQuery(exportTypeV2));
+    JdbcCursorItemReader<PlatformVersion> itemReader = new JdbcCursorItemReader<>(dataSource,
+        PlatformVersionSqlQueryUtil.getSqlQuery(exportTypeV2), new PlatformVersionRowMapper());
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
-    itemReader.setRowMapper(new PlatformVersionRowMapper());
     return itemReader;
   }
 
@@ -76,7 +74,6 @@ public class PlatformVersionExportBatchConfig {
   public Job exportPlatformCsvJob(ItemReader<PlatformVersion> itemReader) {
     return new JobBuilder(EXPORT_PLATFORM_CSV_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportPlatformCsvStep(itemReader))
         .next(uploadPlatformCsvFileStepV2())
         .next(deletePlatformCsvFileStepV2())
@@ -88,12 +85,12 @@ public class PlatformVersionExportBatchConfig {
   public Step exportPlatformCsvStep(ItemReader<PlatformVersion> itemReader) {
     final String stepName = "exportPlatformCsvStep";
     return new StepBuilder(stepName, jobRepository)
-        .<PlatformVersion, PlatformVersionCsvModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<PlatformVersion, PlatformVersionCsvModel>chunk(StepUtil.CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(itemReader)
         .processor(platformVersionCsvProcessor())
         .writer(platformCsvWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();
@@ -156,7 +153,6 @@ public class PlatformVersionExportBatchConfig {
   public Job exportPlatformJsonJob(ItemReader<PlatformVersion> itemReader) {
     return new JobBuilder(EXPORT_PLATFORM_JSON_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportPlatformJsonStep(itemReader))
         .next(uploadPlatformJsonFileStepV2())
         .next(deletePlatformJsonFileStepV2())
@@ -168,12 +164,12 @@ public class PlatformVersionExportBatchConfig {
   public Step exportPlatformJsonStep(ItemReader<PlatformVersion> itemReader) {
     String stepName = "exportPlatformJsonStep";
     return new StepBuilder(stepName, jobRepository)
-        .<PlatformVersion, ReadPlatformVersionModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<PlatformVersion, ReadPlatformVersionModel>chunk(StepUtil.CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(itemReader)
         .processor(platformVersionJsonProcessor())
         .writer(platformJsonFileItemWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();

@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,8 +28,7 @@ public abstract class BaseExportCsvDataIntegrationTest {
   @MockitoBean
   protected AmazonService amazonService;
 
-  @Captor
-  protected ArgumentCaptor<File> fileArgumentCaptor;
+  protected ArgumentCaptor<File> fileArgumentCaptor = ArgumentCaptor.forClass(File.class);
 
   @MockitoBean
   @Qualifier("deleteServicePointCsvFileTaskletV2")

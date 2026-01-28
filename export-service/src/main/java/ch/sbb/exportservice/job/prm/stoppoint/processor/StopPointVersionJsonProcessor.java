@@ -5,7 +5,7 @@ import static ch.sbb.exportservice.util.MapperUtil.getMeansOfTransportSorted;
 import ch.sbb.atlas.api.prm.model.stoppoint.ReadStopPointVersionModel;
 import ch.sbb.exportservice.job.prm.stoppoint.entity.StopPointVersion;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class StopPointVersionJsonProcessor implements ItemProcessor<StopPointVersion, ReadStopPointVersionModel> {
