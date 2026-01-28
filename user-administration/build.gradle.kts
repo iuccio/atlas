@@ -13,18 +13,20 @@ description = "Atlas User Administration"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.security:spring-security-oauth2-authorization-server")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
     implementation(libs.microsoft.graph)
     implementation(libs.azure.identity)
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     implementation(project(":base-atlas"))
     implementation(project(":kafka"))
-    implementation("org.springframework.kafka:spring-kafka")
-    implementation("org.hibernate.orm:hibernate-jpamodelgen")
-    annotationProcessor("org.hibernate.orm:hibernate-jpamodelgen")
+    implementation(project(":kafka"))
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
+    implementation("org.hibernate.orm:hibernate-processor")
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
@@ -34,10 +36,11 @@ dependencies {
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation(project(":base-atlas", "test"))
     testImplementation(project(":auto-rest-doc"))
-    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-security-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
 
     testRuntimeOnly("org.postgresql:postgresql")
     testImplementation(libs.mockito.inline)
