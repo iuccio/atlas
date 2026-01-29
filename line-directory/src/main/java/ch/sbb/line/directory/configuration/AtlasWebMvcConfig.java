@@ -1,6 +1,8 @@
 package ch.sbb.line.directory.configuration;
 
+import ch.sbb.atlas.configuration.JacksonJsonConfig;
 import ch.sbb.atlas.configuration.PagingConfig;
+import ch.sbb.atlas.configuration.filter.CorrelationIdFilterConfig;
 import java.util.Collection;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -9,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@Import(PagingConfig.class)
+@Import({CorrelationIdFilterConfig.class, PagingConfig.class, JacksonJsonConfig.class})
 public class AtlasWebMvcConfig implements WebMvcConfigurer {
 
   @Override
