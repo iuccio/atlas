@@ -3,20 +3,20 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "atlas-components": {
+    "components": {
       "projectType": "library",
-      "root": "atlas-components",
-      "sourceRoot": "atlas-components/src",
+      "root": "components",
+      "sourceRoot": "components/src",
       "prefix": "ac",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
           "configurations": {
             "production": {
-              "tsConfig": "atlas-components/tsconfig.lib.prod.json"
+              "tsConfig": "components/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "atlas-components/tsconfig.lib.json"
+              "tsConfig": "components/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -25,20 +25,22 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "runner": "vitest",
-            "tsConfig": "atlas-components/tsconfig.spec.json",
+            "tsConfig": "components/tsconfig.spec.json",
             "watch": false,
             "coverage": true,
             "coverageReporters": ["text", "lcov"],
-            "coverageInclude": ["frontend/atlas-components/src/lib/**/*.ts"]
+            "coverageInclude": [
+              "frontend/components/src/lib/**/*.ts"
+            ]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "eslintConfig": "atlas-components/eslint.config.js",
+            "eslintConfig": "components/eslint.config.js",
             "lintFilePatterns": [
-              "atlas-components/**/*.ts",
-              "atlas-components/**/*.html"
+              "components/**/*.ts",
+              "components/**/*.html"
             ]
           }
         }
