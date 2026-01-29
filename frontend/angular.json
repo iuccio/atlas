@@ -35,6 +35,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
+            "eslintConfig": "atlas-components/eslint.config.js",
             "lintFilePatterns": [
               "atlas-components/**/*.ts",
               "atlas-components/**/*.html"

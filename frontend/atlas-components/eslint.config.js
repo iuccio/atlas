@@ -1,5 +1,5 @@
 // @ts-check
-const { defineConfig } = require("eslint/config");
+const {defineConfig} = require("eslint/config");
 const rootConfig = require("../eslint.config.js");
 
 module.exports = defineConfig([
@@ -11,7 +11,7 @@ module.exports = defineConfig([
         "error",
         {
           type: "attribute",
-          prefix: "ac",
+          prefix: "atlas",
           style: "camelCase",
         },
       ],
@@ -19,7 +19,7 @@ module.exports = defineConfig([
         "error",
         {
           type: "element",
-          prefix: "ac",
+          prefix: "atlas",
           style: "kebab-case",
         },
       ],
