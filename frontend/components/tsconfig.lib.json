@@ -5,8 +5,11 @@
   "compilerOptions": {
     "composite": true,
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "types": []
+  },
+  "angularCompilerOptions": {
+    "compilationMode": "partial"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts"]
