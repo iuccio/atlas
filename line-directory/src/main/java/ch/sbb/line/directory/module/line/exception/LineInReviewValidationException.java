@@ -18,7 +18,7 @@ public class LineInReviewValidationException extends AtlasException {
     @Override
     public ErrorResponse getErrorResponse() {
         return ErrorResponse.builder()
-            .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
+            .status(HttpStatus.UNPROCESSABLE_CONTENT.value())
             .message("Business rule validation failed")
             .error("May not update validFrom, validTo or type while status is " + Status.IN_REVIEW.name())
             .details(new TreeSet<>(getErrorDetails()))

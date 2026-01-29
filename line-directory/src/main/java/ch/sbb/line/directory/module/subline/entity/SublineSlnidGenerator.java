@@ -1,6 +1,7 @@
 package ch.sbb.line.directory.module.subline.entity;
 
 import ch.sbb.line.directory.module.subline.entity.SublineVersion.Fields;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.FlushModeType;
 import java.lang.reflect.Field;
 import java.util.EnumSet;
@@ -28,7 +29,10 @@ public class SublineSlnidGenerator implements BeforeExecutionGenerator {
     }
 
     String mainlineSlnid = getMainlineSlnid(entity);
-    Long sublinePartNumber = session
+
+
+    EntityManager entityManager = session.unwrap(EntityManager.class);
+    Long sublinePartNumber = (Long) entityManager
         .createNativeQuery("SELECT count(*)+1 from subline_version where mainline_slnid = ?", Long.class)
         .setFlushMode(FlushModeType.COMMIT)
         .setParameter(1, mainlineSlnid)

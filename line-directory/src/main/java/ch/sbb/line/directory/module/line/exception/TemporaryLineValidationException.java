@@ -22,7 +22,7 @@ public class TemporaryLineValidationException extends AtlasException {
   @Override
   public ErrorResponse getErrorResponse() {
     return ErrorResponse.builder()
-        .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
+        .status(HttpStatus.UNPROCESSABLE_CONTENT.value())
         .message("Business rule validation failed")
         .error("Temporary line validation")
         .details(new TreeSet<>(getErrorDetails()))

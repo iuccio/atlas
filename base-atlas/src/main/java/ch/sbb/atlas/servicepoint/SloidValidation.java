@@ -4,6 +4,7 @@ import ch.sbb.atlas.api.AtlasCharacterSetsRegex;
 import java.util.regex.Pattern;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 @UtilityClass
 public class SloidValidation {
@@ -39,7 +40,7 @@ public class SloidValidation {
   }
 
   private static boolean prefixIsCorrect(String sloid) {
-    boolean result = StringUtils.startsWith(sloid, SLOID_PREFIX);
+    boolean result = Strings.CS.startsWith(sloid, SLOID_PREFIX);
 
     if (!result) {
       throw new SloidNotValidException(sloid, "did not start with " + SLOID_PREFIX);
@@ -49,7 +50,7 @@ public class SloidValidation {
 
   private static boolean isServicePointNumberCorrect(String sloid, ServicePointNumber servicePointNumber) {
     String servicePointSloid = ServicePointNumber.calculateSloid(servicePointNumber);
-    boolean result = StringUtils.startsWith(sloid, servicePointSloid);
+    boolean result = Strings.CS.startsWith(sloid, servicePointSloid);
 
     if (!result) {
       throw new SloidNotValidException(sloid, "did not start with " + servicePointSloid);
