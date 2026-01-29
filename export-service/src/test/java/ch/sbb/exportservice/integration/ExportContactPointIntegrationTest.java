@@ -18,7 +18,7 @@ import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.JobInstance;
 import org.springframework.batch.core.job.parameters.JobParameters;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -31,7 +31,7 @@ class ExportContactPointIntegrationTest extends BasePrmSqlIntegrationTest {
   private AmazonService amazonService;
 
   @Autowired
-  private JobLauncher jobLauncher;
+  private JobOperator jobOperator;
 
   @Autowired
   @Qualifier(EXPORT_CONTACT_POINT_CSV_JOB_NAME)
@@ -51,7 +51,7 @@ class ExportContactPointIntegrationTest extends BasePrmSqlIntegrationTest {
     // given
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(new JobParams(ExportTypeV2.FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportContactPointCsvJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportContactPointCsvJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 
@@ -65,7 +65,7 @@ class ExportContactPointIntegrationTest extends BasePrmSqlIntegrationTest {
     // given
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(new JobParams(ExportTypeV2.FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportContactPointJsonJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportContactPointJsonJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 

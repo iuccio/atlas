@@ -15,7 +15,7 @@ import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.JobInstance;
 import org.springframework.batch.core.job.parameters.JobParameters;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -26,7 +26,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 class ExportLoadingPointIntegrationTest {
 
   @Autowired
-  private JobLauncher jobLauncher;
+  private JobOperator jobOperator;
 
   @Autowired
   @Qualifier(EXPORT_LOADING_POINT_CSV_JOB_NAME)
@@ -42,7 +42,7 @@ class ExportLoadingPointIntegrationTest {
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(
         new JobParams(ExportTypeV2.WORLD_FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportLoadingPointCsvJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportLoadingPointCsvJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 
@@ -58,7 +58,7 @@ class ExportLoadingPointIntegrationTest {
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(
         new JobParams(ExportTypeV2.WORLD_FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportLoadingPointJsonJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportLoadingPointJsonJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 

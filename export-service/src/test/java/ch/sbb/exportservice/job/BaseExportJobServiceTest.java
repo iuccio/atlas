@@ -13,20 +13,20 @@ import org.springframework.batch.core.job.parameters.InvalidJobParametersExcepti
 import org.springframework.batch.core.job.parameters.JobParameters;
 import org.springframework.batch.core.launch.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.launch.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.launch.JobRestartException;
 
 class BaseExportJobServiceTest {
 
   private BaseExportJobService baseExportJobService;
-  private JobLauncher jobLauncherMock;
+  private JobOperator jobOperator;
   private Job jobMock;
 
   @BeforeEach
   void setUp() {
-    jobLauncherMock = Mockito.mock(JobLauncher.class);
+    jobOperator = Mockito.mock(JobOperator.class);
     jobMock = Mockito.mock(Job.class);
-    baseExportJobService = new BaseExportJobService(jobLauncherMock, jobMock, jobMock) {
+    baseExportJobService = new BaseExportJobService(jobOperator, jobMock, jobMock) {
       @Override
       protected List<JobParams> getExportTypes() {
         return List.of(new JobParams(ExportTypeV2.FULL));
@@ -45,13 +45,13 @@ class BaseExportJobServiceTest {
     // given
     final JobExecution jobExecutionMock = Mockito.mock(JobExecution.class);
     Mockito.when(jobExecutionMock.getExitStatus()).thenReturn(ExitStatus.COMPLETED);
-    Mockito.when(jobLauncherMock.run(Mockito.same(jobMock), Mockito.any(JobParameters.class))).thenReturn(jobExecutionMock);
+    Mockito.when(jobOperator.start(Mockito.same(jobMock), Mockito.any(JobParameters.class))).thenReturn(jobExecutionMock);
 
     // when
     baseExportJobService.startExportJobs();
 
     // then
-    Mockito.verify(jobLauncherMock, Mockito.times(2)).run(Mockito.same(jobMock), Mockito.any(JobParameters.class));
+    Mockito.verify(jobOperator, Mockito.times(2)).start(Mockito.same(jobMock), Mockito.any(JobParameters.class));
   }
 
 }

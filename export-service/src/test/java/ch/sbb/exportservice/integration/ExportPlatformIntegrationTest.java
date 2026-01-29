@@ -14,7 +14,7 @@ import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.JobInstance;
 import org.springframework.batch.core.job.parameters.JobParameters;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -23,7 +23,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 class ExportPlatformIntegrationTest extends BasePrmSqlIntegrationTest {
 
   @Autowired
-  private JobLauncher jobLauncher;
+  private JobOperator jobOperator;
 
   @Autowired
   @Qualifier(EXPORT_PLATFORM_CSV_JOB_NAME)
@@ -38,7 +38,7 @@ class ExportPlatformIntegrationTest extends BasePrmSqlIntegrationTest {
     // given
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(new JobParams(ExportTypeV2.FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportPlatformCsvJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportPlatformCsvJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 
@@ -52,7 +52,7 @@ class ExportPlatformIntegrationTest extends BasePrmSqlIntegrationTest {
     // given
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(new JobParams(ExportTypeV2.FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportPlatformJsonJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportPlatformJsonJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 

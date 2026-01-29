@@ -8,7 +8,7 @@ import ch.sbb.exportservice.model.ExportTypeV2;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.job.Job;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +17,9 @@ import org.springframework.stereotype.Component;
 public class RecordingObligationJobService extends BaseExportJobService {
 
   public RecordingObligationJobService(
-      JobLauncher jobLauncher,
+      JobOperator jobOperator,
       @Qualifier(EXPORT_RECORDING_OBLIGATION_CSV_JOB_NAME) Job exportRecordingObligationCsvJob) {
-    super(jobLauncher, exportRecordingObligationCsvJob, null);
+    super(jobOperator, exportRecordingObligationCsvJob, null);
   }
 
   @Override
