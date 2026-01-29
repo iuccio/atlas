@@ -9,16 +9,21 @@ group = "ch.sbb.atlas"
 version = "2.1071.0"
 
 dependencies {
+    // Spring Boot Starters
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-configuration-processor")
+
+    // Spring Cloud
+    implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webflux")
+
+    // Micrometer & Tracing
     implementation("io.micrometer:micrometer-tracing")
     implementation("io.micrometer:micrometer-tracing-bridge-brave")
 
-    implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webflux")
-
+    // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-
 }
+
 tasks.named<Jar>("jar") {
     enabled = false
 }

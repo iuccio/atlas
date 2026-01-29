@@ -11,26 +11,29 @@ version = "2.1071.0"
 description = "Atlas Mail Service"
 
 dependencies {
+    // Spring Boot Starters
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-kafka")//get this dependency from :kafka use as api does not work
+    implementation("org.springframework.boot:spring-boot-starter-validation")//get this dependency from :kafka use as api does not work
+
+    // Libraries
     implementation(libs.swagger.core)
 
+    // Project dependencies
     implementation(project(":kafka"))
-    implementation("org.springframework.boot:spring-boot-starter-kafka")//get this dependency from :kafka use as api does not work
-
     implementation(project(":base-atlas")){
         exclude("org.hibernate.orm","hibernate-processor")
         exclude("org.springframework.boot","spring-boot-starter-data-jpa")
         exclude("org.springframework.boot","spring-boot-starter-security")
         exclude("org.springframework.boot","spring-boot-starter-security-oauth2-resource-server")
     }
-    implementation("org.springframework.boot:spring-boot-starter-validation")//get this dependency from :kafka use as api does not work
 
+    // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.greenmail.junit5)
-
 }
 
 tasks.named<Jar>("jar") {

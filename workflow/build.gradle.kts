@@ -12,42 +12,50 @@ version = "2.1071.0"
 description = "Atlas Workflow Service"
 
 dependencies {
+    // Spring Boot Starters
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-    implementation("commons-codec:commons-codec")
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
     implementation("org.springframework.boot:spring-boot-starter-flyway")
 
+    // Spring Cloud
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+    // Spring Security
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+
+    // Flyway
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.flywaydb:flyway-core")
 
+    // Hibernate
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
+
+    // Libraries
+    implementation("commons-codec:commons-codec")
+    implementation("org.springframework.kafka:spring-kafka")//get this dependency from :kafka use as api does not work
+
+    // Project dependencies
     implementation(project(":base-atlas"))
     implementation(project(":kafka"))
-    implementation("org.springframework.boot:spring-boot-starter-kafka")
-
-    implementation("org.springframework.kafka:spring-kafka")//get this dependency from :kafka use as api does not work
     implementation(project(":user-administration-security"))
-
-    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     runtimeOnly("org.postgresql:postgresql")
 
+    // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
     testImplementation(libs.mockito.inline)
     testImplementation(project(":base-atlas", "test"))
     testImplementation(project(":auto-rest-doc"))
 
-    testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:testcontainers-postgresql")
-    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-
     testRuntimeOnly("org.postgresql:postgresql")
-
 }
 
 springBoot {
