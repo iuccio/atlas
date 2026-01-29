@@ -1,5 +1,6 @@
 package ch.sbb.atlas.model.entity;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.FlushModeType;
 import java.lang.reflect.Field;
 import java.util.EnumSet;
@@ -36,8 +37,9 @@ public abstract class BusinessIdGenerator implements BeforeExecutionGenerator {
       return presetSlnid.get();
     }
 
+    EntityManager entityManager = session.unwrap(EntityManager.class);
     long result =
-        session.createNativeQuery("SELECT nextval('" + dbSequence + "') as nextval", Long.class)
+        (long) entityManager.createNativeQuery("SELECT nextval('" + dbSequence + "') as nextval", Long.class)
             .setFlushMode(FlushModeType.COMMIT)
             .getSingleResult();
     return businessIdPrefix + result;
