@@ -36,7 +36,6 @@ dependencies {
 
     // Hibernate
     implementation("org.hibernate.orm:hibernate-processor")
-    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     // Libraries
     implementation(libs.bundles.geo.data) //optional
@@ -48,6 +47,7 @@ dependencies {
     implementation(project(":user-administration-security"))
 
     runtimeOnly("org.postgresql:postgresql")
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")

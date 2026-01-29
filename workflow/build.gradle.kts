@@ -30,9 +30,6 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.flywaydb:flyway-core")
 
-    // Hibernate
-    annotationProcessor("org.hibernate.orm:hibernate-processor")
-
     // Libraries
     implementation("commons-codec:commons-codec")
     implementation("org.springframework.kafka:spring-kafka")//get this dependency from :kafka use as api does not work
@@ -43,6 +40,7 @@ dependencies {
     implementation(project(":user-administration-security"))
 
     runtimeOnly("org.postgresql:postgresql")
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")

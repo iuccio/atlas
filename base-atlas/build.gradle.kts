@@ -31,7 +31,6 @@ dependencies {
 
     // Hibernate
     implementation("org.hibernate.orm:hibernate-processor")
-    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     // Libraries
     implementation(libs.bundles.geo.data) //optional
@@ -43,6 +42,8 @@ dependencies {
 
     // Project dependencies
     implementation(project(":kafka"))
+
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     // Test dependencies
     testImplementation(project(":auto-rest-doc"))
