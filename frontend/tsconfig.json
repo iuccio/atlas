@@ -38,15 +38,6 @@
   "references": [
     {
       "path": "./atlas-components/tsconfig.lib.json"
-    },
-    {
-      "path": "./atlas-components/tsconfig.spec.json"
-    },
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
     }
   ]
 }
