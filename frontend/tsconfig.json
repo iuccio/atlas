@@ -20,10 +20,10 @@
     "useDefineForClassFields": false,
     "paths": {
       "@atlas/form": [
-        "atlas-components/src/public-api.ts"
+        "components/src/public-api.ts"
       ],
       "@atlas/form/*": [
-        "atlas-components/src/*"
+        "components/src/*"
       ]
     }
   },
@@ -34,10 +34,10 @@
     "strictTemplates": true
   },
   // without this inclusion jasmine expect does not work correctly with intellij
-  "include": ["src/**/*.spec.ts", "src/**/*.ts", "atlas-components/**/*.ts"],
+  "include": ["src/**/*.spec.ts", "src/**/*.ts", "components/**/*.ts"],
   "references": [
     {
-      "path": "./atlas-components/tsconfig.lib.json"
+      "path": "./components/tsconfig.lib.json"
     }
   ]
 }

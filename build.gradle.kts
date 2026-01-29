@@ -27,7 +27,7 @@ subprojects {
                 property(
                     "sonar.exclusions",
                     "**/node_modules/**,**/*.spec.ts,**/*.module.ts,**/*.routes.ts,**/karma.conf.js,**/*.kts,**/src/main.ts, " +
-                            "**/eslint.config.js",
+                            "**/eslint.config.js"
                 )
                 property("sonar.sources", "./")
                 property("sonar.language", "ts")
@@ -36,7 +36,8 @@ subprojects {
                 property("sonar.test.inclusion", "**/*.spec.ts")
                 property("sonar.ts.tslint.configPath", "tslint.json")
                 property("sonar.typescript.lcov.reportPaths",
-                    "${project.projectDir}/coverage/atlas-components/lcov.info,${project.projectDir}/coverage/atlas-frontend/lcov.info")
+                    "${project.projectDir}/coverage/components/lcov.info,${project.projectDir}/coverage/atlas-frontend/lcov.info"
+                )
                 property("sonar.coverage.exclusions", "**/*.spec.ts,**/cypress/**,/**/*.module.ts,**/src/main.ts")
             }
         }

@@ -1,5 +1,5 @@
 /*
- * Public API Surface of atlas-components
+ * Public API Surface of components
  */
 
 export * from './lib/form/info-icon/info-icon.component';

@@ -11,7 +11,7 @@ const compat = new FlatCompat({
 });
 
 module.exports = [{
-  ignores: ["projects/**/*", "**node_modules/**/*", "src/app/api/**/*", "cypress.config.ts", "atlas-components/coverage/**/*", "coverage/**/*"],
+  ignores: ["projects/**/*", "**node_modules/**/*", "src/app/api/**/*", "cypress.config.ts", "components/coverage/**/*", "coverage/**/*"],
 }, ...compat.extends(
   "eslint:recommended",
   "plugin:@typescript-eslint/recommended",
