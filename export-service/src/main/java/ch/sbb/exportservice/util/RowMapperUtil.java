@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
-import org.springframework.lang.Nullable;
 
 @UtilityClass
 public class RowMapperUtil {
@@ -43,7 +42,7 @@ public class RowMapperUtil {
     return collection.stream().map(Enum::name).sorted().collect(Collectors.joining("|"));
   }
 
-  public static <T extends Enum<T>> T enumValueElseNull(Class<T> enumClass, @Nullable String enumValue) {
+  public static <T extends Enum<T>> T enumValueElseNull(Class<T> enumClass, String enumValue) {
     return Objects.isNull(enumValue) ? null : Enum.valueOf(enumClass, enumValue);
   }
 

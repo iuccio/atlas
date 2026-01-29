@@ -15,7 +15,7 @@ import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.JobInstance;
 import org.springframework.batch.core.job.parameters.JobParameters;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -28,7 +28,7 @@ class ToiletIntegrationTest extends BasePrmSqlIntegrationTest {
   private AmazonService amazonService;
 
   @Autowired
-  private JobLauncher jobLauncher;
+  private JobOperator jobOperator;
 
   @Autowired
   @Qualifier(EXPORT_TOILET_CSV_JOB_NAME)
@@ -43,7 +43,7 @@ class ToiletIntegrationTest extends BasePrmSqlIntegrationTest {
     // given
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(new JobParams(ExportTypeV2.FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportToiletCsvJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportToiletCsvJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 
@@ -57,7 +57,7 @@ class ToiletIntegrationTest extends BasePrmSqlIntegrationTest {
     // given
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(new JobParams(ExportTypeV2.FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportToiletJsonJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportToiletJsonJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 

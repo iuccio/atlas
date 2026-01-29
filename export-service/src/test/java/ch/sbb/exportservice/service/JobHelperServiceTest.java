@@ -17,12 +17,12 @@ import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.JobInstance;
 import org.springframework.batch.core.job.parameters.JobParameters;
 import org.springframework.batch.core.job.parameters.JobParametersBuilder;
-import org.springframework.batch.core.repository.explore.JobExplorer;
+import org.springframework.batch.core.repository.JobRepository;
 
 class JobHelperServiceTest {
 
   @Mock
-  private JobExplorer jobExplorer;
+  private JobRepository jobRepository;
 
   @Mock
   private JobInstance jobInstance;
@@ -35,7 +35,7 @@ class JobHelperServiceTest {
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    jobHelperService = new JobHelperService(jobExplorer);
+    jobHelperService = new JobHelperService(jobRepository);
   }
 
   @Test
@@ -52,8 +52,8 @@ class JobHelperServiceTest {
     JobParameters jobParameters = new JobParametersBuilder()
         .addString(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, "BATCH")
         .toJobParameters();
-    when(jobExplorer.findJobInstancesByJobName(any(), anyInt(), anyInt())).thenReturn(List.of(jobInstance));
-    when(jobExplorer.getLastJobExecution(jobInstance)).thenReturn(jobExecution);
+    when(jobRepository.getJobInstances(any(), anyInt(), anyInt())).thenReturn(List.of(jobInstance));
+    when(jobRepository.getLastJobExecution(jobInstance)).thenReturn(jobExecution);
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
 

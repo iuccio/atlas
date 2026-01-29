@@ -8,7 +8,7 @@ import ch.sbb.exportservice.job.BaseExportType;
 import ch.sbb.exportservice.model.ExportObjectV2;
 import java.util.List;
 import org.springframework.batch.core.job.Job;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 public class ExportContactPointJobService extends BaseExportJobService {
 
   public ExportContactPointJobService(
-      JobLauncher jobLauncher,
+      JobOperator jobOperator,
       @Qualifier(EXPORT_CONTACT_POINT_CSV_JOB_NAME) Job exportContactPointCsvJob,
       @Qualifier(EXPORT_CONTACT_POINT_JSON_JOB_NAME) Job exportContactPointJsonJob) {
-    super(jobLauncher, exportContactPointCsvJob, exportContactPointJsonJob);
+    super(jobOperator, exportContactPointCsvJob, exportContactPointJsonJob);
   }
 
   @Override

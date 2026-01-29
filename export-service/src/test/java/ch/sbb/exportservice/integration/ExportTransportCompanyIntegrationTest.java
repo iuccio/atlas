@@ -22,7 +22,6 @@ import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.JobInstance;
 import org.springframework.batch.core.job.parameters.JobParameters;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -32,9 +31,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @IntegrationTest
 @AutoConfigureMockMvc(addFilters = false)
 class ExportTransportCompanyIntegrationTest extends BaseExportCsvDataIntegrationTest {
-
-  @Autowired
-  private JobLauncher jobLauncher;
 
   @Autowired
   @Qualifier(EXPORT_TRANSPORT_COMPANY_CSV_JOB_NAME)
@@ -57,7 +53,7 @@ class ExportTransportCompanyIntegrationTest extends BaseExportCsvDataIntegration
     // given
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(new JobParams(ExportTypeV2.FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportTransportCompanyCsvJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportTransportCompanyCsvJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 
@@ -82,7 +78,7 @@ class ExportTransportCompanyIntegrationTest extends BaseExportCsvDataIntegration
     // given
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(new JobParams(ExportTypeV2.FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportTransportCompanyJsonJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportTransportCompanyJsonJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 
