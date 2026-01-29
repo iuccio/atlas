@@ -51,10 +51,19 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "none",
-          "standalone": true
+          "standalone": true,
+          "type": "component"
         },
-        "@schematics/angular:application": {
-          "strict": true
+        "@schematics/angular:directive": {
+          "standalone": true,
+          "type": "directive"
+        },
+        "@schematics/angular:pipe": {
+          "standalone": true,
+          "typeSeparator": "."
+        },
+        "@schematics/angular:service": {
+          "type": "service"
         }
       },
       "root": "",
