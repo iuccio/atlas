@@ -26,7 +26,8 @@ subprojects {
                 property("sonar.projectVersion", project.version)
                 property(
                     "sonar.exclusions",
-                    "**/node_modules/**,**/*.spec.ts,**/*.module.ts,**/*.routes.ts,**/karma.conf.js,**/*.kts,**/src/main.ts"
+                    "**/node_modules/**,**/*.spec.ts,**/*.module.ts,**/*.routes.ts,**/karma.conf.js,**/*.kts,**/src/main.ts, " +
+                            "**/eslint.config.js",
                 )
                 property("sonar.sources", "./")
                 property("sonar.language", "ts")
