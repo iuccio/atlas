@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.batch.infrastructure.item.json.JacksonJsonObjectMarshaller;
 import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.WritableResource;
 import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
@@ -18,17 +19,20 @@ public abstract class BaseJsonWriter<T> {
   private final FileService fileService;
 
   public JsonFileItemWriter<T> getWriter(ExportObjectV2 exportType, ExportTypeV2 exportFileName) {
-    JacksonJsonObjectMarshaller<T> jacksonJsonObjectMarshaller = new JacksonJsonObjectMarshaller<>();
+    return getWriter(new FileSystemResource(getFilePath(exportType, exportFileName)));
+  }
 
-    // TODO ??? was hier richtig
-    jacksonJsonObjectMarshaller.setJsonMapper(JsonMapper.builder().build());
-
-    JsonFileItemWriter<T> writer = new JsonFileItemWriter<>(
-        new FileSystemResource(getFilePath(exportType, exportFileName)),
-        jacksonJsonObjectMarshaller);
+  public JsonFileItemWriter<T> getWriter(WritableResource writableResource) {
+    JsonFileItemWriter<T> writer = new JsonFileItemWriter<>(        writableResource,        createJsonMarshaller());
     writer.setEncoding(StandardCharsets.UTF_8.name());
     writer.close();
     return writer;
+  }
+
+  public JacksonJsonObjectMarshaller<T> createJsonMarshaller() {
+    JacksonJsonObjectMarshaller<T> marshaller = new JacksonJsonObjectMarshaller<>();
+    marshaller.setJsonMapper(JsonMapper.builder().build());
+    return marshaller;
   }
 
   private String getFilePath(ExportObjectV2 exportType, ExportTypeV2 exportFileName) {
