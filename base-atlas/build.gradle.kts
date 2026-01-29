@@ -11,55 +11,54 @@ configurations {
 }
 
 dependencies {
-// For BaseVersion
+    // Spring Boot Starters
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.hibernate.orm:hibernate-processor")
-// For UserService
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server")
-// For correlation id
-    implementation("org.springframework.boot:spring-boot-micrometer-tracing")
-    implementation("org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry")
-
-    implementation("org.springframework.boot:spring-boot-micrometer-tracing-brave")
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-// Feign Client Specific Micrometer
-    implementation("io.github.openfeign:feign-micrometer")
-// Service Point and ExportService
-    implementation(libs.bundles.geo.data) //optional
-
+    implementation("org.springframework.boot:spring-boot-starter-security-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-json")
-
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-security-oauth2-client")
-// API
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
+
+    // Spring Cloud
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+    // Micrometer & Tracing
+    implementation("org.springframework.boot:spring-boot-micrometer-tracing")
+    implementation("org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry")
+    implementation("org.springframework.boot:spring-boot-micrometer-tracing-brave")
+    implementation("io.github.openfeign:feign-micrometer")
+
+    // Hibernate
+    implementation("org.hibernate.orm:hibernate-processor")
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
+
+    // Libraries
+    implementation(libs.bundles.geo.data) //optional
     implementation(libs.swagger.core)
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
     implementation(libs.aws.s3)
     implementation(libs.jaxb.api)
     implementation(libs.pdfbox)
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
-    implementation("org.springframework.boot:spring-boot-starter-kafka")
+    // Project dependencies
     implementation(project(":kafka"))
 
-    annotationProcessor("org.hibernate.orm:hibernate-processor")
-
+    // Test dependencies
     testImplementation(project(":auto-rest-doc"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    testImplementation("org.assertj:assertj-core")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
-
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:testcontainers-postgresql")
     testImplementation("org.springframework.boot:spring-boot-micrometer-tracing-test")
+    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
 
     testRuntimeOnly("org.postgresql:postgresql")
-
 }
 
 // used to create the base-atlas-test jar
@@ -72,11 +71,11 @@ tasks.register<Jar>("testJar") {
     from(project.the<SourceSetContainer>()["test"].output)
 }
 
+tasks.bootJar {
+    enabled = false
+}
+
 // used to create the base-atlas-test jar
 artifacts {
     add("test", tasks["testJar"])
-}
-
-tasks.bootJar {
-    enabled = false
 }

@@ -12,43 +12,57 @@ version = "2.1071.0"
 description = "Atlas Bulk Import Service"
 
 dependencies {
+    // Spring Boot Starters
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-json")
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.security:spring-security-oauth2-client")
-    implementation("org.springframework.security:spring-security-oauth2-authorization-server")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-batch-jdbc")
-    implementation("org.springframework.batch:spring-batch-integration")
-    implementation("io.micrometer:micrometer-tracing")
-    implementation(project(":base-atlas"))
-    implementation(libs.aws.s3)
     implementation("org.springframework.boot:spring-boot-starter-kafka")
-    implementation(project(":kafka"))
-    implementation(project(":user-administration-security"))
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
+
+    // Spring Cloud
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+    // Spring Security
+    implementation("org.springframework.security:spring-security-oauth2-client")
+    implementation("org.springframework.security:spring-security-oauth2-authorization-server")
+
+    // Spring Batch
+    implementation("org.springframework.batch:spring-batch-integration")
+
+    // Micrometer & Tracing
+    implementation("io.micrometer:micrometer-tracing")
+
+    // Flyway
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
+
+    // Libraries
+    implementation(libs.aws.s3)
     implementation(libs.poi.ooxml)
     implementation("com.fasterxml.jackson.core:jackson-annotations")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
-    implementation("org.springframework.boot:spring-boot-starter-flyway")
-    implementation("org.flywaydb:flyway-core")
-    implementation("org.flywaydb:flyway-database-postgresql")
+    // Project dependencies
+    implementation(project(":base-atlas"))
+    implementation(project(":kafka"))
+    implementation(project(":user-administration-security"))
 
     runtimeOnly("org.postgresql:postgresql")
 
+    // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.springframework.boot:spring-boot-starter-batch-jdbc-test")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
+    testImplementation(libs.mockito.inline)
     testImplementation(project(":auto-rest-doc"))
     testImplementation(project(":base-atlas", "test"))
-    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    testImplementation(libs.mockito.inline)
-
-    testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:testcontainers-postgresql")
 
 }
 
