@@ -28,7 +28,6 @@ dependencies {
 
     // Hibernate
     implementation("org.hibernate.orm:hibernate-processor")
-    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     // Libraries
     implementation(libs.aws.s3)
@@ -41,6 +40,7 @@ dependencies {
     implementation(project(":kafka"))
 
     runtimeOnly("org.postgresql:postgresql")
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     // Test dependencies
     testImplementation(project(":base-atlas", "test"))

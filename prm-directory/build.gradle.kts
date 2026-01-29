@@ -31,7 +31,6 @@ dependencies {
 
     // Hibernate
     implementation("org.hibernate.orm:hibernate-processor")
-    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     // Project dependencies
     implementation(project(":base-atlas"))
@@ -39,6 +38,7 @@ dependencies {
     implementation(project(":user-administration-security"))
 
     runtimeOnly("org.postgresql:postgresql")
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
     // Test dependencies
     testImplementation(project(":base-atlas", "test"))
