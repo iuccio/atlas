@@ -27,7 +27,9 @@
             "runner": "vitest",
             "tsConfig": "atlas-components/tsconfig.spec.json",
             "watch": false,
-            "coverage": true
+            "coverage": true,
+            "coverageReporters": ["text", "lcov"],
+            "coverageInclude": ["frontend/atlas-components/src/lib/**/*.ts"]
           }
         },
         "lint": {
