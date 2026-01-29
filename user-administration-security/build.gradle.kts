@@ -26,8 +26,7 @@ dependencies {
 
     // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-security-test")
     testImplementation("org.testcontainers:testcontainers-postgresql")
     testImplementation(project(":base-atlas", "test"))
     testImplementation(project(":auto-rest-doc"))
