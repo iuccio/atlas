@@ -12,14 +12,11 @@
         "build": {
           "builder": "@angular/build:ng-packagr",
           "configurations": {
-            "production": {
-              "tsConfig": "components/tsconfig.lib.prod.json"
-            },
             "development": {
               "tsConfig": "components/tsconfig.lib.json"
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "test": {
           "builder": "@angular/build:unit-test",
