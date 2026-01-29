@@ -39,7 +39,8 @@ public abstract class BusinessIdGenerator implements BeforeExecutionGenerator {
 
     EntityManager entityManager = session.unwrap(EntityManager.class);
     long result =
-        (long) entityManager.createNativeQuery("SELECT nextval('" + dbSequence + "') as nextval", Long.class)
+        (long) entityManager.createNativeQuery("SELECT nextval(?) as nextval", Long.class)
+            .setParameter(1, dbSequence)
             .setFlushMode(FlushModeType.COMMIT)
             .getSingleResult();
     return businessIdPrefix + result;
