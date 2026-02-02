@@ -1,14 +1,13 @@
 package ch.sbb.atlas.configuration;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.deser.std.StdScalarDeserializer;
-import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.module.SimpleModule;
 
 @Configuration
@@ -20,12 +19,9 @@ public class JacksonJsonConfig {
   }
 
   @Bean
-  ObjectMapper objectMapper() {
-    return JsonMapper.builder()
-        .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
-        .addModule(trimLeadingTrailingWhitespace())
-        .findAndAddModules()
-        .build();
+  JsonMapperBuilderCustomizer objectMapper(TrimLeadingTrailingWhitespace trimLeadingTrailingWhitespace) {
+    return builder -> builder.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
+        .addModule(trimLeadingTrailingWhitespace);
   }
 
   /**
