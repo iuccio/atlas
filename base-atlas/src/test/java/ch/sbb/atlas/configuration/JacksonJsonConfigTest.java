@@ -8,11 +8,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.context.annotation.Import;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.ObjectMapper;
 
-@SpringBootTest(classes = JacksonJsonConfig.class)
+@JsonTest
+@Import(JacksonJsonConfig.class)
 class JacksonJsonConfigTest {
 
   @Autowired

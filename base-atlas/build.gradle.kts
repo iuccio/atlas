@@ -19,6 +19,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-kafka")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     // Spring Cloud
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
@@ -27,6 +28,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-micrometer-tracing")
     implementation("org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry")
     implementation("org.springframework.boot:spring-boot-micrometer-tracing-brave")
+
     implementation("io.github.openfeign:feign-micrometer")
 
     // Hibernate
