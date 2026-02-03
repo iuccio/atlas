@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("internal/tth/year")
 public interface TthYearApiInternal {
 
-  @PostMapping("close/{year}")
+  @PostMapping("{year}/close")
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastSupervisor(T(ch.sbb.atlas.kafka.model.user.admin"
       + ".ApplicationType).TIMETABLE_HEARING)")
-  TimetableHearingYearModel closeTimetableHearing(@PathVariable Long year);
+  TimetableHearingYearModel closeTimetableHearingYear(@PathVariable Long year);
 
 }
