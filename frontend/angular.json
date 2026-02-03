@@ -36,8 +36,8 @@
           "options": {
             "eslintConfig": "components/eslint.config.js",
             "lintFilePatterns": [
-              "components/**/*.ts",
-              "components/**/*.html"
+              "components/src/**/*.ts",
+              "components/src/**/*.html"
             ]
           }
         }
