@@ -133,7 +133,7 @@ export class DialogManageTthComponent implements OnInit {
   handleCloseViewTthCloseClick(): void {
     this.actionButtonsDisabled = true;
     this.tthYearInternalService
-      .closeTimetableHearing(this.year)
+      .closeTimetableHearingYear(this.year)
       .pipe(take(1))
       .subscribe({
         next: () => {
