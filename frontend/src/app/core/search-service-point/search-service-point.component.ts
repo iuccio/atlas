@@ -47,7 +47,7 @@ const SEARCH_STOP_POINT_PLACEHOLDER = 'SEPODI.SERVICE_POINTS.STOP_POINT';
 })
 export class SearchServicePointComponent implements OnInit {
   private readonly MIN_LENGTH_TERM = 2;
-  private readonly _DEBOUNCE_TIME = 500;
+  _DEBOUNCE_TIME = 500;
 
   @Input() searchType!: ServicePointSearchType;
   @Output()

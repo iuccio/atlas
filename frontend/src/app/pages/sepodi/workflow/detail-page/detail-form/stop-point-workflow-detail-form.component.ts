@@ -29,7 +29,7 @@ import { AtlasSpacerComponent } from '../../../../../core/components/spacer/atla
 import { AtlasButtonComponent } from '../../../../../core/components/button/atlas-button.component';
 import { TextFieldComponent } from '../../../../../core/form-components/text-field/text-field.component';
 import { CommentComponent } from '../../../../../core/form-components/comment/comment.component';
-import { InfoIconComponent } from '@atlas/form/info-icon/info-icon.component';
+import { InfoIconComponent } from '@atlas/form';
 import { StopPointWorkflowExaminantsTableComponent } from '../examinant-table/stop-point-workflow-examinants-table.component';
 import { StringListComponent } from '../../../../../core/form-components/string-list/string-list.component';
 import { TranslatePipe } from '@ngx-translate/core';

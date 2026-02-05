@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed, tick, } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchServicePointComponent } from './search-service-point.component';
 import { AppTestingModule } from '../../app.testing.module';
@@ -10,6 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ServicePointSearch } from './service-point-search';
 import { BERN_WYLEREGG } from '../../../test/data/service-point';
 import { ServicePointInternalService } from '../../api/service/sepodi/service-point-internal.service';
+import { tickAsync } from '../../../test/tick-async';
 import SpyObj = jasmine.SpyObj;
 
 describe('SearchServicePointComponent', () => {
@@ -21,10 +22,11 @@ describe('SearchServicePointComponent', () => {
   const activatedRouteMock = { data: of({ servicePoint: [BERN_WYLEREGG] }) };
 
   beforeEach(() => {
-    servicePointInternalService = jasmine.createSpyObj<ServicePointInternalService>(
-      'servicePointsService',
-      ['searchServicePoints']
-    );
+    servicePointInternalService =
+      jasmine.createSpyObj<ServicePointInternalService>(
+        'servicePointsService',
+        ['searchServicePoints']
+      );
     servicePointInternalService.searchServicePoints
       .withArgs({ value: 'be' })
       .and.returnValue(of());
@@ -37,13 +39,17 @@ describe('SearchServicePointComponent', () => {
       ],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRouteMock },
-        { provide: ServicePointInternalService, useValue: servicePointInternalService },
+        {
+          provide: ServicePointInternalService,
+          useValue: servicePointInternalService,
+        },
         { provide: TranslatePipe },
       ],
     });
     fixture = TestBed.createComponent(SearchServicePointComponent);
     component = fixture.componentInstance;
     fixture.componentInstance.searchType = ServicePointSearch.SePoDi;
+    component._DEBOUNCE_TIME = 0;
     fixture.detectChanges();
     router = TestBed.inject(Router);
   });
@@ -65,25 +71,29 @@ describe('SearchServicePointComponent', () => {
     expect(router.navigate).toHaveBeenCalled();
   });
 
-  it('should load result', fakeAsync(() => {
+  it('should load result', async () => {
     //when
+    component._DEBOUNCE_TIME = 0;
     fixture.componentInstance.searchInput$.next('be');
     fixture.detectChanges();
-    tick(1000);
+    await tickAsync(component._DEBOUNCE_TIME + 100);
     //then
     expect(component.searchValue).toEqual('be');
     expect(servicePointInternalService.searchServicePoints).toHaveBeenCalled();
-  }));
+  });
 
-  it('should not load result when search input length is smaller than 2', fakeAsync(() => {
+  it('should not load result when search input length is smaller than 2', async () => {
     //when
+    component._DEBOUNCE_TIME = 0;
     fixture.componentInstance.searchInput$.next('b');
     fixture.detectChanges();
-    tick(1000);
+    await tickAsync(component._DEBOUNCE_TIME + 100);
     //then
     expect(component.searchValue).toEqual('b');
-    expect(servicePointInternalService.searchServicePoints).not.toHaveBeenCalled();
-  }));
+    expect(
+      servicePointInternalService.searchServicePoints
+    ).not.toHaveBeenCalled();
+  });
 
   it('should init search value', () => {
     //when
@@ -92,23 +102,27 @@ describe('SearchServicePointComponent', () => {
     expect(component.searchValue).toEqual('be');
   });
 
-  it('should get placeholder label when searchInput < 2', fakeAsync(() => {
+  it('should get placeholder label when searchInput < 2', async () => {
     //when
+    component._DEBOUNCE_TIME = 0;
+
     fixture.componentInstance.searchInput$.next('b');
     fixture.detectChanges();
-    tick(1000);
+    await tickAsync(component._DEBOUNCE_TIME + 100);
     //then
     expect(component.minThermLongText).toEqual('COMMON.TYPE_TO_SEARCH_SHORT');
     expect(component.notFoundText).toEqual('COMMON.TYPE_TO_SEARCH_SHORT');
-  }));
+  });
 
-  it('should get placeholder label when searchInput >= 2', fakeAsync(() => {
+  it('should get placeholder label when searchInput >= 2', async () => {
     //when
+    component._DEBOUNCE_TIME = 0;
+
     fixture.componentInstance.searchInput$.next('be');
     fixture.detectChanges();
-    tick(1000);
+    await tickAsync(component._DEBOUNCE_TIME + 100);
     //then
     expect(component.minThermLongText).toEqual('COMMON.NODATAFOUND');
     expect(component.notFoundText).toEqual('COMMON.NODATAFOUND');
-  }));
+  });
 });

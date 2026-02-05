@@ -41,7 +41,7 @@ describe('TTH Routing', () => {
       expect(router).toBeTruthy();
       const result = loadStatementDetailRoute().then((component) => {
         expect(component).toBeDefined();
-        expect(component.name).toBe('CantonStatementDetailComponent');
+        expect(component.name).toBe('_CantonStatementDetailComponent');
       });
 
       expect(result).toBeDefined();
@@ -68,7 +68,7 @@ describe('TTH Routing', () => {
       expect(router).toBeTruthy();
       const result = loadStatementDetailRoute().then((component) => {
         expect(component).toBeDefined();
-        expect(component.name).toBe('BoStatementDetailComponent');
+        expect(component.name).toBe('_BoStatementDetailComponent');
       });
 
       expect(result).toBeDefined();
@@ -95,7 +95,7 @@ describe('TTH Routing', () => {
       expect(router).toBeTruthy();
       const result = loadDossierDetailRoute().then((component) => {
         expect(component).toBeDefined();
-        expect(component.name).toBe('BoDossierDetailComponent');
+        expect(component.name).toBe('_BoDossierDetailComponent');
       });
 
       expect(result).toBeDefined();
@@ -124,7 +124,7 @@ describe('TTH Routing', () => {
       expect(router).toBeTruthy();
       const result = loadDossierDetailRoute().then((component) => {
         expect(component).toBeDefined();
-        expect(component.name).toBe('CantonDossierDetailComponent');
+        expect(component.name).toBe('_CantonDossierDetailComponent');
       });
 
       expect(result).toBeDefined();

@@ -1,9 +1,4 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserAdministrationClientCreateComponent } from './user-administration-client-create.component';
 import { NotificationService } from '../../../../../core/notification/notification.service';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -16,6 +11,7 @@ import { DetailPageContentComponent } from '../../../../../core/components/detai
 import { ClientCredentialAdministrationService } from '../../../../../api/service/user-administration/client-credential-administration.service';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
+import { tickAsync } from '../../../../../../test/tick-async';
 import SpyObj = jasmine.SpyObj;
 
 describe('UserAdministrationClientCreateComponent', () => {
@@ -78,7 +74,7 @@ describe('UserAdministrationClientCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should create client', fakeAsync(() => {
+  it('should create client', async () => {
     const router = TestBed.inject(Router);
     component.form.controls.clientCredentialId.setValue('client-id');
     component.form.controls.alias.setValue('alias');
@@ -95,9 +91,9 @@ describe('UserAdministrationClientCreateComponent', () => {
       clientCredentialAdministrationServiceSpy.createClientCredential
     ).toHaveBeenCalledTimes(1);
     expect(router.navigate).toHaveBeenCalledTimes(1);
-    tick();
+    await tickAsync(1000);
     expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
       'USER_ADMIN.NOTIFICATIONS.ADD_SUCCESS'
     );
-  }));
+  });
 });
