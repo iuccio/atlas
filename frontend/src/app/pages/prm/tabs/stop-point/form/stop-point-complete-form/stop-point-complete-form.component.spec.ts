@@ -8,11 +8,10 @@ import {
   MockSelectComponent,
 } from '../../../../../../app.testing.mocks';
 import { TextFieldComponent } from '../../../../../../core/form-components/text-field/text-field.component';
-import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
+import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
 import { MeansOfTransportPickerComponent } from '../../../../../../core/form-components/means-of-transport-picker/means-of-transport-picker.component';
 import { AtlasSpacerComponent } from '../../../../../../core/components/spacer/atlas-spacer.component';
 import { By } from '@angular/platform-browser';
-import { InfoIconComponent } from '@atlas/form/info-icon/info-icon.component';
 import { PrmVariantInfoService } from '../../prm-variant-info.service';
 import { MeanOfTransport } from '../../../../../../api';
 import arrayContaining = jasmine.arrayContaining;

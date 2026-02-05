@@ -13,7 +13,7 @@ import { FormBuilder } from '@angular/forms';
 import { BehaviorSubject, EMPTY, of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ErrorNotificationComponent } from '../../../../../core/notification/error/error-notification.component';
-import { InfoIconComponent } from '@atlas/form/info-icon/info-icon.component';
+import { InfoIconComponent } from '@atlas/form';
 import { CommentComponent } from '../../../../../core/form-components/comment/comment.component';
 import { LinkIconComponent } from '../../../../../core/form-components/link-icon/link-icon.component';
 import { AppTestingModule } from '../../../../../app.testing.module';

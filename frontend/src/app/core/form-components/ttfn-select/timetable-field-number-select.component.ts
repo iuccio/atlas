@@ -13,7 +13,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TimetableFieldNumber } from '../../../api';
 import { map } from 'rxjs/operators';
 import { TimetableFieldNumberInternalService } from '../../../api/service/lidi/timetable-field-number-internal.service';
-import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
+import { AtlasLabelFieldComponent } from '@atlas/form';
 import { TimetableFieldNumberSelectOptionPipe } from './ttfn-select-option.pipe';
 import { SearchSelectComponent } from '../search-select/search-select.component';
 

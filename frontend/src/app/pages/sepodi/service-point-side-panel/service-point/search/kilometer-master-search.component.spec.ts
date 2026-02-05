@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SearchSelectComponent } from '../../../../../core/form-components/search-select/search-select.component';
 import { AtlasFieldErrorComponent } from '../../../../../core/form-components/atlas-field-error/atlas-field-error.component';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -54,12 +54,12 @@ describe('KilometerMasterSearchComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call searchServicePoints method', fakeAsync(() => {
+  it('should call searchServicePoints method', async () => {
     //when
     component.searchServicePoint('be');
     //then
     expect(
       servicePointsServiceSpy.searchServicePointsWithRouteNetworkTrue
     ).toHaveBeenCalled();
-  }));
+  });
 });

@@ -8,12 +8,12 @@ import { TimetableHearingYear } from '../../model/timetableHearingYear';
 })
 export class TthYearInternalService {
 
-  private readonly BASE_PATH = '/workflow/internal/tth/year/close';
+  private readonly BASE_PATH = '/workflow/internal/tth/year';
 
   private readonly atlasApiService = inject(AtlasApiService);
 
-  closeTimetableHearing(year: number): Observable<TimetableHearingYear> {
+  closeTimetableHearingYear(year: number): Observable<TimetableHearingYear> {
     this.atlasApiService.validateParams({ year });
-    return this.atlasApiService.post(`${this.BASE_PATH}/${encodeURIComponent(String(year))}`);
+    return this.atlasApiService.post(`${this.BASE_PATH}/${encodeURIComponent(String(year))}/close`);
   }
 }

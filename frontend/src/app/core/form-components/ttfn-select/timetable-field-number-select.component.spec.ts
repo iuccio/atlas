@@ -3,10 +3,10 @@ import { TimetableFieldNumberSelectComponent } from './timetable-field-number-se
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormControl, FormGroup } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SearchSelectComponent } from '../search-select/search-select.component';
 import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
-import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
+import { AtlasLabelFieldComponent } from '@atlas/form';
 import { translateServiceProvider } from '../../../app.testing.mocks';
 
 describe('TimetableFieldNumberSelectComponent', () => {
@@ -17,13 +17,16 @@ describe('TimetableFieldNumberSelectComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         NgSelectModule,
-        HttpClientTestingModule,
         TimetableFieldNumberSelectComponent,
         SearchSelectComponent,
         AtlasLabelFieldComponent,
         AtlasFieldErrorComponent,
       ],
-      providers: [TranslatePipe, translateServiceProvider],
+      providers: [
+        TranslatePipe,
+        translateServiceProvider,
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TimetableFieldNumberSelectComponent);

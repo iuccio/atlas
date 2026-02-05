@@ -11,11 +11,11 @@ import { merge, Observable, of } from 'rxjs';
 import { NON_PROD_STAGES, Stages } from '../../constants/stages';
 import { MatToolbar } from '@angular/material/toolbar';
 import { AsyncPipe, NgClass, NgOptimizedImage } from '@angular/common';
-import { InfoIconComponent } from '@atlas/form/info-icon/info-icon.component';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { UserComponent } from '../user/user.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MaintenanceIconComponent } from './maintenance-icon/maintenance-icon.component';
+import { InfoIconComponent } from '@atlas/form';
 
 @Component({
   selector: 'atlas-header',

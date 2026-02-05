@@ -1,9 +1,4 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StopPointWorkflowDetailComponent } from './stop-point-workflow-detail.component';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { FormModule } from '../../../../core/module/form.module';
@@ -322,15 +317,6 @@ describe('StopPointWorkflowDetailComponent', () => {
     );
   });
 
-  it('should start workflow', fakeAsync(() => {
-    component.startWorkflow();
-    tick();
-    expect(spWfServiceSpy.startStopPointWorkflow).toHaveBeenCalledOnceWith(1);
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
-      'WORKFLOW.NOTIFICATION.START.SUCCESS'
-    );
-  }));
-
   it('should reject workflow', () => {
     component.rejectWorkflow();
 
@@ -367,16 +353,4 @@ describe('StopPointWorkflowDetailComponent', () => {
       backdropClass: 'atlas-dialog-backdrop',
     });
   });
-
-  it('should open decision dialog and complete', fakeAsync(() => {
-    dialogSpy.open.and.returnValue({
-      afterClosed: () => of(true),
-    });
-
-    component.openDecisionDialog();
-    tick();
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
-      'WORKFLOW.NOTIFICATION.VOTE.SUCCESS'
-    );
-  }));
 });

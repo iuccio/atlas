@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ValidityService } from './validity.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import moment from 'moment';
@@ -63,7 +63,7 @@ describe('ValidityService', () => {
     expect(service.validity.formValidTo).toEqual(moment('2024-12-31'));
   });
 
-  it('should confirm validity unchanged with a dialog', fakeAsync(() => {
+  it('should confirm validity unchanged with a dialog', async () => {
     service.validity = {
       initValidFrom: moment('2023-01-01'),
       initValidTo: moment('2023-12-31'),
@@ -75,9 +75,9 @@ describe('ValidityService', () => {
       expect(result).toBeTrue();
       expect(dialogService.confirm).toHaveBeenCalled();
     });
-  }));
+  });
 
-  it('should validate and disable form correctly', fakeAsync(() => {
+  it('should validate and disable form correctly', async () => {
     const updateFunctionSpy = jasmine.createSpy();
     const form = new FormGroup({});
     service.validity = {
@@ -91,9 +91,9 @@ describe('ValidityService', () => {
     expect(form.disabled).toBeTrue();
     expect(updateFunctionSpy).toHaveBeenCalled();
     expect(dialogService.confirm).toHaveBeenCalled();
-  }));
+  });
 
-  it('should validate and disable function correctly and call update', fakeAsync(() => {
+  it('should validate and disable function correctly and call update', async () => {
     const updateFunctionSpy = jasmine.createSpy();
     const disableFunctionSpy = jasmine.createSpy();
 
@@ -108,5 +108,5 @@ describe('ValidityService', () => {
     expect(updateFunctionSpy).toHaveBeenCalled();
     expect(disableFunctionSpy).toHaveBeenCalled();
     expect(dialogService.confirm).toHaveBeenCalled();
-  }));
+  });
 });

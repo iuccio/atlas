@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LocationService } from 'src/app/api/service/location/location.service';
 import { SloidLocationModel } from '../../api/model/sloidLocationModel';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { InfoIconComponent } from '@atlas/form';
 import { SearchNavigationType } from '../search-service-point-panel/search-service-point-panel.component';
 import {
   ServicePointSearch,
@@ -12,6 +11,7 @@ import {
 } from '../search-service-point/service-point-search';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ServicePointNavigationHelper } from './service-point-navigation.helper';
+import { InfoIconComponent } from '@atlas/form';
 
 export const MAX_PRM_COLON = 5;
 export const NOTFOUND_LABEL = 'COMMON.NODATAFOUND';

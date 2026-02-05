@@ -1,8 +1,6 @@
 import { Routes } from '@angular/router';
 import { Pages } from '../pages';
-
 import { HearingStatus } from '../../api';
-
 import { statementResolver } from './statement/statement-detail.resolver';
 import { canLeaveDirtyForm } from '../../core/leave-guard/leave-dirty-form-guard.service';
 import { inject } from '@angular/core';
@@ -53,9 +51,7 @@ export const routes: Routes = [
   },
   {
     path: statementActiveDetailPath,
-    loadComponent: async () => {
-      return await loadStatementDetailRoute();
-    },
+    loadComponent: loadStatementDetailRoute,
     canDeactivate: [canLeaveDirtyForm],
     resolve: {
       statement: statementResolver,
@@ -67,9 +63,7 @@ export const routes: Routes = [
   },
   {
     path: `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ACTIVE.path}/${Pages.TTH_DOSSIERS.path}/:id`,
-    loadComponent: async () => {
-      return await loadDossierDetailRoute();
-    },
+    loadComponent: loadDossierDetailRoute,
     canDeactivate: [canLeaveDirtyForm],
     resolve: {
       dossier: dossierResolver,

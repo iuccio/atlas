@@ -24,13 +24,13 @@ describe('TthYearInternalService', () => {
   });
 
   it('should closeTimetableHearing', () => {
-    service.closeTimetableHearing(2025);
+    service.closeTimetableHearingYear(2025);
 
     expect(apiService.validateParams).toHaveBeenCalledOnceWith({
       year: 2025,
     });
     expect(apiService.post).toHaveBeenCalledOnceWith(
-      '/workflow/internal/tth/year/close/2025',
+      '/workflow/internal/tth/year/2025/close',
     );
   });
 });

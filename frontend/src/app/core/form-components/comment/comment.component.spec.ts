@@ -3,9 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommentComponent } from './comment.component';
 import { AppTestingModule } from '../../../app.testing.module';
 import { FormControl, FormGroup } from '@angular/forms';
-import { InfoIconComponent } from '@atlas/form/info-icon/info-icon.component';
 import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
-import { AtlasLabelFieldComponent } from '@atlas/form/atlas-label-field/atlas-label-field.component';
+import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
 import { TextFieldComponent } from '../text-field/text-field.component';
 import { TranslatePipe } from '@ngx-translate/core';
 

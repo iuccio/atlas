@@ -48,7 +48,7 @@ describe('DialogManageTthComponent', () => {
         ['getHearingYear', 'updateTimetableHearingSettings']
       );
     tthYearWfServiceSpy = jasmine.createSpyObj<TthYearInternalService>([
-      'closeTimetableHearing',
+      'closeTimetableHearingYear',
     ]);
     notificationServiceSpy = jasmine.createSpyObj<NotificationService>(
       'NotificationServiceSpy',
@@ -126,16 +126,16 @@ describe('DialogManageTthComponent', () => {
   });
 
   it('should handleCloseViewTthCloseClick', () => {
-    tthYearWfServiceSpy.closeTimetableHearing.and
+    tthYearWfServiceSpy.closeTimetableHearingYear.and
       .stub()
       .and.returnValue(of({}));
 
     component.handleCloseViewTthCloseClick();
 
     expect(component.actionButtonsDisabled).toBeTrue();
-    expect(tthYearWfServiceSpy.closeTimetableHearing).toHaveBeenCalledOnceWith(
-      2020
-    );
+    expect(
+      tthYearWfServiceSpy.closeTimetableHearingYear
+    ).toHaveBeenCalledOnceWith(2020);
     expect(matDialogRefSpy.close).toHaveBeenCalledOnceWith(true);
     expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
       'TTH.CLOSE_TIMETABLE_HEARING.SUCCESSFUL_CLOSE_NOTIFICATION'
