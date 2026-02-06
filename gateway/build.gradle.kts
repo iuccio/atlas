@@ -17,7 +17,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webflux")
 
     // Micrometer & Tracing
-    implementation("io.micrometer:micrometer-tracing")
+    implementation("org.springframework.boot:spring-boot-micrometer-tracing-brave")
     implementation("io.micrometer:micrometer-tracing-bridge-brave")
 
     // Test dependencies

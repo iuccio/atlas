@@ -33,7 +33,7 @@ dependencies {
     implementation("org.springframework.batch:spring-batch-integration")
 
     // Micrometer & Tracing
-    implementation("io.micrometer:micrometer-tracing")
+    implementation("org.springframework.boot:spring-boot-micrometer-tracing-brave")
 
     // Flyway
     implementation("org.flywaydb:flyway-core")

@@ -25,9 +25,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     // Micrometer & Tracing
-    implementation("org.springframework.boot:spring-boot-micrometer-tracing")
-    implementation("org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry")
     implementation("org.springframework.boot:spring-boot-micrometer-tracing-brave")
+    implementation("io.micrometer:micrometer-tracing-bridge-brave")
 
     implementation("io.github.openfeign:feign-micrometer")
 
