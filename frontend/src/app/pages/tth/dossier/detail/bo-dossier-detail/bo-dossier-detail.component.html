@@ -3,7 +3,11 @@
     <atlas-detail-page-content>
       <div class="dossier-form">
         <h1 class="font-bold-4xl mt-5">
-          {{ ('TTH.DOSSIER.DOSSIER' | translate) + ' ' + dossierForm.controls.id.value }}
+          {{
+            ('TTH.DOSSIER.DOSSIER' | translate) +
+              ' ' +
+              dossierForm.controls.id.value
+          }}
         </h1>
 
         <div class="d-flex flex-column col-8 mt-3">
@@ -103,6 +107,7 @@
               buttonDataCy="open-in-mail"
               buttonText="TTH.STATEMENT.CLARIFICATION_MAIL"
               buttonType="defaultPrimary"
+              (buttonClicked)="openInMail()"
             >
               <ng-template #rightIcon>
                 <i class="ps-2 bi bi-envelope"></i>
