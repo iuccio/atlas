@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "ch.sbb.atlas"
-version = "2.1078.0"
+version = "2.1079.0"
 
 description = "Atlas User Administration"
 
