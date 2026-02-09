@@ -98,9 +98,7 @@ tasks.withType<Test> {
     }
     jvmArgs(
         "-javaagent:${mockitoAgent.asPath}",
-        "-Xshare:off",
-        "-Xms512m",
-        "-Xmx2g"
+        "-Xshare:off"
     )
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 
