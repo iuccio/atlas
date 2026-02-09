@@ -63,7 +63,6 @@ public class LineExportBatchConfig {
   ) {
     JdbcCursorItemReader<Line> itemReader = new JdbcCursorItemReader<>(dataSource,
         LineSqlQueryUtil.getSqlQuery(exportTypeV2), new LineRowMapper());
-    itemReader.setSql(LineSqlQueryUtil.getSqlQuery(exportTypeV2));
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
     return itemReader;
   }
