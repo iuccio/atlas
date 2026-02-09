@@ -3,7 +3,6 @@ package ch.sbb.line.directory.module.tth.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.sbb.atlas.api.lidi.enumaration.TtfnMeanOfTransport;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementModelV2;
@@ -23,6 +22,7 @@ import ch.sbb.line.directory.exception.TtfnidNotFoundException;
 import ch.sbb.line.directory.helper.PdfFiles;
 import ch.sbb.line.directory.module.ttfn.entity.TimetableFieldNumberVersion;
 import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberVersionRepository;
+import ch.sbb.line.directory.module.tth.entity.StatementDocument;
 import ch.sbb.line.directory.module.tth.entity.StatementSender;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingStatement;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
@@ -134,23 +134,30 @@ class TimetableHearingStatementServiceTest {
 
   @Test
   void shouldGetDocumentFromHearingStatement() {
+    //given
     timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
     TimetableHearingStatementModelV2 timetableHearingStatementModel = buildTimetableHearingStatementModelV2();
 
     List<MultipartFile> documents = new ArrayList<>();
     documents.add(PdfFiles.MULTIPART_FILES.getFirst());
     documents.add(PdfFiles.MULTIPART_FILES.get(1));
+    StatementDocument.builder().fileName("dummy.pdf").build();
 
     TimetableHearingStatementModelV2 createdStatement = timetableHearingStatementService.createHearingStatementV2(
         timetableHearingStatementModel, documents);
-
     String originalFilename = PdfFiles.MULTIPART_FILES.getFirst().getOriginalFilename();
-    File statementDocument = timetableHearingStatementService.getStatementDocument(createdStatement.getId(), originalFilename);
-    assertTrue(statementDocument.getName().contains("dummy.pdf"));
+    TimetableHearingStatement timetableHearingStatement = timetableHearingStatementService.getTimetableHearingStatementById(
+        createdStatement.getId());
+    //when
+    File statementDocument = timetableHearingStatementService.getStatementDocument(timetableHearingStatement,
+        originalFilename);
+    //then
+    assertThat(statementDocument.getName()).contains("dummy.pdf");
   }
 
   @Test
   void shouldDeleteDocumentFromHearingStatement() {
+    //given
     timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
     TimetableHearingStatementModelV2 timetableHearingStatementModel = buildTimetableHearingStatementModelV2();
 
@@ -158,9 +165,14 @@ class TimetableHearingStatementServiceTest {
         timetableHearingStatementModel, Collections.emptyList());
     TimetableHearingStatement createdStatementEntity = timetableHearingStatementMapperV2.toEntity(createdStatement);
 
+    TimetableHearingStatement timetableHearingStatement = timetableHearingStatementService.getTimetableHearingStatementById(
+        createdStatement.getId());
+
+    //when
     timetableHearingStatementService.deleteStatementDocument(createdStatementEntity,
         PdfFiles.MULTIPART_FILES.getFirst().getOriginalFilename());
-    assertThatThrownBy(() -> timetableHearingStatementService.getStatementDocument(createdStatement.getId(),
+    //then
+    assertThatThrownBy(() -> timetableHearingStatementService.getStatementDocument(timetableHearingStatement,
         PdfFiles.MULTIPART_FILES.getFirst().getOriginalFilename())).isInstanceOf(
         FileNotFoundException.class);
   }
