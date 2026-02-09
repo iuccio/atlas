@@ -16,8 +16,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.springframework.boot:spring-boot-starter-kafka")//get this dependency from :kafka use as api does not work
-    implementation("org.springframework.boot:spring-boot-starter-validation")//get this dependency from :kafka use as api does not work
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // Libraries
     implementation(libs.swagger.core)

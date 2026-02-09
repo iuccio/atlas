@@ -23,7 +23,7 @@ public abstract class BaseJsonWriter<T> {
   }
 
   public JsonFileItemWriter<T> getWriter(WritableResource writableResource) {
-    JsonFileItemWriter<T> writer = new JsonFileItemWriter<>(        writableResource,        createJsonMarshaller());
+    JsonFileItemWriter<T> writer = new JsonFileItemWriter<>(writableResource, createJsonMarshaller());
     writer.setEncoding(StandardCharsets.UTF_8.name());
     writer.close();
     return writer;
