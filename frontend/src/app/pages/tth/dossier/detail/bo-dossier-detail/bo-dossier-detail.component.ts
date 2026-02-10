@@ -103,11 +103,10 @@ export class BoDossierDetailComponent implements DetailFormComponent, OnInit {
     }
   }
 
-  private initDossierForm() {
-    this.currentDossier = this.activatedRoute.snapshot.data.dossier;
-    this.dossierForm = DossierFormGroupBuilder.buildFormGroup(
-      this.currentDossier
-    );
+  openInMail() {
+    const subject = encodeURIComponent(this.currentDossier?.topic ?? '');
+    const body = encodeURIComponent(this.cantonQuestion);
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_self');
   }
 
   back() {
@@ -131,5 +130,12 @@ export class BoDossierDetailComponent implements DetailFormComponent, OnInit {
           this.isDossierStatusBoCheck = false;
         });
     }
+  }
+
+  private initDossierForm() {
+    this.currentDossier = this.activatedRoute.snapshot.data.dossier;
+    this.dossierForm = DossierFormGroupBuilder.buildFormGroup(
+      this.currentDossier
+    );
   }
 }
