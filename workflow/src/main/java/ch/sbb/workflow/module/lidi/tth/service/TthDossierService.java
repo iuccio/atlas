@@ -59,20 +59,6 @@ public class TthDossierService {
         searchRestrictions.getPageable());
   }
 
-  @TthRedacted
-  @PostAuthorize("@boUserMailCheckService.isCurrentUserMailAssignedTo(returnObject)")
-  public TthDossier getDossierForBo(Long dossierId) {
-    TthDossier dossier = findDossier(dossierId);
-    if (dossier.getDossierStatus() != DossierStatus.DOSSIER_BO_CHECK) {
-      throw SimpleAtlasException.builder()
-          .status(HttpStatus.FORBIDDEN)
-          .messageAndError("Dossier is already answered")
-          .displayCode("TTH.ERROR.DOSSIER_ALREADY_ANSWERED")
-          .build();
-    }
-    return dossier;
-  }
-
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")

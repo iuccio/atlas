@@ -136,6 +136,7 @@ describe('DossierDetailComponent', () => {
 
       component.toggleEdit();
       expect(component.form.enabled).toBeTrue();
+      expect(component.form.controls.answerToCanton.enabled).toBeFalse();
 
       component.toggleEdit();
       expect(component.form.enabled).toBeFalse();
