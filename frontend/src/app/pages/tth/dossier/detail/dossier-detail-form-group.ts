@@ -79,10 +79,10 @@ export class DossierFormGroupBuilder {
       dossierStatus: form.controls.dossierStatus.value!,
       questions: [],
     };
-    if (form.controls.question) {
+    if (form.controls.question.value) {
       dossier.questions = [
         {
-          question: form.controls.question.value!,
+          question: form.controls.question.value,
           answerToCanton: form.controls.answerToCanton.value!,
         },
       ];
