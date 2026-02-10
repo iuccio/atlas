@@ -7,8 +7,8 @@ import ch.sbb.atlas.imports.bulk.BulkImportUpdateContainer;
 import ch.sbb.importservice.module.bulkimport.entity.BulkImport;
 import java.util.List;
 import lombok.experimental.UtilityClass;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.item.Chunk;
+import org.springframework.batch.core.step.StepExecution;
+import org.springframework.batch.infrastructure.item.Chunk;
 
 @UtilityClass
 public class WriterUtil {

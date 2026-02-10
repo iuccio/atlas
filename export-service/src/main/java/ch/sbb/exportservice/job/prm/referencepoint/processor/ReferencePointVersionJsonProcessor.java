@@ -3,7 +3,7 @@ package ch.sbb.exportservice.job.prm.referencepoint.processor;
 import ch.sbb.atlas.api.prm.model.referencepoint.ReadReferencePointVersionModel;
 import ch.sbb.exportservice.job.prm.referencepoint.entity.ReferencePointVersion;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class ReferencePointVersionJsonProcessor implements ItemProcessor<ReferencePointVersion,

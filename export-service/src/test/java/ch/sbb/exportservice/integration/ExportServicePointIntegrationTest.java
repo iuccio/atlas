@@ -11,14 +11,14 @@ import ch.sbb.exportservice.job.BaseExportJobService.JobParams;
 import ch.sbb.exportservice.model.ExportTypeV2;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.job.JobInstance;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 
 @BatchDataSourceConfigTest
 @IntegrationTest
@@ -26,7 +26,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 class ExportServicePointIntegrationTest {
 
   @Autowired
-  private JobLauncher jobLauncher;
+  private JobOperator jobOperator;
 
   @Autowired
   @Qualifier(EXPORT_SERVICE_POINT_CSV_JOB_NAME)
@@ -43,7 +43,7 @@ class ExportServicePointIntegrationTest {
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(
         new JobParams(ExportTypeV2.WORLD_FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportServicePointCsvJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportServicePointCsvJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 
@@ -59,7 +59,7 @@ class ExportServicePointIntegrationTest {
     JobParameters jobParameters = BaseExportJobService.buildJobParameters(
         new JobParams(ExportTypeV2.WORLD_FULL));
     // when
-    JobExecution jobExecution = jobLauncher.run(exportServicePointJsonJob, jobParameters);
+    JobExecution jobExecution = jobOperator.start(exportServicePointJsonJob, jobParameters);
     JobInstance actualJobInstance = jobExecution.getJobInstance();
     ExitStatus actualJobExitStatus = jobExecution.getExitStatus();
 

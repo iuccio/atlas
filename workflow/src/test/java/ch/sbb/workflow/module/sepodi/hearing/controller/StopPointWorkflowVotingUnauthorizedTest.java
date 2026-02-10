@@ -34,6 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -112,6 +113,7 @@ class StopPointWorkflowVotingUnauthorizedTest {
     judith.setStopPointWorkflow(workflow);
 
     workflowInHearing = workflowRepository.save(workflow);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test
@@ -158,7 +160,8 @@ class StopPointWorkflowVotingUnauthorizedTest {
     assertThat(decision.getJudgement()).isEqualTo(JudgementType.YES);
 
     // Workflow is approved
-    ReadStopPointWorkflowModel stopPointWorkflow = stopPointWorkflowApiV1Controller.getStopPointWorkflow(workflowInHearing.getId());
+    ReadStopPointWorkflowModel stopPointWorkflow = stopPointWorkflowApiV1Controller.getStopPointWorkflow(
+        workflowInHearing.getId());
     assertThat(stopPointWorkflow.getStatus()).isEqualTo(WorkflowStatus.APPROVED);
 
     // Mails are redacted for unauthorized user

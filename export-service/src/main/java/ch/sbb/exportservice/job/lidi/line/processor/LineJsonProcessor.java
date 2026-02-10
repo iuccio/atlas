@@ -3,7 +3,7 @@ package ch.sbb.exportservice.job.lidi.line.processor;
 import ch.sbb.atlas.api.lidi.LineVersionModelV2;
 import ch.sbb.exportservice.job.lidi.line.entity.Line;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class LineJsonProcessor implements ItemProcessor<Line, LineVersionModelV2> {

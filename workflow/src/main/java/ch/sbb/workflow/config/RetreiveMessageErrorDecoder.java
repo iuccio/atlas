@@ -2,12 +2,12 @@ package ch.sbb.workflow.config;
 
 import ch.sbb.atlas.api.model.ErrorResponse;
 import ch.sbb.workflow.exception.AtlasClientException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import java.io.IOException;
 import java.io.InputStream;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 public class RetreiveMessageErrorDecoder implements ErrorDecoder {

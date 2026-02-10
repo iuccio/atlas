@@ -173,11 +173,11 @@ public class PlatformVersionMapper {
     );
   }
 
-  private static <T> T ifCurrentNull(T value, @NonNull Supplier<T> getter) {
+  private static <T> T ifCurrentNull(T value, Supplier<T> getter) {
     return Objects.isNull(getter.get()) ? value : getter.get();
   }
 
-  private static <E, T extends Collection<E>> T ifCurrentNullOrEmpty(T value, @NonNull Supplier<T> getter) {
+  private static <E, T extends Collection<E>> T ifCurrentNullOrEmpty(T value, Supplier<T> getter) {
     return Objects.isNull(getter.get()) || getter.get().isEmpty() ? value : getter.get();
   }
 }

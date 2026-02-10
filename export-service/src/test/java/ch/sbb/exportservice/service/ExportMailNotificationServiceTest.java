@@ -9,8 +9,10 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.job.JobInstance;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.step.StepExecution;
 
 class ExportMailNotificationServiceTest {
 
@@ -55,10 +57,9 @@ class ExportMailNotificationServiceTest {
   }
 
   private static @NotNull StepExecution getStepExecution() {
-    JobExecution jobExecution = new JobExecution(1L);
-    StepExecution stepExecution = new StepExecution("myStep", jobExecution);
+    JobExecution jobExecution = new JobExecution(1L, new JobInstance(1L, "job"), new JobParameters());
+    StepExecution stepExecution = new StepExecution(123L, "myStep", jobExecution);
     stepExecution.getExecutionContext().put("traceId", "abc123");
-    stepExecution.setId(123L);
     return stepExecution;
   }
 

@@ -25,17 +25,17 @@ import ch.sbb.exportservice.tasklet.upload.UploadJsonFileTaskletV2;
 import ch.sbb.exportservice.util.StepUtil;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.json.JsonFileItemWriter;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader;
+import org.springframework.batch.infrastructure.item.file.FlatFileItemWriter;
+import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,12 +61,9 @@ public class TrafficPointElementVersionExportBatchConfig {
   public JdbcCursorItemReader<TrafficPointElementVersion> trafficPointElementReader(
       @Autowired @Qualifier("servicePointDataSource") DataSource dataSource,
       @Value("#{jobParameters[exportTypeV2]}") ExportTypeV2 exportTypeV2) {
-    JdbcCursorItemReader<TrafficPointElementVersion> itemReader = new JdbcCursorItemReader<>();
-    itemReader.setDataSource(dataSource);
-    itemReader.setSql(TrafficPointElementVersionSqlQueryUtil.getSqlQuery(exportTypeV2));
+    JdbcCursorItemReader<TrafficPointElementVersion> itemReader = new JdbcCursorItemReader<>(dataSource,
+        TrafficPointElementVersionSqlQueryUtil.getSqlQuery(exportTypeV2),new TrafficPointElementVersionRowMapper());
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
-    itemReader.setRowMapper(new TrafficPointElementVersionRowMapper());
-    itemReader.close();
     return itemReader;
   }
 
@@ -76,7 +73,6 @@ public class TrafficPointElementVersionExportBatchConfig {
   public Job exportTrafficPointElementCsvJob(ItemReader<TrafficPointElementVersion> itemReader) {
     return new JobBuilder(EXPORT_TRAFFIC_POINT_ELEMENT_CSV_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportTrafficPointElementCsvStep(itemReader))
         .next(uploadTrafficPointCsvFileStepV2())
         .next(deleteTrafficPointCsvFileStepV2())
@@ -88,12 +84,12 @@ public class TrafficPointElementVersionExportBatchConfig {
   public Step exportTrafficPointElementCsvStep(ItemReader<TrafficPointElementVersion> itemReader) {
     String stepName = "exportTrafficPointElementCsvStep";
     return new StepBuilder(stepName, jobRepository)
-        .<TrafficPointElementVersion, TrafficPointVersionCsvModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<TrafficPointElementVersion, TrafficPointVersionCsvModel>chunk(StepUtil.CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(trafficPointElementVersionCsvProcessor())
         .writer(trafficPointElementCsvWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
+        
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();
@@ -157,7 +153,6 @@ public class TrafficPointElementVersionExportBatchConfig {
   public Job exportTrafficPointElementJsonJob(ItemReader<TrafficPointElementVersion> itemReader) {
     return new JobBuilder(EXPORT_TRAFFIC_POINT_ELEMENT_JSON_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportTrafficPointElementJsonStep(itemReader))
         .next(uploadTrafficPointJsonFileStepV2())
         .next(deleteTrafficPointJsonFileStepV2())
@@ -169,12 +164,12 @@ public class TrafficPointElementVersionExportBatchConfig {
   public Step exportTrafficPointElementJsonStep(ItemReader<TrafficPointElementVersion> itemReader) {
     String stepName = "exportTrafficPointElementJsonStep";
     return new StepBuilder(stepName, jobRepository)
-        .<TrafficPointElementVersion, ReadTrafficPointElementVersionModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<TrafficPointElementVersion, ReadTrafficPointElementVersionModel>chunk(StepUtil.CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(trafficPointElementVersionJsonProcessor())
         .writer(trafficPointElementJsonFileItemWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
+        
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();

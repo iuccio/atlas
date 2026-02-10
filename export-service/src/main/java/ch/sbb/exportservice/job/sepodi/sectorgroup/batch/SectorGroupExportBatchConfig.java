@@ -20,16 +20,16 @@ import ch.sbb.exportservice.tasklet.upload.UploadJsonFileTaskletV2;
 import ch.sbb.exportservice.util.StepUtil;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.json.JsonFileItemWriter;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader;
+import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,11 +55,9 @@ public class SectorGroupExportBatchConfig {
       @Autowired @Qualifier("servicePointDataSource") DataSource dataSource,
       @Value("#{jobParameters[exportTypeV2]}") ExportTypeV2 exportTypeV2
   ) {
-    JdbcCursorItemReader<SectorGroupVersion> itemReader = new JdbcCursorItemReader<>();
-    itemReader.setDataSource(dataSource);
-    itemReader.setSql(SectorGroupSqlQueryUtil.getSqlQuery(exportTypeV2));
+    JdbcCursorItemReader<SectorGroupVersion> itemReader = new JdbcCursorItemReader<>(dataSource,
+        SectorGroupSqlQueryUtil.getSqlQuery(exportTypeV2),new SectorGroupVersionRowMapper());
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
-    itemReader.setRowMapper(new SectorGroupVersionRowMapper());
     return itemReader;
   }
 
@@ -68,7 +66,6 @@ public class SectorGroupExportBatchConfig {
   public Job exportSectorGroupJsonJob(ItemReader<SectorGroupVersion> itemReader) {
     return new JobBuilder(EXPORT_SECTOR_GROUP_JSON_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportSectorGroupJsonStep(itemReader))
         .next(uploadSectorGroupJsonFileStep())
         .next(deleteSectorGroupJsonFileStepV2())
@@ -80,12 +77,12 @@ public class SectorGroupExportBatchConfig {
   public Step exportSectorGroupJsonStep(ItemReader<SectorGroupVersion> itemReader) {
     String stepName = "exportSectorGroupJsonStep";
     return new StepBuilder(stepName, jobRepository)
-        .<SectorGroupVersion, ReadSectorGroupVersionModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<SectorGroupVersion, ReadSectorGroupVersionModel>chunk(StepUtil.CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(sectorGroupJsonProcessor())
         .writer(sectorGroupJsonFileItemWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
+        
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();

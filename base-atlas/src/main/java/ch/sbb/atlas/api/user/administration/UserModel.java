@@ -5,8 +5,11 @@ import ch.sbb.atlas.redact.Redacted;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 
 @Builder(toBuilder = true)
@@ -14,6 +17,8 @@ import lombok.experimental.FieldNameConstants;
 @FieldNameConstants
 @Redacted
 @Schema(name = "User")
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserModel implements UserAdministrationEvent {
 
   @NotNull

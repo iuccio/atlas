@@ -4,7 +4,7 @@ import ch.sbb.atlas.api.servicepoint.sector.ReadSectorVersionModel;
 import ch.sbb.atlas.api.servicepoint.sector.SectorVersionModel;
 import ch.sbb.exportservice.job.sepodi.BaseSepodiProcessor;
 import ch.sbb.exportservice.job.sepodi.sector.entity.SectorVersion;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 public class SectorJsonProcessor extends BaseSepodiProcessor implements ItemProcessor<SectorVersion, SectorVersionModel> {
 

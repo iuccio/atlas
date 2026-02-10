@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
 
 @Slf4j
 @Data
@@ -100,7 +99,7 @@ public class ErrorResponse implements Serializable {
     }
 
     @Override
-    public int compareTo(@NonNull Detail detailToCompare) {
+    public int compareTo(Detail detailToCompare) {
       return 1;
     }
   }
@@ -109,7 +108,7 @@ public class ErrorResponse implements Serializable {
   public static class ValidFromDetail extends Detail {
 
     @Override
-    public int compareTo(@NonNull Detail detailToCompare) {
+    public int compareTo(Detail detailToCompare) {
       if (detailToCompare instanceof ValidFromDetail validFromDetailToCompare) {
         return Comparator.comparing(ValidFromDetail::getValidFrom)
             .thenComparing(ValidFromDetail::getMessage)

@@ -61,9 +61,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.job.JobInstance;
 import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -100,7 +99,6 @@ public class RecoveryJobsRunner implements ApplicationListener<ApplicationReadyE
   static final int TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE = 16;
   public static final String ATLAS_BATCH_STATUS_RECOVERED = "RECOVERED";
 
-  private final JobExplorer jobExplorer;
   private final FileService fileService;
   private final JobRepository jobRepository;
 
@@ -171,7 +169,7 @@ public class RecoveryJobsRunner implements ApplicationListener<ApplicationReadyE
     int totalJobExecutionCount = 0;
     for (String job : exportJobsName) {
       try {
-        totalJobExecutionCount += (int) jobExplorer.getJobInstanceCount(job);
+        totalJobExecutionCount += (int) jobRepository.getJobInstanceCount(job);
       } catch (NoSuchJobException e) {
         throw new JobExecutionException(job, e);
       }
@@ -182,10 +180,10 @@ public class RecoveryJobsRunner implements ApplicationListener<ApplicationReadyE
   private List<JobExecution> getTodayJobExecutions(List<String> exportJobsName) {
     Set<JobExecution> executedJobs = new HashSet<>();
     for (String job : exportJobsName) {
-      List<JobInstance> lastExecutedJobInstances = jobExplorer.getJobInstances(job,
+      List<JobInstance> lastExecutedJobInstances = jobRepository.getJobInstances(job,
           0, TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE);
       for (JobInstance jobInstance : lastExecutedJobInstances) {
-        List<JobExecution> jobExecutions = jobExplorer.getJobExecutions(jobInstance);
+        List<JobExecution> jobExecutions = jobRepository.getJobExecutions(jobInstance);
         executedJobs.addAll(jobExecutions);
       }
     }

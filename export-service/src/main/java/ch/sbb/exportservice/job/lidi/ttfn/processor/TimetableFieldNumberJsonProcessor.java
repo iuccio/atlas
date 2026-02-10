@@ -3,7 +3,7 @@ package ch.sbb.exportservice.job.lidi.ttfn.processor;
 import ch.sbb.atlas.api.lidi.TimetableFieldNumberVersionModel;
 import ch.sbb.exportservice.job.lidi.ttfn.entity.TimetableFieldNumber;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class TimetableFieldNumberJsonProcessor implements ItemProcessor<TimetableFieldNumber, TimetableFieldNumberVersionModel> {

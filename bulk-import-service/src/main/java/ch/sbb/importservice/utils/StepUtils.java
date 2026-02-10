@@ -2,37 +2,28 @@ package ch.sbb.importservice.utils;
 
 import feign.FeignException;
 import feign.RetryableException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.retry.backoff.FixedBackOffPolicy;
-import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.core.retry.RetryPolicy;
 
 @Slf4j
 @UtilityClass
 public class StepUtils {
 
-  private static final int BACK_OFF_PERIOD = 10_000;
   private static final int MAX_ATTEMPTS = 4;
 
-  public static FixedBackOffPolicy getBackOffPolicy(String stepName) {
-    FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
-    int backOffPeriod = BACK_OFF_PERIOD;
-    backOffPolicy.setBackOffPeriod(backOffPeriod);
-    log.info("Set Back Off Period for step [{}] to [{}ms]", stepName, backOffPeriod);
-    return backOffPolicy;
-  }
+  public static RetryPolicy getRetryPolicy(String stepName) {
+    Set<Class<? extends Throwable>> exceptionsToRetry = Set.of(FeignException.InternalServerError.class,RetryableException.class);
 
-  public static SimpleRetryPolicy getRetryPolicy(String stepName) {
-    int maxAttempts = MAX_ATTEMPTS;
-    Map<Class<? extends Throwable>, Boolean> exceptionsToRetry = new HashMap<>();
-    exceptionsToRetry.put(FeignException.InternalServerError.class, true);
-    exceptionsToRetry.put(RetryableException.class, true);
     log.info("Configuring Retry policy for step [{}] ", stepName);
-    log.info("Set max attemps to retry: {}", maxAttempts);
+    log.info("Set max attemps to retry: {}", MAX_ATTEMPTS);
     log.info("Set exceptions to retry: {}", exceptionsToRetry);
-    return new SimpleRetryPolicy(maxAttempts, exceptionsToRetry);
+
+    return RetryPolicy.builder()
+        .includes(exceptionsToRetry)
+        .maxRetries(MAX_ATTEMPTS)
+        .build();
   }
 
 }

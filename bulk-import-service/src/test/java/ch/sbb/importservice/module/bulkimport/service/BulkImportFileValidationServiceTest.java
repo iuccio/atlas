@@ -27,6 +27,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -43,6 +44,7 @@ class BulkImportFileValidationServiceTest {
 
   @BeforeEach
   void setUp() {
+    MockitoAnnotations.openMocks(this);
     bulkImportTemplateGenerator = new BulkImportTemplateGenerator(fileService);
   }
 

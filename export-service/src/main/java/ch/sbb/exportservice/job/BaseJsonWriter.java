@@ -5,14 +5,13 @@ import ch.sbb.exportservice.model.ExportExtensionFileType;
 import ch.sbb.exportservice.model.ExportFilePathV2;
 import ch.sbb.exportservice.model.ExportObjectV2;
 import ch.sbb.exportservice.model.ExportTypeV2;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
-import org.springframework.batch.item.json.JsonFileItemWriter;
+import org.springframework.batch.infrastructure.item.json.JacksonJsonObjectMarshaller;
+import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.WritableResource;
+import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
 public abstract class BaseJsonWriter<T> {
@@ -20,17 +19,20 @@ public abstract class BaseJsonWriter<T> {
   private final FileService fileService;
 
   public JsonFileItemWriter<T> getWriter(ExportObjectV2 exportType, ExportTypeV2 exportFileName) {
-    JacksonJsonObjectMarshaller<T> jacksonJsonObjectMarshaller = new JacksonJsonObjectMarshaller<>();
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule());
-    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    jacksonJsonObjectMarshaller.setObjectMapper(objectMapper);
-    JsonFileItemWriter<T> writer = new JsonFileItemWriter<>(
-        new FileSystemResource(getFilePath(exportType, exportFileName)),
-        jacksonJsonObjectMarshaller);
+    return getWriter(new FileSystemResource(getFilePath(exportType, exportFileName)));
+  }
+
+  public JsonFileItemWriter<T> getWriter(WritableResource writableResource) {
+    JsonFileItemWriter<T> writer = new JsonFileItemWriter<>(writableResource, createJsonMarshaller());
     writer.setEncoding(StandardCharsets.UTF_8.name());
     writer.close();
     return writer;
+  }
+
+  public JacksonJsonObjectMarshaller<T> createJsonMarshaller() {
+    JacksonJsonObjectMarshaller<T> marshaller = new JacksonJsonObjectMarshaller<>();
+    marshaller.setJsonMapper(JsonMapper.builder().build());
+    return marshaller;
   }
 
   private String getFilePath(ExportObjectV2 exportType, ExportTypeV2 exportFileName) {

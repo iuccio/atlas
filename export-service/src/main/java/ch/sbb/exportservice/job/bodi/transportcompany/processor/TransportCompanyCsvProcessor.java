@@ -4,7 +4,7 @@ import ch.sbb.exportservice.job.bodi.transportcompany.entity.TransportCompany;
 import ch.sbb.exportservice.job.bodi.transportcompany.model.TransportCompanyCsvModel;
 import ch.sbb.exportservice.util.MapperUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class TransportCompanyCsvProcessor implements ItemProcessor<TransportCompany, TransportCompanyCsvModel> {
