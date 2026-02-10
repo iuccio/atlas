@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BoDossierDetailComponent } from './bo-dossier-detail.component';
 import { AppTestingModule } from '../../../../../app.testing.module';
 import { TthDossier } from '../../../../../api/model/tthDossier';
@@ -11,6 +10,7 @@ import { TimetableHearingStatementInternalService } from '../../../../../api/ser
 import { FormatPipe } from '../../../../../core/components/table/pipe/format.pipe';
 import { DossierInternalService } from '../../../../../api/service/workflow/dossier-internal.service';
 import { NotificationService } from '../../../../../core/notification/notification.service';
+import SpyObj = jasmine.SpyObj;
 
 const dossier: TthDossier = {
   swissCanton: SwissCanton.Bern,
@@ -33,29 +33,31 @@ const statement: TimetableHearingStatementV2 = {
   },
   documents: [],
 };
-const timetableHearingStatementInternalService = jasmine.createSpyObj(
-  'TimetableHearingStatementInternalService',
-  ['getStatement']
-);
-
-timetableHearingStatementInternalService.getStatement.and.returnValue(
-  of(statement)
-);
-
-const dossierInternalService = jasmine.createSpyObj('DossierInternalService', [
-  'answerQuestion',
-]);
-dossierInternalService.answerQuestion.and.returnValue(of<void>(undefined));
-
-const notificationService = jasmine.createSpyObj('NotificationService', [
-  'success',
-]);
 
 describe('BoDossierDetail', () => {
   let component: BoDossierDetailComponent;
   let fixture: ComponentFixture<BoDossierDetailComponent>;
 
+  let timetableHearingStatementInternalService: SpyObj<TimetableHearingStatementInternalService>;
+  let dossierInternalService: SpyObj<DossierInternalService>;
+  let notificationService: SpyObj<NotificationService>;
+
   beforeEach(async () => {
+    timetableHearingStatementInternalService = jasmine.createSpyObj(
+      'TimetableHearingStatementInternalService',
+      {
+        getStatement: of(statement),
+      }
+    );
+
+    dossierInternalService = jasmine.createSpyObj('DossierInternalService', {
+      answerQuestion: of<void>(undefined),
+    });
+
+    notificationService = jasmine.createSpyObj('NotificationService', [
+      'success',
+    ]);
+
     const activatedRoute = {
       snapshot: {
         data: {
@@ -99,13 +101,29 @@ describe('BoDossierDetail', () => {
   it('should sendAnswer when form is valid', () => {
     //given
     component.form.controls.answerToCanton.setValue('Ich bin einverstanden!');
-    fixture.detectChanges();
     //when
     component.sendAnswer();
     //then
-    expect(dossierInternalService.answerQuestion).toHaveBeenCalled();
-    expect(notificationService.success).toHaveBeenCalled();
+    expect(dossierInternalService.answerQuestion).toHaveBeenCalledOnceWith(
+      123,
+      { answerToCanton: 'Ich bin einverstanden!' }
+    );
+    expect(notificationService.success).toHaveBeenCalledOnceWith(
+      'TTH.DOSSIER.NOTIFICATION.SENT_TO_CANTON'
+    );
     expect(component.form.disabled).toBeTrue();
     expect(component.isDossierStatusBoCheck).toBeFalse();
+  });
+
+  it('should open mailto on openInMail()', () => {
+    //given
+    spyOn(window, 'open');
+    //when
+    component.openInMail();
+    //then
+    expect(window.open).toHaveBeenCalledOnceWith(
+      'mailto:?subject=Mehr%20Busse%20bitte&body=Habt%20ihr%20mehr%20Busse%3F',
+      '_self'
+    );
   });
 });
