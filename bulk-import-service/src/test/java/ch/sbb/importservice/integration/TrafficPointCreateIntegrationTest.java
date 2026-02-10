@@ -42,7 +42,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -73,8 +72,7 @@ class TrafficPointCreateIntegrationTest {
   @MockitoSpyBean
   private BulkImportLogService bulkImportLogService;
 
-  @Captor
-  private ArgumentCaptor<LogFile> logFileCaptor;
+  private final ArgumentCaptor<LogFile> logFileCaptor = ArgumentCaptor.forClass(LogFile.class);
 
   private String todaysDirectory;
 

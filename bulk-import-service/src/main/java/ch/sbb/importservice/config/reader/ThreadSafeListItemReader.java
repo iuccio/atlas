@@ -2,8 +2,7 @@ package ch.sbb.importservice.config.reader;
 
 import java.util.Collections;
 import java.util.List;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.lang.Nullable;
+import org.springframework.batch.infrastructure.item.ItemReader;
 
 public class ThreadSafeListItemReader<T> implements ItemReader<T> {
 
@@ -13,7 +12,6 @@ public class ThreadSafeListItemReader<T> implements ItemReader<T> {
     this.list = Collections.synchronizedList(list);
   }
 
-  @Nullable
   @Override
   public T read() {
     synchronized (list) {

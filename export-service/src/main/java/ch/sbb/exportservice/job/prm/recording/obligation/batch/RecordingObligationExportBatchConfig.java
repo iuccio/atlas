@@ -19,16 +19,16 @@ import ch.sbb.exportservice.tasklet.upload.UploadCsvFileTaskletV2;
 import ch.sbb.exportservice.util.StepUtil;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader;
+import org.springframework.batch.infrastructure.item.file.FlatFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,11 +55,9 @@ public class RecordingObligationExportBatchConfig {
   public JdbcCursorItemReader<RecordingObligation> recordingObligationReader(
       @Autowired @Qualifier("prmDataSource") DataSource dataSource
   ) {
-    JdbcCursorItemReader<RecordingObligation> itemReader = new JdbcCursorItemReader<>();
-    itemReader.setDataSource(dataSource);
-    itemReader.setSql(RecordingObligationSqlQueryUtil.getSqlQuery());
+    JdbcCursorItemReader<RecordingObligation> itemReader = new JdbcCursorItemReader<>(dataSource,
+        RecordingObligationSqlQueryUtil.getSqlQuery(), new RecordingObligationRowMapper());
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
-    itemReader.setRowMapper(new RecordingObligationRowMapper());
     return itemReader;
   }
 
@@ -69,7 +67,6 @@ public class RecordingObligationExportBatchConfig {
   public Job recordingObligationCsvJob(ItemReader<RecordingObligation> itemReader) {
     return new JobBuilder(EXPORT_RECORDING_OBLIGATION_CSV_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportRecordingObligationCsvStep(itemReader))
         .next(uploadRecordingObligationCsvFileStepV2())
         .end()
@@ -80,12 +77,11 @@ public class RecordingObligationExportBatchConfig {
   public Step exportRecordingObligationCsvStep(ItemReader<RecordingObligation> itemReader) {
     final String stepName = "exportRecordingObligationCsvStep";
     return new StepBuilder(stepName, jobRepository)
-        .<RecordingObligation, RecordingObligationCsvModel>chunk(CHUNK_SIZE, transactionManager)
+        .<RecordingObligation, RecordingObligationCsvModel>chunk(CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(recordingObligationCsvProcessor())
         .writer(recordingObligationCsvWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();

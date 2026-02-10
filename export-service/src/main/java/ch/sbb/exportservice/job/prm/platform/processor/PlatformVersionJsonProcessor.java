@@ -3,7 +3,7 @@ package ch.sbb.exportservice.job.prm.platform.processor;
 import ch.sbb.atlas.api.prm.model.platform.ReadPlatformVersionModel;
 import ch.sbb.exportservice.job.prm.platform.entity.PlatformVersion;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class PlatformVersionJsonProcessor implements ItemProcessor<PlatformVersion, ReadPlatformVersionModel> {

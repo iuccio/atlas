@@ -11,10 +11,10 @@ import static org.mockito.Mockito.verify;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.atlas.workflow.model.WorkflowStatus;
 import ch.sbb.workflow.entity.Person;
+import ch.sbb.workflow.module.sepodi.hearing.enity.StopPointWorkflow;
 import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowExaminantNotFoundException;
 import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowNotInHearingException;
 import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowPinCodeInvalidException;
-import ch.sbb.workflow.module.sepodi.hearing.enity.StopPointWorkflow;
 import ch.sbb.workflow.module.sepodi.hearing.mail.StopPointWorkflowNotificationService;
 import ch.sbb.workflow.module.sepodi.hearing.repository.StopPointWorkflowRepository;
 import ch.sbb.workflow.otp.entity.Otp;
@@ -25,12 +25,16 @@ import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 class StopPointWorkflowOtpServiceTest {
 
   private static final String MAIL_ADDRESS = "marek@hamsik.com";
@@ -43,6 +47,9 @@ class StopPointWorkflowOtpServiceTest {
 
   @Autowired
   private OtpRepository otpRepository;
+
+  @Autowired
+  JdbcTemplate jdbcTemplate;
 
   @MockitoBean
   private StopPointWorkflowNotificationService notificationService;
@@ -155,8 +162,16 @@ class StopPointWorkflowOtpServiceTest {
         MAIL_ADDRESS);
 
     Otp otp = otpRepository.findByPersonId(examinant.getId());
-    otp.setCreationTime(LocalDateTime.now().minusHours(1));
-    otpRepository.save(otp);
+    LocalDateTime past = LocalDateTime.now().minusHours(1);
+
+    jdbcTemplate.update(
+        "update otp set creation_time = ? where id = ?",
+        past,
+        otp.getId()
+    );
+
+    Otp reloaded = otpRepository.findByPersonId(examinant.getId());
+    assertThat(reloaded.getCreationTime()).isBefore(LocalDateTime.now().minusHours(1));
 
     // when & then
     assertThatExceptionOfType(StopPointWorkflowPinCodeInvalidException.class).isThrownBy(

@@ -4,7 +4,7 @@ import ch.sbb.exportservice.job.prm.contactpoint.entity.ContactPointVersion;
 import ch.sbb.exportservice.job.prm.contactpoint.model.ContactPointVersionCsvModel;
 import ch.sbb.exportservice.util.MapperUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class ContactPointVersionCsvProcessor implements

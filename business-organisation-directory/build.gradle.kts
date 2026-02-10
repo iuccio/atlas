@@ -9,35 +9,57 @@ group = "ch.sbb.atlas"
 version = "2.1081.0"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    // Spring Boot Starters
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-kafka")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
+    implementation("org.springframework.boot:spring-boot-starter-webservices")
+
+    // Spring Cloud
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+    // Spring Security
+    implementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server")
+
+    // Spring WS
     implementation("org.springframework.ws:spring-ws-core")
     implementation("org.springframework.ws:spring-ws-support")
     implementation("org.springframework.ws:spring-ws-security")
-    implementation("com.sun.xml.messaging.saaj:saaj-impl")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.hibernate.orm:hibernate-jpamodelgen")
+
+    // Micrometer & Tracing
+    implementation("org.springframework.boot:spring-boot-micrometer-tracing-brave")
+
+    // Flyway
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
+
+    // Hibernate
+    implementation("org.hibernate.orm:hibernate-processor")
+
+    // Libraries
     implementation(libs.aws.s3)
-    implementation("org.springframework.kafka:spring-kafka")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
+    implementation("com.sun.xml.messaging.saaj:saaj-impl")
+
+    // Project dependencies
     implementation(project(":base-atlas"))
     implementation(project(":kafka"))
     implementation(project(":user-administration-security"))
 
-    annotationProcessor("org.hibernate.orm:hibernate-jpamodelgen")
-
     runtimeOnly("org.postgresql:postgresql")
+    annotationProcessor("org.hibernate.orm:hibernate-processor")
 
-    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webservices-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-security-test")
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
 
     testImplementation(project(":base-atlas", "test"))
     testImplementation(project(":auto-rest-doc"))

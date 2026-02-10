@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @Builder
+@RequiredArgsConstructor
 public class BulkImportLogEntry {
 
   private final int lineNumber;
@@ -17,6 +19,7 @@ public class BulkImportLogEntry {
 
   @Data
   @Builder
+  @RequiredArgsConstructor
   public static class BulkImportError {
 
     private final String errorMessage;

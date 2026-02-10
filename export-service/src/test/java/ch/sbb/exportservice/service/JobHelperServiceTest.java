@@ -7,30 +7,25 @@ import static org.mockito.Mockito.when;
 
 import ch.sbb.exportservice.util.JobDescriptionConstant;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.batch.core.BatchStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.job.JobInstance;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.job.parameters.JobParametersBuilder;
+import org.springframework.batch.core.repository.JobRepository;
 
 class JobHelperServiceTest {
 
   @Mock
-  private JobExplorer jobExplorer;
+  private JobRepository jobRepository;
 
   @Mock
   private JobInstance jobInstance;
-
-  @Mock
-  private JobParameters jobParameters;
 
   @Mock
   private JobExecution jobExecution;
@@ -40,7 +35,7 @@ class JobHelperServiceTest {
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    jobHelperService = new JobHelperService(jobExplorer);
+    jobHelperService = new JobHelperService(jobRepository);
   }
 
   @Test
@@ -54,12 +49,12 @@ class JobHelperServiceTest {
   @Test
   void shouldReturnDateWhenJobExecutionWasFound() {
     //given
-    Map<String, JobParameter<?>> parameters = new HashMap<>();
-    parameters.put(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, new JobParameter<>("BATCH", String.class));
-    when(jobExplorer.findJobInstancesByJobName(any(), anyInt(), anyInt())).thenReturn(List.of(jobInstance));
-    when(jobExplorer.getLastJobExecution(jobInstance)).thenReturn(jobExecution);
+    JobParameters jobParameters = new JobParametersBuilder()
+        .addString(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, "BATCH")
+        .toJobParameters();
+    when(jobRepository.getJobInstances(any(), anyInt(), anyInt())).thenReturn(List.of(jobInstance));
+    when(jobRepository.getLastJobExecution(jobInstance)).thenReturn(jobExecution);
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
-    when(jobParameters.getParameters()).thenReturn(parameters);
     when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
 
     LocalDate successfullyJobExecutionLocalDate = LocalDate.of(2000, 1, 1);

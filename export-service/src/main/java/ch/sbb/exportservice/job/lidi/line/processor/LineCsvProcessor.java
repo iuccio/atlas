@@ -6,7 +6,7 @@ import static ch.sbb.exportservice.util.MapperUtil.LOCAL_DATE_FORMATTER;
 import ch.sbb.exportservice.job.lidi.line.entity.Line;
 import ch.sbb.exportservice.job.lidi.line.model.LineCsvModel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class LineCsvProcessor implements ItemProcessor<Line, LineCsvModel> {

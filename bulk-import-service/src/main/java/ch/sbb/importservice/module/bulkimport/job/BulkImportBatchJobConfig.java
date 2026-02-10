@@ -23,18 +23,17 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.infrastructure.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.TaskExecutor;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -61,7 +60,6 @@ public class BulkImportBatchJobConfig {
       ItemWriter<BulkImportUpdateContainer<?>> itemWriter) {
     return new JobBuilder(BULK_IMPORT_JOB_NAME, jobRepository)
         .listener(bulkImportJobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(bulkImportFromCsv(itemReader, itemWriter))
         .end()
         .build();
@@ -72,13 +70,13 @@ public class BulkImportBatchJobConfig {
       ItemWriter<BulkImportUpdateContainer<?>> itemWriter) {
     String stepName = "bulkImportFromCsv";
     return new StepBuilder(stepName, jobRepository)
-        .<BulkImportUpdateContainer<?>, BulkImportUpdateContainer<?>>chunk(CHUNK_SIZE, transactionManager)
+        .<BulkImportUpdateContainer<?>, BulkImportUpdateContainer<?>>chunk(CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(itemReader)
         .listener(bulkImportDataValidationToLogFileListener)
         .writer(itemWriter)
         .listener(bulkImportDataExecutionToLogFileListener)
         .faultTolerant()
-        .backOffPolicy(StepUtils.getBackOffPolicy(stepName))
         .retryPolicy(StepUtils.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .taskExecutor(asyncTaskExecutor())
@@ -126,7 +124,7 @@ public class BulkImportBatchJobConfig {
 
   @StepScope
   @Bean
-  protected TaskExecutor asyncTaskExecutor() {
+  protected AsyncTaskExecutor asyncTaskExecutor() {
     ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
     taskExecutor.setCorePoolSize(THREAD_EXECUTION_SIZE);
     taskExecutor.setMaxPoolSize(THREAD_EXECUTION_SIZE);

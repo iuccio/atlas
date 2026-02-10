@@ -25,17 +25,17 @@ import ch.sbb.exportservice.tasklet.upload.UploadJsonFileTaskletV2;
 import ch.sbb.exportservice.util.StepUtil;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.json.JsonFileItemWriter;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader;
+import org.springframework.batch.infrastructure.item.file.FlatFileItemWriter;
+import org.springframework.batch.infrastructure.item.json.JsonFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,11 +62,9 @@ public class LoadingPointVersionExportBatchConfig {
       @Autowired @Qualifier("servicePointDataSource") DataSource dataSource,
       @Value("#{jobParameters[exportTypeV2]}") ExportTypeV2 exportTypeV2
   ) {
-    JdbcCursorItemReader<LoadingPointVersion> itemReader = new JdbcCursorItemReader<>();
-    itemReader.setDataSource(dataSource);
-    itemReader.setSql(LoadingPointVersionSqlQueryUtil.getSqlQuery(exportTypeV2));
+    JdbcCursorItemReader<LoadingPointVersion> itemReader = new JdbcCursorItemReader<>(dataSource,
+        LoadingPointVersionSqlQueryUtil.getSqlQuery(exportTypeV2), new LoadingPointVersionRowMapper());
     itemReader.setFetchSize(StepUtil.FETCH_SIZE);
-    itemReader.setRowMapper(new LoadingPointVersionRowMapper());
     return itemReader;
   }
 
@@ -76,7 +74,6 @@ public class LoadingPointVersionExportBatchConfig {
   public Job exportLoadingPointCsvJob(ItemReader<LoadingPointVersion> itemReader) {
     return new JobBuilder(EXPORT_LOADING_POINT_CSV_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportLoadingPointCsvStep(itemReader))
         .next(uploadLoadingPointCsvFileStepV2())
         .next(deleteLoadingPointCsvFileStepV2())
@@ -88,12 +85,12 @@ public class LoadingPointVersionExportBatchConfig {
   public Step exportLoadingPointCsvStep(ItemReader<LoadingPointVersion> itemReader) {
     final String stepName = "exportLoadingPointCsvStep";
     return new StepBuilder(stepName, jobRepository)
-        .<LoadingPointVersion, LoadingPointVersionCsvModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<LoadingPointVersion, LoadingPointVersionCsvModel>chunk(StepUtil.CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(loadingPointVersionCsvProcessor())
         .writer(loadingPointCsvWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
+        
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();
@@ -158,7 +155,6 @@ public class LoadingPointVersionExportBatchConfig {
   public Job exportLoadingPointJsonJob(ItemReader<LoadingPointVersion> itemReader) {
     return new JobBuilder(EXPORT_LOADING_POINT_JSON_JOB_NAME, jobRepository)
         .listener(jobCompletionListener)
-        .incrementer(new RunIdIncrementer())
         .flow(exportLoadingPointJsonStep(itemReader))
         .next(uploadLoadingPointJsonFileStepV2())
         .next(deleteLoadingPointJsonFileStepV2())
@@ -170,12 +166,12 @@ public class LoadingPointVersionExportBatchConfig {
   public Step exportLoadingPointJsonStep(ItemReader<LoadingPointVersion> itemReader) {
     String stepName = "exportLoadingPointJsonStep";
     return new StepBuilder(stepName, jobRepository)
-        .<LoadingPointVersion, ReadLoadingPointVersionModel>chunk(StepUtil.CHUNK_SIZE, transactionManager)
+        .<LoadingPointVersion, ReadLoadingPointVersionModel>chunk(StepUtil.CHUNK_SIZE).transactionManager(transactionManager)
         .reader(itemReader)
         .processor(loadingPointVersionJsonProcessor())
         .writer(loadingPointJsonFileItemWriter(null))
         .faultTolerant()
-        .backOffPolicy(StepUtil.getBackOffPolicy(stepName))
+        
         .retryPolicy(StepUtil.getRetryPolicy(stepName))
         .listener(stepTracerListener)
         .build();

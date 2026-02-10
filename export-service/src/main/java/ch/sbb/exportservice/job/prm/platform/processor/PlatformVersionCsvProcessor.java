@@ -9,7 +9,7 @@ import ch.sbb.exportservice.job.prm.platform.entity.PlatformVersion;
 import ch.sbb.exportservice.job.prm.platform.model.PlatformVersionCsvModel;
 import ch.sbb.exportservice.util.MapperUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 
 @Slf4j
 public class PlatformVersionCsvProcessor implements ItemProcessor<PlatformVersion, PlatformVersionCsvModel> {

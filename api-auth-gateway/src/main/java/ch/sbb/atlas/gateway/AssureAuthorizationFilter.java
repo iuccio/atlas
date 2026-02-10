@@ -10,14 +10,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Required dependencies:
- * <dependency>
- * <groupId>org.springframework.security</groupId>
- * <artifactId>spring-security-oauth2-client</artifactId>
- * </dependency>
- * <dependency>
- * <groupId>org.springframework.boot</groupId>
- * <artifactId>spring-boot-starter-security</artifactId>
- * </dependency>
+ * org.springframework.boot:spring-boot-security-oauth2-client
+ * org.springframework.boot:spring-boot-starter-security
  */
 @RequiredArgsConstructor
 @Component
@@ -36,7 +30,7 @@ public class AssureAuthorizationFilter extends AbstractGatewayFilterFactory<Obje
    */
   private GatewayFilter addAccessTokenIfNotPresent() {
     return (exchange, chain) -> tokenService.getClientCredentialAccessToken().map(accessToken -> {
-      if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+      if (!exchange.getRequest().getHeaders().containsHeader(HttpHeaders.AUTHORIZATION)) {
         ServerHttpRequest newRequest = exchange.getRequest().mutate()
             .headers(headers -> headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)).build();
         return exchange.mutate().request(newRequest).build();

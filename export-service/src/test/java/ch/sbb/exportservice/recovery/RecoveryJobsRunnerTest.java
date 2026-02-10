@@ -10,7 +10,6 @@ import static ch.sbb.exportservice.util.JobDescriptionConstant.EXPORT_SERVICE_PO
 import static ch.sbb.exportservice.util.JobDescriptionConstant.EXPORT_STOP_POINT_CSV_JOB_NAME;
 import static ch.sbb.exportservice.util.JobDescriptionConstant.EXPORT_TRAFFIC_POINT_ELEMENT_CSV_JOB_NAME;
 import static ch.sbb.exportservice.util.JobDescriptionConstant.EXPORT_TYPE_JOB_PARAMETER;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,22 +34,18 @@ import ch.sbb.exportservice.job.sepodi.trafficpoint.service.ExportTrafficPointEl
 import ch.sbb.exportservice.model.ExportTypeV2;
 import ch.sbb.exportservice.util.JobDescriptionConstant;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.batch.core.BatchStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.explore.JobExplorer;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.job.JobInstance;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.job.parameters.JobParametersBuilder;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.StepExecution;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -59,12 +54,6 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 class RecoveryJobsRunnerTest {
 
   private RecoveryJobsRunner recoveryJobsRunner;
-
-  @Mock
-  private JobExplorer jobExplorer;
-
-  @Mock
-  private JobLauncher jobLauncher;
 
   @Mock
   private JobRepository jobRepository;
@@ -121,9 +110,6 @@ class RecoveryJobsRunnerTest {
   private JobInstance jobInstance;
 
   @Mock
-  private JobParameters jobParameters;
-
-  @Mock
   private JobExecution jobExecution;
 
   @Mock
@@ -135,7 +121,7 @@ class RecoveryJobsRunnerTest {
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    recoveryJobsRunner = new RecoveryJobsRunner(jobExplorer, fileService, jobRepository,
+    recoveryJobsRunner = new RecoveryJobsRunner(fileService, jobRepository,
         exportServicePointJobService, exportTrafficPointElementJobService, exportLoadingPointJobService,
         exportStopPointJobService, exportPlatformJobService, exportReferencePointJobService, exportContactPointJobService,
         exportToiletJobService, exportParkingLotJobService, exportRelationJobService, exportLineJobService,
@@ -147,23 +133,22 @@ class RecoveryJobsRunnerTest {
   @Test
   void shouldRecoverExportServicePointWhenOneJobIsNotSuccessfullyExecuted() throws Exception {
     //given
-    StepExecution stepExecution = new StepExecution("myStep", jobExecution);
-    stepExecution.setId(132L);
-    Map<String, JobParameter<?>> parameters = new HashMap<>();
-    parameters.put(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, new JobParameter<>("BATCH", String.class));
-    parameters.put(EXPORT_TYPE_JOB_PARAMETER, new JobParameter<>(ExportTypeV2.WORLD_FULL.name(), String.class));
-    when(jobParameters.getParameters()).thenReturn(parameters);
+    StepExecution stepExecution = new StepExecution(132L,"myStep", jobExecution);
+
+    JobParameters jobParameters = new JobParametersBuilder()
+        .addString(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, "BATCH")
+        .addString(EXPORT_TYPE_JOB_PARAMETER, ExportTypeV2.WORLD_FULL.name())
+        .toJobParameters();
     when(jobExecution.getStatus()).thenReturn(BatchStatus.STARTING);
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobExplorer.getJobInstanceCount(EXPORT_SERVICE_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
+    when(jobRepository.getJobInstanceCount(EXPORT_SERVICE_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
-    when(jobExplorer.getJobInstances(EXPORT_SERVICE_POINT_CSV_JOB_NAME, 0,
+    when(jobRepository.getJobInstances(EXPORT_SERVICE_POINT_CSV_JOB_NAME, 0,
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
-    when(jobExplorer.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
-    when(jobLauncher.run(any(), any())).thenReturn(jobExecution);
+    when(jobRepository.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
 
     //when
     recoveryJobsRunner.onApplicationEvent(applicationReadyEvent);
@@ -176,23 +161,22 @@ class RecoveryJobsRunnerTest {
   @Test
   void shouldRecoverExportTrafficPointWhenOneJobIsNotSuccessfullyExecuted() throws Exception {
     //given
-    StepExecution stepExecution = new StepExecution("myStep", jobExecution);
-    stepExecution.setId(132L);
-    Map<String, JobParameter<?>> parameters = new HashMap<>();
-    parameters.put(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, new JobParameter<>("BATCH", String.class));
-    parameters.put(EXPORT_TYPE_JOB_PARAMETER, new JobParameter<>(ExportTypeV2.WORLD_FULL.name(), String.class));
-    when(jobParameters.getParameters()).thenReturn(parameters);
+    StepExecution stepExecution = new StepExecution(132L,"myStep", jobExecution);
+
+    JobParameters jobParameters = new JobParametersBuilder()
+        .addString(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, "BATCH")
+        .addString(EXPORT_TYPE_JOB_PARAMETER, ExportTypeV2.WORLD_FULL.name())
+        .toJobParameters();
     when(jobExecution.getStatus()).thenReturn(BatchStatus.STARTING);
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobExplorer.getJobInstanceCount(EXPORT_TRAFFIC_POINT_ELEMENT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
+    when(jobRepository.getJobInstanceCount(EXPORT_TRAFFIC_POINT_ELEMENT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
-    when(jobExplorer.getJobInstances(EXPORT_TRAFFIC_POINT_ELEMENT_CSV_JOB_NAME, 0,
+    when(jobRepository.getJobInstances(EXPORT_TRAFFIC_POINT_ELEMENT_CSV_JOB_NAME, 0,
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
-    when(jobExplorer.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
-    when(jobLauncher.run(any(), any())).thenReturn(jobExecution);
+    when(jobRepository.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
 
     //when
     recoveryJobsRunner.onApplicationEvent(applicationReadyEvent);
@@ -205,23 +189,21 @@ class RecoveryJobsRunnerTest {
   @Test
   void shouldRecoverExportLoadingPointWhenOneJobIsNotSuccessfullyExecuted() throws Exception {
     //given
-    StepExecution stepExecution = new StepExecution("myStep", jobExecution);
-    stepExecution.setId(132L);
-    Map<String, JobParameter<?>> parameters = new HashMap<>();
-    parameters.put(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, new JobParameter<>("BATCH", String.class));
-    parameters.put(EXPORT_TYPE_JOB_PARAMETER, new JobParameter<>(ExportTypeV2.WORLD_FULL.name(), String.class));
-    when(jobParameters.getParameters()).thenReturn(parameters);
+    StepExecution stepExecution = new StepExecution(132L,"myStep", jobExecution);
+    JobParameters jobParameters = new JobParametersBuilder()
+        .addString(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, "BATCH")
+        .addString(EXPORT_TYPE_JOB_PARAMETER, ExportTypeV2.WORLD_FULL.name())
+        .toJobParameters();
     when(jobExecution.getStatus()).thenReturn(BatchStatus.STARTING);
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobExplorer.getJobInstanceCount(EXPORT_LOADING_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
+    when(jobRepository.getJobInstanceCount(EXPORT_LOADING_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
-    when(jobExplorer.getJobInstances(EXPORT_LOADING_POINT_CSV_JOB_NAME, 0,
+    when(jobRepository.getJobInstances(EXPORT_LOADING_POINT_CSV_JOB_NAME, 0,
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
-    when(jobExplorer.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
-    when(jobLauncher.run(any(), any())).thenReturn(jobExecution);
+    when(jobRepository.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
 
     //when
     recoveryJobsRunner.onApplicationEvent(applicationReadyEvent);
@@ -234,23 +216,21 @@ class RecoveryJobsRunnerTest {
   @Test
   void shouldRecoverExportStopPointWhenOneJobIsNotSuccessfullyExecuted() throws Exception {
     //given
-    StepExecution stepExecution = new StepExecution("myStep", jobExecution);
-    stepExecution.setId(132L);
-    Map<String, JobParameter<?>> parameters = new HashMap<>();
-    parameters.put(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, new JobParameter<>("BATCH", String.class));
-    parameters.put(EXPORT_TYPE_JOB_PARAMETER, new JobParameter<>(ExportTypeV2.WORLD_FULL.name(), String.class));
-    when(jobParameters.getParameters()).thenReturn(parameters);
+    StepExecution stepExecution = new StepExecution(132L,"myStep", jobExecution);
+    JobParameters jobParameters = new JobParametersBuilder()
+        .addString(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, "BATCH")
+        .addString(EXPORT_TYPE_JOB_PARAMETER, ExportTypeV2.WORLD_FULL.name())
+        .toJobParameters();
     when(jobExecution.getStatus()).thenReturn(BatchStatus.STARTING);
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobExplorer.getJobInstanceCount(EXPORT_STOP_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
+    when(jobRepository.getJobInstanceCount(EXPORT_STOP_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
     when(
-        jobExplorer.getJobInstances(EXPORT_STOP_POINT_CSV_JOB_NAME, 0, TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
+        jobRepository.getJobInstances(EXPORT_STOP_POINT_CSV_JOB_NAME, 0, TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
-    when(jobExplorer.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
-    when(jobLauncher.run(any(), any())).thenReturn(jobExecution);
+    when(jobRepository.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
 
     //when
     recoveryJobsRunner.onApplicationEvent(applicationReadyEvent);
@@ -263,22 +243,20 @@ class RecoveryJobsRunnerTest {
   @Test
   void shouldRecoverExportPlatformWhenOneJobIsNotSuccessfullyExecuted() throws Exception {
     //given
-    StepExecution stepExecution = new StepExecution("myStep", jobExecution);
-    stepExecution.setId(132L);
-    Map<String, JobParameter<?>> parameters = new HashMap<>();
-    parameters.put(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, new JobParameter<>("BATCH", String.class));
-    parameters.put(EXPORT_TYPE_JOB_PARAMETER, new JobParameter<>(ExportTypeV2.WORLD_FULL.name(), String.class));
-    when(jobParameters.getParameters()).thenReturn(parameters);
+    StepExecution stepExecution = new StepExecution(132L,"myStep", jobExecution);
+    JobParameters jobParameters = new JobParametersBuilder()
+        .addString(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, "BATCH")
+        .addString(EXPORT_TYPE_JOB_PARAMETER, ExportTypeV2.WORLD_FULL.name())
+        .toJobParameters();
     when(jobExecution.getStatus()).thenReturn(BatchStatus.STARTING);
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobExplorer.getJobInstanceCount(EXPORT_PLATFORM_CSV_JOB_NAME)).thenReturn(Long.valueOf(
+    when(jobRepository.getJobInstanceCount(EXPORT_PLATFORM_CSV_JOB_NAME)).thenReturn(Long.valueOf(
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
-    when(jobExplorer.getJobInstances(EXPORT_PLATFORM_CSV_JOB_NAME, 0, TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
+    when(jobRepository.getJobInstances(EXPORT_PLATFORM_CSV_JOB_NAME, 0, TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
-    when(jobExplorer.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
-    when(jobLauncher.run(any(), any())).thenReturn(jobExecution);
+    when(jobRepository.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
 
     //when
     recoveryJobsRunner.onApplicationEvent(applicationReadyEvent);
@@ -291,24 +269,21 @@ class RecoveryJobsRunnerTest {
   @Test
   void shouldRecoverExportReferencePointWhenOneJobIsNotSuccessfullyExecuted() throws Exception {
     //given
-    StepExecution stepExecution = new StepExecution("myStep", jobExecution);
-    stepExecution.setId(132L);
-    Map<String, JobParameter<?>> parameters = new HashMap<>();
-    parameters.put(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, new JobParameter<>("BATCH", String.class));
-    parameters.put(EXPORT_TYPE_JOB_PARAMETER, new JobParameter<>(ExportTypeV2.WORLD_FULL.name(), String.class));
-
-    when(jobParameters.getParameters()).thenReturn(parameters);
+    StepExecution stepExecution = new StepExecution(132L,"myStep", jobExecution);
+    JobParameters jobParameters = new JobParametersBuilder()
+        .addString(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, "BATCH")
+        .addString(EXPORT_TYPE_JOB_PARAMETER, ExportTypeV2.WORLD_FULL.name())
+        .toJobParameters();
     when(jobExecution.getStatus()).thenReturn(BatchStatus.STARTING);
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobExplorer.getJobInstanceCount(EXPORT_REFERENCE_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
+    when(jobRepository.getJobInstanceCount(EXPORT_REFERENCE_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
-    when(jobExplorer.getJobInstances(EXPORT_REFERENCE_POINT_CSV_JOB_NAME, 0,
+    when(jobRepository.getJobInstances(EXPORT_REFERENCE_POINT_CSV_JOB_NAME, 0,
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
-    when(jobExplorer.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
-    when(jobLauncher.run(any(), any())).thenReturn(jobExecution);
+    when(jobRepository.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
 
     //when
     recoveryJobsRunner.onApplicationEvent(applicationReadyEvent);
@@ -321,24 +296,21 @@ class RecoveryJobsRunnerTest {
   @Test
   void shouldRecoverExportContactPointWhenOneJobIsNotSuccessfullyExecuted() throws Exception {
     //given
-    StepExecution stepExecution = new StepExecution("myStep", jobExecution);
-    stepExecution.setId(132L);
-    Map<String, JobParameter<?>> parameters = new HashMap<>();
-    parameters.put(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, new JobParameter<>("BATCH", String.class));
-    parameters.put(EXPORT_TYPE_JOB_PARAMETER, new JobParameter<>(ExportTypeV2.WORLD_FULL.name(), String.class));
-
-    when(jobParameters.getParameters()).thenReturn(parameters);
+    StepExecution stepExecution = new StepExecution(132L,"myStep", jobExecution);
+    JobParameters jobParameters = new JobParametersBuilder()
+        .addString(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, "BATCH")
+        .addString(EXPORT_TYPE_JOB_PARAMETER, ExportTypeV2.WORLD_FULL.name())
+        .toJobParameters();
     when(jobExecution.getStatus()).thenReturn(BatchStatus.STARTING);
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobExplorer.getJobInstanceCount(EXPORT_CONTACT_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
+    when(jobRepository.getJobInstanceCount(EXPORT_CONTACT_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
-    when(jobExplorer.getJobInstances(EXPORT_CONTACT_POINT_CSV_JOB_NAME, 0,
+    when(jobRepository.getJobInstances(EXPORT_CONTACT_POINT_CSV_JOB_NAME, 0,
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
-    when(jobExplorer.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
-    when(jobLauncher.run(any(), any())).thenReturn(jobExecution);
+    when(jobRepository.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
 
     //when
     recoveryJobsRunner.onApplicationEvent(applicationReadyEvent);
@@ -351,23 +323,20 @@ class RecoveryJobsRunnerTest {
   @Test
   void shouldRecoverExportRelationWhenOneJobIsNotSuccessfullyExecuted() throws Exception {
     //given
-    StepExecution stepExecution = new StepExecution("myStep", jobExecution);
-    stepExecution.setId(132L);
-    Map<String, JobParameter<?>> parameters = new HashMap<>();
-    parameters.put(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, new JobParameter<>("BATCH", String.class));
-    parameters.put(EXPORT_TYPE_JOB_PARAMETER, new JobParameter<>(ExportTypeV2.WORLD_FULL.name(), String.class));
-
-    when(jobParameters.getParameters()).thenReturn(parameters);
+    StepExecution stepExecution = new StepExecution(132L,"myStep", jobExecution);
+    JobParameters jobParameters = new JobParametersBuilder()
+        .addString(JobDescriptionConstant.EXECUTION_TYPE_PARAMETER, "BATCH")
+        .addString(EXPORT_TYPE_JOB_PARAMETER, ExportTypeV2.WORLD_FULL.name())
+        .toJobParameters();
     when(jobExecution.getStatus()).thenReturn(BatchStatus.STARTING);
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobExplorer.getJobInstanceCount(EXPORT_RELATION_CSV_JOB_NAME)).thenReturn(Long.valueOf(
+    when(jobRepository.getJobInstanceCount(EXPORT_RELATION_CSV_JOB_NAME)).thenReturn(Long.valueOf(
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
-    when(jobExplorer.getJobInstances(EXPORT_RELATION_CSV_JOB_NAME, 0, TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
+    when(jobRepository.getJobInstances(EXPORT_RELATION_CSV_JOB_NAME, 0, TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
-    when(jobExplorer.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
-    when(jobLauncher.run(any(), any())).thenReturn(jobExecution);
+    when(jobRepository.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
 
     //when
     recoveryJobsRunner.onApplicationEvent(applicationReadyEvent);

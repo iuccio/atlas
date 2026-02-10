@@ -2,11 +2,11 @@ package ch.sbb.prm.directory.shared.servicepoint;
 
 import ch.sbb.atlas.kafka.model.service.point.SharedServicePointVersionModel;
 import ch.sbb.prm.directory.shared.servicepoint.entity.SharedServicePoint;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.Set;
 import lombok.experimental.UtilityClass;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @UtilityClass
 public class SharedServicePointTestData {
@@ -32,7 +32,7 @@ public class SharedServicePointTestData {
   private static String getObjectAsString(SharedServicePointVersionModel sharedServicePoint) {
     try {
       return new ObjectMapper().writeValueAsString(sharedServicePoint);
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new IllegalStateException(e);
     }
   }

@@ -8,11 +8,7 @@ import ch.sbb.importservice.module.bulkimport.entity.BulkImport;
 import ch.sbb.importservice.module.bulkimport.entity.BulkImportLog;
 import ch.sbb.importservice.module.bulkimport.repository.BulkImportLogRepository;
 import ch.sbb.importservice.module.bulkimport.service.BulkImportS3BucketService;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import java.io.File;
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +16,9 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.util.DefaultPrettyPrinter;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectWriter;
 
 @Service
 @RequiredArgsConstructor
@@ -69,11 +68,7 @@ public class BulkImportLogService {
 
   public LogFile getLogFileFromS3(String logFileUrl) {
     File logFile = bulkImportS3BucketService.downloadImportFile(logFileUrl);
-    try {
-      return objectMapper.readValue(logFile, LogFile.class);
-    } catch (IOException e) {
-      throw new RuntimeException("Unexpected exception during parsing of Bulk Import Result Log File!", e);
-    }
+    return objectMapper.readValue(logFile, LogFile.class);
   }
 
   @SneakyThrows
@@ -88,7 +83,7 @@ public class BulkImportLogService {
 
   @SneakyThrows
   public File writeLogToFile(LogFile logFile, BulkImport currentImport) {
-    ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
+    ObjectWriter writer = objectMapper.writer().with(new DefaultPrettyPrinter());
     String fileName = "%s_%s_%s.log".formatted(currentImport.getObjectType(), currentImport.getImportType(),
         currentImport.getId());
     File file = new File(fileService.getDir() + File.separator + fileName);
