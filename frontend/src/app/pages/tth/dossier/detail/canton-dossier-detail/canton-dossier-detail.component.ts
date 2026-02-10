@@ -89,7 +89,6 @@ export class CantonDossierDetailComponent
   readonly editableStates = DOSSIER_EDITABLE_STATES;
   readonly cancelableStates = [DossierStatus.Added];
   readonly dissolvableStates = [
-    DossierStatus.DossierCantonCheck,
     DossierStatus.Accepted,
     DossierStatus.Rejected,
     DossierStatus.Moved,
