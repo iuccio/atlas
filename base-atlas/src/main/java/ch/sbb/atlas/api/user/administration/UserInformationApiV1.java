@@ -4,25 +4,28 @@ import ch.sbb.atlas.kafka.model.user.admin.ApplicationType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Set;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "User Information")
-@RequestMapping("v1")
 public interface UserInformationApiV1 {
 
-  @GetMapping("search")
+  String SEARCH_IN_ATLAS = "/v1/search-in-atlas";
+  String SEARCH_BO_DOSSIER_ANSWERING_USERS = "/v1/search-bo-dossier-answering-users";
+  Set<String> ALLOWED_FOR_ATLAS_INTERNAL_ROLE = Set.of(SEARCH_IN_ATLAS, SEARCH_BO_DOSSIER_ANSWERING_USERS);
+
+  @GetMapping("/v1/search")
   @Operation(description = "Look up Users in SBB Azure AD via Graph API")
   List<UserModel> searchUsers(@RequestParam String searchQuery);
 
-  @GetMapping("search-in-atlas")
+  @GetMapping(SEARCH_IN_ATLAS)
   @Operation(description = "Look up Users in SBB Atlas")
   List<UserModel> searchUsersInAtlas(
       @RequestParam String searchQuery,
       @RequestParam ApplicationType applicationType);
 
-  @GetMapping("search-bo-dossier-answering-users")
+  @GetMapping(SEARCH_BO_DOSSIER_ANSWERING_USERS)
   @Operation(description = "Look up Users in atlas who may answer dossiers")
   List<UserModel> searchBoDossierAnsweringUsers(@RequestParam String searchQuery);
 }
