@@ -3,6 +3,7 @@ package ch.sbb.atlas.user.administration.config;
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.oauth2.jwt.JwtClaimNames.AUD;
 
+import ch.sbb.atlas.api.user.administration.UserInformationApiV1;
 import ch.sbb.atlas.configuration.BaseSecurityConfig;
 import ch.sbb.atlas.configuration.Role;
 import ch.sbb.atlas.redact.RedactConfig;
@@ -63,8 +64,8 @@ public class SecurityConfig {
                 // <code>@EnableGlobalMethodSecurity(prePostEnabled = true)</code>.
                 .requestMatchers(HttpMethod.GET, "/static/**").permitAll()
                 // Allowed for atlas-internal
-                .requestMatchers(HttpMethod.GET, "/v1/users/current", "/v1/users/*/displayname",
-                    "/v1/users/display-info", "/v1/search-in-atlas").hasAnyRole(Role.ATLAS_INTERNAL)
+                .requestMatchers(HttpMethod.GET, "/v1/users/current", "/v1/users/*/displayname", "/v1/users/display-info").hasAnyRole(Role.ATLAS_INTERNAL)
+                .requestMatchers(HttpMethod.GET, UserInformationApiV1.ALLOWED_FOR_ATLAS_INTERNAL_ROLE.toArray(String[]::new)).hasAnyRole(Role.ATLAS_INTERNAL)
                 // Others only for atlas-admin
                 .requestMatchers("/**").hasRole(Role.ATLAS_ADMIN)
                 .anyRequest().hasRole(Role.ATLAS_ADMIN)

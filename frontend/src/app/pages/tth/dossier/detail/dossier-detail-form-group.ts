@@ -16,8 +16,9 @@ export interface DossierDetailFormGroup {
   publicComment: FormControl<string | null | undefined>;
   boContactMail: FormControl<string | null | undefined>;
   boDeadlineToAnswer: FormControl<Moment | null | undefined>;
-  question: FormControl<string | null | undefined>;
   dossierStatus: FormControl<DossierStatus | null | undefined>;
+  questionId: FormControl<number | null | undefined>;
+  question: FormControl<string | null | undefined>;
   answerToCanton: FormControl<string | null | undefined>;
 }
 
@@ -51,6 +52,7 @@ export class DossierFormGroupBuilder {
       boDeadlineToAnswer: new FormControl(
         dossier?.boDeadlineToAnswer ? moment(dossier.boDeadlineToAnswer) : null
       ),
+      questionId: new FormControl(dossier?.questions.at(0)?.id),
       question: new FormControl(dossier?.questions.at(0)?.question, [
         Validators.maxLength(5000),
         WhitespaceValidator.blankOrEmptySpaceSurrounding,
@@ -82,6 +84,7 @@ export class DossierFormGroupBuilder {
     if (form.controls.question.value) {
       dossier.questions = [
         {
+          id: form.controls.questionId.value!,
           question: form.controls.question.value,
           answerToCanton: form.controls.answerToCanton.value!,
         },
