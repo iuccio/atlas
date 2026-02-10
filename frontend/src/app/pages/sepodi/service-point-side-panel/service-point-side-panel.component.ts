@@ -18,6 +18,7 @@ import { MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
 import { SplitServicePointNumberPipe } from '../../../core/search-service-point/split-service-point-number.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SloidContainerComponent } from '../../../core/sloid-container/sloid-container.component';
+import { AtlasClipboardComponent } from '../../../core/form-components/atlas-clipboard/atlas-clipboard.component';
 
 export const TABS = [
   {
@@ -62,6 +63,7 @@ export const FOREIGN_TABS = TABS.filter((i) =>
     SplitServicePointNumberPipe,
     TranslatePipe,
     SloidContainerComponent,
+    AtlasClipboardComponent,
   ],
 })
 export class ServicePointSidePanelComponent implements OnInit, OnDestroy {
