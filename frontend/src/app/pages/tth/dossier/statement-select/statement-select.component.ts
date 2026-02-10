@@ -102,10 +102,12 @@ export class StatementSelectComponent {
   }
 
   removeStatement(statement: TimetableHearingStatementV2) {
-    const updatedStatementIds = this.selectedStatements().filter(
-      (id) => id !== statement.id
-    );
-    this.selectedStatements.set(updatedStatementIds);
+    if (this.showRemoveOption()) {
+      const updatedStatementIds = this.selectedStatements().filter(
+        (id) => id !== statement.id
+      );
+      this.selectedStatements.set(updatedStatementIds);
+    }
   }
 
   goToStatement(statement: TimetableHearingStatementV2) {
