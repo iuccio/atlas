@@ -112,7 +112,9 @@ public class TimetableHearingStatementControllerInternal implements TimetableHea
 
   @Override
   public Resource getStatementDocument(Long id, String filename) {
-    File file = timetableHearingStatementService.getStatementDocument(id, filename);
+    TimetableHearingStatement timetableHearingStatement = timetableHearingStatementService.getTimetableHearingStatementById(
+        id);
+    File file = timetableHearingStatementService.getStatementDocument(timetableHearingStatement, filename);
     try {
       return new InputStreamResource(new FileInputStream(file));
     } catch (IOException e) {

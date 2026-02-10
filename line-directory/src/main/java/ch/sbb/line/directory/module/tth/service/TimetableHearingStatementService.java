@@ -78,10 +78,9 @@ public class TimetableHearingStatementService {
         .orElseThrow(() -> new IdNotFoundException(id));
   }
 
-  public File getStatementDocument(Long timetableHearingStatementId, String documentFilename) {
-    TimetableHearingStatement timetableHearingStatement = getTimetableHearingStatementById(timetableHearingStatementId);
+  public File getStatementDocument(TimetableHearingStatement timetableHearingStatement, String documentFilename) {
     if (timetableHearingStatement.checkIfStatementDocumentExists(documentFilename)) {
-      return pdfsUploadAmazonService.downloadPdfFile(timetableHearingStatementId.toString(), documentFilename);
+      return pdfsUploadAmazonService.downloadPdfFile(timetableHearingStatement.getId().toString(), documentFilename);
     } else {
       throw new FileNotFoundException(documentFilename);
     }

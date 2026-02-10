@@ -111,8 +111,6 @@ public interface TimetableHearingStatementApiInternal {
       @ParameterObject TimetableHearingStatementRequestParams statementRequestParams);
 
   @GetMapping(path = BASE_PATH + "/{id}/documents/{filename}", produces = MediaType.APPLICATION_PDF_VALUE)
-  @PreAuthorize("@cantonBasedUserAdministrationService"
-      + ".isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)")
   Resource getStatementDocument(@PathVariable Long id, @PathVariable String filename);
 
   @DeleteMapping(path = BASE_PATH + "/{id}/documents/{filename}")
