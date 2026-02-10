@@ -160,6 +160,7 @@ export class CantonDossierDetailComponent
       this.detailHelperService.showCancelEditDialog(this);
     } else {
       this.form.enable();
+      this.form.controls.answerToCanton.disable();
     }
   }
 
