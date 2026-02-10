@@ -15,7 +15,10 @@
       <div class="font-bold-base">
         {{ 'SEPODI.SERVICE_POINTS.DIDOK_CODE' | translate }}
       </div>
-      <div>{{ selectedVersion.number | splitServicePointNumber }}</div>
+      <div>{{ selectedVersion.number | splitServicePointNumber }}
+        <atlas-clipboard [value]="selectedVersion.number!.number.toString()" [showMe]="true"></atlas-clipboard>
+      </div>
+
     </div>
   </div>
 
