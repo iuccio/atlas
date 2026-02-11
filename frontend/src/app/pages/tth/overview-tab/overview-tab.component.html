@@ -5,10 +5,12 @@
         (click)="clickOnTab()"
         [attr.data-cy]="'tth-tab-' + tab.link"
         [routerLink]="tab.link"
+        [relativeTo]="route"
         routerLinkActive="active-tab"
         class="font-bold-xl"
         mat-tab-link
-        >
+        [disabled]="isHearingStatusActive$ | async"
+      >
         {{ tab.title | translate }}
       </a>
     }
