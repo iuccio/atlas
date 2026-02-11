@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Pages } from '../../pages';
 import {
   ActivatedRoute,
+  Router,
   RouterLink,
   RouterLinkActive,
   RouterOutlet,
@@ -12,6 +13,10 @@ import { HearingOverviewTab } from './model/hearing-overview-tab';
 import { MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
 
 import { TranslatePipe } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HearingStatus } from '../../../api';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   templateUrl: './overview-tab.component.html',
@@ -23,6 +28,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     MatTabNavPanel,
     RouterOutlet,
     TranslatePipe,
+    AsyncPipe,
   ],
 })
 export class OverviewTabComponent implements OnInit {
@@ -32,24 +38,23 @@ export class OverviewTabComponent implements OnInit {
       title: 'TTH.TAB.ACTUAL',
     },
     {
-      link: Pages.TTH_PLANNED.path,
-      title: 'TTH.TAB.PLANNED',
-    },
-    {
-      link: Pages.TTH_ARCHIVED.path,
-      title: 'TTH.TAB.ARCHIVED',
-    },
-    {
       link: Pages.TTH_DOSSIERS.path,
       title: 'DOSSIER',
     },
   ];
   cantonShort = Cantons.swiss.path;
+  readonly isHearingStatusActive$: Observable<boolean>;
 
   constructor(
-    private route: ActivatedRoute,
+    public readonly route: ActivatedRoute,
+    private readonly router: Router,
     private overviewToTabService: OverviewToTabShareDataService
-  ) {}
+  ) {
+    this.isHearingStatusActive$ = this.router.events.pipe(
+      map(() => this.route.firstChild?.snapshot.data?.['hearingStatus']),
+      map((status) => status === HearingStatus.Active)
+    );
+  }
 
   clickOnTab() {
     this.cantonShort = this.route.snapshot.params['canton'];

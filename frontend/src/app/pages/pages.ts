@@ -1,4 +1,4 @@
-import { Page } from '../core/model/page';
+import { Page, SubPage } from '../core/model/page';
 import { environment } from '../../environments/environment';
 
 export class Pages {
@@ -96,16 +96,18 @@ export class Pages {
     path: 'active',
   };
 
-  public static readonly TTH_PLANNED: Page = {
+  public static readonly TTH_PLANNED: SubPage = {
     title: 'PAGES.DETAILS',
     titleMenu: 'Geplante Anhörungen',
-    path: 'ch/planned',
+    path: 'planned',
+    params: ['canton'],
   };
 
-  public static readonly TTH_ARCHIVED: Page = {
+  public static readonly TTH_ARCHIVED: SubPage = {
     title: 'PAGES.DETAILS',
     titleMenu: 'Archivierte Anhörungen',
-    path: 'ch/archived',
+    path: 'archived',
+    params: ['canton'],
   };
 
   public static readonly TTH: Page = {

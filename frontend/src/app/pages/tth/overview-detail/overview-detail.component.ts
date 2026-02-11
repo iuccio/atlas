@@ -158,8 +158,10 @@ export class OverviewDetailComponent implements OnInit {
       this.initDefaultDropdownCantonSelection();
     this.hearingStatus = this.route.snapshot.data.hearingStatus;
     const settings = TthTableFilterSettingsService.createSettings();
+    console.log('hearingStatus from route snapshot: ' + this.hearingStatus);
     if (TthUtils.isHearingStatusActive(this.hearingStatus)) {
       const activeSettings = this.getActiveSettings();
+      console.log('status is active');
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         activeSettings,
         Pages.TTH_ACTIVE
@@ -179,6 +181,8 @@ export class OverviewDetailComponent implements OnInit {
       this.initOverviewActiveTable();
     }
     if (TthUtils.isHearingStatusPlanned(this.hearingStatus)) {
+      console.log('status is planned');
+
       this.removeCheckBoxViewMode();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         settings,
@@ -192,6 +196,8 @@ export class OverviewDetailComponent implements OnInit {
       this.initShowStartTimetableHearingButton();
     }
     if (TthUtils.isHearingStatusArchived(this.hearingStatus)) {
+      console.log('status is archived');
+
       this.removeCheckBoxViewMode();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         settings,
@@ -552,6 +558,7 @@ export class OverviewDetailComponent implements OnInit {
   }
 
   private syncCantonShortSharedDate() {
+    console.log('sync');
     this.overviewToTabService.cantonShort$.subscribe(
       (res) => (this.cantonShort = res)
     );

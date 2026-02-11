@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { Page } from '../../model/page';
+import {
+  buildSubpageLink,
+  NavigationParam,
+  Page,
+  SubPage,
+} from '../../model/page';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -7,6 +12,8 @@ import { PageService } from '../../pages/page.service';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { MatListItem } from '@angular/material/list';
 import { TranslatePipe } from '@ngx-translate/core';
+import { OverviewToTabShareDataService } from '../../../pages/tth/overview-tab/service/overview-to-tab-share-data.service';
+import { Cantons } from '../../cantons/Cantons';
 
 @Component({
   selector: 'atlas-side-nav',
@@ -19,11 +26,17 @@ export class SideNavComponent {
   activePageIndex: number | null = 0;
   activeSubPageIndex = 0;
   selectedPage: Page | null = null;
+  navParam!: NavigationParam;
 
   constructor(
     private readonly router: Router,
-    protected readonly pageService: PageService
+    protected readonly pageService: PageService,
+    private readonly overviewToTabService: OverviewToTabShareDataService
   ) {
+    this.overviewToTabService.cantonShort$.subscribe((canton) => {
+      this.navParam = { canton: canton || Cantons.swiss.path };
+    });
+
     this.router.events
       .pipe(
         takeUntilDestroyed(),
@@ -54,5 +67,9 @@ export class SideNavComponent {
         }
       }
     });
+  }
+
+  linkForSubPage(page: Page, subPage: SubPage) {
+    return buildSubpageLink(page, subPage, this.navParam);
   }
 }
