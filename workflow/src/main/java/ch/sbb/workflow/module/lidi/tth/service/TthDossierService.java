@@ -16,6 +16,7 @@ import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
 import ch.sbb.workflow.module.lidi.tth.search.TthDossierSearchRestrictions;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -109,6 +110,14 @@ public class TthDossierService {
       dossier.setDossierStatus(currentDossier.getDossierStatus());
     }
     boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
+
+    if (!Objects.equals(currentDossier.getDossierQuestions().getFirst().getAnswerToCanton(),
+        dossier.getDossierQuestions().getFirst().getAnswerToCanton())) {
+      throw SimpleAtlasException.builder()
+          .status(HttpStatus.BAD_REQUEST)
+          .messageAndError("Answer to canton must not be edited")
+          .build();
+    }
 
     updateRemovedStatements(currentDossier, dossier);
 

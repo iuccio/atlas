@@ -160,6 +160,11 @@ export class CantonDossierDetailComponent
       this.detailHelperService.showCancelEditDialog(this);
     } else {
       this.form.enable();
+      if (this.form.controls.answerToCanton.value) {
+        this.form.controls.question.disable();
+        this.form.controls.boContactMail.disable();
+        this.form.controls.boDeadlineToAnswer.disable();
+      }
       this.form.controls.answerToCanton.disable();
     }
   }
