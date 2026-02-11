@@ -225,8 +225,9 @@ class TthDossierServiceTest {
     TthDossier dossier = exampleDossier.toBuilder().build();
     dossier.getDossierQuestions().getFirst().setAnswerToCanton("Self edited :)");
 
+    Long dossierId = exampleDossier.getId();
     assertThatExceptionOfType(SimpleAtlasException.class).isThrownBy(
-        () -> tthDossierService.updateDossier(exampleDossier.getId(), dossier));
+        () -> tthDossierService.updateDossier(dossierId, dossier));
   }
 
   @Test

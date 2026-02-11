@@ -142,6 +142,15 @@ describe('DossierDetailComponent', () => {
       expect(component.form.enabled).toBeFalse();
     });
 
+    it('should not enable question fields if answer already here', () => {
+      component.form.controls.answerToCanton.setValue('We have more buses');
+
+      component.toggleEdit();
+      expect(component.form.controls.question.enabled).toBeFalse();
+      expect(component.form.controls.boContactMail.enabled).toBeFalse();
+      expect(component.form.controls.boDeadlineToAnswer.enabled).toBeFalse();
+    });
+
     it('should update', () => {
       expect(component.form.enabled).toBeFalse();
       component.toggleEdit();
