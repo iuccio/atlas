@@ -2,6 +2,7 @@ package ch.sbb.atlas.service;
 
 import ch.sbb.atlas.configuration.Role;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;
@@ -15,7 +16,9 @@ public final class UserService {
   static final String AZP_CLAIM = "azp";
 
   public static Jwt getAccessToken() {
-    return (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    Authentication authentication = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication());
+    Jwt jwt = (Jwt) authentication.getPrincipal();
+    return Objects.requireNonNull(jwt);
   }
 
   public static List<String> getRoles() {
