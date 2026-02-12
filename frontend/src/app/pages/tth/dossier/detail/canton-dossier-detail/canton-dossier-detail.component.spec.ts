@@ -14,6 +14,7 @@ import { ActivatedRouteMockType } from '../../../../../app.testing.mocks';
 import { DossierStatus } from '../../../../../api/model/dossierStatus';
 import { FormatPipe } from '../../../../../core/components/table/pipe/format.pipe';
 import { DialogService } from '../../../../../core/components/dialog/dialog.service';
+import { OpenDossierInMailService } from './open-dossier-in-mail.service';
 
 const statement: TimetableHearingStatementV2 = {
   id: 456,
@@ -58,6 +59,10 @@ const statementSelectDialogService = jasmine.createSpyObj(
 const notificationService = jasmine.createSpyObj('NotificationService', [
   'success',
 ]);
+const openDossierInMailService = jasmine.createSpyObj(
+  'OpenDossierInMailService',
+  ['openDossierInMailClient']
+);
 const dialogService = jasmine.createSpyObj('DialogService', {
   confirm: of(true),
 });
@@ -142,6 +147,13 @@ describe('DossierDetailComponent', () => {
       expect(component.form.enabled).toBeFalse();
     });
 
+    it('should open internal feedback mail', () => {
+      component.openInternalFeedbackMail();
+      expect(
+        openDossierInMailService.openDossierInMailClient
+      ).toHaveBeenCalled();
+    });
+
     it('should not enable question fields if answer already here', () => {
       component.form.controls.answerToCanton.setValue('We have more buses');
 
@@ -216,7 +228,12 @@ describe('DossierDetailComponent', () => {
         },
         FormatPipe,
       ],
-    }).compileComponents();
+    })
+      .overrideProvider(OpenDossierInMailService, {
+        useValue: openDossierInMailService,
+      })
+      .compileComponents()
+      .then();
 
     fixture = TestBed.createComponent(CantonDossierDetailComponent);
     component = fixture.componentInstance;
