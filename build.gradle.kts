@@ -15,7 +15,7 @@ subprojects {
             property(
                 "sonar.exclusions",
                 "**/node_modules/**,**/*.spec.ts,**/*.module.ts,**/*.routes.ts,**/karma.conf.js," +
-                        "**/instana.js,**/polyfills.ts,**/cypress/**,**/db/migration/**/*,**/*.kts"
+                        "**/instana.js,**/polyfills.ts,**/cypress/**,**/db/migration/**/*,**/*.kts,**/*Config.java"
             )
         }
     }
