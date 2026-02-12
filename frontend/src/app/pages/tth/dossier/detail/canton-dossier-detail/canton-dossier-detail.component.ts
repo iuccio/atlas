@@ -37,6 +37,7 @@ import { Cantons } from '../../../../../core/cantons/Cantons';
 import { DossierStatus } from '../../../../../api/model/dossierStatus';
 import { SelectComponent } from '../../../../../core/form-components/select/select.component';
 import { DialogService } from '../../../../../core/components/dialog/dialog.service';
+import { OpenDossierInMailService } from './open-dossier-in-mail.service';
 
 export const DOSSIER_EDITABLE_STATES = [
   DossierStatus.Added,
@@ -67,6 +68,7 @@ export const DOSSIER_EDITABLE_STATES = [
     UserSelectComponent,
     SelectComponent,
   ],
+  providers: [OpenDossierInMailService, TranslatePipe],
   templateUrl: './canton-dossier-detail.component.html',
   styleUrls: ['./canton-dossier-detail.component.scss'],
 })
@@ -85,6 +87,7 @@ export class CantonDossierDetailComponent
     TimetableHearingStatementInternalService
   );
   private readonly dialogService = inject(DialogService);
+  private readonly openDossierInMailService = inject(OpenDossierInMailService);
 
   readonly editableStates = DOSSIER_EDITABLE_STATES;
   readonly cancelableStates = [DossierStatus.Added];
@@ -118,6 +121,7 @@ export class CantonDossierDetailComponent
   set selectedStatements(value: number[]) {
     this._selectedStatements = value;
     this.form.controls.statementIds.setValue(value);
+    this.form.controls.statementIds.markAsDirty();
   }
 
   ngOnInit() {
@@ -126,6 +130,7 @@ export class CantonDossierDetailComponent
     if (this.currentDossier) {
       this.isNew = false;
       this.selectedStatements = this.currentDossier.statementIds;
+      this.form.controls.statementIds.markAsPristine();
       this.form.disable();
     } else {
       this.isNew = true;
@@ -282,5 +287,16 @@ export class CantonDossierDetailComponent
             });
         }
       });
+  }
+
+  openInternalFeedbackMail() {
+    this.openDossierInMailService.openDossierInMailClient({
+      topic: this.currentDossier!.topic,
+      statementIds: this.selectedStatements,
+      question: this.form.controls.question.value,
+      answer: this.form.controls.answerToCanton.value,
+      internalComment: this.form.controls.internalComment.value,
+      publicComment: this.form.controls.publicComment.value,
+    });
   }
 }
