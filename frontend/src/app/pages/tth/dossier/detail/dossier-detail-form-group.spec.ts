@@ -1,10 +1,10 @@
 import { DossierFormGroupBuilder } from './dossier-detail-form-group';
 
 describe('DossierDetailFormGroup', () => {
-  it('should map form question to TthDossier correctly when empty', () => {
+  it('should map form question to TthDossier correctly', () => {
     const formGroup = DossierFormGroupBuilder.buildFormGroup();
     const dossier = DossierFormGroupBuilder.getDossier(formGroup);
-    expect(dossier.questions.length).toBe(0);
+    expect(dossier.questions.length).toBe(1);
   });
 
   it('should map form question to TthDossier correctly when filled', () => {

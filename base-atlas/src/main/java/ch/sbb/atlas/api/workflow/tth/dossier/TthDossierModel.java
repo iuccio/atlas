@@ -48,12 +48,12 @@ public class TthDossierModel extends AuditableVersionModel implements StatementD
 
   @Schema(description = "Internal justification for documentation purposes", example = "The transport company requires "
       + "additional funds, which will be discussed next year.")
-  @Size(min = 1, max = AtlasFieldLengths.LENGTH_5000)
+  @Size(max = AtlasFieldLengths.LENGTH_5000)
   private String internalComment;
 
   @Schema(description = "Public justification for respondents", example = "The increased frequency is not feasible for the "
       + "transport company.")
-  @Size(min = 1, max = AtlasFieldLengths.LENGTH_5000)
+  @Size(max = AtlasFieldLengths.LENGTH_5000)
   private String publicComment;
 
   @Schema(description = "Statements grouped by the dossier")
