@@ -1,20 +1,26 @@
 <div class="ps-5 pt-5">
-  <nav [tabPanel]="tabPanelCanton" class="tabs" data-cy="tabs" mat-tab-nav-bar>
-    @for (tab of TABS; track tab) {
-      <a
-        (click)="clickOnTab()"
-        [attr.data-cy]="'tth-tab-' + tab.link"
-        [routerLink]="tab.link"
-        [relativeTo]="route"
-        routerLinkActive="active-tab"
-        class="font-bold-xl"
-        mat-tab-link
-        [disabled]="isHearingStatusActive$ | async"
-      >
-        {{ tab.title | translate }}
-      </a>
-    }
-  </nav>
+  @if (isHearingStatusActive$ | async) {
+    <nav
+      [tabPanel]="tabPanelCanton"
+      class="tabs"
+      data-cy="tabs"
+      mat-tab-nav-bar
+    >
+      @for (tab of TABS; track tab) {
+        <a
+          (click)="clickOnTab()"
+          [attr.data-cy]="'tth-tab-' + tab.link"
+          [routerLink]="tabLink(tab)"
+          [relativeTo]="route"
+          routerLinkActive="active-tab"
+          class="font-bold-xl"
+          mat-tab-link
+        >
+          {{ tab.title | translate }}
+        </a>
+      }
+    </nav>
+  }
 
   <div class="white-table-container-no-padding">
     <mat-tab-nav-panel #tabPanelCanton>

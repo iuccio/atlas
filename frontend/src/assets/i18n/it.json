@@ -271,7 +271,11 @@
       "TITLE": "Orario Audizione Svizerra",
       "TITLE_MENU": "Orario Audizione",
       "DESCRIPTION": "Visualizzazione ed elaborazione del feedback sul progetto di orario.",
-      "PATH_TEXT": "Orario Audizione"
+      "PATH_TEXT": "Orario Audizione",
+      "SUBPAGE": {
+        "PLANNED": "Audizioni programmate",
+        "ARCHIVED": "Audizioni archiviate"
+      }
     },
     "PRM": {
       "TITLE": "Gestione dei dati di accessibilità",
@@ -845,9 +849,8 @@
       "CONFIRM": "Inizia"
     },
     "TAB": {
-      "ACTUAL": "Audizioni attuali",
-      "PLANNED": "Audizioni programmate",
-      "ARCHIVED": "Audizioni archiviate"
+      "STATEMENTS": "Prese di posizione",
+      "DOSSIERS": "Dossier"
     },
     "BUTTON": {
       "DUPLICATE": "Duplicare",

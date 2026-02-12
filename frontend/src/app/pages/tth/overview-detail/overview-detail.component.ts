@@ -164,7 +164,7 @@ export class OverviewDetailComponent implements OnInit {
       console.log('status is active');
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         activeSettings,
-        Pages.TTH_ACTIVE
+        Pages.TTH_STATEMENTS
       );
 
       this.tableColumns = this.getActiveTableColumns();
@@ -275,9 +275,12 @@ export class OverviewDetailComponent implements OnInit {
 
   editStatement(statement: TimetableHearingStatementV2) {
     this.router
-      .navigate([this.hearingStatus.toLowerCase(), statement.id], {
-        relativeTo: this.route.parent,
-      })
+      .navigate(
+        [this.hearingStatus.toLowerCase() + '/statements/' + statement.id],
+        {
+          relativeTo: this.route.parent,
+        }
+      )
       .then();
   }
 
@@ -355,7 +358,7 @@ export class OverviewDetailComponent implements OnInit {
   addNewStatement() {
     this.router
       .navigate(
-        [Pages.TTH.path, this.cantonShort, Pages.TTH_ACTIVE.path, 'add'],
+        [Pages.TTH.path, this.cantonShort, Pages.TTH_STATEMENTS.path, 'add'],
         {
           state: { data: this.cantonShort },
         }

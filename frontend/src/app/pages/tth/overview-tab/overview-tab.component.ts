@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Pages } from '../../pages';
 import {
   ActivatedRoute,
+  NavigationEnd,
   Router,
   RouterLink,
   RouterLinkActive,
@@ -13,8 +14,8 @@ import { HearingOverviewTab } from './model/hearing-overview-tab';
 import { MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
 
 import { TranslatePipe } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, Observable, Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { HearingStatus } from '../../../api';
 import { AsyncPipe } from '@angular/common';
 
@@ -31,15 +32,18 @@ import { AsyncPipe } from '@angular/common';
     AsyncPipe,
   ],
 })
-export class OverviewTabComponent implements OnInit {
+export class OverviewTabComponent implements OnInit, OnDestroy {
+  section: string = 'active';
+  subscription = new Subscription();
+
   TABS: HearingOverviewTab[] = [
     {
-      link: Pages.TTH_ACTIVE.path,
-      title: 'TTH.TAB.ACTUAL',
+      link: Pages.TTH_STATEMENTS.path,
+      title: 'TTH.TAB.STATEMENTS',
     },
     {
       link: Pages.TTH_DOSSIERS.path,
-      title: 'DOSSIER',
+      title: 'TTH.TAB.DOSSIERS',
     },
   ];
   cantonShort = Cantons.swiss.path;
@@ -52,7 +56,10 @@ export class OverviewTabComponent implements OnInit {
   ) {
     this.isHearingStatusActive$ = this.router.events.pipe(
       map(() => this.route.firstChild?.snapshot.data?.['hearingStatus']),
-      map((status) => status === HearingStatus.Active)
+      map(
+        (status) =>
+          status === HearingStatus.Active || status === HearingStatus.Archived
+      )
     );
   }
 
@@ -67,5 +74,32 @@ export class OverviewTabComponent implements OnInit {
     );
     this.cantonShort = this.route.snapshot.params['canton'];
     this.overviewToTabService.changeData(this.cantonShort);
+
+    this.subscription.add(
+      this.router.events
+        .pipe(
+          filter(
+            (event): event is NavigationEnd => event instanceof NavigationEnd
+          ),
+          map(
+            () =>
+              this.route.firstChild?.snapshot.data?.[
+                'hearingStatus'
+              ].toLowerCase() ?? 'active'
+          ),
+          distinctUntilChanged()
+        )
+        .subscribe((section) => {
+          this.section = section;
+        })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  tabLink(tab: HearingOverviewTab): any[] {
+    return [this.section, tab.link];
   }
 }
