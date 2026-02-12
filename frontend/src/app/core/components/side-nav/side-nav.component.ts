@@ -1,10 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  buildSubpageLink,
-  NavigationParam,
-  Page,
-  SubPage,
-} from '../../model/page';
+import { Page } from '../../model/page';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -26,16 +21,18 @@ export class SideNavComponent {
   activePageIndex: number | null = 0;
   activeSubPageIndex = 0;
   selectedPage: Page | null = null;
-  navParam!: NavigationParam;
+  navParam!: Record<string, string>;
 
   constructor(
     private readonly router: Router,
     protected readonly pageService: PageService,
     private readonly overviewToTabService: OverviewToTabShareDataService
   ) {
-    this.overviewToTabService.cantonShort$.subscribe((canton) => {
-      this.navParam = { canton: canton || Cantons.swiss.path };
-    });
+    this.overviewToTabService.cantonShort$
+      .pipe(takeUntilDestroyed())
+      .subscribe((canton) => {
+        this.navParam = { canton: canton || Cantons.swiss.path };
+      });
 
     this.router.events
       .pipe(
@@ -69,7 +66,16 @@ export class SideNavComponent {
     });
   }
 
-  linkForSubPage(page: Page, subPage: SubPage) {
-    return buildSubpageLink(page, subPage, this.navParam);
+  linkForSubPage(page: Page, subPage: Page) {
+    const params = page.params ?? [];
+    if (params.length) {
+      const values = params
+        .map((param) => this.navParam?.[param])
+        .filter(Boolean);
+
+      return [page.path, ...values, subPage.path];
+    }
+
+    return [page.path, subPage.path];
   }
 }

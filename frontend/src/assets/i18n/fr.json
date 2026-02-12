@@ -271,7 +271,11 @@
       "TITLE": "Consultation du projet d'horaire",
       "TITLE_MENU": "Consultation du projet d'horaire",
       "DESCRIPTION": "Consulter et modifier les commentaires du projet d'horaire.",
-      "PATH_TEXT": "Consultation sur le projet d'horaire"
+      "PATH_TEXT": "Consultation sur le projet d'horaire",
+      "SUBPAGE": {
+        "PLANNED": "Auditions prévues",
+        "ARCHIVED": "Auditions archivées"
+      }
     },
     "PRM": {
       "TITLE": "Gérer les données d'accessibilité",
@@ -845,9 +849,8 @@
       "CONFIRM": "Commencer"
     },
     "TAB": {
-      "ACTUAL": "Audition actuelle",
-      "PLANNED": "Auditions prévues",
-      "ARCHIVED": "Auditions archivées"
+      "STATEMENTS": "Avis",
+      "DOSSIERS": "Dossiers"
     },
     "BUTTON": {
       "DUPLICATE": "Dupliquer",

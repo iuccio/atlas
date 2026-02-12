@@ -271,7 +271,11 @@
       "TITLE": "Fahrplananhörung Schweiz",
       "TITLE_MENU": "Fahrplananhörung",
       "DESCRIPTION": "Einsehen und Bearbeiten der Rückmeldungen zum Fahrplanentwurf.",
-      "PATH_TEXT": "Fahrplananhörung"
+      "PATH_TEXT": "Fahrplananhörung",
+      "SUBPAGE": {
+        "PLANNED": "Geplante Anhörungen",
+        "ARCHIVED": "Archivierte Anhörungen"
+      }
     },
     "PRM": {
       "TITLE": "Daten zur Barrierefreiheit verwalten",
@@ -845,9 +849,8 @@
       "CONFIRM": "Starten"
     },
     "TAB": {
-      "ACTUAL": "Aktuelle Anhörung",
-      "PLANNED": "Geplante Anhörungen",
-      "ARCHIVED": "Archivierte Anhörungen"
+      "STATEMENTS": "Stellungnahmen",
+      "DOSSIERS": "Dossiers"
     },
     "BUTTON": {
       "DUPLICATE": "Duplizieren",
