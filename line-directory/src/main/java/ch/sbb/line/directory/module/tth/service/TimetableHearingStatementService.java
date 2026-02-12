@@ -13,7 +13,6 @@ import ch.sbb.atlas.model.exception.NotFoundException.FileNotFoundException;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.atlas.pdf.sanitize.PdfCdr;
-import ch.sbb.atlas.user.administration.security.redact.TthRedacted;
 import ch.sbb.line.directory.exception.TtfnidNotFoundException;
 import ch.sbb.line.directory.module.ttfn.repository.TimetableFieldNumberRepository;
 import ch.sbb.line.directory.module.tth.entity.StatementDocument;
@@ -23,6 +22,7 @@ import ch.sbb.line.directory.module.tth.mapper.ResponsibleTransportCompanyMapper
 import ch.sbb.line.directory.module.tth.mapper.StatementSenderMapperV2;
 import ch.sbb.line.directory.module.tth.mapper.TimetableHearingStatementMapperV2;
 import ch.sbb.line.directory.module.tth.model.TimetableHearingStatementSearchRestrictions;
+import ch.sbb.line.directory.module.tth.redact.TthStatementRedacted;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingStatementRepository;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingYearRepository;
 import ch.sbb.line.directory.shared.transportcompany.entity.SharedTransportCompany;
@@ -68,7 +68,7 @@ public class TimetableHearingStatementService {
     timetableHearingStatementRepository.removeDossierRelationAndSetReceivedFor(statementIds);
   }
 
-  @TthRedacted
+  @TthStatementRedacted
   @PostAuthorize("""
       @cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType).TIMETABLE_HEARING)
       or

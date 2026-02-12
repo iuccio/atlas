@@ -51,4 +51,18 @@ describe('BoStatementDetail', () => {
       fileSize: 12,
     });
   });
+
+  it('should show statement when statementAnonymous is true', () => {
+    //given & when
+    component.form.controls.statementAnonymous.setValue(true);
+    //then
+    expect(component.getStatementControlName()).toBe('statement');
+  });
+
+  it('should show anonymousStatement when statementAnonymous is false', () => {
+    //given & when
+    component.form.controls.statementAnonymous.setValue(false);
+    //then
+    expect(component.getStatementControlName()).toBe('anonymousStatement');
+  });
 });
