@@ -28,19 +28,6 @@ export class StatementSelectComponent {
   );
   private readonly router = inject(Router);
 
-  eyeColumn: TableColumn<TimetableHearingStatementV2> = {
-    headerTitle: '',
-    value: 'etagVersion',
-    button: {
-      icon: 'bi bi-eye',
-      clickCallback: () => {},
-      applicationType: 'TIMETABLE_HEARING',
-      buttonDataCy: 'seeStatement',
-      buttonType: 'icon',
-      disabled: () => false,
-    },
-  };
-
   defaultTableColumns: TableColumn<TimetableHearingStatementV2>[] = [
     { headerTitle: 'ID', value: 'id' },
     {
@@ -86,9 +73,7 @@ export class StatementSelectComponent {
     if (this.showRemoveOption()) {
       return this.defaultTableColumns;
     }
-    const boTableColumns = this.defaultTableColumns.slice(0, -1);
-    boTableColumns.push(this.eyeColumn);
-    return boTableColumns;
+    return this.defaultTableColumns.slice(0, -1);
   }
 
   constructor() {
@@ -102,12 +87,10 @@ export class StatementSelectComponent {
   }
 
   removeStatement(statement: TimetableHearingStatementV2) {
-    if (this.showRemoveOption()) {
-      const updatedStatementIds = this.selectedStatements().filter(
-        (id) => id !== statement.id
-      );
-      this.selectedStatements.set(updatedStatementIds);
-    }
+    const updatedStatementIds = this.selectedStatements().filter(
+      (id) => id !== statement.id
+    );
+    this.selectedStatements.set(updatedStatementIds);
   }
 
   goToStatement(statement: TimetableHearingStatementV2) {
