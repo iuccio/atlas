@@ -4,7 +4,6 @@ import ch.sbb.atlas.api.AtlasFieldLengths;
 import ch.sbb.atlas.api.model.AuditableVersionModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +23,6 @@ public class TthDossierQuestionModel extends AuditableVersionModel {
   private Long id;
 
   @Schema(description = "Question for the BO to answer", example = "Can the frequency on line S1 be increased during peak hours?")
-  @NotBlank
   @Size(max = AtlasFieldLengths.LENGTH_5000)
   private String question;
 

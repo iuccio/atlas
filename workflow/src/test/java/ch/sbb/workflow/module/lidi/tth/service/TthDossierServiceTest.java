@@ -216,6 +216,21 @@ class TthDossierServiceTest {
   }
 
   @Test
+  void shouldNotUpdateBoAnswerOnCantonUpdate() {
+    // when
+    String answerFromBo = "Answer from BO";
+    exampleDossier.getDossierQuestions().getFirst().setAnswerToCanton(answerFromBo);
+    exampleDossier = tthDossierRepository.saveAndFlush(exampleDossier);
+
+    TthDossier dossier = exampleDossier.toBuilder().build();
+    dossier.getDossierQuestions().getFirst().setAnswerToCanton("Self edited :)");
+
+    Long dossierId = exampleDossier.getId();
+    assertThatExceptionOfType(SimpleAtlasException.class).isThrownBy(
+        () -> tthDossierService.updateDossier(dossierId, dossier));
+  }
+
+  @Test
   void shouldUpdateDossierRemovingStatement() {
     // when
     List<Long> statementIds = List.of(87L);

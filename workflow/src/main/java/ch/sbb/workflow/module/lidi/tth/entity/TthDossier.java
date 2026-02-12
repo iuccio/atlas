@@ -65,11 +65,11 @@ public class TthDossier extends BaseWorkflowEntity implements StatementDossierLi
   @Enumerated(EnumType.STRING)
   private DossierStatus dossierStatus;
 
-  @Size(min = 1, max = AtlasFieldLengths.LENGTH_5000)
+  @Size(max = AtlasFieldLengths.LENGTH_5000)
   @Redacted
   private String internalComment;
 
-  @Size(min = 1, max = AtlasFieldLengths.LENGTH_5000)
+  @Size(max = AtlasFieldLengths.LENGTH_5000)
   @Redacted
   private String publicComment;
 
