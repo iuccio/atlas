@@ -10,7 +10,7 @@
         <atlas-form-comment
           [formGroup]="form"
           label="TTH.STATEMENT.STATEMENT_TEXT"
-          controlName="anonymousStatement"
+          [controlName]=getStatementControlName()
         >
         </atlas-form-comment>
       </div>
