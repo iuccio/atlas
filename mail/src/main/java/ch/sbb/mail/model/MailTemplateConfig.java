@@ -20,6 +20,8 @@ import static ch.sbb.atlas.kafka.model.mail.MailType.STOP_POINT_WORKFLOW_RESTART
 import static ch.sbb.atlas.kafka.model.mail.MailType.STOP_POINT_WORKFLOW_RESTART_NOTIFICATION;
 import static ch.sbb.atlas.kafka.model.mail.MailType.TARIFF_STOP_APPROVED_NOTIFICATION;
 import static ch.sbb.atlas.kafka.model.mail.MailType.TARIFF_STOP_NOT_APPROVED_NOTIFICATION;
+import static ch.sbb.atlas.kafka.model.mail.MailType.TTH_DOSSIER_NEW_ANSWER_NOTIFICATION;
+import static ch.sbb.atlas.kafka.model.mail.MailType.TTH_DOSSIER_NEW_QUESTION_NOTIFICATION;
 import static ch.sbb.atlas.kafka.model.mail.MailType.TU_IMPORT;
 import static ch.sbb.atlas.kafka.model.mail.MailType.UPDATE_GEOLOCATION_ERROR_NOTIFICATION;
 import static ch.sbb.atlas.kafka.model.mail.MailType.UPDATE_GEOLOCATION_SUCCESS_NOTIFICATION;
@@ -74,6 +76,9 @@ public enum MailTemplateConfig {
       true,
       false, true),
 
+  // TTH Dossier
+  TTH_DOSSIER_NEW_QUESTION_NOTIFICATION_TEMPLATE("tth-dossier/new_question_notification",null, null, true,false,true),
+  TTH_DOSSIER_NEW_ANSWER_NOTIFICATION_TEMPLATE("tth-dossier/new_answer_notification",null,null,true,false,true),
   ;
 
   private final String template;
@@ -111,6 +116,10 @@ public enum MailTemplateConfig {
     CONFIG.put(TARIFF_STOP_APPROVED_NOTIFICATION, TARIFF_STOP_APPROVED_NOTIFICATION_TEMPLATE);
     CONFIG.put(ABORT_TERMINATION_NOTIFICATION, ABORT_TERMINATION_NOTIFICATION_TEMPLATE);
     CONFIG.put(STOP_POINT_TERMINATION_CONFIRMED_NOTIFICATION, STOP_POINT_TERMINATION_CONFIRMED_NOTIFICATION_TEMPLATE);
+
+    // TTH Dossier
+    CONFIG.put(TTH_DOSSIER_NEW_QUESTION_NOTIFICATION, TTH_DOSSIER_NEW_QUESTION_NOTIFICATION_TEMPLATE);
+    CONFIG.put(TTH_DOSSIER_NEW_ANSWER_NOTIFICATION, TTH_DOSSIER_NEW_ANSWER_NOTIFICATION_TEMPLATE);
 
   }
 

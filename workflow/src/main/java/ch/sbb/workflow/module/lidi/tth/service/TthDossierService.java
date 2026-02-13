@@ -175,6 +175,8 @@ public class TthDossierService {
 
     question.setAnswerToCanton(boAnswer);
     questionRepository.save(question);
+
+    notificationService.notifyCantonAboutNewAnswer(tthDossier);
   }
 
   public TthDossier getDossierByQuestionId(Long questionId) {
