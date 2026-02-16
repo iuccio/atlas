@@ -49,7 +49,7 @@ export class DossierSelectComponent implements OnInit {
       return;
     }
     this.searchResults$ = this.dossierInternalService
-      .getOverview(this.canton(), [searchQuery], this.statusRestriction())
+      .getOverview(2026, this.canton(), [searchQuery], this.statusRestriction())
       .pipe(map((response) => response.objects ?? []));
   }
 }

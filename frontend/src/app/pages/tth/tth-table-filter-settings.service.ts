@@ -9,7 +9,6 @@ import { TableFilterSearchSelect } from '../../core/components/table-filter/conf
 import { TableFilterChip } from '../../core/components/table-filter/config/table-filter-chip';
 import { TableFilterSearchType } from '../../core/components/table-filter/config/table-filter-search-type';
 import { DossierStatus } from '../../api/model/dossierStatus';
-import { Cantons } from '../../core/cantons/Cantons';
 
 export class TthTableFilterSettingsService {
   static createSettings() {
@@ -49,14 +48,6 @@ export class TthTableFilterSettingsService {
         'TTH.DOSSIER.DOSSIER_STATUS.',
         'COMMON.STATUS',
         Object.values(DossierStatus),
-        1,
-        'filter-width',
-        []
-      ),
-      multiSelectDossierCanton: new TableFilterMultiSelect(
-        'TTH.CANTON.',
-        'SEPODI.GEOLOCATION.CANTON',
-        Object.values(Cantons.cantons.map((canton) => canton.short)),
         1,
         'filter-width',
         []

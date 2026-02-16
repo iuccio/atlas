@@ -1,11 +1,11 @@
-import {inject, Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {AtlasApiService} from '../atlas-api.service';
-import {TthDossier} from '../../model/tthDossier';
-import {DossierStatus} from '../../model/dossierStatus';
-import {SwissCanton} from "../../model/swissCanton";
-import {BoAnswer} from "../../model/boAnswer";
-import {ContainerTthDossier} from "../../model/containerTthDossier";
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AtlasApiService } from '../atlas-api.service';
+import { TthDossier } from '../../model/tthDossier';
+import { DossierStatus } from '../../model/dossierStatus';
+import { SwissCanton } from '../../model/swissCanton';
+import { BoAnswer } from '../../model/boAnswer';
+import { ContainerTthDossier } from '../../model/containerTthDossier';
 
 @Injectable({
   providedIn: 'root',
@@ -16,8 +16,9 @@ export class DossierInternalService {
 
   private readonly atlasApiService = inject(AtlasApiService);
 
-  public getOverview(canton?: SwissCanton, searchCriterias?: Array<string>, statusRestrictions?: Array<DossierStatus>, page?: number, size?: number, sort?: Array<string>): Observable<ContainerTthDossier> {
+  public getOverview(timetableHearingYear: number, canton?: SwissCanton, searchCriterias?: Array<string>, statusRestrictions?: Array<DossierStatus>, page?: number, size?: number, sort?: Array<string>): Observable<ContainerTthDossier> {
     const httpParams = this.atlasApiService.paramsOf({
+      timetableHearingYear,
       canton,
       searchCriterias,
       statusRestrictions,

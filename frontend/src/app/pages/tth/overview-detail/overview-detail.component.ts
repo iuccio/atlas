@@ -181,8 +181,6 @@ export class OverviewDetailComponent implements OnInit {
       this.initOverviewActiveTable();
     }
     if (TthUtils.isHearingStatusPlanned(this.hearingStatus)) {
-      console.log('status is planned');
-
       this.removeCheckBoxViewMode();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         settings,
@@ -196,8 +194,6 @@ export class OverviewDetailComponent implements OnInit {
       this.initShowStartTimetableHearingButton();
     }
     if (TthUtils.isHearingStatusArchived(this.hearingStatus)) {
-      console.log('status is archived');
-
       this.removeCheckBoxViewMode();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         settings,
@@ -358,7 +354,13 @@ export class OverviewDetailComponent implements OnInit {
   addNewStatement() {
     this.router
       .navigate(
-        [Pages.TTH.path, this.cantonShort, Pages.TTH_STATEMENTS.path, 'add'],
+        [
+          Pages.TTH.path,
+          this.cantonShort,
+          this.hearingStatus.toLowerCase(),
+          Pages.TTH_STATEMENTS.path,
+          'add',
+        ],
         {
           state: { data: this.cantonShort },
         }
@@ -561,7 +563,6 @@ export class OverviewDetailComponent implements OnInit {
   }
 
   private syncCantonShortSharedDate() {
-    console.log('sync');
     this.overviewToTabService.cantonShort$.subscribe(
       (res) => (this.cantonShort = res)
     );
