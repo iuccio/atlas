@@ -49,6 +49,7 @@ import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
 import { DialogData } from '../../../core/components/dialog/dialog.data';
 import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
 import { StatementOverviewMenuComponent } from './statement-overview-menu/statement-overview-menu.component';
+import { TableFilterBoolean } from '../../../core/components/table-filter/config/table-filter-boolean';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-detail',
@@ -155,11 +156,14 @@ export class OverviewDetailComponent implements OnInit {
     this.defaultDropdownCantonSelection =
       this.initDefaultDropdownCantonSelection();
     this.hearingStatus = this.route.snapshot.data.hearingStatus;
+    const settings = TthTableFilterSettingsService.createSettings();
     if (TthUtils.isHearingStatusActive(this.hearingStatus)) {
+      const activeSettings = this.getActiveSettings();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
-        TthTableFilterSettingsService.createSettings(),
+        activeSettings,
         Pages.TTH_ACTIVE
       );
+
       this.tableColumns = this.getActiveTableColumns();
       if (!this.isCollectingActionEnabled) {
         this.tableColumns = this.tableColumns.filter(
@@ -176,7 +180,7 @@ export class OverviewDetailComponent implements OnInit {
     if (TthUtils.isHearingStatusPlanned(this.hearingStatus)) {
       this.removeCheckBoxViewMode();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
-        TthTableFilterSettingsService.createSettings(),
+        settings,
         Pages.TTH_PLANNED
       );
       this.sorting = 'swissCanton,asc';
@@ -189,7 +193,7 @@ export class OverviewDetailComponent implements OnInit {
     if (TthUtils.isHearingStatusArchived(this.hearingStatus)) {
       this.removeCheckBoxViewMode();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
-        TthTableFilterSettingsService.createSettings(),
+        settings,
         Pages.TTH_ARCHIVED
       );
       this.sorting = 'swissCanton,asc';
@@ -197,6 +201,14 @@ export class OverviewDetailComponent implements OnInit {
       this.showDownloadCsvButton = true;
       this.initOverviewArchivedTable();
     }
+  }
+
+  getActiveSettings() {
+    const settings = TthTableFilterSettingsService.createSettings();
+    if (this.permissionService.isTthCanton()) {
+      Object.assign(settings, this.tableFilterShowStatementInDossier);
+    }
+    return settings;
   }
 
   getOverview(pagination: TablePagination) {
@@ -211,7 +223,7 @@ export class OverviewDetailComponent implements OnInit {
         TthUtils.toTransportCompanyIds(
           this.tableService.filter.searchSelectTU.getActiveSearch() as TransportCompany[]
         ),
-        undefined,
+        this.getShowStatementInDossierFilter(),
         pagination.page,
         pagination.size,
         addElementsToArrayWhenNotUndefined(
@@ -227,6 +239,17 @@ export class OverviewDetailComponent implements OnInit {
         this.totalCount$ = container.totalCount!;
         this.isTableColumnsInitialized = true;
       });
+  }
+
+  getShowStatementInDossierFilter() {
+    if (this.hearingStatus === 'ACTIVE') {
+      if (
+        this.tableService.filter.showStatementInDossierFilter.getActiveSearch()
+      ) {
+        return undefined;
+      }
+      return this.tableService.filter.showStatementInDossierFilter.getActiveSearch();
+    }
   }
 
   changeSelectedCantonFromDropdown(selectedCanton: MatSelectChange) {
@@ -800,4 +823,12 @@ export class OverviewDetailComponent implements OnInit {
         }
       });
   }
+
+  private readonly tableFilterShowStatementInDossier = {
+    showStatementInDossierFilter: new TableFilterBoolean(
+      0,
+      'col-6 container-right-position',
+      'TTH.OVERVIEW_TAB.STATEMENT_IN_DOSSIER_SLIDE'
+    ),
+  };
 }

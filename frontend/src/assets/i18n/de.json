@@ -911,7 +911,8 @@
       "OVERVIEW_ACTUAL_NOT_FOUND_SUBHEADING_PREFIX": "Das Fahrplanjahr ist noch nicht eröffnet. Sie finden bereits vorhandene Stellungnahmen unter dem Reiter «Geplante Anhörungen». Das Fahrplanverfahren Schweiz des BAV für den Fahrplan {{timeTableYear}} dauert von ",
       "OVERVIEW_PLANNED_NOT_FOUND": "Aktuell ist keine geplante Anhörung erfasst.",
       "OVERVIEW_ACTUAL_NO_PLANNED_HEARING_YEAR_FOUND": "Aktuell ist keine Anhörung aktiv.",
-      "OVERVIEW_ARCHIVED_NOT_FOUND": "Es sind derzeit keine archivierten Anhörungen verfügbar."
+      "OVERVIEW_ARCHIVED_NOT_FOUND": "Es sind derzeit keine archivierten Anhörungen verfügbar.",
+      "STATEMENT_IN_DOSSIER_SLIDE": "Stellungnahmen in Dossier einblenden"
     },
     "STATEMENT_STATUS": {
       "RECEIVED": "eingetroffen",

@@ -105,6 +105,7 @@ const timetableHearingStatement: TimetableHearingStatementV2 = {
   statementSender: { emails: new Set('a@b.c') },
   statement: 'Ich hätte gerne mehrere Verbindungen am Abend.',
   documents: [],
+  dossierId: 123,
 };
 const containerTimetableHearingStatement: ContainerTimetableHearingStatementV2 =
   {
