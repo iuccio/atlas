@@ -21,6 +21,8 @@ import lombok.ToString;
 @Builder
 public class TthDossierRequestParams {
 
+  private Long timetableHearingYear;
+
   private SwissCanton canton;
 
   @Singular(ignoreNullCollections = true)
