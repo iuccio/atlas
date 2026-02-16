@@ -1,0 +1,29 @@
+package ch.sbb.line.directory.module.tth.model;
+
+import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@SuperBuilder(toBuilder = true)
+public abstract class BaseTimetableHearingStatementCsv {
+
+  Long timetabeHearingStatementId;
+  String cantonAbbreviation;
+  String timetableFieldNumber;
+  String timetableFieldNumberDescription;
+  String stopPlace;
+  String transportCompanyAbbreviations;
+  String transportCompanyDescriptions;
+  Boolean documentsPresent;
+  StatementStatus status;
+  Long timetableHearingYear;
+  String topic;
+
+}
