@@ -33,12 +33,13 @@ export class BoStatementDetailComponent
   extends StatementDetailBaseComponent
   implements OnInit, DetailFormComponent
 {
+  private _anonymDocuments!: FormGroup<TimetableHearingStatementDocumentGroup>[];
+
   set anonymDocuments(
     value: FormGroup<TimetableHearingStatementDocumentGroup>[]
   ) {
     this._anonymDocuments = value;
   }
-  private _anonymDocuments!: FormGroup<TimetableHearingStatementDocumentGroup>[];
 
   get anonymDocuments(): FormGroup<TimetableHearingStatementDocumentGroup>[] {
     return this._anonymDocuments;
@@ -55,5 +56,14 @@ export class BoStatementDetailComponent
       }
     );
     return this._anonymDocuments;
+  }
+
+  getStatementControlName(): string {
+    const isStatementAnonymous =
+      this.form.controls.statementAnonymous.getRawValue();
+    if (isStatementAnonymous) {
+      return 'statement';
+    }
+    return 'anonymousStatement';
   }
 }
