@@ -1,5 +1,6 @@
 package ch.sbb.workflow.aop;
 
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.sepodi.hearing.model.sepodi.StopPointAddWorkflowModel;
 import ch.sbb.workflow.module.sepodi.termination.model.StartTerminationStopPointWorkflowModel;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import tools.jackson.databind.ObjectMapper;
 @Slf4j
 public class LoggingAspect {
 
+  // Service Point Workflow
   public static final String WORKFLOW_TYPE_VOTE_WORKFLOW = "VOTE_WORKFLOW";
   public static final String CANCEL_WORKFLOW = "CANCEL_WORKFLOW";
   public static final String REJECT_WORKFLOW = "REJECT_WORKFLOW";
@@ -28,6 +30,12 @@ public class LoggingAspect {
   public static final String START_TERMINATION_WORKFLOW = "START_TERMINATION_WORKFLOW";
   public static final String ABORT_TERMINATION_WORKFLOW = "ABORT_TERMINATION_WORKFLOW";
   public static final String ADD_TERMINATION_DECISION_NOVA = "ADD_TERMINATION_DECISION_NOVA";
+  // Timetable Hearing Workflow
+  public static final String TTH_CLOSE_YEAR = "TTH_CLOSE_YEAR";
+  public static final String TTH_CREATE_DOSSIER = "TTH_CREATE_DOSSIER";
+  public static final String TTH_SEND_DOSSIER_TO_BO = "TTH_SEND_DOSSIER_TO_BO";
+  public static final String TTH_COMPLETE_DOSSIER = "TTH_COMPLETE_DOSSIER";
+  public static final String TTH_UPDATE_DOSSIER = "TTH_UPDATE_DOSSIER";
 
   public static final String ERROR_MARKER = "CRITICAL_WORKFLOW_ERROR"; // this value should not be changed, or if so, splunk
   // alert should be adjusted as well
@@ -45,9 +53,11 @@ public class LoggingAspect {
     String methodName = joinPoint.getSignature().getName();
     String workflowType = methodLogged.workflowType();
 
-    try (MDCCloseable ignored1 = MDC.putCloseable("className", className);
-        MDCCloseable ignored = MDC.putCloseable("methodName", methodName);
-        MDCCloseable ignored2 = MDC.putCloseable("workflowType", workflowType)) {
+    try (
+        MDCCloseable _ = MDC.putCloseable("className", className);
+        MDCCloseable _ = MDC.putCloseable("methodName", methodName);
+        MDCCloseable _ = MDC.putCloseable("workflowType", workflowType)
+    ) {
       return joinPoint.proceed();
     } catch (Exception e) {
       Map<String, Object> errorDetails = buildErrorDetails(className, methodName, workflowType, joinPoint.getArgs(), e);
@@ -57,8 +67,9 @@ public class LoggingAspect {
     }
   }
 
-  private Map<String, Object> buildErrorDetails(String className, String methodName, String workflowType,
-      Object[] args, Exception e) {
+  private Map<String, Object> buildErrorDetails(
+      String className, String methodName, String workflowType, Object[] args, Exception e
+  ) {
     Map<String, Object> details = new HashMap<>();
     details.put("className", className);
     details.put("methodName", methodName);
@@ -76,11 +87,14 @@ public class LoggingAspect {
           details.put("servicePointVersionId", model.getVersionId());
           details.put("sloid", model.getSloid());
         }
-        case Long id -> details.put("workflowId", id);
-        default -> log.warn("Unexpected value: {}", arg);
+        case TthDossier dossier -> {
+          details.put("dossierId", dossier.getId());
+          details.put("dossierStatus", dossier.getDossierStatus());
+          details.put("statementIds", dossier.getStatementIds());
+        }
+        default -> details.put("Arg value (" + arg.getClass() + "): ", arg);
       }
     }
     return details;
   }
-
 }
