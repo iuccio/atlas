@@ -3,51 +3,40 @@ package ch.sbb.line.directory.module.tth.model;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementModelV2;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementResponsibleTransportCompanyModel;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementSenderModelV2;
-import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"cantonAbbreviation", "timetableFieldNumber", "timetableFieldNumberDescription", "stopPlace",
-    "timetabeHearingStatementId", "transportCompanyAbbreviations", "transportCompanyDescriptions", "statement",
-    "documentsPresent", "status", "firstName", "lastName", "organisation",
-    "street", "zipAndCity", "emails", "timetableHearingYear", "statementAnonymous",
-    "anonymousStatement", "publicComment", "internalComment", "topic"})
-public class TimetableHearingStatementCsvModel {
+@JsonPropertyOrder({"timetabeHearingStatementId", "cantonAbbreviation", "status", "timetableFieldNumber",
+    "timetableFieldNumberDescription", "stopPlace", "transportCompanyAbbreviations", "transportCompanyDescriptions", "statement",
+    "statementAnonymous", "anonymousStatement", "documentsPresent", "firstName", "lastName", "organisation", "street",
+    "zipAndCity", "emails", "timetableHearingYear", "publicComment", "internalComment", "topic"})
+public class TimetableHearingStatementCsvModel extends BaseTimetableHearingStatementCsv {
 
-  private String cantonAbbreviation;
-  private String timetableFieldNumber;
-  private String timetableFieldNumberDescription;
-  private String stopPlace;
-  private Long timetabeHearingStatementId;
-  private String transportCompanyAbbreviations;
-  private String transportCompanyDescriptions;
   private String statement;
-  private Boolean documentsPresent;
-  private StatementStatus status;
   private String firstName;
   private String lastName;
   private String organisation;
   private String street;
   private String zipAndCity;
   private String emails;
-  private Long timetableHearingYear;
 
   private Boolean statementAnonymous;
   private String anonymousStatement;
   private String publicComment;
   private String internalComment;
-  private String topic;
 
   private static TimetableHearingStatementCsvModel.TimetableHearingStatementCsvModelBuilder baseBuilder(
       TimetableHearingStatementModelV2 statementModelV2
@@ -76,7 +65,7 @@ public class TimetableHearingStatementCsvModel {
         .statementAnonymous(statementModelV2.isStatementAnonymous())
         .topic(statementModelV2.getTopic());
   }
-
+  
   public static TimetableHearingStatementCsvModel fromModel(TimetableHearingStatementModelV2 timetableHearingStatementModelV2) {
     TimetableHearingStatementSenderModelV2 sender = timetableHearingStatementModelV2.getStatementSender();
 
@@ -92,18 +81,6 @@ public class TimetableHearingStatementCsvModel {
         .publicComment(timetableHearingStatementModelV2.getPublicComment())
         .internalComment(timetableHearingStatementModelV2.getInternalComment())
         .build();
-  }
-
-  public static TimetableHearingStatementCsvModel fromModelAnonymized(TimetableHearingStatementModelV2 statementModelV2) {
-    TimetableHearingStatementCsvModel csvModel = baseBuilder(statementModelV2).build();
-
-    if (statementModelV2.isStatementAnonymous()) {
-      csvModel.setStatement(statementModelV2.getStatement());
-    } else {
-      csvModel.setAnonymousStatement(statementModelV2.getAnonymousStatement());
-    }
-
-    return csvModel;
   }
 
   public static String getZipAndCity(Integer zip, String city) {
