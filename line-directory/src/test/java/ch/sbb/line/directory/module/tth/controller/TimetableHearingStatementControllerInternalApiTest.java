@@ -847,7 +847,7 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
   void shouldGetStatementsAsCsv() throws Exception {
     // Given
     String expectedCsvHeader = """
-        Kanton;"Fahrplanfeld-Nr.";Fahrplanfeldbezeichnung;Haltestelle;ID;"Abkürzung Transportunternehmung";"Name Transportunternehmung";Stellungnahme;Anhang;Status;Vorname;Nachname;Organisation;Strasse;"PLZ/Ort";"E-Mails";Fahrplanjahr;"Anonyme Stellungnahme";"Anonymisierte Stellungnahme";"Öffentliche Begründung";"Interne Begründung";Thema
+        ID;Kanton;Status;"Fahrplanfeld-Nr.";Fahrplanfeldbezeichnung;Haltestelle;"Abkürzung Transportunternehmung";"Name Transportunternehmung";Stellungnahme;"Anonyme Stellungnahme";"Anonymisierte Stellungnahme";Anhang;Vorname;Nachname;Organisation;Strasse;"PLZ/Ort";"E-Mails";Fahrplanjahr;"Öffentliche Begründung";"Interne Begründung";Thema
         """;
 
     TimetableHearingStatementModelV2 statement = timetableHearingStatementControllerInternal.createStatement(
@@ -878,7 +878,7 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
   void shouldGetStatementsAsCsvAnonymized() throws Exception {
     // Given
     String expectedCsvHeader = """
-        Kanton;"Fahrplanfeld-Nr.";Fahrplanfeldbezeichnung;Haltestelle;ID;"Abkürzung Transportunternehmung";"Name Transportunternehmung";Stellungnahme;Anhang;Status;Vorname;Nachname;Organisation;Strasse;"PLZ/Ort";"E-Mails";Fahrplanjahr;"Anonyme Stellungnahme";"Anonymisierte Stellungnahme";"Öffentliche Begründung";"Interne Begründung";Thema
+        ID;Kanton;Status;"Fahrplanfeld-Nr.";Fahrplanfeldbezeichnung;Haltestelle;"Abkürzung Transportunternehmung";"Name Transportunternehmung";Stellungnahme;Anhang;Fahrplanjahr;Thema
         """;
 
     TimetableHearingStatementModelV2 statement = timetableHearingStatementControllerInternal.createStatement(
@@ -930,7 +930,7 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
   void shouldGetStatementsAsCsvAnonymizedByBoolean() throws Exception {
     // Given
     String expectedCsvHeader = """
-        Kanton;"Fahrplanfeld-Nr.";Fahrplanfeldbezeichnung;Haltestelle;ID;"Abkürzung Transportunternehmung";"Name Transportunternehmung";Stellungnahme;Anhang;Status;Vorname;Nachname;Organisation;Strasse;"PLZ/Ort";"E-Mails";Fahrplanjahr;"Anonyme Stellungnahme";"Anonymisierte Stellungnahme";"Öffentliche Begründung";"Interne Begründung";Thema
+        ID;Kanton;Status;"Fahrplanfeld-Nr.";Fahrplanfeldbezeichnung;Haltestelle;"Abkürzung Transportunternehmung";"Name Transportunternehmung";Stellungnahme;Anhang;Fahrplanjahr;Thema
         """;
 
     TimetableHearingStatementModelV2 statement = timetableHearingStatementControllerInternal.createStatement(
