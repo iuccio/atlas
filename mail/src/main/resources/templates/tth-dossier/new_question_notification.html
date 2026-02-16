@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang='en' xmlns='http://www.w3.org/1999/xhtml' xmlns:th='http://www.thymeleaf.org'>
+<head>
+    <title th:text="${properties.get(0).get('title')}"></title>
+    <meta charset='UTF-8'>
+    <style>
+        body {
+            background-color: #fafafa;
+            font-family: 'IBM Plex Sans', sans-serif;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .logo-container {
+            width: 12%;
+            float: left;
+        }
+
+        .logo {
+            margin: 35px 35px 35px 40px;
+            top: 32px;
+            left: 47px;
+            width: 45px;
+            height: 45px;
+            background-size: 23px 23px;
+        }
+
+        .logo-title {
+            color: #06348b;
+            position: absolute;
+            top: 83px;
+            left: 47px;
+            width: 45px;
+            height: 20px;
+            line-height: 20px;
+            font-size: large;
+            font-weight: bold;
+        }
+
+        .header-title {
+            font-size: large;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-container {
+            width: 100%;
+            height: 100%;
+            float: left;
+            text-align: justify;
+        }
+
+        .ski-color {
+            color: #06348b
+        }
+
+        .content-container {
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+
+        .header-right {
+            float: left;
+            width: 79%;
+            padding-top: 132px;
+            font-weight: bold;
+            text-align: center;
+            display: inline-block;
+        }
+
+        a:link {
+            text-decoration: none;
+        }
+
+        a:visited {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        a:active {
+            text-decoration: underline;
+        }
+
+        .mb-1 {
+            margin-bottom: 48px;
+        }
+
+        .mail-container {
+            padding-bottom: 30px;
+        }
+
+        hr {
+            height: 2px;
+            border-width: 0;
+            color: gray;
+            background-color: gray;
+        }
+    </style>
+</head>
+<body>
+<div class="mail-container">
+    <div class='header-container'>
+        <div class='logo-container'>
+            <div class='logo'>
+                <img src="logo-atlas.jpeg" th:src="'cid:' + ${logo}" th:width='45'/>
+                <div class='logo-title'>
+                    atlas
+                </div>
+            </div>
+        </div>
+        <div class='header-right mb-1'>
+            <span class='header-title' th:text="${properties.get(0).get('title')}"></span>
+        </div>
+    </div>
+    <div class='content-container'>
+        <div>
+            <i>Pour la version française voir ci-dessous. / Per la versione in lingua italiana vedi sotto.</i>
+            <br><br>
+            <hr>
+            <div>
+                <br><span>Sehr geehrte Damen und Herren</span><br><br>
+                <span>Der Kanton [[${properties.get(0).get('swissCantonName')}]] hat Ihnen ein Dossier zum Thema
+                    "[[${properties.get(0).get('topic')}]]" übergeben. Danke für Ihre Rückmeldung bis spätestens [[${properties.get(0).get('boDeadlineToAnswer')}]].
+                </span>
+                <br><br>
+                <b>Hier finden Sie das Dossier:</b><br>
+                Zum Dossier gelangen Sie über <a th:href="${properties.get(0).get('dossierUrl')}">diesen Link</a>.
+                <br><br>
+                <b>Fragen zum Dossier intern klären</b><br>
+                In atlas bearbeiten nur Sie das Dossier. Sie wollen Fragen intern klären? Nutzen Sie dafür die interne
+                Rückfrage im Dossier.
+                <br><br>
+                Brauchen Sie Unterstützung bei der Arbeit mit atlas? Wir sind gerne für Sie da.
+                <br><br>
+
+                <div>
+                    <br>Freundliche Grüsse<br><br>
+                    Fachstelle atlas<br>
+                    <b>SKI - Systemaufgaben Kundeninformation</b><br>
+                    <h1 class="ski-color">SKI</h1>
+                    <b>SBB AG</b><br>
+                    Infrastruktur, Fahrplan und Betrieb, Kundeninformation<br>
+                    Wylerstrasse 123/125, 3000 Bern<br><br>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <br><span>Mesdames et Messieurs</span><br><br>
+                <span>Le canton [[${properties.get(0).get('swissCantonName')}]] vous a transmis un dossier concernant
+                    "[[${properties.get(0).get('topic')}]]" pour réponse. Merci de nous faire parvenir votre réponse d’ici au [[${properties.get(0).get('boDeadlineToAnswer')}]].
+                </span>
+                <br><br>
+                <b>Vous trouverez le dossier sous:</b><br>
+                Vous pouvez accéder au dossier via <a th:href="${properties.get(0).get('dossierUrl')}">ce lien</a>.
+                <br><br>
+                <b>Clarifier des points relatifs au dossier en interne</b><br>
+                Dans atlas, vous êtes la seule personne à pouvoir modifier ce dossier. Si vous souhaitez clarifier certains points en interne, veuillez utiliser la demande interne dans la dossier.
+                <br><br>
+                Avez-vous besoin d’assistance pour travailler avec atlas ? Nous sommes volontiers à votre disposition.
+                <br><br>
+
+                <div>
+                    <br>Meilleures Salutations<br><br>
+                    Service spécialisé atlas<br>
+                    <b>Tâches systémiques d'information à la clientele</b><br>
+                    <h1 class="ski-color">SKI</h1>
+                    <b>CFF SA</b><br>
+                    Incrastructure – Horaire et Exploitation, Information à la clientèle<br>
+                    Wylerstrasse 123/125, 3000 Bern<br><br>
+                </div>
+            </div>
+
+            <hr>
+            <div>
+                <br><span>Gentile signora o signore </span><br><br>
+                <span>Il cantone  [[${properties.get(0).get('swissCantonName')}]]  vi ha trasmesso un dossier relativo a
+                    "[[${properties.get(0).get('topic')}]]". Vi ringraziamo di volerci trasmettere il vostro riscontro entro il [[${properties.get(0).get('boDeadlineToAnswer')}]].
+                </span>
+                <br><br>
+                <b>Di seguito trovate il dossier:</b><br>
+                Può accedere al dossier tramite <a th:href="${properties.get(0).get('dossierUrl')}">questo link</a>.
+                <br><br>
+                <b>Chiarire aspetti del dossier internamente</b><br>
+                In atlas solo voi potete apportare modifiche al dossier. Per chiarire eventuali aspetti internamente, utilizzate la richiesta interna presente nel dossier.
+                <br><br>
+                Avete bisogno di supporto per lavorare con atlas? Siamo volentieri a vostra disposizione.
+                <br><br>
+
+                <div>
+                    <br>Cordiali saluti<br><br>
+                    Servizio specializzato atlas<br>
+                    <b>Attività di sistema informazioni alla clientela</b><br>
+                    <h1 class="ski-color">SKI</h1>
+                    <b>FFS SA</b><br>
+                    Infrastrutture – Orario ed Esercizio, Informazione della clientela<br>
+                    Wylerstrasse 123/125, 3000 Bern<br><br>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
