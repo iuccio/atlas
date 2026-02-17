@@ -7,7 +7,7 @@ import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.atlas.user.administration.security.redact.TthRedacted;
-import ch.sbb.workflow.aop.LoggingAspect;
+import ch.sbb.workflow.aop.LoggingAspect.WorkflowType;
 import ch.sbb.workflow.aop.MethodLogged;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
@@ -65,7 +65,7 @@ public class TthDossierService {
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
-  @MethodLogged(workflowType = LoggingAspect.TTH_CREATE_DOSSIER)
+  @MethodLogged(workflowType = WorkflowType.TthDossierWorkflow)
   public TthDossier createDossier(TthDossier dossier) {
     boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
 
@@ -78,7 +78,7 @@ public class TthDossierService {
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
-  @MethodLogged(workflowType = LoggingAspect.TTH_SEND_DOSSIER_TO_BO)
+  @MethodLogged(workflowType = WorkflowType.TthDossierWorkflow)
   public void sendDossierToBo(TthDossier dossier) {
     dossier.setDossierStatus(DossierStatus.DOSSIER_BO_CHECK);
 
@@ -90,7 +90,7 @@ public class TthDossierService {
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
-  @MethodLogged(workflowType = LoggingAspect.TTH_COMPLETE_DOSSIER)
+  @MethodLogged(workflowType = WorkflowType.TthDossierWorkflow)
   public void completeDossier(TthDossier dossier, DossierStatus status) {
     checkDossierIsInEditableStatus(dossier);
     if (!status.isAllowedForCompleteTransition()) {
@@ -108,7 +108,7 @@ public class TthDossierService {
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
-  @MethodLogged(workflowType = LoggingAspect.TTH_UPDATE_DOSSIER)
+  @MethodLogged(workflowType = WorkflowType.TthDossierWorkflow)
   public TthDossier updateDossier(Long dossierId, TthDossier dossier) {
     TthDossier currentDossier = getDossierById(dossierId);
     List<Long> previousStatementIds = new ArrayList<>(currentDossier.getStatementIds());

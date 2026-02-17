@@ -5,10 +5,9 @@ import static ch.sbb.atlas.workflow.model.WorkflowStatus.REJECTED;
 import ch.sbb.atlas.api.servicepoint.ReadServicePointVersionModel;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.workflow.model.WorkflowStatus;
-import ch.sbb.workflow.aop.LoggingAspect;
+import ch.sbb.workflow.aop.LoggingAspect.WorkflowType;
 import ch.sbb.workflow.aop.MethodLogged;
 import ch.sbb.workflow.entity.Person;
-import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowConflictException;
 import ch.sbb.workflow.mapper.PersonMapper;
 import ch.sbb.workflow.module.sepodi.hearing.enity.Decision;
 import ch.sbb.workflow.module.sepodi.hearing.enity.StopPointWorkflow;
@@ -19,6 +18,7 @@ import ch.sbb.workflow.module.sepodi.hearing.model.sepodi.StopPointAddWorkflowMo
 import ch.sbb.workflow.module.sepodi.hearing.model.sepodi.StopPointClientPersonModel;
 import ch.sbb.workflow.module.sepodi.hearing.model.sepodi.StopPointRejectWorkflowModel;
 import ch.sbb.workflow.module.sepodi.hearing.model.sepodi.StopPointRestartWorkflowModel;
+import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowConflictException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class StopPointWorkflowTransitionService {
   /**
    * Authorization for this method is delegated to ServicePointService#update()
    */
-  @MethodLogged(workflowType = LoggingAspect.ADD_WORKFLOW)
+  @MethodLogged(workflowType = WorkflowType.StopPointWorkflow)
   public StopPointWorkflow addWorkflow(StopPointAddWorkflowModel stopPointAddWorkflowModel) {
     stopPointWorkflowService.checkHasWorkflowAdded(stopPointAddWorkflowModel.getVersionId());
     if (stopPointAddWorkflowModel.getExaminants() != null && !stopPointAddWorkflowModel.getExaminants().isEmpty()) {
@@ -78,7 +78,7 @@ public class StopPointWorkflowTransitionService {
     return workflow;
   }
 
-  @MethodLogged(workflowType = LoggingAspect.REJECT_WORKFLOW)
+  @MethodLogged(workflowType = WorkflowType.StopPointWorkflow)
   public StopPointWorkflow rejectWorkflow(Long id, StopPointRejectWorkflowModel rejectWorkflowModel) {
     StopPointWorkflow stopPointWorkflow = stopPointWorkflowService.findStopPointWorkflow(id);
     StopPointWorkflowStatusTransitionDecider.validateWorkflowStatusTransition(stopPointWorkflow.getStatus(), REJECTED);
@@ -93,7 +93,7 @@ public class StopPointWorkflowTransitionService {
     return stopPointWorkflow;
   }
 
-  @MethodLogged(workflowType = LoggingAspect.CANCEL_WORKFLOW)
+  @MethodLogged(workflowType = WorkflowType.StopPointWorkflow)
   public StopPointWorkflow cancelWorkflow(Long id, StopPointRejectWorkflowModel stopPointCancelWorkflowModel) {
     StopPointWorkflow stopPointWorkflow = stopPointWorkflowService.findStopPointWorkflow(id);
     StopPointWorkflowStatusTransitionDecider.validateWorkflowStatusTransition(stopPointWorkflow.getStatus(),
@@ -112,7 +112,7 @@ public class StopPointWorkflowTransitionService {
     return workflow;
   }
 
-  @MethodLogged(workflowType = LoggingAspect.RESTART_WORKFLOW)
+  @MethodLogged(workflowType = WorkflowType.StopPointWorkflow)
   public StopPointWorkflow restartWorkflow(Long id, StopPointRestartWorkflowModel restartWorkflowModel) {
     StopPointWorkflow stopPointWorkflow = stopPointWorkflowService.findStopPointWorkflow(id);
     StopPointWorkflowStatusTransitionDecider.validateWorkflowStatusTransition(stopPointWorkflow.getStatus(), REJECTED);
@@ -128,7 +128,7 @@ public class StopPointWorkflowTransitionService {
     return newStopPointWorkflow;
   }
 
-  @MethodLogged(workflowType = LoggingAspect.WORKFLOW_TYPE_VOTE_WORKFLOW)
+  @MethodLogged(workflowType = WorkflowType.StopPointWorkflow)
   public void progressWorkflowWithNewDecision(Long workflowId) {
     StopPointWorkflow workflow = stopPointWorkflowService.findStopPointWorkflow(workflowId);
     stopPointWorkflowService.validateIsStopPointInHearing(workflow);
