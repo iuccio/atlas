@@ -180,8 +180,8 @@ export class TrafficPointElementsDetailComponent
           trafficPointElementVersion.numberWithoutCheckDigit =
             this.servicePointNumber;
           if (this.isNew) {
-            this.create(trafficPointElementVersion);
             this.disableForm();
+            this.create(trafficPointElementVersion);
           } else {
             this.validityService.updateValidity(this.form);
             this.validityService.validateAndDisableCustom(
