@@ -55,6 +55,9 @@ public class ReadStopPointWorkflowModel extends BaseStopPointWorkflowModel {
   @Schema(description = "Object creation date", example = "01.01.2000")
   private LocalDateTime creationDate;
 
+  @Schema(description = "Object edition date", example = "01.01.2000")
+  private LocalDateTime editionDate;
+
   @Schema(description = "User creator", example = "u123456", accessMode = AccessMode.READ_ONLY)
   private String creator;
 
