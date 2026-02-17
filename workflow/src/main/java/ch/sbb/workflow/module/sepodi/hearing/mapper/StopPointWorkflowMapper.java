@@ -36,6 +36,7 @@ public class StopPointWorkflowMapper {
         .endDate(entity.getEndDate())
         .createdAt(entity.getCreationDate())
         .creationDate(entity.getCreationDate())
+        .editionDate(entity.getEditionDate())
         .creator(entity.getCreator())
         .build();
   }
