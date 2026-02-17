@@ -82,6 +82,7 @@ describe('TimetableHearingStatementInternalService', () => {
       statusRestrictions: undefined,
       ttfnid: undefined,
       transportCompanies: undefined,
+      partOfDossier: undefined,
       anonymized: undefined,
     });
     expect(apiService.getBlob).toHaveBeenCalledOnceWith(
@@ -93,6 +94,7 @@ describe('TimetableHearingStatementInternalService', () => {
   it('should getStatementsAsCsv with anonymized true', () => {
     service.getStatementsAsCsv(
       'de',
+      undefined,
       undefined,
       undefined,
       undefined,
@@ -113,6 +115,7 @@ describe('TimetableHearingStatementInternalService', () => {
       statusRestrictions: undefined,
       ttfnid: undefined,
       transportCompanies: undefined,
+      partOfDossier:undefined,
       anonymized: true,
     });
 

@@ -911,7 +911,8 @@
       "OVERVIEW_ACTUAL_NOT_FOUND_SUBHEADING_PREFIX": "L'anno solare non si è ancora aperto. Le dichiarazioni già esistenti si trovano nella scheda \"Udienze programmate\". La procedura Orario Svizzera del BAV per l'orario {{timeTableYear}} è utilizzata da",
       "OVERVIEW_PLANNED_NOT_FOUND": "Al momento non sono state registrate udienze programmate.",
       "OVERVIEW_ACTUAL_NO_PLANNED_HEARING_YEAR_FOUND": "Al momento non ci sono audizioni attive.",
-      "OVERVIEW_ARCHIVED_NOT_FOUND": "Al momento non sono disponibili udienze archiviate."
+      "OVERVIEW_ARCHIVED_NOT_FOUND": "Al momento non sono disponibili udienze archiviate.",
+      "STATEMENT_IN_DOSSIER_SLIDE": "Mostra le audizioni nel dossier"
     },
     "STATEMENT_STATUS": {
       "RECEIVED": "arrivato",

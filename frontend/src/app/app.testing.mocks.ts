@@ -251,6 +251,7 @@ export const adminPermissionServiceMock: Partial<PermissionService> = {
   isAdmin: true,
   hasPermissionsToCreate: () => true,
   isAtLeastSupervisor: () => true,
+  isTthCanton: () => true,
   hasPermissionsToWrite: () => true,
   hasWritePermissionsToForCanton: () => true,
   getApplicationUserPermission: (applicationType) => {
