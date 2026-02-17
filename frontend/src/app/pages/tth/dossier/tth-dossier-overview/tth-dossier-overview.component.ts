@@ -60,19 +60,32 @@ export class TthDossierOverviewComponent implements OnInit {
   yearSelection = this.YEAR_DROPDOWN_OPTIONS[0];
   noTimetableHearingYearFound = false;
 
+  get isHearingYearActive(): boolean {
+    return TthUtils.isHearingStatusActive(this.hearingStatus);
+  }
+
   ngOnInit(): void {
     this.hearingStatus = this.route.snapshot.data.hearingStatus;
     this.syncCantonShortSharedDate();
     this.defaultDropdownCantonSelection =
       this.initDefaultDropdownCantonSelection();
-    this.tableColumns = this.getTableColumns();
-    this.tableFilterConfig = this.tableService.initializeFilterConfig(
-      TthTableFilterSettingsService.createDossierSettings(),
-      Pages.TTH_DOSSIERS
-    );
+    if (TthUtils.isHearingStatusActive(this.hearingStatus)) {
+      this.initOverviewActiveTable();
+      this.tableColumns = this.getTableColumns();
+      this.tableFilterConfig = this.tableService.initializeFilterConfig(
+        TthTableFilterSettingsService.createDossierSettings(),
+        Pages.TTH_DOSSIERS
+      );
+    }
 
-    this.initOverviewTable();
-    this.getTimetableHearingYear(HearingStatus.Archived, true);
+    if (TthUtils.isHearingStatusArchived(this.hearingStatus)) {
+      this.tableColumns = this.getTableColumns();
+      this.tableFilterConfig = this.tableService.initializeFilterConfig(
+        TthTableFilterSettingsService.createDossierSettings(),
+        Pages.TTH_DOSSIERS
+      );
+      this.getTimetableHearingYear(HearingStatus.Archived, true);
+    }
   }
 
   getOverview(pagination: TablePagination) {
@@ -89,8 +102,6 @@ export class TthDossierOverviewComponent implements OnInit {
       .subscribe((container) => {
         this.tthDossiers = container.objects!;
         this.totalCount$ = container.totalCount!;
-
-        console.log('Dossier overview:', container.objects);
       });
   }
 
@@ -146,7 +157,6 @@ export class TthDossierOverviewComponent implements OnInit {
   }
 
   private navigateTo(canton: string, timetableYear: number) {
-    console.log('hearingStatus: ', this.hearingStatus);
     this.router
       .navigate(
         [
@@ -204,6 +214,23 @@ export class TthDossierOverviewComponent implements OnInit {
             );
           this.setFoundHearingYear(foundTimetableHearingYears);
           this.initOverviewTable();
+        }
+      });
+  }
+
+  private initOverviewActiveTable() {
+    this.timetableHearingYearsService
+      .getHearingYears([HearingStatus.Active])
+      .subscribe((timetableHearingYears) => {
+        if (timetableHearingYears) {
+          if (timetableHearingYears.length === 0) {
+            this.noTimetableHearingYearFound = true;
+          } else if (timetableHearingYears.length >= 1) {
+            this.foundTimetableHearingYear = timetableHearingYears[0];
+
+            this.tableColumns = this.getTableColumns();
+            this.initOverviewTable();
+          }
         }
       });
   }
