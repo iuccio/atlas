@@ -13,6 +13,7 @@ import ch.sbb.atlas.model.controller.BaseControllerApiTest;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.workflow.model.WorkflowStatus;
 import ch.sbb.workflow.aop.LoggingAspect;
+import ch.sbb.workflow.aop.LoggingAspect.WorkflowType;
 import ch.sbb.workflow.entity.Person;
 import ch.sbb.workflow.module.sepodi.hearing.api.StopPointWorkflowApiInternal;
 import ch.sbb.workflow.module.sepodi.hearing.api.StopPointWorkflowApiV1;
@@ -100,8 +101,8 @@ class StopPointWorkflowLoggingAspectTest extends BaseControllerApiTest {
     ).andExpect(status().is5xxServerError());
 
     boolean logFound = listAppender.list.stream()
-        .anyMatch(event -> event.getFormattedMessage().contains(LoggingAspect.ERROR_MARKER) &&
-            event.getFormattedMessage().contains("\"workflowType\":" + "\"" + LoggingAspect.ADD_WORKFLOW +
+        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.StopPointWorkflow.errorMarker) &&
+            event.getFormattedMessage().contains("\"workflowType\":" + "\"" + WorkflowType.StopPointWorkflow.name() +
                 "\""));
     assertThat(logFound).isTrue();
   }
@@ -157,8 +158,8 @@ class StopPointWorkflowLoggingAspectTest extends BaseControllerApiTest {
     assertThat(decisionResult).isNull();
 
     boolean logFound = listAppender.list.stream()
-        .anyMatch(event -> event.getFormattedMessage().contains(LoggingAspect.ERROR_MARKER) &&
-            event.getFormattedMessage().contains("\"workflowType\":" + "\"" + LoggingAspect.REJECT_WORKFLOW + "\""));
+        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.StopPointWorkflow.errorMarker) &&
+            event.getFormattedMessage().contains("\"workflowType\":" + "\"" + WorkflowType.StopPointWorkflow.name() + "\""));
     assertThat(logFound).isTrue();
   }
 
@@ -213,8 +214,8 @@ class StopPointWorkflowLoggingAspectTest extends BaseControllerApiTest {
     assertThat(decisionResult).isNull();
 
     boolean logFound = listAppender.list.stream()
-        .anyMatch(event -> event.getFormattedMessage().contains(LoggingAspect.ERROR_MARKER) &&
-            event.getFormattedMessage().contains("\"workflowType\":" + "\"" + LoggingAspect.CANCEL_WORKFLOW + "\""));
+        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.StopPointWorkflow.errorMarker) &&
+            event.getFormattedMessage().contains("\"workflowType\":" + "\"" + WorkflowType.StopPointWorkflow.name() + "\""));
     assertThat(logFound).isTrue();
   }
 
@@ -224,8 +225,8 @@ class StopPointWorkflowLoggingAspectTest extends BaseControllerApiTest {
         () -> stopPointWorkflowTransitionService.progressWorkflowWithNewDecision(100L));
 
     boolean logFound = listAppender.list.stream()
-        .anyMatch(event -> event.getFormattedMessage().contains(LoggingAspect.ERROR_MARKER) &&
-            event.getFormattedMessage().contains("\"workflowType\":" + "\"" + LoggingAspect.WORKFLOW_TYPE_VOTE_WORKFLOW + "\""));
+        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.StopPointWorkflow.errorMarker) &&
+            event.getFormattedMessage().contains("\"workflowType\":" + "\"" + WorkflowType.StopPointWorkflow.name() + "\""));
     assertThat(logFound).isTrue();
   }
 
@@ -270,8 +271,8 @@ class StopPointWorkflowLoggingAspectTest extends BaseControllerApiTest {
         .andExpect(status().isNotFound());
 
     boolean logFound = listAppender.list.stream()
-        .anyMatch(event -> event.getFormattedMessage().contains(LoggingAspect.ERROR_MARKER) &&
-            event.getFormattedMessage().contains("\"workflowType\":" + "\"" + LoggingAspect.RESTART_WORKFLOW + "\""));
+        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.StopPointWorkflow.errorMarker) &&
+            event.getFormattedMessage().contains("\"workflowType\":" + "\"" + WorkflowType.StopPointWorkflow.name() + "\""));
     assertThat(logFound).isTrue();
   }
 }
