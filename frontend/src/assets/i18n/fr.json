@@ -911,7 +911,8 @@
       "OVERVIEW_ACTUAL_NOT_FOUND_SUBHEADING_PREFIX": "L'année d'horaire n'est pas encore ouverte. Vous trouverez les avis déjà existants sous l'onglet \"Auditions prévues\". La procédure d'établissement de l'horaire suisse de l'OFT pour l'horaire {{timeTableYear}} est effectuée par ",
       "OVERVIEW_PLANNED_NOT_FOUND": "Actuellement, aucune audition prévue n'est enregistrée.",
       "OVERVIEW_ACTUAL_NO_PLANNED_HEARING_YEAR_FOUND": "Actuellement, aucune audition n'est active.",
-      "OVERVIEW_ARCHIVED_NOT_FOUND": "Aucune audition archivée n'est actuellement disponible."
+      "OVERVIEW_ARCHIVED_NOT_FOUND": "Aucune audition archivée n'est actuellement disponible.",
+      "STATEMENT_IN_DOSSIER_SLIDE": "Afficher les déclarations dans le dossier"
     },
     "STATEMENT_STATUS": {
       "RECEIVED": "réceptionnée",
