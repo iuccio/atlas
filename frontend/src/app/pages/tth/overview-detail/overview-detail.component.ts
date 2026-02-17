@@ -291,6 +291,7 @@ export class OverviewDetailComponent implements OnInit {
             (numberOrUndefined): numberOrUndefined is number =>
               !!numberOrUndefined
           ),
+        this.getShowStatementInDossierFilter(),
         anonymizedExport
       )
       .subscribe((response) =>
