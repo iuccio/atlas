@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @EqualsAndHashCode(callSuper = true)
@@ -19,6 +20,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Data
 @SuperBuilder
+@ToString(callSuper = true)
 @Schema(name = "StopPointRestartWorkflow")
 public class StopPointRestartWorkflowModel extends BasePersonModel {
 
@@ -35,7 +37,7 @@ public class StopPointRestartWorkflowModel extends BasePersonModel {
   @NotNull
   @Size(min = 2, max = AtlasFieldLengths.LENGTH_30)
   @Schema(description = "Official designation of a location that must be used by all recipients"
-          , example = "Biel/Bienne Bözingenfeld/Champ", maxLength = 30)
+      , example = "Biel/Bienne Bözingenfeld/Champ", maxLength = 30)
   private String designationOfficial;
 
   @Pattern(regexp = AtlasCharacterSetsRegex.EMAIL_ADDRESS)
@@ -43,4 +45,5 @@ public class StopPointRestartWorkflowModel extends BasePersonModel {
   @Schema(description = "mail", example = "mail@sbb.ch")
   @NotBlank
   private String mail;
+
 }
