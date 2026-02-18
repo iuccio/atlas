@@ -8,12 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
+@ToString(callSuper = true)
 @NoArgsConstructor
 @Schema(name = "StopPointAddWorkflow")
 public class StopPointAddWorkflowModel extends BaseStopPointWorkflowModel {

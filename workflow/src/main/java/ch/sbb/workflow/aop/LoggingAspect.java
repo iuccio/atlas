@@ -50,6 +50,7 @@ public class LoggingAspect {
         Map.entry("className", className),
         Map.entry("methodName", methodName),
         Map.entry("workflowType", workflowType.name()),
+        // Make sure that object abstractions implement toString() properly for all details to be logged.
         Map.entry("arguments", Arrays.toString(args)),
         Map.entry("errorMessage", String.valueOf(e.getMessage()))
     );
