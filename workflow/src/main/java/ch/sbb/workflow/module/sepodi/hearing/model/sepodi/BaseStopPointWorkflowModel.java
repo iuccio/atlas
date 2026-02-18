@@ -53,5 +53,4 @@ public abstract class BaseStopPointWorkflowModel {
     }
     return this.examinants;
   }
-
 }

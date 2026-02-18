@@ -39,7 +39,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @SuperBuilder(toBuilder = true)
 @FieldNameConstants
 @Entity(name = "tth_dossier")
@@ -85,4 +85,5 @@ public class TthDossier extends BaseWorkflowEntity implements StatementDossierLi
   @Builder.Default
   @OneToMany(mappedBy = "tthDossier", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<TthDossierQuestion> dossierQuestions = new ArrayList<>();
+
 }
