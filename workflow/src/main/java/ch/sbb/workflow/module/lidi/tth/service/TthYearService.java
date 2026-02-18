@@ -18,7 +18,7 @@ public class TthYearService {
   private final TthDossierService tthDossierService;
 
   @Transactional
-  @MethodLogged(workflowType = WorkflowType.TthDossierWorkflow)
+  @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
   public TimetableHearingYearModel closeTimetableHearingYear(Long year) {
     List<Long> statementIdsToRemoveFromDossier = tthDossierService.getStatementIdsFromDossierStatus(List.of(
         DossierStatus.ADDED, DossierStatus.DOSSIER_BO_CHECK, DossierStatus.DOSSIER_CANTON_CHECK, DossierStatus.MOVED

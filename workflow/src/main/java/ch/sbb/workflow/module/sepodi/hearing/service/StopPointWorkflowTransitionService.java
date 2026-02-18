@@ -49,7 +49,7 @@ public class StopPointWorkflowTransitionService {
   /**
    * Authorization for this method is delegated to ServicePointService#update()
    */
-  @MethodLogged(workflowType = WorkflowType.StopPointWorkflow)
+  @MethodLogged(workflowType = WorkflowType.STOP_POINT_WORKFLOW)
   public StopPointWorkflow addWorkflow(StopPointAddWorkflowModel stopPointAddWorkflowModel) {
     stopPointWorkflowService.checkHasWorkflowAdded(stopPointAddWorkflowModel.getVersionId());
     if (stopPointAddWorkflowModel.getExaminants() != null && !stopPointAddWorkflowModel.getExaminants().isEmpty()) {
@@ -78,7 +78,7 @@ public class StopPointWorkflowTransitionService {
     return workflow;
   }
 
-  @MethodLogged(workflowType = WorkflowType.StopPointWorkflow)
+  @MethodLogged(workflowType = WorkflowType.STOP_POINT_WORKFLOW)
   public StopPointWorkflow rejectWorkflow(Long id, StopPointRejectWorkflowModel rejectWorkflowModel) {
     StopPointWorkflow stopPointWorkflow = stopPointWorkflowService.findStopPointWorkflow(id);
     StopPointWorkflowStatusTransitionDecider.validateWorkflowStatusTransition(stopPointWorkflow.getStatus(), REJECTED);
@@ -93,7 +93,7 @@ public class StopPointWorkflowTransitionService {
     return stopPointWorkflow;
   }
 
-  @MethodLogged(workflowType = WorkflowType.StopPointWorkflow)
+  @MethodLogged(workflowType = WorkflowType.STOP_POINT_WORKFLOW)
   public StopPointWorkflow cancelWorkflow(Long id, StopPointRejectWorkflowModel stopPointCancelWorkflowModel) {
     StopPointWorkflow stopPointWorkflow = stopPointWorkflowService.findStopPointWorkflow(id);
     StopPointWorkflowStatusTransitionDecider.validateWorkflowStatusTransition(stopPointWorkflow.getStatus(),
@@ -112,7 +112,7 @@ public class StopPointWorkflowTransitionService {
     return workflow;
   }
 
-  @MethodLogged(workflowType = WorkflowType.StopPointWorkflow)
+  @MethodLogged(workflowType = WorkflowType.STOP_POINT_WORKFLOW)
   public StopPointWorkflow restartWorkflow(Long id, StopPointRestartWorkflowModel restartWorkflowModel) {
     StopPointWorkflow stopPointWorkflow = stopPointWorkflowService.findStopPointWorkflow(id);
     StopPointWorkflowStatusTransitionDecider.validateWorkflowStatusTransition(stopPointWorkflow.getStatus(), REJECTED);
@@ -128,7 +128,7 @@ public class StopPointWorkflowTransitionService {
     return newStopPointWorkflow;
   }
 
-  @MethodLogged(workflowType = WorkflowType.StopPointWorkflow)
+  @MethodLogged(workflowType = WorkflowType.STOP_POINT_WORKFLOW)
   public void progressWorkflowWithNewDecision(Long workflowId) {
     StopPointWorkflow workflow = stopPointWorkflowService.findStopPointWorkflow(workflowId);
     stopPointWorkflowService.validateIsStopPointInHearing(workflow);

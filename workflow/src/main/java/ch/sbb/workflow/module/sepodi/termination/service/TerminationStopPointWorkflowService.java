@@ -68,7 +68,7 @@ public class TerminationStopPointWorkflowService {
     return repository.findAll(searchRestrictions.getSpecification(), searchRestrictions.getPageable());
   }
 
-  @MethodLogged(workflowType = WorkflowType.StopPointTerminationWorkflow)
+  @MethodLogged(workflowType = WorkflowType.STOP_POINT_TERMINATION_WORKFLOW)
   public TerminationStopPointWorkflow startTerminationWorkflow(StartTerminationStopPointWorkflowModel model) {
     checkTerminationWorkflowAlreadyExists(model);
     UpdateTerminationServicePointModel terminationServicePointModel = UpdateTerminationServicePointModel.builder()
@@ -87,7 +87,7 @@ public class TerminationStopPointWorkflowService {
     return savedTerminationWorkflow;
   }
 
-  @MethodLogged(workflowType = WorkflowType.StopPointTerminationWorkflow)
+  @MethodLogged(workflowType = WorkflowType.STOP_POINT_TERMINATION_WORKFLOW)
   public TerminationStopPointWorkflow abortTerminationWorkflow(Long workflowId, TerminationAbortModel abortModel) {
     TerminationStopPointWorkflow terminationWorkflow = getTerminationWorkflow(workflowId);
     validateTerminationIsAbortible(terminationWorkflow.getStatus());
@@ -120,7 +120,7 @@ public class TerminationStopPointWorkflowService {
     return repository.save(terminationWorkflow);
   }
 
-  @MethodLogged(workflowType = WorkflowType.StopPointTerminationWorkflow)
+  @MethodLogged(workflowType = WorkflowType.STOP_POINT_TERMINATION_WORKFLOW)
   public TerminationStopPointWorkflow addDecisionNova(TerminationDecisionModel decisionModel, Long workflowId) {
     TerminationStopPointWorkflow terminationWorkflow = getTerminationWorkflow(workflowId);
     checkNovaDecisionPreconditions(decisionModel, terminationWorkflow);

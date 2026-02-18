@@ -267,9 +267,9 @@ class TerminationStopPointWorkflowServiceTest {
 
     //then
     boolean logFound = listAppender.list.stream()
-        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.StopPointTerminationWorkflow.errorMarker) &&
+        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.errorMarker) &&
             event.getFormattedMessage()
-                .contains("\"workflowType\":" + "\"" + WorkflowType.StopPointTerminationWorkflow.name() + "\""));
+                .contains("\"workflowType\":" + "\"" + WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.name() + "\""));
     assertThat(logFound).isTrue();
   }
 
@@ -459,9 +459,9 @@ class TerminationStopPointWorkflowServiceTest {
 
     //then
     boolean logFound = listAppender.list.stream()
-        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.StopPointTerminationWorkflow.errorMarker) &&
+        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.errorMarker) &&
             event.getFormattedMessage()
-                .contains("\"workflowType\":" + "\"" + WorkflowType.StopPointTerminationWorkflow.name() + "\""));
+                .contains("\"workflowType\":" + "\"" + WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.name() + "\""));
     assertThat(logFound).isTrue();
   }
 
@@ -539,9 +539,9 @@ class TerminationStopPointWorkflowServiceTest {
 
     //then
     boolean logFound = listAppender.list.stream()
-        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.StopPointTerminationWorkflow.errorMarker) &&
+        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.errorMarker) &&
             event.getFormattedMessage()
-                .contains("\"workflowType\":" + "\"" + WorkflowType.StopPointTerminationWorkflow.name() + "\""));
+                .contains("\"workflowType\":" + "\"" + WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.name() + "\""));
     assertThat(logFound).isTrue();
   }
 
