@@ -18,11 +18,8 @@ import ch.sbb.atlas.model.DateRange;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SloidNotFoundException;
 import ch.sbb.atlas.redact.Redacted;
-import ch.sbb.workflow.aop.LoggingAspect;
+import ch.sbb.workflow.aop.LoggingAspect.WorkflowType;
 import ch.sbb.workflow.aop.MethodLogged;
-import ch.sbb.workflow.module.sepodi.termination.exception.TerminationDateBeforeException;
-import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowAlreadyInStatusException;
-import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowPreconditionStatusException;
 import ch.sbb.workflow.module.sepodi.client.SePoDiAdminClient;
 import ch.sbb.workflow.module.sepodi.hearing.enity.JudgementType;
 import ch.sbb.workflow.module.sepodi.termination.TerminationWorkflowHelper;
@@ -30,6 +27,9 @@ import ch.sbb.workflow.module.sepodi.termination.entity.TerminationDecision;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationDecisionPerson;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationStopPointWorkflow;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationWorkflowStatus;
+import ch.sbb.workflow.module.sepodi.termination.exception.TerminationDateBeforeException;
+import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowAlreadyInStatusException;
+import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowPreconditionStatusException;
 import ch.sbb.workflow.module.sepodi.termination.mapper.TerminationDecisionMapper;
 import ch.sbb.workflow.module.sepodi.termination.mapper.TerminationStopPointWorkflowMapper;
 import ch.sbb.workflow.module.sepodi.termination.model.StartTerminationStopPointWorkflowModel;
@@ -68,7 +68,7 @@ public class TerminationStopPointWorkflowService {
     return repository.findAll(searchRestrictions.getSpecification(), searchRestrictions.getPageable());
   }
 
-  @MethodLogged(workflowType = LoggingAspect.START_TERMINATION_WORKFLOW)
+  @MethodLogged(workflowType = WorkflowType.STOP_POINT_TERMINATION_WORKFLOW)
   public TerminationStopPointWorkflow startTerminationWorkflow(StartTerminationStopPointWorkflowModel model) {
     checkTerminationWorkflowAlreadyExists(model);
     UpdateTerminationServicePointModel terminationServicePointModel = UpdateTerminationServicePointModel.builder()
@@ -87,7 +87,7 @@ public class TerminationStopPointWorkflowService {
     return savedTerminationWorkflow;
   }
 
-  @MethodLogged(workflowType = LoggingAspect.ABORT_TERMINATION_WORKFLOW)
+  @MethodLogged(workflowType = WorkflowType.STOP_POINT_TERMINATION_WORKFLOW)
   public TerminationStopPointWorkflow abortTerminationWorkflow(Long workflowId, TerminationAbortModel abortModel) {
     TerminationStopPointWorkflow terminationWorkflow = getTerminationWorkflow(workflowId);
     validateTerminationIsAbortible(terminationWorkflow.getStatus());
@@ -120,7 +120,7 @@ public class TerminationStopPointWorkflowService {
     return repository.save(terminationWorkflow);
   }
 
-  @MethodLogged(workflowType = LoggingAspect.ADD_TERMINATION_DECISION_NOVA)
+  @MethodLogged(workflowType = WorkflowType.STOP_POINT_TERMINATION_WORKFLOW)
   public TerminationStopPointWorkflow addDecisionNova(TerminationDecisionModel decisionModel, Long workflowId) {
     TerminationStopPointWorkflow terminationWorkflow = getTerminationWorkflow(workflowId);
     checkNovaDecisionPreconditions(decisionModel, terminationWorkflow);

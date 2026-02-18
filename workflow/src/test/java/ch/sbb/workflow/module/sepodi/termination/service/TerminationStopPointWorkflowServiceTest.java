@@ -25,6 +25,7 @@ import ch.sbb.atlas.servicepoint.enumeration.Category;
 import ch.sbb.atlas.servicepoint.enumeration.OperatingPointTechnicalTimetableType;
 import ch.sbb.atlas.servicepoint.enumeration.OperatingPointType;
 import ch.sbb.workflow.aop.LoggingAspect;
+import ch.sbb.workflow.aop.LoggingAspect.WorkflowType;
 import ch.sbb.workflow.exception.AtlasClientException;
 import ch.sbb.workflow.module.sepodi.client.SePoDiAdminClient;
 import ch.sbb.workflow.module.sepodi.hearing.enity.JudgementType;
@@ -266,9 +267,9 @@ class TerminationStopPointWorkflowServiceTest {
 
     //then
     boolean logFound = listAppender.list.stream()
-        .anyMatch(event -> event.getFormattedMessage().contains(LoggingAspect.ERROR_MARKER) &&
+        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.errorMarker) &&
             event.getFormattedMessage()
-                .contains("\"workflowType\":" + "\"" + LoggingAspect.ADD_TERMINATION_DECISION_NOVA + "\""));
+                .contains("\"workflowType\":" + "\"" + WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.name() + "\""));
     assertThat(logFound).isTrue();
   }
 
@@ -458,9 +459,9 @@ class TerminationStopPointWorkflowServiceTest {
 
     //then
     boolean logFound = listAppender.list.stream()
-        .anyMatch(event -> event.getFormattedMessage().contains(LoggingAspect.ERROR_MARKER) &&
+        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.errorMarker) &&
             event.getFormattedMessage()
-                .contains("\"workflowType\":" + "\"" + LoggingAspect.START_TERMINATION_WORKFLOW + "\""));
+                .contains("\"workflowType\":" + "\"" + WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.name() + "\""));
     assertThat(logFound).isTrue();
   }
 
@@ -538,9 +539,9 @@ class TerminationStopPointWorkflowServiceTest {
 
     //then
     boolean logFound = listAppender.list.stream()
-        .anyMatch(event -> event.getFormattedMessage().contains(LoggingAspect.ERROR_MARKER) &&
+        .anyMatch(event -> event.getFormattedMessage().contains(WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.errorMarker) &&
             event.getFormattedMessage()
-                .contains("\"workflowType\":" + "\"" + LoggingAspect.ABORT_TERMINATION_WORKFLOW + "\""));
+                .contains("\"workflowType\":" + "\"" + WorkflowType.STOP_POINT_TERMINATION_WORKFLOW.name() + "\""));
     assertThat(logFound).isTrue();
   }
 
@@ -600,5 +601,4 @@ class TerminationStopPointWorkflowServiceTest {
         .status(TerminationWorkflowStatus.STARTED)
         .build();
   }
-
 }
