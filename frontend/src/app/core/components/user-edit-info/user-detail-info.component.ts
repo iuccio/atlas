@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  Input,
+} from '@angular/core';
 import moment from 'moment';
 import {
   DATE_PATTERN,
@@ -10,28 +16,30 @@ import { map } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { UserAdministrationService } from '../../../api/service/user-administration/user-administration.service';
+import { ApplicationType } from '../../../api';
+import { UserOpenInMailComponent } from '../user-open-in-mail/user-open-in-mail.component';
 
 @Component({
-  selector: 'atlas-user-detail-info [record]',
+  selector: 'atlas-user-detail-info',
   templateUrl: './user-detail-info.component.html',
   styleUrls: ['./user-detail-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, TranslatePipe],
+  imports: [AsyncPipe, TranslatePipe, UserOpenInMailComponent],
   providers: [TranslatePipe],
 })
 export class UserDetailInfoComponent {
-  @Input() short = false;
-  @Input() showEditor = true;
+  short = input(false);
+  showEditor = input(true);
+  applicationType = input<ApplicationType>();
 
   private _record$: Observable<CreationEditionRecord | undefined> =
     of(undefined);
 
-  constructor(
-    private readonly userAdministrationService: UserAdministrationService
-  ) {}
+  readonly userAdministrationService = inject(UserAdministrationService);
 
   @Input()
   set record(record: CreationEditionRecord) {
+    console.log(record);
     this._record$ = this.getProcessedCreationEdition(record);
   }
 
@@ -65,8 +73,10 @@ export class UserDetailInfoComponent {
         editionDate: this.formatDateTime(record.editionDate),
         editionDateWithoutTime: this.formatDate(record.editionDate),
         creationDate: this.formatDateTime(record.creationDate),
-        editor,
-        creator,
+        creatorDisplayName: creator,
+        editorDisplayName: editor,
+        editor: record.editor,
+        creator: record.creator,
       })),
       catchError(() => of(undefined))
     );

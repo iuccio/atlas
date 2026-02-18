@@ -1,0 +1,6 @@
+@use 'src/styles/variables' as variables;
+
+i {
+  color: variables.$primary-400;
+  cursor: pointer;
+}

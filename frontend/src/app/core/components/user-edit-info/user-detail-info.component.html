@@ -1,21 +1,40 @@
 @if (processedRecord | async; as record) {
-  @if (!short) {
+  @if (!short()) {
     <div>
       <span>{{
-        'DETAIL_USER_EDITION.CREATION_DATE' | translate : {creationDate: record.creationDate}
+        'DETAIL_USER_EDITION.CREATION_DATE'
+          | translate: { creationDate: record.creationDate }
       }}</span>
-      <span>{{ 'DETAIL_USER_EDITION.CREATOR' | translate : {creator: record.creator} }}</span>
+      <span>{{
+        'DETAIL_USER_EDITION.CREATOR'
+          | translate: { creator: record.creatorDisplayName }
+      }}</span>
+      <atlas-user-open-in-mail
+        [userId]="record.creator!"
+        [applicationType]="applicationType()!"
+      ></atlas-user-open-in-mail>
     </div>
-    @if (showEditor) {
+    @if (showEditor()) {
       <div>
         <span>{{
-          'DETAIL_USER_EDITION.LATEST_EDITION_DATE' | translate : {editionDate: record.editionDate}
+          'DETAIL_USER_EDITION.LATEST_EDITION_DATE'
+            | translate: { editionDate: record.editionDate }
         }}</span>
-        <span>{{ 'DETAIL_USER_EDITION.LATEST_EDITOR' | translate : {editor: record.editor} }}</span>
+        <span>{{
+          'DETAIL_USER_EDITION.LATEST_EDITOR'
+            | translate: { editor: record.editorDisplayName }
+        }}</span>
+        <atlas-user-open-in-mail
+          [userId]="record.creator!"
+          [applicationType]="applicationType()!"
+        ></atlas-user-open-in-mail>
       </div>
     }
   }
-  @if (short) {
-    <span>{{ record.editionDateWithoutTime }} | {{ record.editor }}</span>
+  @if (short()) {
+    <span
+      >{{ record.editionDateWithoutTime }} |
+      {{ record.editorDisplayName }}</span
+    >
   }
 }
