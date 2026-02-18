@@ -158,7 +158,7 @@ public class ServicePointService {
     List<ServicePointVersion> afterUpdateServicePoint = servicePointValidationService.validateNoMergeAffectVersionInReview(
         currentVersion, existingDbVersionInReview);
 
-    servicePointTerminationService.checkTerminationAllowed(currentVersions, afterUpdateServicePoint);
+    servicePointTerminationService.checkTerminationAllowed(currentVersions, afterUpdateServicePoint, currentVersion);
     return editedVersion;
   }
 
@@ -249,9 +249,5 @@ public class ServicePointService {
   public void publishAllServicePoints() {
     log.info("Syncing all Service Points");
     servicePointDistributor.syncServicePoints();
-  }
-
-  public List<ServicePointVersion> findFareStopsToCleanup() {
-    return servicePointVersionRepository.findFareStopsToCleanup();
   }
 }
