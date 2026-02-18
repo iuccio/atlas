@@ -195,6 +195,7 @@
       (buttonClicked)="toggleEdit()"
       applicationType="SEPODI"
       buttonDataCy="edit"
+      [disabled]="isNew"
       buttonText="COMMON.EDIT"
       buttonType="edit-service-point-dependent"
       [businessOrganisations]="servicePointBusinessOrganisations"
