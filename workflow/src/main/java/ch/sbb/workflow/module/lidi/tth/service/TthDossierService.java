@@ -7,6 +7,8 @@ import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.atlas.user.administration.security.redact.TthRedacted;
+import ch.sbb.workflow.aop.LoggingAspect.WorkflowType;
+import ch.sbb.workflow.aop.MethodLogged;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
 import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
@@ -63,6 +65,7 @@ public class TthDossierService {
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
+  @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
   public TthDossier createDossier(TthDossier dossier) {
     boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
 
@@ -75,6 +78,7 @@ public class TthDossierService {
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
+  @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
   public void sendDossierToBo(TthDossier dossier) {
     dossier.setDossierStatus(DossierStatus.DOSSIER_BO_CHECK);
 
@@ -86,6 +90,7 @@ public class TthDossierService {
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
+  @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
   public void completeDossier(TthDossier dossier, DossierStatus status) {
     checkDossierIsInEditableStatus(dossier);
     if (!status.isAllowedForCompleteTransition()) {
@@ -94,23 +99,24 @@ public class TthDossierService {
           .messageAndError("DossierStatus " + status + " is not completable")
           .build();
     }
-    timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier, status));
-
+    BatchUpdateTimetableHearingStatementsModel batchUpdateModel = TthDossierMapper.toBatchUpdateModel(dossier, status);
     dossier.setDossierStatus(status);
     dossierRepository.saveAndFlush(dossier);
+    timetableHearingStatementClient.updateStatements(batchUpdateModel);
   }
 
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
+  @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
   public TthDossier updateDossier(Long dossierId, TthDossier dossier) {
     TthDossier currentDossier = getDossierById(dossierId);
+    List<Long> previousStatementIds = new ArrayList<>(currentDossier.getStatementIds());
     checkDossierIsInEditableStatus(currentDossier);
     if (!dossier.getDossierStatus().isAllowedForUpdate()) {
       dossier.setDossierStatus(currentDossier.getDossierStatus());
     }
     boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
-
     if (!Objects.equals(currentDossier.getDossierQuestions().getFirst().getAnswerToCanton(),
         dossier.getDossierQuestions().getFirst().getAnswerToCanton())) {
       throw SimpleAtlasException.builder()
@@ -118,17 +124,14 @@ public class TthDossierService {
           .messageAndError("Answer to canton must not be edited")
           .build();
     }
-
-    updateRemovedStatements(currentDossier, dossier);
-
     TthDossier updatedDossier = dossierRepository.saveAndFlush(dossier);
+    updateRemovedStatements(previousStatementIds, dossier);
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(updatedDossier));
-
     return updatedDossier;
   }
 
-  private void updateRemovedStatements(TthDossier currentDossier, TthDossier dossier) {
-    List<Long> removedStatementIds = getRemovedStatementIds(currentDossier, dossier);
+  private void updateRemovedStatements(List<Long> previousStatementIds, TthDossier dossier) {
+    List<Long> removedStatementIds = getRemovedStatementIds(previousStatementIds, dossier);
     if (!removedStatementIds.isEmpty()) {
       timetableHearingStatementClient.updateStatements(BatchUpdateTimetableHearingStatementsModel.builder()
           .ids(removedStatementIds)
@@ -141,10 +144,9 @@ public class TthDossierService {
     }
   }
 
-  private List<Long> getRemovedStatementIds(TthDossier currentDossier, TthDossier updatedDossier) {
-    List<Long> currentStatementIds = new ArrayList<>(currentDossier.getStatementIds());
-    currentStatementIds.removeAll(updatedDossier.getStatementIds());
-    return currentStatementIds;
+  private List<Long> getRemovedStatementIds(List<Long> previousStatementIds, TthDossier updatedDossier) {
+    previousStatementIds.removeAll(updatedDossier.getStatementIds());
+    return previousStatementIds;
   }
 
   private static void checkDossierIsInEditableStatus(TthDossier dossier) {
