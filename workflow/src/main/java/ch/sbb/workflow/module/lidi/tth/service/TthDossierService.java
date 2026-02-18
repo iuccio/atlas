@@ -65,7 +65,7 @@ public class TthDossierService {
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
-  @MethodLogged(workflowType = WorkflowType.TthDossierWorkflow)
+  @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
   public TthDossier createDossier(TthDossier dossier) {
     boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
 
@@ -78,7 +78,7 @@ public class TthDossierService {
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
-  @MethodLogged(workflowType = WorkflowType.TthDossierWorkflow)
+  @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
   public void sendDossierToBo(TthDossier dossier) {
     dossier.setDossierStatus(DossierStatus.DOSSIER_BO_CHECK);
 
@@ -90,7 +90,7 @@ public class TthDossierService {
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
-  @MethodLogged(workflowType = WorkflowType.TthDossierWorkflow)
+  @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
   public void completeDossier(TthDossier dossier, DossierStatus status) {
     checkDossierIsInEditableStatus(dossier);
     if (!status.isAllowedForCompleteTransition()) {
@@ -108,7 +108,7 @@ public class TthDossierService {
   @Transactional
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastWriter(T(ch.sbb.atlas.kafka.model.user.admin.ApplicationType)"
       + ".TIMETABLE_HEARING, #dossier)")
-  @MethodLogged(workflowType = WorkflowType.TthDossierWorkflow)
+  @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
   public TthDossier updateDossier(Long dossierId, TthDossier dossier) {
     TthDossier currentDossier = getDossierById(dossierId);
     List<Long> previousStatementIds = new ArrayList<>(currentDossier.getStatementIds());
