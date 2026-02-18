@@ -5,14 +5,14 @@ import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.redact.Redacted;
 import ch.sbb.atlas.workflow.model.WorkflowStatus;
 import ch.sbb.workflow.entity.Person;
-import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowAlreadyInAddedStatusException;
-import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowExaminantEmailNotUniqueException;
-import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowNotInHearingException;
-import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowPreconditionStatusException;
 import ch.sbb.workflow.module.sepodi.hearing.enity.Decision;
 import ch.sbb.workflow.module.sepodi.hearing.enity.DecisionType;
 import ch.sbb.workflow.module.sepodi.hearing.enity.JudgementType;
 import ch.sbb.workflow.module.sepodi.hearing.enity.StopPointWorkflow;
+import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowAlreadyInAddedStatusException;
+import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowExaminantEmailNotUniqueException;
+import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowNotInHearingException;
+import ch.sbb.workflow.module.sepodi.hearing.exception.StopPointWorkflowPreconditionStatusException;
 import ch.sbb.workflow.module.sepodi.hearing.mail.StopPointWorkflowNotificationService;
 import ch.sbb.workflow.module.sepodi.hearing.mapper.StopPointClientPersonMapper;
 import ch.sbb.workflow.module.sepodi.hearing.model.search.StopPointWorkflowSearchRestrictions;
@@ -91,6 +91,7 @@ public class StopPointWorkflowService {
     return save(stopPointWorkflow);
   }
 
+  @Redacted
   public List<StopPointClientPersonModel> getExaminantsByServicePointVersionId(Long servicePointVersionId) {
     ReadServicePointVersionModel servicePointVersionModel = sePoDiClientService.getServicePointById(servicePointVersionId);
     return examinants.getExaminants(servicePointVersionModel.getServicePointGeolocation().getSwissLocation().getCanton());

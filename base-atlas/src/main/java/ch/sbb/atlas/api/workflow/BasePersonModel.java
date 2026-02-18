@@ -2,6 +2,7 @@ package ch.sbb.atlas.api.workflow;
 
 import ch.sbb.atlas.api.AtlasCharacterSetsRegex;
 import ch.sbb.atlas.api.AtlasFieldLengths;
+import ch.sbb.atlas.redact.Redacted;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import jakarta.validation.constraints.Pattern;
@@ -15,17 +16,19 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public abstract class BasePersonModel {
 
   @Schema(description = "Firstname", example = "John")
   @Pattern(regexp = AtlasCharacterSetsRegex.ISO_8859_1)
   @Size(min = 1, max = AtlasFieldLengths.LENGTH_50)
+  @Redacted
   private String firstName;
 
   @Schema(description = "Second", example = "Doe")
   @Pattern(regexp = AtlasCharacterSetsRegex.ISO_8859_1)
   @Size(min = 1, max = AtlasFieldLengths.LENGTH_50)
+  @Redacted
   private String lastName;
 
   @Schema(description = "Object creation date", example = "01.01.2000", accessMode = AccessMode.READ_ONLY)

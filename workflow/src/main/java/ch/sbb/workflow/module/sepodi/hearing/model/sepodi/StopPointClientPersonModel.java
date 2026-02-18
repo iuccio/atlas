@@ -3,6 +3,7 @@ package ch.sbb.workflow.module.sepodi.hearing.model.sepodi;
 import ch.sbb.atlas.api.AtlasCharacterSetsRegex;
 import ch.sbb.atlas.api.AtlasFieldLengths;
 import ch.sbb.atlas.api.workflow.BasePersonModel;
+import ch.sbb.atlas.redact.Redacted;
 import ch.sbb.workflow.module.sepodi.hearing.enity.DecisionType;
 import ch.sbb.workflow.module.sepodi.hearing.enity.JudgementType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,8 +21,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Schema(name = "StopPointPerson")
+@Redacted
 public class StopPointClientPersonModel extends BasePersonModel {
 
   @Schema(description = "Technical id", accessMode = AccessMode.READ_ONLY)
@@ -48,6 +50,7 @@ public class StopPointClientPersonModel extends BasePersonModel {
   @Size(min = 1, max = AtlasFieldLengths.LENGTH_255)
   @Schema(description = "mail", example = "mail@sbb.ch")
   @NotBlank
+  @Redacted
   private String mail;
 
   private boolean defaultExaminant;
