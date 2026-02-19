@@ -39,7 +39,6 @@ export class UserDetailInfoComponent {
 
   @Input()
   set record(record: CreationEditionRecord) {
-    console.log(record);
     this._record$ = this.getProcessedCreationEdition(record);
   }
 
