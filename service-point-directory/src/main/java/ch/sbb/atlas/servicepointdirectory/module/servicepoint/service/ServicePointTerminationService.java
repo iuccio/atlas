@@ -2,6 +2,7 @@ package ch.sbb.atlas.servicepointdirectory.module.servicepoint.service;
 
 import ch.sbb.atlas.kafka.model.user.admin.ApplicationType;
 import ch.sbb.atlas.model.DateRange;
+import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.model.Validity;
 import ch.sbb.atlas.servicepoint.ServicePointNumber;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.entity.ServicePointVersion;
@@ -19,12 +20,15 @@ public class ServicePointTerminationService {
 
   private final BusinessOrganisationBasedUserAdministrationService businessOrganisationBasedUserAdministrationService;
 
-  public void checkTerminationAllowed(List<ServicePointVersion> currentVersions, List<ServicePointVersion> afterUpdateVersions) {
+  public void checkTerminationAllowed(
+      List<ServicePointVersion> currentVersions, List<ServicePointVersion> afterUpdateVersions,
+      ServicePointVersion currentVersion) {
     boolean isTermination = isTermination(currentVersions, afterUpdateVersions);
-    ServicePointNumber number = currentVersions.iterator().next().getNumber();
+    ServicePointNumber number = currentVersions.getFirst().getNumber();
     log.info("Update on {}. isTermination={}", number, isTermination);
 
-    if (isTermination && !businessOrganisationBasedUserAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)) {
+    if (isTermination && !(currentVersion.getStatus() == Status.DRAFT)
+        && !businessOrganisationBasedUserAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)) {
       throw new TerminationNotAllowedException(number);
     }
   }
@@ -39,5 +43,4 @@ public class ServicePointTerminationService {
     return new Validity(
         servicePoint.stream().filter(ServicePointVersion::isStopPoint).map(DateRange::fromVersionable).toList()).minify();
   }
-
 }
