@@ -158,7 +158,7 @@ public class ServicePointService {
     List<ServicePointVersion> afterUpdateServicePoint = servicePointValidationService.validateNoMergeAffectVersionInReview(
         currentVersion, existingDbVersionInReview);
 
-    servicePointTerminationService.checkTerminationAllowed(currentVersions, afterUpdateServicePoint, currentVersion);
+    servicePointTerminationService.checkTerminationAllowed(currentVersions, afterUpdateServicePoint);
     return editedVersion;
   }
 
