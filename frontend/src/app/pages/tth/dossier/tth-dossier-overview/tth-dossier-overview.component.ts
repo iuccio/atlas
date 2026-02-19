@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { catchError, EMPTY } from 'rxjs';
 import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
 import { TableComponent } from '../../../../core/components/table/table.component';
@@ -11,22 +11,22 @@ import {
   TimetableHearingYear,
 } from '../../../../api';
 import { Cantons } from '../../../../core/cantons/Cantons';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TthTableFilterSettingsService } from '../../tth-table-filter-settings.service';
 import { Pages } from '../../../pages';
 import { TableService } from '../../../../core/components/table/table.service';
 import { TablePagination } from '../../../../core/components/table/table-pagination';
-import { NgOptimizedImage } from '@angular/common';
-import { SelectComponent } from '../../../../core/form-components/select/select.component';
-import { MatSelectChange } from '@angular/material/select';
 import { OverviewToTabShareDataService } from '../../overview-tab/service/overview-to-tab-share-data.service';
 import moment from 'moment/moment';
 import { TthUtils } from '../../util/tth-utils';
 import { TimetableHearingYearInternalService } from '../../../../api/service/lidi/timetable-hearing-year-internal.service';
+import { filter } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TthDossierOverviewMenuComponent } from '../tth-dossier-overview-menu/tth-dossier-overview-menu.component';
 
 @Component({
   selector: 'atlas-tth-dossier-overview',
-  imports: [TableComponent, NgOptimizedImage, SelectComponent],
+  imports: [TableComponent, TthDossierOverviewMenuComponent],
   templateUrl: './tth-dossier-overview.component.html',
   providers: [TableService],
 })
@@ -39,6 +39,7 @@ export class TthDossierOverviewComponent implements OnInit {
   private readonly timetableHearingYearsService = inject(
     TimetableHearingYearInternalService
   );
+  private destroyRef = inject(DestroyRef);
 
   cantonShort!: string;
   tthDossiers: TthDossier[] = [];
@@ -65,6 +66,18 @@ export class TthDossierOverviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadData();
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        this.loadData();
+      });
+  }
+
+  loadData() {
     this.hearingStatus = this.route.snapshot.data.hearingStatus;
     this.syncCantonShortSharedDate();
     this.defaultDropdownCantonSelection =
@@ -112,24 +125,17 @@ export class TthDossierOverviewComponent implements OnInit {
   }
 
   editDossier(id: number) {
-    this.router.navigate(['dossiers', id], { relativeTo: this.route });
+    this.router.navigate([
+      Pages.TTH.path,
+      this.cantonShort,
+      this.hearingStatus.toLowerCase(),
+      Pages.TTH_DOSSIERS.path,
+      id,
+    ]);
   }
 
   mapToShortCanton(canton: SwissCanton) {
     return Cantons.fromSwissCanton(canton)?.short;
-  }
-
-  changeSelectedCantonFromDropdown(selectedCanton: MatSelectChange) {
-    const canton = selectedCanton.value.toLowerCase();
-    this.overviewToTabService.changeData(canton);
-    this.navigateTo(canton, this.foundTimetableHearingYear.timetableYear);
-    this.tableService.resetTableSettings();
-  }
-
-  changeSelectedYearFromDropdown(selectedYear: MatSelectChange) {
-    this.foundTimetableHearingYear.timetableYear = selectedYear.value;
-    this.navigateTo(this.cantonShort.toLowerCase(), selectedYear.value);
-    this.tableService.resetTableSettings();
   }
 
   private getTableColumns(): TableColumn<TthDossier>[] {
@@ -153,25 +159,13 @@ export class TthDossierOverviewComponent implements OnInit {
         value: 'editionDate',
         formatAsDate: true,
       },
+      {
+        headerTitle: '',
+        value: 'editor',
+        disabled: false,
+        customCell: true,
+      },
     ];
-  }
-
-  private navigateTo(canton: string, timetableYear: number) {
-    this.router
-      .navigate(
-        [
-          Pages.TTH.path,
-          canton.toLowerCase(),
-          this.hearingStatus.toLowerCase(),
-          'dossiers',
-        ],
-        {
-          queryParams: { year: timetableYear },
-        }
-      )
-      .then(() => {
-        this.ngOnInit();
-      });
   }
 
   private initDefaultDropdownCantonSelection() {

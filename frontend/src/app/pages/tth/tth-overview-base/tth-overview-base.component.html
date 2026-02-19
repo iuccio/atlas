@@ -1,0 +1,53 @@
+<div class="white-table-container-no-tabs">
+  <atlas-timetable-hearing-overview-tab-heading
+    [cantonShort]="cantonShort"
+    [foundTimetableHearingYear]="foundTimetableHearingYear"
+    [hearingStatus]="hearingStatus"
+    [noPlannedTimetableHearingYearFound]="noPlannedTimetableHearingYearFound"
+    [noTimetableHearingYearFound]="noTimetableHearingYearFound"
+  ></atlas-timetable-hearing-overview-tab-heading>
+
+  <div>
+    <div class="d-flex flex-row col-12">
+      @if (!isHearingYearActive && !noTimetableHearingYearFound) {
+        <div class="d-flex flex-column col-2 pe-3 pb-1">
+          <atlas-select
+            (selectChanged)="changeSelectedYearFromDropdown($event)"
+            [additionalLabelspace]="0"
+            [options]="YEAR_DROPDOWN_OPTIONS"
+            [value]="yearSelection"
+            dataCy="selectTthYear"
+            label="TTH.SELECT_YEAR"
+          >
+          </atlas-select>
+        </div>
+      }
+
+      @if (!noTimetableHearingYearFound) {
+        <div class="d-flex flex-column col-3 pe-3 pb-2 mb-2">
+          <atlas-select
+            (selectChanged)="changeSelectedCantonFromDropdown($event)"
+            [additionalLabelspace]="0"
+            [options]="CANTON_DROPDOWN_OPTIONS"
+            [value]="defaultDropdownCantonSelection"
+            dataCy="swissCanton"
+            label="TTH.SELECT_CANTON"
+            optionTranslateLabelPrefix="TTH.CANTON."
+          >
+            <ng-template #matOptionPrefix let-canton="option">
+              <img
+                alt="canton-logo"
+                class="canton-logo-select pe-1"
+                ngSrc="assets/images/cantons/{{ canton }}.svg"
+                width="100"
+                height="121"
+              />
+            </ng-template>
+          </atlas-select>
+        </div>
+      }
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>

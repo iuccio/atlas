@@ -1,0 +1,84 @@
+import { Component, inject, input, output } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { NgClass, NgOptimizedImage } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DialogService } from '../../../../core/components/dialog/dialog.service';
+import { HearingStatus } from '../../../../api';
+import { TableColumn } from '../../../../core/components/table/table-column';
+import { DossierStatus } from '../../../../api/model/dossierStatus';
+import { TthDossier } from '../../../../api/model/tthDossier';
+import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
+import { NotificationService } from '../../../../core/notification/notification.service';
+
+@Component({
+  selector: 'atlas-tth-dossier-overview-menu',
+  imports: [
+    MatIconButton,
+    MatMenu,
+    MatMenuItem,
+    NgOptimizedImage,
+    TranslatePipe,
+    MatMenuTrigger,
+    NgClass,
+  ],
+  templateUrl: './tth-dossier-overview-menu.component.html',
+})
+export class TthDossierOverviewMenuComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly dialogService = inject(DialogService);
+  private readonly dossierInternalService = inject(DossierInternalService);
+  private readonly notificationService = inject(NotificationService);
+
+  hearingStatus = input(HearingStatus.Active);
+  row = input.required<TthDossier>();
+  column = input.required<TableColumn<TthDossier>>();
+
+  allowedDossierStatusForDissolve = [
+    DossierStatus.Accepted,
+    DossierStatus.Rejected,
+    DossierStatus.Moved,
+  ];
+
+  get isDossierDissolvable() {
+    return this.allowedDossierStatusForDissolve.includes(
+      this.row().dossierStatus!
+    );
+  }
+
+  get isDossierCompletable() {
+    return this.isDossierCancelable || this.isDossierDissolvable;
+  }
+
+  get isDossierCancelable() {
+    return this.row().dossierStatus === DossierStatus.Added;
+  }
+
+  reloadTable = output();
+
+  completeDossier(status: DossierStatus) {
+    this.dialogService
+      .confirm({
+        title: 'TTH.DOSSIER.NOTIFICATION.COMPLETE_TITLE',
+        message: 'TTH.DOSSIER.NOTIFICATION.COMPLETE_MESSAGE',
+        confirmText: 'DIALOG.OK',
+        cancelText: 'DIALOG.CANCEL',
+      })
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.dossierInternalService
+            .completeDossier(this.row()!.id!, status)
+            .subscribe(() => {
+              this.notificationService.success(
+                'TTH.DOSSIER.NOTIFICATION.EDIT_SUCCESS'
+              );
+              this.router.navigate(['dossiers'], {
+                relativeTo: this.route.parent,
+              });
+            });
+        }
+      });
+  }
+}

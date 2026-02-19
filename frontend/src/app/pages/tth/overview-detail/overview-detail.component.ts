@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
   ApplicationType,
   HearingStatus,
@@ -38,7 +38,6 @@ import { TthTableFilterSettingsService } from '../tth-table-filter-settings.serv
 import { PermissionService } from '../../../core/auth/permission/permission.service';
 import { TimetableHearingStatementInternalService } from '../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
-import { OverviewTabHeadingComponent } from '../overview-tab/overview-tab-heading/overview-tab-heading.component';
 import { NgOptimizedImage } from '@angular/common';
 import { SelectComponent } from '../../../core/form-components/select/select.component';
 import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
@@ -49,6 +48,7 @@ import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
 import { DialogData } from '../../../core/components/dialog/dialog.data';
 import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
 import { StatementOverviewMenuComponent } from './statement-overview-menu/statement-overview-menu.component';
+import { filter } from 'rxjs/operators';
 import { TableFilterBoolean } from '../../../core/components/table-filter/config/table-filter-boolean';
 import { TthDossierOverviewComponent } from '../dossier/tth-dossier-overview/tth-dossier-overview.component';
 
@@ -57,7 +57,6 @@ import { TthDossierOverviewComponent } from '../dossier/tth-dossier-overview/tth
   templateUrl: './overview-detail.component.html',
   styleUrls: ['./overview-detail.component.scss'],
   imports: [
-    OverviewTabHeadingComponent,
     SelectComponent,
     AtlasSpacerComponent,
     AtlasButtonComponent,
@@ -67,7 +66,6 @@ import { TthDossierOverviewComponent } from '../dossier/tth-dossier-overview/tth
     TranslatePipe,
     NgOptimizedImage,
     StatementOverviewMenuComponent,
-    RouterOutlet,
   ],
 })
 export class OverviewDetailComponent implements OnInit {
@@ -102,7 +100,7 @@ export class OverviewDetailComponent implements OnInit {
   showDownloadCsvButton = false;
   showManageTimetableHearingButton = false;
   showAddNewStatementButton = false;
-  showAddNewTimetableHearingButton = false;
+  showAddNewTimetableHearingButton = true;
   showStartTimetableHearingButton = false;
   showHearingDetail = false;
 
@@ -141,6 +139,14 @@ export class OverviewDetailComponent implements OnInit {
     return TthUtils.isHearingStatusActive(this.hearingStatus);
   }
 
+  get isHearingYearPlanned(): boolean {
+    return TthUtils.isHearingStatusPlanned(this.hearingStatus);
+  }
+
+  get isHearingYearArchived(): boolean {
+    return TthUtils.isHearingStatusArchived(this.hearingStatus);
+  }
+
   get isSwissCanton(): boolean {
     return this.cantonShort.toLowerCase() === Cantons.swiss.short.toLowerCase();
   }
@@ -153,6 +159,18 @@ export class OverviewDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadData();
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        this.loadData();
+      });
+  }
+
+  loadData() {
     this.syncCantonShortSharedDate();
     this.defaultDropdownCantonSelection =
       this.initDefaultDropdownCantonSelection();
@@ -270,14 +288,13 @@ export class OverviewDetailComponent implements OnInit {
   }
 
   editStatement(statement: TimetableHearingStatementV2) {
-    this.router
-      .navigate(
-        [this.hearingStatus.toLowerCase() + '/statements/' + statement.id],
-        {
-          relativeTo: this.route.parent,
-        }
-      )
-      .then();
+    this.router.navigate([
+      Pages.TTH.path,
+      this.cantonShort.toLowerCase(),
+      this.hearingStatus.toLowerCase(),
+      'statements',
+      statement.id,
+    ]);
   }
 
   downloadCsv(anonymizedExport: boolean) {
@@ -345,7 +362,12 @@ export class OverviewDetailComponent implements OnInit {
       .subscribe({
         next: (needsInit) => {
           if (needsInit) {
-            this.ngOnInit();
+            this.loadData();
+            this.router
+              .navigate(['..', 'active', 'statements'], {
+                relativeTo: this.route,
+              })
+              .then();
           }
         },
       });
@@ -359,6 +381,7 @@ export class OverviewDetailComponent implements OnInit {
           this.cantonShort,
           this.hearingStatus.toLowerCase(),
           Pages.TTH_STATEMENTS.path,
+          'detail',
           'add',
         ],
         {
@@ -369,12 +392,19 @@ export class OverviewDetailComponent implements OnInit {
   }
 
   addNewTimetableHearing() {
+    console.log('add new timeatable');
     this.newTimetableHearingYearDialogService
       .openDialog()
       .subscribe((result) => {
         if (result) {
           this.noTimetableHearingYearFound = false;
-          this.ngOnInit();
+          this.loadData();
+          this.router.navigate([
+            Pages.TTH.path,
+            this.cantonShort,
+            this.hearingStatus.toLowerCase(),
+            Pages.TTH_STATEMENTS.path,
+          ]);
         }
       });
   }
@@ -391,9 +421,12 @@ export class OverviewDetailComponent implements OnInit {
           this.timetableHearingYearsService
             .startHearingYear(this.yearSelection)
             .subscribe(() => {
-              this.router
-                .navigate(['..', 'active'], { relativeTo: this.route })
-                .then();
+              this.router.navigate([
+                Pages.TTH.path,
+                this.cantonShort,
+                'active',
+                Pages.TTH_STATEMENTS.path,
+              ]);
             });
         }
       });
@@ -403,12 +436,12 @@ export class OverviewDetailComponent implements OnInit {
     if (action.value === 'STATUS_CHANGE') {
       this.statusChangeCollectingActionsEnabled = true;
       this.showCollectingActionButton = false;
-      this.ngOnInit();
+      this.loadData();
     }
     if (action.value === 'CANTON_DELIVERY') {
       this.cantonDeliveryCollectingActionsEnabled = true;
       this.showCollectingActionButton = false;
-      this.ngOnInit();
+      this.loadData();
     }
   }
 
@@ -437,13 +470,13 @@ export class OverviewDetailComponent implements OnInit {
         'SINGLE'
       )
       .subscribe(() => {
-        this.ngOnInit();
+        this.loadData();
       });
   }
 
   cancelCollectingAction() {
     this.removeCheckBoxViewMode();
-    this.ngOnInit();
+    this.loadData();
   }
 
   collectingStatusChangeAction(changedStatus: ColumnDropDownEvent) {
@@ -457,7 +490,7 @@ export class OverviewDetailComponent implements OnInit {
             this.selectedCheckBox =
               new SelectionModel<TimetableHearingStatementV2>(true, []);
             this.removeCheckBoxViewMode();
-            this.ngOnInit();
+            this.loadData();
           }
         });
     }
@@ -474,7 +507,7 @@ export class OverviewDetailComponent implements OnInit {
             this.selectedCheckBox =
               new SelectionModel<TimetableHearingStatementV2>(true, []);
             this.removeCheckBoxViewMode();
-            this.ngOnInit();
+            this.loadData();
           }
         });
     }
@@ -537,23 +570,6 @@ export class OverviewDetailComponent implements OnInit {
     duplicateButtonAction.disabled = true;
   }
 
-  private navigateTo(canton: string, timetableYear: number) {
-    this.router
-      .navigate(
-        [
-          Pages.TTH.path,
-          canton.toLowerCase(),
-          this.hearingStatus.toLowerCase(),
-        ],
-        {
-          queryParams: { year: timetableYear },
-        }
-      )
-      .then(() => {
-        this.ngOnInit();
-      });
-  }
-
   private initDefaultDropdownCantonSelection() {
     return this.CANTON_DROPDOWN_OPTIONS[
       this.CANTON_DROPDOWN_OPTIONS.findIndex(
@@ -567,15 +583,6 @@ export class OverviewDetailComponent implements OnInit {
       (res) => (this.cantonShort = res)
     );
     this.overviewToTabService.changeData(this.cantonShort);
-    this.checkIfRoutedCantonExists();
-  }
-
-  private checkIfRoutedCantonExists() {
-    const swissCantonEnum = Cantons.getSwissCantonEnum(this.cantonShort);
-    if (!swissCantonEnum) {
-      this.noTimetableHearingYearFound = true;
-      this.router.navigate([Pages.TTH.path]).then();
-    }
   }
 
   private initOverviewArchivedTable() {
@@ -832,6 +839,7 @@ export class OverviewDetailComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((timetableHearingYears) => {
         if (timetableHearingYears.length > 0) {
+          console.log('showStartTimetableHearingButton');
           this.showStartTimetableHearingButton = false;
         }
       });

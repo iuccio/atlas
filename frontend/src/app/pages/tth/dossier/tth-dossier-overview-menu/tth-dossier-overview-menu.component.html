@@ -1,0 +1,45 @@
+@if (isDossierCompletable) {
+  <button
+    matIconButton
+    [matMenuTriggerFor]="menu"
+    [disabled]="column().disabled"
+    [ngClass]="column().disabled ? 'color-gray-400' : 'color-primary-400'"
+  >
+    <i class="icon bi bi-three-dots-vertical"></i>
+  </button>
+  <mat-menu #menu="matMenu">
+    @if (isDossierCancelable) {
+      <button
+        mat-menu-item
+        class="color-primary-400"
+        (click)="completeDossier('CANCELED')"
+      >
+        <img
+          class="pe-2"
+          height="22"
+          ngSrc="assets/images/collecting_action/X-CIRCLE.svg"
+          width="22"
+          alt="canton-delivery-icon"
+        />
+        <span>{{ 'TTH.DOSSIER.CANCEL_DOSSIER' | translate }}</span>
+      </button>
+    }
+
+    @if (isDossierDissolvable) {
+      <button
+        mat-menu-item
+        class="color-primary-400"
+        (click)="completeDossier('DISSOLVED')"
+      >
+        <img
+          class="pe-2"
+          height="22"
+          ngSrc="assets/images/collecting_action/DASH-CIRCLE.svg"
+          width="22"
+          alt="canton-delivery-icon"
+        />
+        <span>{{ 'TTH.DOSSIER.DISSOLVE_DOSSIER' | translate }}</span>
+      </button>
+    }
+  </mat-menu>
+}
