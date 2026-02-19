@@ -54,6 +54,7 @@
       <mat-divider class="mt-4 mb-4"></mat-divider>
       @if (!isNew) {
         <atlas-user-detail-info
+          [applicationType]="'PRM'"
           [record]="selectedVersion"
         ></atlas-user-detail-info>
       }
