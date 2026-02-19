@@ -19,7 +19,7 @@ export class OverviewTabHeadingComponent {
   @Input() noPlannedTimetableHearingYearFound!: boolean;
 
   get isHearingStatusActive() {
-    return this.hearingStatus.toLowerCase() === Pages.TTH_STATEMENTS.path;
+    return this.hearingStatus.toLowerCase() === Pages.TTH_ACTIVE.path;
   }
 
   get isHearingStatusPlanned() {

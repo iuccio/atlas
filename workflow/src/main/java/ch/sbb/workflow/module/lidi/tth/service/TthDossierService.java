@@ -131,6 +131,9 @@ public class TthDossierService {
           .messageAndError("Answer to canton must not be edited")
           .build();
     }
+
+    dossier.setTthDossierYear(currentDossier.getTthDossierYear());
+
     TthDossier updatedDossier = dossierRepository.saveAndFlush(dossier);
     updateRemovedStatements(previousStatementIds, dossier);
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(updatedDossier));

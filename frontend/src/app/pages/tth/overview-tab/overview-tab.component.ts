@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Pages } from '../../pages';
 import {
   ActivatedRoute,
-  NavigationEnd,
   Router,
   RouterLink,
   RouterLinkActive,
@@ -14,8 +13,8 @@ import { HearingOverviewTab } from './model/hearing-overview-tab';
 import { MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
 
 import { TranslatePipe } from '@ngx-translate/core';
-import { distinctUntilChanged, Observable, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HearingStatus } from '../../../api';
 import { AsyncPipe } from '@angular/common';
 
@@ -56,10 +55,12 @@ export class OverviewTabComponent implements OnInit, OnDestroy {
   ) {
     this.isHearingStatusActive$ = this.router.events.pipe(
       map(() => this.route.firstChild?.snapshot.data?.['hearingStatus']),
-      map(
-        (status) =>
+      map((status) => {
+        this.section = status?.toLowerCase();
+        return (
           status === HearingStatus.Active || status === HearingStatus.Archived
-      )
+        );
+      })
     );
   }
 
@@ -74,25 +75,6 @@ export class OverviewTabComponent implements OnInit, OnDestroy {
     );
     this.cantonShort = this.route.snapshot.params['canton'];
     this.overviewToTabService.changeData(this.cantonShort);
-
-    this.subscription.add(
-      this.router.events
-        .pipe(
-          filter(
-            (event): event is NavigationEnd => event instanceof NavigationEnd
-          ),
-          map(
-            () =>
-              this.route.firstChild?.snapshot.data?.[
-                'hearingStatus'
-              ].toLowerCase() ?? 'active'
-          ),
-          distinctUntilChanged()
-        )
-        .subscribe((section) => {
-          this.section = section;
-        })
-    );
   }
 
   ngOnDestroy(): void {
