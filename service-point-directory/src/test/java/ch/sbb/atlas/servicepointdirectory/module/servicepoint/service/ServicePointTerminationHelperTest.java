@@ -50,10 +50,11 @@ class ServicePointTerminationHelperTest {
         .meansOfTransport(Set.of(MeanOfTransport.BUS))
         .validFrom(LocalDate.of(2020, 1, 1))
         .validTo(LocalDate.of(2020, 12, 30))
+        .status(Status.VALIDATED)
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
-        afterUpdate, ServicePointVersion.builder().status(Status.VALIDATED).build());
+        afterUpdate);
     assertThatExceptionOfType(TerminationNotAllowedException.class).isThrownBy(terminationCheck);
 
     when(userAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)).thenReturn(true);
@@ -77,7 +78,7 @@ class ServicePointTerminationHelperTest {
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
-        afterUpdate, ServicePointVersion.builder().status(Status.VALIDATED).build());
+        afterUpdate);
     assertThatNoException().isThrownBy(terminationCheck);
 
     when(userAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)).thenReturn(true);
@@ -100,10 +101,11 @@ class ServicePointTerminationHelperTest {
         .meansOfTransport(Set.of(MeanOfTransport.BUS))
         .validFrom(LocalDate.of(2020, 1, 10))
         .validTo(LocalDate.of(2020, 12, 31))
+        .status(Status.VALIDATED)
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
-        afterUpdate, ServicePointVersion.builder().status(Status.VALIDATED).build());
+        afterUpdate);
     assertThatExceptionOfType(TerminationNotAllowedException.class).isThrownBy(terminationCheck);
 
     when(userAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)).thenReturn(true);
@@ -125,10 +127,11 @@ class ServicePointTerminationHelperTest {
     List<ServicePointVersion> afterUpdate = List.of(ServicePointVersion.builder()
         .validFrom(LocalDate.of(2020, 1, 1))
         .validTo(LocalDate.of(2020, 12, 31))
+        .status(Status.VALIDATED)
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
-        afterUpdate, ServicePointVersion.builder().status(Status.VALIDATED).build());
+        afterUpdate);
     assertThatExceptionOfType(TerminationNotAllowedException.class).isThrownBy(terminationCheck);
 
     when(userAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)).thenReturn(true);
@@ -136,7 +139,7 @@ class ServicePointTerminationHelperTest {
   }
 
   @Test
-  void shouldAllowTerminationForWriterWhenCurrentVersionDraft() {
+  void shouldAllowTerminationForWriterWhenNoValidatedVersionsExist() {
     List<ServicePointVersion> currentVersions = List.of(ServicePointVersion.builder()
         .meansOfTransport(Set.of(MeanOfTransport.BUS))
         .validFrom(LocalDate.of(2020, 1, 1))
@@ -149,7 +152,7 @@ class ServicePointTerminationHelperTest {
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
-        afterUpdate, ServicePointVersion.builder().status(Status.DRAFT).build());
+        afterUpdate);
 
     assertThatNoException().isThrownBy(terminationCheck);
   }
