@@ -20,14 +20,13 @@ public class ServicePointTerminationService {
 
   private final BusinessOrganisationBasedUserAdministrationService businessOrganisationBasedUserAdministrationService;
 
-  public void checkTerminationAllowed(
-      List<ServicePointVersion> currentVersions, List<ServicePointVersion> afterUpdateVersions,
-      ServicePointVersion currentVersion) {
+  public void checkTerminationAllowed(List<ServicePointVersion> currentVersions, List<ServicePointVersion> afterUpdateVersions) {
     boolean isTermination = isTermination(currentVersions, afterUpdateVersions);
     ServicePointNumber number = currentVersions.getFirst().getNumber();
     log.info("Update on {}. isTermination={}", number, isTermination);
 
-    if (isTermination && !(currentVersion.getStatus() == Status.DRAFT)
+    if (isTermination
+        && afterUpdateVersions.stream().anyMatch(version -> version.getStatus() == Status.VALIDATED)
         && !businessOrganisationBasedUserAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)) {
       throw new TerminationNotAllowedException(number);
     }
