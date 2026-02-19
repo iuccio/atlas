@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.kafka.model.user.admin.ApplicationType;
+import ch.sbb.atlas.model.Status;
 import ch.sbb.atlas.servicepoint.enumeration.MeanOfTransport;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.entity.ServicePointVersion;
 import ch.sbb.atlas.servicepointdirectory.module.servicepoint.exception.TerminationNotAllowedException;
@@ -52,7 +53,7 @@ class ServicePointTerminationHelperTest {
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
-        afterUpdate);
+        afterUpdate, ServicePointVersion.builder().status(Status.VALIDATED).build());
     assertThatExceptionOfType(TerminationNotAllowedException.class).isThrownBy(terminationCheck);
 
     when(userAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)).thenReturn(true);
@@ -76,7 +77,7 @@ class ServicePointTerminationHelperTest {
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
-        afterUpdate);
+        afterUpdate, ServicePointVersion.builder().status(Status.VALIDATED).build());
     assertThatNoException().isThrownBy(terminationCheck);
 
     when(userAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)).thenReturn(true);
@@ -102,7 +103,7 @@ class ServicePointTerminationHelperTest {
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
-        afterUpdate);
+        afterUpdate, ServicePointVersion.builder().status(Status.VALIDATED).build());
     assertThatExceptionOfType(TerminationNotAllowedException.class).isThrownBy(terminationCheck);
 
     when(userAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)).thenReturn(true);
@@ -127,10 +128,29 @@ class ServicePointTerminationHelperTest {
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
-        afterUpdate);
+        afterUpdate, ServicePointVersion.builder().status(Status.VALIDATED).build());
     assertThatExceptionOfType(TerminationNotAllowedException.class).isThrownBy(terminationCheck);
 
     when(userAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)).thenReturn(true);
+    assertThatNoException().isThrownBy(terminationCheck);
+  }
+
+  @Test
+  void shouldAllowTerminationForWriterWhenCurrentVersionDraft() {
+    List<ServicePointVersion> currentVersions = List.of(ServicePointVersion.builder()
+        .meansOfTransport(Set.of(MeanOfTransport.BUS))
+        .validFrom(LocalDate.of(2020, 1, 1))
+        .validTo(LocalDate.of(2020, 12, 31))
+        .build());
+    List<ServicePointVersion> afterUpdate = List.of(ServicePointVersion.builder()
+        .meansOfTransport(Set.of(MeanOfTransport.BUS))
+        .validFrom(LocalDate.of(2020, 1, 1))
+        .validTo(LocalDate.of(2020, 12, 15))
+        .build());
+
+    ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
+        afterUpdate, ServicePointVersion.builder().status(Status.DRAFT).build());
+
     assertThatNoException().isThrownBy(terminationCheck);
   }
 }
