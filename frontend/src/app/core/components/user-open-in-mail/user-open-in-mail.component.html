@@ -1,0 +1,5 @@
+@if (
+  applicationType() && permissionService.isAtLeastSupervisor(applicationType()!)
+) {
+  <i class="bi bi-envelope-paper-fill" title="Email" (click)="openInMail()" (keydown.enter)="openInMail()"></i>
+}
