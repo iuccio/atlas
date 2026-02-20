@@ -220,6 +220,7 @@
       "OBJECT": "Objet",
       "SERVICE_POINT": "Service",
       "TRAFFIC_POINT": "Bordure d'arrêt",
+      "SECTOR": "Secteur",
       "LOADING_POINT": "Placs de chargement",
       "REFERENCE_POINT": "Point de référence",
       "STOP_POINT": "Arrêt",
