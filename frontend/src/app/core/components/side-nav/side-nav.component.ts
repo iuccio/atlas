@@ -45,6 +45,8 @@ export class SideNavComponent {
         })
       )
       .subscribe(([event, pages]) => {
+        console.log('Router event:', event);
+        console.log('Enabled pages:', pages);
         this.setActivePage(event.url, pages);
       });
   }

@@ -1,5 +1,6 @@
 <div class="ps-5 pt-5">
-  @if (isHearingStatusActive$ | async) {
+  @let hasTabs = isHearingStatusActive$ | async;
+  @if (hasTabs) {
     <nav
       [tabPanel]="tabPanelCanton"
       class="tabs"
@@ -22,7 +23,7 @@
     </nav>
   }
 
-  <div class="white-table-container-no-padding">
+  <div [ngClass]="hasTabs ? 'white-table-container-no-padding' : ''">
     <mat-tab-nav-panel #tabPanelCanton>
       <router-outlet></router-outlet>
     </mat-tab-nav-panel>
