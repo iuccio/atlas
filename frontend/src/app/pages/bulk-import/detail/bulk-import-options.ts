@@ -10,6 +10,7 @@ export const OPTIONS_OBJECT_TYPE_SEPODI: string[] = Object.values([
   BusinessObjectType.ServicePoint,
   BusinessObjectType.TrafficPoint,
   BusinessObjectType.LoadingPoint,
+  BusinessObjectType.Sector,
 ]);
 
 export const OPTIONS_OBJECT_TYPE_PRM: string[] = Object.values([
