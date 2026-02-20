@@ -21,16 +21,17 @@ export class OverviewToTabShareDataService {
   private noPlannedTimetableHearingYearFoundSubject =
     new BehaviorSubject<boolean>(false);
 
+  private timetableHearingYearLoadingSubject = new BehaviorSubject<boolean>(
+    false
+  );
+
   cantonShort$ = this.cantonShort.asObservable();
 
   timetableHearingYear$: Observable<TimetableHearingYear> =
     this.timetableHearingYearSubject.asObservable();
 
-  noTimetableHearingYearFound$: Observable<boolean> =
-    this.noTimetableHearingYearFoundSubject.asObservable();
-
-  noPlannedTimetableHearingYearFound$: Observable<boolean> =
-    this.noPlannedTimetableHearingYearFoundSubject.asObservable();
+  timetableHearingYearLoading$: Observable<boolean> =
+    this.timetableHearingYearLoadingSubject.asObservable();
 
   changeData(cantonShort: string) {
     this.cantonShort.next(cantonShort);
@@ -39,6 +40,7 @@ export class OverviewToTabShareDataService {
   setNoPlannedTimetableHearingYearFound(notFound: boolean): void {
     this.noPlannedTimetableHearingYearFoundSubject.next(notFound);
   }
+
   setTimetableHearingYear(year: TimetableHearingYear): void {
     this.timetableHearingYearSubject.next(year);
   }
@@ -47,11 +49,19 @@ export class OverviewToTabShareDataService {
     this.noTimetableHearingYearFoundSubject.next(notFound);
   }
 
+  setTimetableHearingYearLoading(loading: boolean): void {
+    this.timetableHearingYearLoadingSubject.next(loading);
+  }
+
   getCantonShort(): string {
     return this.cantonShort.getValue();
   }
 
   getTimetableHearingYear(): TimetableHearingYear {
     return this.timetableHearingYearSubject.getValue();
+  }
+
+  getNoTimetableHearingYearFound(): boolean {
+    return this.noTimetableHearingYearFoundSubject.getValue();
   }
 }
