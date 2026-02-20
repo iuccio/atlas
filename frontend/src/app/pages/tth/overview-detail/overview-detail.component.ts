@@ -250,7 +250,6 @@ export class OverviewDetailComponent implements OnInit {
         addElementsToArrayWhenNotUndefined(
           pagination.sort,
           this.sorting,
-          'ttfnid,ASC',
           'id,ASC'
         )
       )
@@ -288,13 +287,11 @@ export class OverviewDetailComponent implements OnInit {
   }
 
   editStatement(statement: TimetableHearingStatementV2) {
-    this.router.navigate([
-      Pages.TTH.path,
-      this.cantonShort.toLowerCase(),
-      this.hearingStatus.toLowerCase(),
-      'statements',
-      statement.id,
-    ]);
+    this.router
+      .navigate([statement.id], {
+        relativeTo: this.route,
+      })
+      .then();
   }
 
   downloadCsv(anonymizedExport: boolean) {
@@ -364,9 +361,12 @@ export class OverviewDetailComponent implements OnInit {
           if (needsInit) {
             this.loadData();
             this.router
-              .navigate(['..', 'active', 'statements'], {
-                relativeTo: this.route,
-              })
+              .navigate(
+                ['..', Pages.TTH_ACTIVE.path, Pages.TTH_STATEMENTS.path],
+                {
+                  relativeTo: this.route,
+                }
+              )
               .then();
           }
         },
@@ -375,36 +375,25 @@ export class OverviewDetailComponent implements OnInit {
 
   addNewStatement() {
     this.router
-      .navigate(
-        [
-          Pages.TTH.path,
-          this.cantonShort,
-          this.hearingStatus.toLowerCase(),
-          Pages.TTH_STATEMENTS.path,
-          'detail',
-          'add',
-        ],
-        {
-          state: { data: this.cantonShort },
-        }
-      )
+      .navigate(['add'], {
+        relativeTo: this.route,
+        state: { data: this.cantonShort },
+      })
       .then();
   }
 
   addNewTimetableHearing() {
-    console.log('add new timeatable');
     this.newTimetableHearingYearDialogService
       .openDialog()
       .subscribe((result) => {
         if (result) {
           this.noTimetableHearingYearFound = false;
           this.loadData();
-          this.router.navigate([
-            Pages.TTH.path,
-            this.cantonShort,
-            this.hearingStatus.toLowerCase(),
-            Pages.TTH_STATEMENTS.path,
-          ]);
+          this.router
+            .navigate(['..'], {
+              relativeTo: this.route,
+            })
+            .then();
         }
       });
   }
@@ -421,12 +410,15 @@ export class OverviewDetailComponent implements OnInit {
           this.timetableHearingYearsService
             .startHearingYear(this.yearSelection)
             .subscribe(() => {
-              this.router.navigate([
-                Pages.TTH.path,
-                this.cantonShort,
-                'active',
-                Pages.TTH_STATEMENTS.path,
-              ]);
+              console.log('start timetable hearing year ');
+              this.router
+                .navigate(
+                  ['..', Pages.TTH_ACTIVE.path, Pages.TTH_STATEMENTS.path],
+                  {
+                    relativeTo: this.route.parent,
+                  }
+                )
+                .then();
             });
         }
       });

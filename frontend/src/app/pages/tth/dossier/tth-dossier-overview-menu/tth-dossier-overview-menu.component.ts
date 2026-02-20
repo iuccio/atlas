@@ -74,9 +74,11 @@ export class TthDossierOverviewMenuComponent {
               this.notificationService.success(
                 'TTH.DOSSIER.NOTIFICATION.EDIT_SUCCESS'
               );
-              this.router.navigate(['dossiers'], {
-                relativeTo: this.route.parent,
-              });
+              this.router
+                .navigate(['dossiers'], {
+                  relativeTo: this.route.parent,
+                })
+                .then();
             });
         }
       });

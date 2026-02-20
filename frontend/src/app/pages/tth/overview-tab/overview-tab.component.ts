@@ -16,7 +16,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HearingStatus } from '../../../api';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 
 @Component({
   templateUrl: './overview-tab.component.html',
@@ -29,6 +29,7 @@ import { AsyncPipe } from '@angular/common';
     RouterOutlet,
     TranslatePipe,
     AsyncPipe,
+    NgClass,
   ],
 })
 export class OverviewTabComponent implements OnInit, OnDestroy {
@@ -46,6 +47,7 @@ export class OverviewTabComponent implements OnInit, OnDestroy {
     },
   ];
   cantonShort = Cantons.swiss.path;
+  isHearingStatusPlanned = false;
   readonly isHearingStatusActive$: Observable<boolean>;
 
   constructor(

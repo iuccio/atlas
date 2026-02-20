@@ -23,6 +23,7 @@ import { TimetableHearingYearInternalService } from '../../../../api/service/lid
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TthDossierOverviewMenuComponent } from '../tth-dossier-overview-menu/tth-dossier-overview-menu.component';
+import { addElementsToArrayWhenNotUndefined } from '../../../../core/util/arrays';
 
 @Component({
   selector: 'atlas-tth-dossier-overview',
@@ -60,6 +61,7 @@ export class TthDossierOverviewComponent implements OnInit {
   YEAR_DROPDOWN_OPTIONS: number[] = [];
   yearSelection = this.YEAR_DROPDOWN_OPTIONS[0];
   noTimetableHearingYearFound = false;
+  sorting = 'topic,asc';
 
   get isHearingYearActive(): boolean {
     return TthUtils.isHearingStatusActive(this.hearingStatus);
@@ -109,7 +111,12 @@ export class TthDossierOverviewComponent implements OnInit {
         this.tableService.filter.chipSearch.getActiveSearch(),
         this.tableService.filter.multiSelectDossierStatus.getActiveSearch(),
         pagination.page,
-        pagination.size
+        pagination.size,
+        addElementsToArrayWhenNotUndefined(
+          pagination.sort,
+          this.sorting,
+          'id,ASC'
+        )
       )
       .pipe(catchError(this.handleError()))
       .subscribe((container) => {
@@ -125,13 +132,11 @@ export class TthDossierOverviewComponent implements OnInit {
   }
 
   editDossier(id: number) {
-    this.router.navigate([
-      Pages.TTH.path,
-      this.cantonShort,
-      this.hearingStatus.toLowerCase(),
-      Pages.TTH_DOSSIERS.path,
-      id,
-    ]);
+    this.router
+      .navigate([id], {
+        relativeTo: this.route,
+      })
+      .then();
   }
 
   mapToShortCanton(canton: SwissCanton) {
