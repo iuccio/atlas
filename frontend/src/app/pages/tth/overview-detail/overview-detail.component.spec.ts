@@ -15,7 +15,6 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import moment from 'moment';
-import { Pages } from '../../pages';
 import { Component, Input } from '@angular/core';
 import {
   adminPermissionServiceMock,
@@ -30,10 +29,10 @@ import { AtlasLabelFieldComponent } from '@atlas/form';
 import { PermissionService } from '../../../core/auth/permission/permission.service';
 import { TimetableHearingStatementInternalService } from '../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { TableComponent } from '../../../core/components/table/table.component';
 import { TthChangeCantonDialogService } from './tth-change-canton-dialog/service/tth-change-canton-dialog.service';
 import { MatDialog } from '@angular/material/dialog';
+import { OverviewToTabShareDataService } from '../overview-tab/service/overview-to-tab-share-data.service';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-tab-heading',
@@ -143,6 +142,7 @@ async function baseTestConfiguration() {
         provide: TimetableHearingYearInternalService,
         useValue: mockTimetableHearingYearsService,
       },
+      OverviewToTabShareDataService,
       { provide: TranslatePipe },
       { provide: DisplayDatePipe },
       { provide: PermissionService, useValue: adminPermissionServiceMock },
@@ -168,13 +168,21 @@ describe('TimetableHearingOverviewDetailComponent', () => {
   let route: ActivatedRoute;
   let fixture: ComponentFixture<OverviewDetailComponent>;
   let tableService: TableService;
+  let overviewToTabService: OverviewToTabShareDataService;
 
   describe('HearingOverviewTab Active', async () => {
     beforeEach(async () => {
       fixture = await baseTestConfiguration();
       route = TestBed.inject(ActivatedRoute);
       router = TestBed.inject(Router);
+      overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
+
       route.snapshot.data = { hearingStatus: HearingStatus.Active };
+
+      overviewToTabService.changeData('ch');
+      overviewToTabService.setTimetableHearingYear(hearingYear2000);
+      overviewToTabService.setTimetableHearingYearLoading(false);
+
       component = fixture.componentInstance;
       tableService = TestBed.inject(TableService);
       fixture.detectChanges();
@@ -186,7 +194,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('isSwissCanton false', () => {
       //given
-      component.cantonShort = 'ag';
+      overviewToTabService.changeData('ag');
       //when
       fixture.detectChanges();
       //then
@@ -195,7 +203,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('isSwissCanton true', () => {
       //given
-      component.cantonShort = 'ch';
+      overviewToTabService.changeData('ch');
       //when
       fixture.detectChanges();
       //then
@@ -208,7 +216,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display active ch timetableHearing', () => {
       //given
-      component.cantonShort = 'ch';
+      overviewToTabService.changeData('ch');
       //when
       fixture.detectChanges();
       //then
@@ -244,7 +252,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display active table columns timetableHearing for Canton CH', () => {
       //given
-      component.cantonShort = 'ch';
+      overviewToTabService.changeData('ch');
       //when
       component.tableColumns = component.getActiveTableColumns();
       //then
@@ -267,7 +275,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display active table columns timetableHearing for Canton BL', () => {
       //given
-      component.cantonShort = 'bl';
+      overviewToTabService.changeData('bl');
       //when
       component.tableColumns = component.getActiveTableColumns();
       //then
@@ -289,7 +297,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should get statements table', async () => {
       //when
-      component.cantonShort = 'ch';
+      overviewToTabService.changeData('ch');
       fixture.detectChanges();
       //then
       expect(component.timeTableHearingStatements).toEqual([
@@ -298,63 +306,11 @@ describe('TimetableHearingOverviewDetailComponent', () => {
       ]);
       expect(component.totalCount$).toEqual(2);
       expect(component.noTimetableHearingYearFound).toBeFalsy();
-      expect(component.defaultDropdownCantonSelection).toBe('CH');
-    });
-
-    it('should set FoundHearingYear from queryParam if exists', () => {
-      //given
-      const routerNavigateSpy = spyOn(router, 'navigate');
-      //when
-      component.setFoundHearingYear([hearingYear2000, hearingYear2001]);
-      //then
-      expect(component.foundTimetableHearingYear).toBe(hearingYear2000);
-      expect(component.yearSelection).toBe(hearingYear2000.timetableYear);
-      expect(routerNavigateSpy).not.toHaveBeenCalled();
-    });
-
-    it('should not set FoundHearingYear from queryParam if does not exists', () => {
-      //given
-      const routerNavigateSpy = spyOn(router, 'navigate').and.returnValue(
-        new Promise((resolve) => {
-          resolve(true);
-        })
-      );
-      route.snapshot.queryParams = { year: 2002 };
-      //when
-      component.setFoundHearingYear([hearingYear2000, hearingYear2001]);
-      //then
-      expect(component.foundTimetableHearingYear).toBe(hearingYear2000);
-      expect(component.yearSelection).toBe(hearingYear2000.timetableYear);
-      expect(routerNavigateSpy).toHaveBeenCalledWith([
-        Pages.TTH.path,
-        'ch',
-        HearingStatus.Active.toLowerCase(),
-      ]);
-    });
-
-    it('should call resetTableSettings when changeSelectedCanton is called', () => {
-      component.foundTimetableHearingYear = hearingYear2000;
-      const resetTableSettingsSpy = spyOn(tableService, 'resetTableSettings');
-
-      const change = new MatSelectChange({} as MatSelect, 'ZH');
-
-      component.changeSelectedCantonFromDropdown(change);
-      expect(resetTableSettingsSpy).toHaveBeenCalledOnceWith();
     });
 
     it('should return the short form of the Swiss canton', () => {
       const testCanton: SwissCanton = SwissCanton.Bern;
       expect(component.mapToShortCanton(testCanton)).toEqual('BE');
-    });
-
-    it('should call resetTableSettings when changeSelectedYear is called', () => {
-      component.foundTimetableHearingYear = hearingYear2000;
-      const resetTableSettingsSpy = spyOn(tableService, 'resetTableSettings');
-
-      const change = new MatSelectChange({} as MatSelect, hearingYear2001);
-
-      component.changeSelectedYearFromDropdown(change);
-      expect(resetTableSettingsSpy).toHaveBeenCalledOnceWith();
     });
 
     it('should return the last name of the statement sender', () => {
@@ -456,9 +412,16 @@ describe('TimetableHearingOverviewDetailComponent', () => {
     beforeEach(async () => {
       fixture = await baseTestConfiguration();
       route = TestBed.inject(ActivatedRoute);
+      overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
+
       route.snapshot.data = { hearingStatus: HearingStatus.Planned };
+
+      overviewToTabService.changeData('ch');
+      overviewToTabService.setTimetableHearingYear(hearingYear2000);
+      overviewToTabService.setTimetableHearingYearLoading(false);
+      overviewToTabService.setNoTimetableHearingYearFound(true);
+
       component = fixture.componentInstance;
-      fixture.componentInstance.noTimetableHearingYearFound = true;
       fixture.detectChanges();
     });
 
@@ -497,7 +460,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display planned table columns timetableHearing for Canton CH', () => {
       //given
-      component.cantonShort = 'ch';
+      overviewToTabService.changeData('ch');
       //when
       component.tableColumns = component.getPlannedOrArchivedTableColumns();
       //then
@@ -517,7 +480,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display planned table columns timetableHearing for Canton BL', () => {
       //given
-      component.cantonShort = 'bl';
+      overviewToTabService.changeData('bl');
       //when
       component.tableColumns = component.getPlannedOrArchivedTableColumns();
       //then
@@ -541,16 +504,26 @@ describe('TimetableHearingOverviewDetailComponent', () => {
       hearingFrom: moment().toDate(),
       hearingTo: moment().toDate(),
     };
+
     const hearingYears: TimetableHearingYear[] = [hearingYear, hearingYear];
+
     mockTimetableHearingYearsService.getHearingYears.and.returnValue(
       of(hearingYears)
     );
+
     beforeEach(async () => {
       fixture = await baseTestConfiguration();
       route = TestBed.inject(ActivatedRoute);
+      overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
+
       route.snapshot.data = { hearingStatus: HearingStatus.Archived };
+
+      overviewToTabService.changeData('ch');
+      overviewToTabService.setTimetableHearingYear(hearingYear2000);
+      overviewToTabService.setTimetableHearingYearLoading(false);
+      overviewToTabService.setNoTimetableHearingYearFound(true);
+
       component = fixture.componentInstance;
-      fixture.componentInstance.noTimetableHearingYearFound = true;
       fixture.detectChanges();
     });
 
@@ -590,7 +563,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display archived table columns timetableHearing for Canton CH', () => {
       //given
-      component.cantonShort = 'ch';
+      overviewToTabService.changeData('ch');
       //when
       component.tableColumns = component.getPlannedOrArchivedTableColumns();
       //then
@@ -610,7 +583,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display archived table columns timetableHearing for Canton BL', () => {
       //given
-      component.cantonShort = 'bl';
+      overviewToTabService.changeData('bl');
       //when
       component.tableColumns = component.getPlannedOrArchivedTableColumns();
       //then

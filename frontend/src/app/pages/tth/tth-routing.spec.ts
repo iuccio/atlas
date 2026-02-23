@@ -16,7 +16,7 @@ describe('TTH Routing', () => {
     const router = TestBed.inject(Router);
     expect(router).toBeTruthy();
     const tthRoutes = router.config;
-    expect(tthRoutes.length).toBe(7);
+    expect(tthRoutes.length).toBe(8);
   });
 
   it('should load CantonStatementDetailComponent', () => {

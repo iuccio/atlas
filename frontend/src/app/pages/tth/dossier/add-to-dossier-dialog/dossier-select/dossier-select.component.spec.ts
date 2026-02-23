@@ -60,6 +60,7 @@ describe('DossierSelectComponent', () => {
     component.search('testQuery');
     fixture.detectChanges();
     expect(dossierInternalService.getOverview).toHaveBeenCalledOnceWith(
+      2026,
       SwissCanton.Bern,
       ['testQuery'],
       [DossierStatus.Added]

@@ -11,6 +11,7 @@ import {
 } from '../../../app.testing.mocks';
 import { PageService } from '../../pages/page.service';
 import { provideHttpClient } from '@angular/common/http';
+import { Page } from '../../model/page';
 
 describe('SideNavComponent', () => {
   let component: SideNavComponent;
@@ -105,5 +106,34 @@ describe('SideNavComponent', () => {
 
     expect(component.activePageIndex).toBe(0);
     expect(component.activeSubPageIndex).toBe(0);
+  });
+
+  it('should return path array without params when page has no params', () => {
+    const page: Page = { title: '', path: '/tth', params: [] };
+    const subPage: Page = { title: '', path: 'dossier', params: [] };
+
+    const result = component.linkForSubPage(page, subPage);
+
+    expect(result).toEqual(['/tth', 'dossier']);
+  });
+
+  it('should return path array without params when page.params is undefined', () => {
+    const page: Page = { title: '', path: '/tth' };
+    const subPage: Page = { title: '', path: 'dossier' };
+
+    const result = component.linkForSubPage(page, subPage);
+
+    expect(result).toEqual(['/tth', 'dossier']);
+  });
+
+  it('should include param values in path array when params exist', () => {
+    component.navParam = { canton: 'be' };
+
+    const page: Page = { title: '', path: '/tth', params: ['canton'] };
+    const subPage: Page = { title: '', path: 'dossier' };
+
+    const result = component.linkForSubPage(page, subPage);
+
+    expect(result).toEqual(['/tth', 'be', 'dossier']);
   });
 });
