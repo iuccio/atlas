@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingYearApiInternalClient;
+import ch.sbb.atlas.api.timetable.hearing.TimetableHearingYearModel;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
@@ -95,5 +96,36 @@ class TthYearServiceTest {
     assertThat(tthDossierRepository.findById(dossierId).get().getDossierStatus()).isEqualTo(DossierStatus.CANCELED);
     verify(timetableHearingYearApiInternalClient).closeTimetableHearing(eq(2026L),
         assertArg(list -> assertThat(list).containsExactlyInAnyOrder(1L, 3L)));
+  }
+
+  @Test
+  void shouldAddTimeTableHearingYear() {
+    // given
+    TimetableHearingYearModel timetableHearingYearModel = TimetableHearingYearModel.builder()
+        .timetableYear(2027L)
+        .hearingStatus(HearingStatus.ACTIVE)
+        .build();
+    // when
+    tthYearService.addTimetableHearingYear(timetableHearingYearModel);
+    // then
+    TthDossierYear savedTthDossierYear = tthDossierYearRepository.findById(2027L).orElseThrow();
+    assertThat(savedTthDossierYear.getTimetableYear()).isEqualTo(2027L);
+    assertThat(savedTthDossierYear.getHearingStatus()).isEqualTo(HearingStatus.ACTIVE);
+  }
+
+  @Test
+  void shouldUpdateTimeTableHearingYearToArchive() {
+    // given
+    TthDossierYear tthDossierYear = TthDossierYear.builder()
+        .timetableYear(2028L)
+        .hearingStatus(HearingStatus.ACTIVE)
+        .build();
+    tthDossierYearRepository.save(tthDossierYear);
+    // when
+    tthYearService.updateDossierYearStatusToArchive(2028L);
+    // then
+    TthDossierYear savedTthDossierYear = tthDossierYearRepository.findById(2028L).orElseThrow();
+    assertThat(savedTthDossierYear.getTimetableYear()).isEqualTo(2028L);
+    assertThat(savedTthDossierYear.getHearingStatus()).isEqualTo(HearingStatus.ARCHIVED);
   }
 }

@@ -23,6 +23,16 @@ class TthYearApiInternalControllerUnitTest {
   private TthYearApiInternalController tthYearApiInternalController;
 
   @Test
+  void shouldAddTimetableHearingYear() {
+    // given
+    TimetableHearingYearModel tthYear = TimetableHearingYearModel.builder().build();
+    // when
+    tthYearApiInternalController.addTimetableHearingYear(tthYear);
+    // then
+    verify(tthYearService).addTimetableHearingYear(tthYear);
+  }
+
+  @Test
   void shouldCloseTimetableHearingYear() {
     // given
     TimetableHearingYearModel tthYear = TimetableHearingYearModel.builder().build();
