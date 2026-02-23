@@ -16,5 +16,38 @@
         (reloadTable)="ngOnInit()"
       ></atlas-tth-dossier-overview-menu>
     </ng-template>
+    <div class="d-flex flex-row col-12 mb-3 mt-5">
+      @if (isHearingYearActive && isSwissCanton) {
+        <span class="font-bold-lg">
+          {{
+            'TTH.TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX_DOSSIER'
+              | translate: { totalCount: totalCount$ }
+          }}
+          {{ 'TTH.WHOLE_SWISS' | translate }}
+        </span>
+      }
+
+      @if (isHearingYearActive && !isSwissCanton) {
+        <span class="font-bold-lg">
+          {{
+            'TTH.TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX_DOSSIER'
+              | translate: { totalCount: totalCount$ }
+          }}
+          {{ 'TTH.SWISS_CANTON' | translate }}
+          {{ 'TTH.CANTON.' + cantonShort.toUpperCase() | translate }}
+        </span>
+      }
+
+      @if (!isHearingYearActive) {
+        <span class="font-bold-lg">{{
+          'TTH.TABLE_RESULT_HEADING_DOSSIER'
+            | translate
+              : {
+                  totalCount: totalCount$,
+                  year: foundTimetableHearingYear.timetableYear,
+                }
+        }}</span>
+      }
+    </div>
   </atlas-table>
 }

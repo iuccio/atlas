@@ -48,7 +48,6 @@ import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonym
 import { StatementOverviewMenuComponent } from './statement-overview-menu/statement-overview-menu.component';
 import { filter } from 'rxjs/operators';
 import { TableFilterBoolean } from '../../../core/components/table-filter/config/table-filter-boolean';
-import { TthDossierOverviewComponent } from '../dossier/tth-dossier-overview/tth-dossier-overview.component';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-detail',
@@ -171,10 +170,8 @@ export class OverviewDetailComponent implements OnInit {
     this.statementEditable = this.foundTimetableHearingYear.statementEditable!;
 
     const settings = TthTableFilterSettingsService.createSettings();
-    console.log('hearingStatus from route snapshot: ' + this.hearingStatus);
     if (TthUtils.isHearingStatusActive(this.hearingStatus)) {
       const activeSettings = this.getActiveSettings();
-      console.log('status is active');
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         activeSettings,
         Pages.TTH_STATEMENTS
@@ -267,20 +264,6 @@ export class OverviewDetailComponent implements OnInit {
       }
       return this.tableService.filter.showStatementInDossierFilter.getActiveSearch();
     }
-  }
-
-  changeSelectedCantonFromDropdown(selectedCanton: MatSelectChange) {
-    this.removeCheckBoxViewMode();
-    const canton = selectedCanton.value.toLowerCase();
-    this.overviewToTabService.changeData(canton);
-    this.navigateTo(canton, this.foundTimetableHearingYear.timetableYear);
-    this.tableService.resetTableSettings();
-  }
-
-  changeSelectedYearFromDropdown(selectedYear: MatSelectChange) {
-    this.foundTimetableHearingYear.timetableYear = selectedYear.value;
-    this.navigateTo(this.cantonShort.toLowerCase(), selectedYear.value);
-    this.tableService.resetTableSettings();
   }
 
   editStatement(statement: TimetableHearingStatementV2) {
@@ -572,9 +555,6 @@ export class OverviewDetailComponent implements OnInit {
   }
 
   private getTableColumns(): TableColumn<TimetableHearingStatementV2>[] {
-    console.log(
-      'getTableColumns, statementEditable: ' + this.statementEditable
-    );
     return [
       {
         headerTitle: 'TTH.STATEMENT_STATUS_HEADER',
@@ -699,7 +679,6 @@ export class OverviewDetailComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((timetableHearingYears) => {
         if (timetableHearingYears.length > 0) {
-          console.log('showStartTimetableHearingButton');
           this.showStartTimetableHearingButton = false;
         }
       });
@@ -714,6 +693,5 @@ export class OverviewDetailComponent implements OnInit {
   };
   test() {
     this.router.navigate(['dossiers'], { relativeTo: this.route });
-    console.log('thisroute ', this.route);
   }
 }

@@ -18,10 +18,11 @@ import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TthDossierOverviewMenuComponent } from '../tth-dossier-overview-menu/tth-dossier-overview-menu.component';
 import { addElementsToArrayWhenNotUndefined } from '../../../../core/util/arrays';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'atlas-tth-dossier-overview',
-  imports: [TableComponent, TthDossierOverviewMenuComponent],
+  imports: [TableComponent, TthDossierOverviewMenuComponent, TranslatePipe],
   templateUrl: './tth-dossier-overview.component.html',
   providers: [TableService],
 })
@@ -49,6 +50,14 @@ export class TthDossierOverviewComponent implements OnInit {
   }
   get noTimetableHearingYearFound() {
     return this.overviewToTabService.getNoTimetableHearingYearFound();
+  }
+
+  get isHearingYearActive() {
+    return TthUtils.isHearingStatusActive(this.hearingStatus);
+  }
+
+  get isSwissCanton(): boolean {
+    return this.cantonShort.toLowerCase() === Cantons.swiss.short.toLowerCase();
   }
 
   ngOnInit(): void {

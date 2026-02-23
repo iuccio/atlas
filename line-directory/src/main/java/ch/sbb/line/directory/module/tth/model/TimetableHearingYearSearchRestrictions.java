@@ -5,16 +5,16 @@ import ch.sbb.atlas.searching.specification.EnumSpecification;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear_;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 import lombok.ToString;
-import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 @Getter
 @ToString
-@SuperBuilder
+@Builder
 public class TimetableHearingYearSearchRestrictions {
 
   private final Pageable pageable;

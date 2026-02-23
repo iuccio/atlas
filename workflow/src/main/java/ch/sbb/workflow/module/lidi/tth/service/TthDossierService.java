@@ -71,8 +71,13 @@ public class TthDossierService {
       + ".TIMETABLE_HEARING, #dossier)")
   @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
   public TthDossier createDossier(TthDossier dossier) {
-    //TODO handle case when there is no active year
-    TthDossierYear dossierYear = tthDossierYearRepository.findTthDossierYearByHearingStatus(HearingStatus.ACTIVE);
+    TthDossierYear dossierYear =
+        tthDossierYearRepository.findTthDossierYearByHearingStatus(HearingStatus.ACTIVE)
+            .orElseThrow(() -> SimpleAtlasException.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .messageAndError("Active timetable hearing year not found")
+                .build());
+    
     boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
 
     dossier.setDossierStatus(DossierStatus.ADDED);
