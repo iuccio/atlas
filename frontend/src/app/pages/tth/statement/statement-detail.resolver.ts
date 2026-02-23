@@ -17,7 +17,6 @@ export class StatementDetailResolver {
   ): Observable<TimetableHearingStatementV2 | undefined> {
     const idParameter = route.paramMap.get('id') || '0';
     const hearingStatus = route.data['hearingStatus'];
-    console.log('blabla');
     return idParameter === 'add'
       ? of(undefined)
       : this.timetableHearingStatementsService

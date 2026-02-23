@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Pages } from '../../pages';
 import {
   ActivatedRoute,
@@ -17,6 +23,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HearingStatus } from '../../../api';
 import { AsyncPipe, NgClass } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   templateUrl: './overview-tab.component.html',
@@ -33,6 +40,8 @@ import { AsyncPipe, NgClass } from '@angular/common';
   ],
 })
 export class OverviewTabComponent implements OnInit, OnDestroy {
+  private readonly destroyRef = inject(DestroyRef);
+
   section: string = 'active';
   subscription = new Subscription();
 
@@ -48,23 +57,13 @@ export class OverviewTabComponent implements OnInit, OnDestroy {
   ];
   cantonShort = Cantons.swiss.path;
   isHearingStatusPlanned = false;
-  readonly isHearingStatusActive$: Observable<boolean>;
+  isHearingStatusActive$!: Observable<boolean>;
 
   constructor(
     public readonly route: ActivatedRoute,
     private readonly router: Router,
     private overviewToTabService: OverviewToTabShareDataService
-  ) {
-    this.isHearingStatusActive$ = this.router.events.pipe(
-      map(() => this.route.firstChild?.snapshot.data?.['hearingStatus']),
-      map((status) => {
-        this.section = status?.toLowerCase();
-        return (
-          status === HearingStatus.Active || status === HearingStatus.Archived
-        );
-      })
-    );
-  }
+  ) {}
 
   clickOnTab() {
     this.cantonShort = this.route.snapshot.params['canton'];
@@ -72,11 +71,28 @@ export class OverviewTabComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.isHearingStatusActive$ = this.router.events.pipe(
+      map(() => this.route.firstChild?.snapshot.data?.['hearingStatus']),
+      map((status) => {
+        this.section = status?.toLowerCase() || 'active';
+        return (
+          status === HearingStatus.Active || status === HearingStatus.Archived
+        );
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    );
+
     this.overviewToTabService.cantonShort$.subscribe(
       (res) => (this.cantonShort = res)
     );
     this.cantonShort = this.route.snapshot.params['canton'];
     this.overviewToTabService.changeData(this.cantonShort);
+
+    this.overviewToTabService.cantonShort$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((canton) => {
+        this.cantonShort = canton;
+      });
   }
 
   ngOnDestroy(): void {

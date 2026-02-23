@@ -63,19 +63,23 @@ export class TthOverviewBaseComponent implements OnInit {
     return TthUtils.isHearingStatusActive(this.hearingStatus);
   }
 
+  get isHearingYearPlanned(): boolean {
+    return TthUtils.isHearingStatusPlanned(this.hearingStatus);
+  }
+
   ngOnInit(): void {
-    this.initializeBaseComponent();
+    this.init();
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
-        this.initializeBaseComponent();
+        this.init();
       });
   }
 
-  private initializeBaseComponent(): void {
+  init(): void {
     this.hearingStatus = this.route.snapshot.data.hearingStatus;
     this.syncCantonShortSharedData();
     this.defaultDropdownCantonSelection =

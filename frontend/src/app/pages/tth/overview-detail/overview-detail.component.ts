@@ -84,7 +84,7 @@ export class OverviewDetailComponent implements OnInit {
   showDownloadCsvButton = false;
   showManageTimetableHearingButton = false;
   showAddNewStatementButton = false;
-  showAddNewTimetableHearingButton = true;
+  showAddNewTimetableHearingButton = false;
   showStartTimetableHearingButton = false;
   showHearingDetail = false;
 

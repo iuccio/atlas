@@ -14,7 +14,6 @@ import { TableService } from '../../../../core/components/table/table.service';
 import { TablePagination } from '../../../../core/components/table/table-pagination';
 import { OverviewToTabShareDataService } from '../../overview-tab/service/overview-to-tab-share-data.service';
 import { TthUtils } from '../../util/tth-utils';
-import { TimetableHearingYearInternalService } from '../../../../api/service/lidi/timetable-hearing-year-internal.service';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TthDossierOverviewMenuComponent } from '../tth-dossier-overview-menu/tth-dossier-overview-menu.component';
@@ -32,9 +31,6 @@ export class TthDossierOverviewComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly overviewToTabService = inject(OverviewToTabShareDataService);
-  private readonly timetableHearingYearsService = inject(
-    TimetableHearingYearInternalService
-  );
   private destroyRef = inject(DestroyRef);
 
   tthDossiers: TthDossier[] = [];
