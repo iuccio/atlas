@@ -70,9 +70,11 @@ public class LineWorkflow {
   @Enumerated(EnumType.STRING)
   private WorkflowStatus status;
 
+  @Redacted
   @Size(max = AtlasFieldLengths.LENGTH_1500)
   private String workflowComment;
 
+  @Redacted
   @Size(max = AtlasFieldLengths.LENGTH_1500)
   private String checkComment;
 
