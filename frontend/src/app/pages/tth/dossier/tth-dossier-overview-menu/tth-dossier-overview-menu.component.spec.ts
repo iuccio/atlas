@@ -10,6 +10,7 @@ import { DossierStatus } from '../../../../api/model/dossierStatus';
 import { TthDossier } from '../../../../api/model/tthDossier';
 import { TranslatePipe } from '@ngx-translate/core';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
+import { SwissCanton } from '../../../../api';
 
 const dialogService = jasmine.createSpyObj('DialogService', {
   confirm: of(true),
@@ -30,7 +31,7 @@ const mockDossier: TthDossier = {
   id: 123,
   topic: 'Test Topic',
   dossierStatus: DossierStatus.Added,
-  swissCanton: 'ZH' as any,
+  swissCanton: SwissCanton.Zurich,
   statementIds: [],
   questions: [],
 };

@@ -3,9 +3,13 @@ package ch.sbb.line.directory.module.tth.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 
+import ch.sbb.atlas.api.client.workflow.TthDossierYearApiInternalClient;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementModelV2;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementSenderModelV2;
+import ch.sbb.atlas.api.timetable.hearing.TimetableHearingYearModel;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
@@ -26,6 +30,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @IntegrationTest
 class TimetableHearingYearServiceTest {
@@ -38,19 +43,24 @@ class TimetableHearingYearServiceTest {
   private final TimetableHearingStatementMapperV2 timetableHearingStatementMapperV2;
   private final TimetableHearingStatementService timetableHearingStatementService;
 
+  @MockitoBean
+  private final TthDossierYearApiInternalClient tthDossierYearApiInternalClient;
+
   @Autowired
   TimetableHearingYearServiceTest(
       TimetableHearingYearRepository timetableHearingYearRepository,
       TimetableHearingYearService timetableHearingYearService,
       TimetableHearingStatementRepository timetableHearingStatementRepository,
       TimetableHearingStatementMapperV2 timetableHearingStatementMapperV2,
-      TimetableHearingStatementService timetableHearingStatementService
+      TimetableHearingStatementService timetableHearingStatementService,
+      TthDossierYearApiInternalClient tthDossierYearApiInternalClient
   ) {
     this.timetableHearingYearRepository = timetableHearingYearRepository;
     this.timetableHearingYearService = timetableHearingYearService;
     this.timetableHearingStatementRepository = timetableHearingStatementRepository;
     this.timetableHearingStatementMapperV2 = timetableHearingStatementMapperV2;
     this.timetableHearingStatementService = timetableHearingStatementService;
+    this.tthDossierYearApiInternalClient = tthDossierYearApiInternalClient;
   }
 
   private static TimetableHearingYear getTimetableHearingYear() {
@@ -123,6 +133,9 @@ class TimetableHearingYearServiceTest {
   void shouldStartHearingYear() {
     TimetableHearingYear timetableHearing = timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
 
+    doNothing().when(tthDossierYearApiInternalClient)
+        .addTimetableHearingYear(any(TimetableHearingYearModel.class));
+
     TimetableHearingYear startedYear = timetableHearingYearService.startTimetableHearing(timetableHearing);
     assertThat(startedYear.getHearingStatus()).isEqualTo(HearingStatus.ACTIVE);
     assertThat(startedYear.isStatementCreatableExternal()).isTrue();
@@ -136,6 +149,9 @@ class TimetableHearingYearServiceTest {
         .hearingTo(LocalDate.of(2021, 2, 1))
         .build());
     TimetableHearingYear timetableHearing2023 = timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
+
+    doNothing().when(tthDossierYearApiInternalClient)
+        .addTimetableHearingYear(any(TimetableHearingYearModel.class));
 
     TimetableHearingYear startedYear = timetableHearingYearService.startTimetableHearing(timetableHearing2023);
     assertThat(startedYear.getHearingStatus()).isEqualTo(HearingStatus.ACTIVE);
@@ -158,7 +174,11 @@ class TimetableHearingYearServiceTest {
   @Test
   void shouldCloseHearingStatus() {
     TimetableHearingYear timetableHearing = timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
+    doNothing().when(tthDossierYearApiInternalClient)
+        .addTimetableHearingYear(any(TimetableHearingYearModel.class));
+
     TimetableHearingYear startedTimetableHearing = timetableHearingYearService.startTimetableHearing(timetableHearing);
+
     TimetableHearingYear closed = timetableHearingYearService.closeTimetableHearing(startedTimetableHearing,
         Collections.emptyList());
 
@@ -169,6 +189,9 @@ class TimetableHearingYearServiceTest {
   void shouldCloseTimetableHearingWithCorrectStatementAndYearUpdates() {
     // given
     TimetableHearingYear timetableHearing = timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
+    doNothing().when(tthDossierYearApiInternalClient)
+        .addTimetableHearingYear(any(TimetableHearingYearModel.class));
+
     TimetableHearingYear startedTimetableHearing = timetableHearingYearService.startTimetableHearing(timetableHearing);
 
     TimetableHearingStatementModelV2 statementModel;

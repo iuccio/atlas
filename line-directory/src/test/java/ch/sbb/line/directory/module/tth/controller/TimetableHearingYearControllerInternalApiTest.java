@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import ch.sbb.atlas.api.client.workflow.TthDossierYearApiInternalClient;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingYearModel;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingYearModel.Fields;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 class TimetableHearingYearControllerInternalApiTest extends BaseControllerApiTest {
 
@@ -29,6 +31,9 @@ class TimetableHearingYearControllerInternalApiTest extends BaseControllerApiTes
 
   private final TimetableHearingYearRepository timetableHearingYearRepository;
   private final TimetableHearingYearControllerInternal timetableHearingYearController;
+
+  @MockitoBean
+  private TthDossierYearApiInternalClient tthDossierYearApiInternalClient;
 
   @Autowired
   TimetableHearingYearControllerInternalApiTest(

@@ -1,7 +1,10 @@
 package ch.sbb.line.directory.module.tth.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 
+import ch.sbb.atlas.api.client.workflow.TthDossierYearApiInternalClient;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementModelV2;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementResponsibleTransportCompanyModel;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementSenderModelV2;
@@ -25,6 +28,7 @@ import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @IntegrationTest
 class TimetableHearingYearClosingTest {
@@ -38,18 +42,23 @@ class TimetableHearingYearClosingTest {
   private final TimetableHearingStatementControllerInternal timetableHearingStatementControllerInternal;
   private final SharedTransportCompanyRepository sharedTransportCompanyRepository;
 
+  @MockitoBean
+  private final TthDossierYearApiInternalClient tthDossierYearApiInternalClient;
+
   @Autowired
   TimetableHearingYearClosingTest(
       TimetableHearingYearRepository timetableHearingYearRepository,
       TimetableHearingYearControllerInternal timetableHearingYearController,
       TimetableHearingStatementRepository timetableHearingStatementRepository,
       TimetableHearingStatementControllerInternal timetableHearingStatementControllerInternal,
-      SharedTransportCompanyRepository sharedTransportCompanyRepository) {
+      SharedTransportCompanyRepository sharedTransportCompanyRepository,
+      TthDossierYearApiInternalClient tthDossierYearApiInternalClient) {
     this.timetableHearingYearRepository = timetableHearingYearRepository;
     this.timetableHearingYearController = timetableHearingYearController;
     this.timetableHearingStatementRepository = timetableHearingStatementRepository;
     this.timetableHearingStatementControllerInternal = timetableHearingStatementControllerInternal;
     this.sharedTransportCompanyRepository = sharedTransportCompanyRepository;
+    this.tthDossierYearApiInternalClient = tthDossierYearApiInternalClient;
   }
 
   @AfterEach
@@ -74,6 +83,10 @@ class TimetableHearingYearClosingTest {
         .hearingFrom(LocalDate.of(2022, 1, 1))
         .hearingTo(LocalDate.of(2022, 2, 1))
         .build());
+
+    doNothing().when(tthDossierYearApiInternalClient)
+        .addTimetableHearingYear(any(TimetableHearingYearModel.class));
+
     timetableHearingYearController.startHearingYear(YEAR);
 
     // given Statement 1

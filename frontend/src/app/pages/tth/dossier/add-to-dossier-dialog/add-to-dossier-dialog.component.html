@@ -10,9 +10,11 @@
   <div>
     {{ data.message | translate }}
   </div>
+  <h1>teest</h1>
   <atlas-dossier-select
     [form]="form"
     [canton]="data.statement.swissCanton"
+    [year]="data.statement.timetableYear"
     [statusRestriction]="addableDossierStates"
   ></atlas-dossier-select>
 

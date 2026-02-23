@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ch.sbb.atlas.api.bodi.TransportCompanyModel;
 import ch.sbb.atlas.api.client.bodi.TransportCompanyClient;
 import ch.sbb.atlas.api.client.user.administration.UserAdministrationClient;
+import ch.sbb.atlas.api.client.workflow.TthDossierYearApiInternalClient;
 import ch.sbb.atlas.api.lidi.enumaration.TtfnMeanOfTransport;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementModelV2;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementModelV2.Fields;
@@ -89,6 +90,9 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
 
   @MockitoBean
   private TimetableFieldNumberService timetableFieldNumberService;
+
+  @MockitoBean
+  private TthDossierYearApiInternalClient tthDossierYearApiInternalClient;
 
   @MockitoBean
   private TransportCompanyClient transportCompanyClient;

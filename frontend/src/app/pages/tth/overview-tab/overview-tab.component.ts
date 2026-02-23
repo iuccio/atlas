@@ -99,7 +99,7 @@ export class OverviewTabComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  tabLink(tab: HearingOverviewTab): any[] {
+  tabLink(tab: HearingOverviewTab) {
     return [this.section, tab.link];
   }
 }

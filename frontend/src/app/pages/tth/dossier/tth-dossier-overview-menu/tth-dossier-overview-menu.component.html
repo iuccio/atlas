@@ -1,4 +1,4 @@
-@if (isDossierCompletable) {
+@if (isDossierCompletable && isHearingStatusActive) {
   <button
     matIconButton
     [matMenuTriggerFor]="menu"

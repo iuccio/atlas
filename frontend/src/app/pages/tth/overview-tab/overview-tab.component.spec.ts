@@ -8,10 +8,9 @@ import { Subject } from 'rxjs';
 describe('OverviewTabComponent', () => {
   let component: OverviewTabComponent;
   let fixture: ComponentFixture<OverviewTabComponent>;
-  let router: Router;
   let route: ActivatedRoute;
   let overviewToTabService: OverviewToTabShareDataService;
-  let routerEventsSubject: Subject<any>;
+  let routerEventsSubject: Subject<Event>;
 
   beforeEach(async () => {
     routerEventsSubject = new Subject();
@@ -43,7 +42,6 @@ describe('OverviewTabComponent', () => {
 
     fixture = TestBed.createComponent(OverviewTabComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router);
     route = TestBed.inject(ActivatedRoute);
     overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
   });

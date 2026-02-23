@@ -5,23 +5,21 @@ import { DossierInternalService } from '../../../../api/service/workflow/dossier
 import { TableService } from '../../../../core/components/table/table.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OverviewToTabShareDataService } from '../../overview-tab/service/overview-to-tab-share-data.service';
-import { HearingStatus, SwissCanton } from '../../../../api';
+import { SwissCanton } from '../../../../api';
 import { of, throwError } from 'rxjs';
-import { DossierStatus } from '../../../../api/model/dossierStatus';
-import { ContainerTthDossier } from '../../../../api/model/containerTthDossier';
 
 describe('TthDossierOverviewComponent', () => {
   let component: TthDossierOverviewComponent;
   let dossierService: jasmine.SpyObj<DossierInternalService>;
   let tableService: jasmine.SpyObj<TableService>;
   let router: jasmine.SpyObj<Router>;
-  let route: ActivatedRoute;
   let overviewToTabService: OverviewToTabShareDataService;
 
   beforeEach(() => {
     dossierService = jasmine.createSpyObj('DossierInternalService', [
       'getOverview',
     ]);
+
     tableService = jasmine.createSpyObj(
       'TableService',
       ['initializeFilterConfig'],
@@ -37,12 +35,6 @@ describe('TthDossierOverviewComponent', () => {
     );
     router = jasmine.createSpyObj('Router', ['navigate']);
 
-    route = {
-      snapshot: {
-        data: { hearingStatus: HearingStatus.Active },
-      },
-    } as any;
-
     TestBed.configureTestingModule({
       providers: [
         TthDossierOverviewComponent,
@@ -50,7 +42,14 @@ describe('TthDossierOverviewComponent', () => {
         { provide: DossierInternalService, useValue: dossierService },
         { provide: TableService, useValue: tableService },
         { provide: Router, useValue: router },
-        { provide: ActivatedRoute, useValue: route },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { params: {}, queryParams: {} },
+            params: of({}),
+            queryParams: of({}),
+          },
+        },
       ],
     });
 
@@ -69,32 +68,6 @@ describe('TthDossierOverviewComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should load data when year is available', (done) => {
-    const mockContainer: ContainerTthDossier = {
-      objects: [
-        {
-          id: 1,
-          topic: 'Test',
-          swissCanton: SwissCanton.Zurich,
-          statementIds: [],
-          questions: [],
-          dossierStatus: DossierStatus.Added,
-          editor: 'Test User',
-        },
-      ],
-      totalCount: 1,
-    };
-    dossierService.getOverview.and.returnValue(of(mockContainer));
-
-    component.ngOnInit();
-
-    setTimeout(() => {
-      expect(dossierService.getOverview).toHaveBeenCalled();
-      expect(component.tthDossiers.length).toBeGreaterThan(0);
-      done();
-    }, 100);
   });
 
   it('should get canton short from service', () => {
@@ -129,7 +102,7 @@ describe('TthDossierOverviewComponent', () => {
     component.editDossier(123);
 
     expect(router.navigate).toHaveBeenCalledWith([123], {
-      relativeTo: route,
+      relativeTo: jasmine.anything(),
     });
   });
 

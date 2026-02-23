@@ -11,11 +11,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingYearApiInternalClient;
+import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossierYear;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
+import ch.sbb.workflow.module.lidi.tth.repository.TthDossierYearRepository;
 import feign.FeignException;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -31,11 +34,14 @@ class TthYearServiceTest {
 
   private final TthYearService tthYearService;
   private final TthDossierRepository tthDossierRepository;
+  private final TthDossierYearRepository tthDossierYearRepository;
 
   @Autowired
-  TthYearServiceTest(TthYearService tthYearService, TthDossierRepository tthDossierRepository) {
+  TthYearServiceTest(TthYearService tthYearService, TthDossierRepository tthDossierRepository,
+      TthDossierYearRepository tthDossierYearRepository) {
     this.tthYearService = tthYearService;
     this.tthDossierRepository = tthDossierRepository;
+    this.tthDossierYearRepository = tthDossierYearRepository;
   }
 
   @AfterEach
@@ -46,11 +52,18 @@ class TthYearServiceTest {
   @Test
   void shouldRollbackDossierChangesWhenCloseTimetableHearingInLidiFails() {
     // given
+    TthDossierYear tthDossierYear = TthDossierYear.builder()
+        .timetableYear(2026L)
+        .hearingStatus(HearingStatus.ACTIVE)
+        .build();
+    tthDossierYearRepository.save(tthDossierYear);
+
     long dossierId = tthDossierRepository.save(TthDossier.builder()
         .swissCanton(SwissCanton.BERN)
         .topic("topic")
         .dossierStatus(DossierStatus.ADDED)
         .statementIds(List.of(1L, 3L))
+        .tthDossierYear(tthDossierYear)
         .build()).getId();
     doThrow(FeignException.class).when(timetableHearingYearApiInternalClient).closeTimetableHearing(anyLong(), anyList());
     // when
@@ -62,11 +75,18 @@ class TthYearServiceTest {
   @Test
   void shouldUpdateDossierStatusAndSendRequestToLidiOnCloseYearCorrectly() {
     // given
+    TthDossierYear tthDossierYear = TthDossierYear.builder()
+        .timetableYear(2026L)
+        .hearingStatus(HearingStatus.ACTIVE)
+        .build();
+    tthDossierYearRepository.save(tthDossierYear);
+
     long dossierId = tthDossierRepository.save(TthDossier.builder()
         .swissCanton(SwissCanton.BERN)
         .topic("topic")
         .dossierStatus(DossierStatus.ADDED)
         .statementIds(List.of(1L, 3L))
+        .tthDossierYear(tthDossierYear)
         .build()).getId();
     when(timetableHearingYearApiInternalClient.closeTimetableHearing(anyLong(), anyList())).thenReturn(null);
     // when

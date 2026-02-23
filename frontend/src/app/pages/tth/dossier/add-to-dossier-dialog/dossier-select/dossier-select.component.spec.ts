@@ -56,7 +56,8 @@ describe('DossierSelectComponent', () => {
       ],
     };
     dossierInternalService.getOverview.and.returnValue(of(searchResult));
-
+    fixture.componentRef.setInput('year', 2026);
+    fixture.detectChanges();
     component.search('testQuery');
     fixture.detectChanges();
     expect(dossierInternalService.getOverview).toHaveBeenCalledOnceWith(

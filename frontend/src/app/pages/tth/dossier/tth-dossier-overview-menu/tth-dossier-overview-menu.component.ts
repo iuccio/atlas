@@ -42,6 +42,10 @@ export class TthDossierOverviewMenuComponent {
     DossierStatus.Moved,
   ];
 
+  get isHearingStatusActive() {
+    return this.hearingStatus() === HearingStatus.Active;
+  }
+
   get isDossierDissolvable() {
     return this.allowedDossierStatusForDissolve.includes(
       this.row().dossierStatus!

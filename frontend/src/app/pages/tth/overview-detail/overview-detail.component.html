@@ -1,7 +1,7 @@
-<div class="white-table-container-no-tabs">
+<div class="test">
   <div class="d-flex">
     @if (showDownloadCsvButton && !noTimetableHearingYearFound) {
-      <div class="d-flex flex-column col-3">
+      <div class="d-flex">
         <atlas-spacer height="15px"></atlas-spacer>
         <atlas-button
           (buttonClicked)="openTthExportAnonymizationChoiceDialog()"
@@ -23,7 +23,7 @@
     }
 
     @if (showManageTimetableHearingButton && !noTimetableHearingYearFound) {
-      <div class="d-flex flex-column col-3 left-position">
+      <div class="d-flex left-position ms-3">
         <atlas-spacer height="15px"></atlas-spacer>
         <atlas-button
           (buttonClicked)="manageTimetableHearing()"
@@ -43,7 +43,7 @@
       !noTimetableHearingYearFound &&
       foundTimetableHearingYear.statementCreatableInternal
     ) {
-      <div class="d-flex flex-column col-3 left-position">
+      <div class="d-flex left-position ms-3">
         <atlas-spacer height="15px"></atlas-spacer>
         <atlas-button
           (buttonClicked)="addNewStatement()"
@@ -60,7 +60,7 @@
     }
 
     @if (showStartTimetableHearingButton && !noTimetableHearingYearFound) {
-      <div class="d-flex flex-column col-3">
+      <div class="d-flex ms-3">
         <atlas-spacer height="15px"></atlas-spacer>
         <atlas-button
           (buttonClicked)="startTimetableHearing()"
@@ -75,7 +75,7 @@
     }
 
     @if (showAddNewTimetableHearingButton && isHearingYearPlanned) {
-      <div class="d-flex flex-column col-3 left-position">
+      <div class="d-flex left-position ms-3">
         <atlas-spacer height="15px"></atlas-spacer>
         <atlas-button
           (buttonClicked)="addNewTimetableHearing()"
@@ -91,6 +91,7 @@
     }
   </div>
 </div>
+
 @if (!noTimetableHearingYearFound && isTableColumnsInitialized) {
   <atlas-table
     (changeDropdownEvent)="changeSelectedStatus($event)"
