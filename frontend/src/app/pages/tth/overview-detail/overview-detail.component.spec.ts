@@ -12,7 +12,7 @@ import {
   TimetableHearingStatementV2,
   TimetableHearingYear,
 } from '../../../api';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import moment from 'moment';
 import { Component, Input } from '@angular/core';
@@ -24,7 +24,6 @@ import {
 } from '../../../app.testing.mocks';
 import { SelectComponent } from '../../../core/form-components/select/select.component';
 import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
-import { TableService } from '../../../core/components/table/table.service';
 import { AtlasLabelFieldComponent } from '@atlas/form';
 import { PermissionService } from '../../../core/auth/permission/permission.service';
 import { TimetableHearingStatementInternalService } from '../../../api/service/lidi/timetable-hearing-statement-internal.service';
@@ -61,8 +60,6 @@ const tthChangeCantonDialogService = jasmine.createSpyObj(
   { onClick: of(true) }
 );
 const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
-
-let router: Router;
 
 const hearingYear2000: TimetableHearingYear = {
   timetableYear: 2000,
@@ -147,7 +144,6 @@ async function baseTestConfiguration() {
       { provide: DisplayDatePipe },
       { provide: PermissionService, useValue: adminPermissionServiceMock },
       { provide: MatDialog, useValue: dialogSpy },
-      TableService,
       {
         provide: TthChangeCantonDialogService,
         useValue: tthChangeCantonDialogService,
@@ -167,14 +163,12 @@ describe('TimetableHearingOverviewDetailComponent', () => {
   let component: OverviewDetailComponent;
   let route: ActivatedRoute;
   let fixture: ComponentFixture<OverviewDetailComponent>;
-  let tableService: TableService;
   let overviewToTabService: OverviewToTabShareDataService;
 
   describe('HearingOverviewTab Active', async () => {
     beforeEach(async () => {
       fixture = await baseTestConfiguration();
       route = TestBed.inject(ActivatedRoute);
-      router = TestBed.inject(Router);
       overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
 
       route.snapshot.data = { hearingStatus: HearingStatus.Active };
@@ -184,7 +178,6 @@ describe('TimetableHearingOverviewDetailComponent', () => {
       overviewToTabService.setTimetableHearingYearLoading(false);
 
       component = fixture.componentInstance;
-      tableService = TestBed.inject(TableService);
       fixture.detectChanges();
     });
 
@@ -368,7 +361,6 @@ describe('TimetableHearingOverviewDetailComponent', () => {
     beforeEach(async () => {
       fixture = await baseTestConfiguration();
       route = TestBed.inject(ActivatedRoute);
-      router = TestBed.inject(Router);
       route.snapshot.data = { hearingStatus: HearingStatus.Active };
       component = fixture.componentInstance;
       component.cantonDeliveryCollectingActionsEnabled = true;

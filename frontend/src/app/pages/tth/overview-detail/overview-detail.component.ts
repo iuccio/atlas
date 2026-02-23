@@ -168,6 +168,7 @@ export class OverviewDetailComponent implements OnInit {
 
   private loadData() {
     this.hearingStatus = this.route.snapshot.data.hearingStatus;
+    this.statementEditable = this.foundTimetableHearingYear.statementEditable!;
 
     const settings = TthTableFilterSettingsService.createSettings();
     console.log('hearingStatus from route snapshot: ' + this.hearingStatus);
@@ -190,8 +191,6 @@ export class OverviewDetailComponent implements OnInit {
       this.showManageTimetableHearingButton = this.isSwissCanton;
       this.showAddNewStatementButton = !this.isSwissCanton;
       this.showDownloadCsvButton = true;
-      this.statementEditable =
-        this.foundTimetableHearingYear.statementEditable!;
       this.initOverviewTable();
     }
 
@@ -573,6 +572,9 @@ export class OverviewDetailComponent implements OnInit {
   }
 
   private getTableColumns(): TableColumn<TimetableHearingStatementV2>[] {
+    console.log(
+      'getTableColumns, statementEditable: ' + this.statementEditable
+    );
     return [
       {
         headerTitle: 'TTH.STATEMENT_STATUS_HEADER',

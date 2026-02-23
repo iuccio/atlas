@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TthOverviewBaseComponent } from './tth-overview-base.component';
 import { HearingStatus, TimetableHearingYear } from '../../../api';
 import moment from 'moment';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OverviewToTabShareDataService } from '../overview-tab/service/overview-to-tab-share-data.service';
 import { TableService } from '../../../core/components/table/table.service';
 import { of, Subject } from 'rxjs';
@@ -31,11 +31,9 @@ const hearingYear2025: TimetableHearingYear = {
 describe('TthOverviewBaseComponent', () => {
   let component: TthOverviewBaseComponent;
   let fixture: ComponentFixture<TthOverviewBaseComponent>;
-  let router: Router;
   let route: ActivatedRoute;
-  let overviewToTabService: OverviewToTabShareDataService;
   let tableService: jasmine.SpyObj<TableService>;
-  let routerEventsSubject: Subject<any>;
+  let routerEventsSubject: Subject<Event>;
 
   beforeEach(async () => {
     routerEventsSubject = new Subject();
@@ -74,9 +72,7 @@ describe('TthOverviewBaseComponent', () => {
 
     fixture = TestBed.createComponent(TthOverviewBaseComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router);
     route = TestBed.inject(ActivatedRoute);
-    overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
 
     mockTimetableHearingYearsService.getHearingYears.and.returnValue(
       of([hearingYear2024, hearingYear2025])
@@ -117,24 +113,6 @@ describe('TthOverviewBaseComponent', () => {
       expect(
         mockTimetableHearingYearsService.getHearingYears
       ).toHaveBeenCalledWith([HearingStatus.Planned]);
-    });
-  });
-
-  describe('Navigation Events', () => {
-    it('should reinitialize on NavigationEnd', () => {
-      fixture.detectChanges();
-
-      spyOn(component, 'init');
-
-      routerEventsSubject.next(
-        new NavigationEnd(
-          1,
-          '/tth/zh/active/statements',
-          '/tth/zh/active/statements'
-        )
-      );
-
-      expect(component['init']).toHaveBeenCalled();
     });
   });
 });

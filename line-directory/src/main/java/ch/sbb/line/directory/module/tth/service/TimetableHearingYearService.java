@@ -60,7 +60,6 @@ public class TimetableHearingYearService {
     timetableHearingYear.setStatementCreatableInternal(true);
     timetableHearingYear.setStatementEditable(true);
 
-    //TODO make call to worklfow tthdossieryear to set hearing status to active for the year
     tthDossierYearApiInternalClient.addTimetableHearingYear(TimeTableHearingYearMapper.toModel(timetableHearingYear));
     return timetableHearingYearRepository.save(timetableHearingYear);
   }
