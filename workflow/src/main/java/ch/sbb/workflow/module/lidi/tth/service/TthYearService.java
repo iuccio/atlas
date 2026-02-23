@@ -4,12 +4,14 @@ import ch.sbb.atlas.api.client.line.workflow.TimetableHearingYearApiInternalClie
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingYearModel;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
+import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.workflow.aop.LoggingAspect.WorkflowType;
 import ch.sbb.workflow.aop.MethodLogged;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierYear;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierYearRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +47,12 @@ public class TthYearService {
   @Transactional
   protected void updateDossierYearStatusToArchive(Long year) {
     TthDossierYear tthDossierYear = tthDossierYearRepository.findById(year)
-        .orElseThrow(() -> new RuntimeException("TthDossierYear not found for year: " + year));
+        .orElseThrow(() -> SimpleAtlasException.builder()
+            .message("TthDossierYear with year " + year + " not found")
+            .status(HttpStatus.NOT_FOUND)
+            .error("Year not Found")
+            .build());
+
     tthDossierYear.setHearingStatus(HearingStatus.ARCHIVED);
     tthDossierYearRepository.save(tthDossierYear);
   }
