@@ -1138,6 +1138,7 @@
         "MOVED": "Spostato",
         "DISSOLVED": "Risolto"
       },
+      "INQUIRY_FROM_THE_CANTON": "Richiesta dal cantone",
       "CANCEL_DOSSIER": "Revoca dossier",
       "DISSOLVE_DOSSIER": "Sciogliere dossier",
       "TOPIC": "Tema",

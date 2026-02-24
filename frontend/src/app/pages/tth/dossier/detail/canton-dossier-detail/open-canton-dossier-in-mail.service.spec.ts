@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslatePipe } from '@ngx-translate/core';
-import { OpenDossierInMailService } from './open-dossier-in-mail.service';
+import { OpenCantonDossierInMailService } from './open-canton-dossier-in-mail.service';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { TimetableHearingStatementInternalService } from '../../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { SwissCanton, TimetableHearingStatementV2 } from '../../../../../api';
@@ -59,14 +59,14 @@ timetableHearingStatementInternalService.getStatement
   .and.returnValue(of(statementWithAnonymizedStatement));
 
 describe('OpenDossierInMailService', () => {
-  let openDossierInMailService: OpenDossierInMailService;
+  let openDossierInMailService: OpenCantonDossierInMailService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
         translateServiceProvider,
-        { provide: OpenDossierInMailService },
+        { provide: OpenCantonDossierInMailService },
         { provide: TranslatePipe, useValue: translatePipeSpy },
         {
           provide: TimetableHearingStatementInternalService,
@@ -77,7 +77,7 @@ describe('OpenDossierInMailService', () => {
       .compileComponents()
       .then();
 
-    openDossierInMailService = TestBed.inject(OpenDossierInMailService);
+    openDossierInMailService = TestBed.inject(OpenCantonDossierInMailService);
   });
 
   it('should open mailto link', () => {
@@ -93,7 +93,7 @@ describe('OpenDossierInMailService', () => {
     });
 
     const expectedMailToLink =
-      'mailto:?subject=Thema&body=Thema%3A%0AThema%0A%0AFrage%20an%20das%20Transportunternehmen%3A%0AFrage%20an%20das%20Transportunternehmen%0A%0AR%C3%BCckmeldung%20des%20Transportunternehmens%3A%0AR%C3%BCckmeldung%20des%20Transportunternehmens%0A%0AInterne%20Begr%C3%BCndung%20zum%20Zweck%20der%20Dokumentation%3A%0AInterne%20Begr%C3%BCndung%20zum%20Zweck%20der%20Dokumentation%0A%0A%C3%96ffentliche%20Begr%C3%BCndung%20f%C3%BCr%20Stellungnehmende%3A%0A%C3%96ffentliche%20Begr%C3%BCndung%20f%C3%BCr%20Stellungnehmende%0A%0AStellungnahmen%20des%20Dossiers%3A%0A%5B456%5D%3A%20Mehr%20B%C3%B6s%20pls%0A%0A%5B123%5D%3A%20This%20is%20an%20anonymized%20statement%0A%0A';
+      'mailto:?subject=Dossier%20%22Thema%22&body=Thema%3A%0AThema%0A%0AFrage%20an%20das%20Transportunternehmen%3A%0AFrage%20an%20das%20Transportunternehmen%0A%0AR%C3%BCckmeldung%20des%20Transportunternehmens%3A%0AR%C3%BCckmeldung%20des%20Transportunternehmens%0A%0AInterne%20Begr%C3%BCndung%20zum%20Zweck%20der%20Dokumentation%3A%0AInterne%20Begr%C3%BCndung%20zum%20Zweck%20der%20Dokumentation%0A%0A%C3%96ffentliche%20Begr%C3%BCndung%20f%C3%BCr%20Stellungnehmende%3A%0A%C3%96ffentliche%20Begr%C3%BCndung%20f%C3%BCr%20Stellungnehmende%0A%0AStellungnahmen%20des%20Dossiers%3A%0A%5B456%5D%3A%20Mehr%20B%C3%B6s%20pls%0A%0A%5B123%5D%3A%20This%20is%20an%20anonymized%20statement%0A%0A';
     expect(window.open).toHaveBeenCalledWith(expectedMailToLink, '_self');
   });
 });
