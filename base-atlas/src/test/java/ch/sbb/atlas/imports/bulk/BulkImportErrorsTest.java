@@ -3,6 +3,8 @@ package ch.sbb.atlas.imports.bulk;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.sbb.atlas.imports.bulk.BulkImportLogEntry.BulkImportError;
+import ch.sbb.atlas.imports.model.create.SectorCreateCsvModel;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class BulkImportErrorsTest {
@@ -46,4 +48,13 @@ class BulkImportErrorsTest {
     assertThat(bulkImportError.getDisplayInfo().getCode()).isEqualTo("BULK_IMPORT.VALIDATION.STOPPOINTSLOID_XOR_NUMBER");
   }
 
+  @Test
+  void shouldBuildBulkImportErrorForNotNullFields() {
+    SectorCreateCsvModel model = SectorCreateCsvModel.builder().build();
+
+    List<BulkImportError> bulkImportErrors = BulkImportErrors.notNullForFields(model, List.of(SectorCreateCsvModel.Fields.trafficPointSloid));
+
+    assertThat(bulkImportErrors).hasSize(1);
+    assertThat(bulkImportErrors.getFirst().getErrorMessage()).isEqualTo("Field trafficPointSloid must not be null");
+  }
 }

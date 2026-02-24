@@ -8,9 +8,10 @@ import java.lang.reflect.Field;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.junit.jupiter.api.Test;
 
- class ReflectionHelperTest {
+class ReflectionHelperTest {
 
   @Test
   void shouldGetAllFieldsIncludingSuperclassProperties() {
@@ -50,6 +51,22 @@ import org.junit.jupiter.api.Test;
   }
 
   @Test
+  void shouldGetFieldValueByName() {
+    // Given
+    ChildVersionable object = new ChildVersionable();
+    object.setProperty("childValue");
+
+    // When
+    Object fieldValue = ReflectionHelper.getFieldValue(object, "property");
+
+    // Then
+    assertThat(fieldValue).isEqualTo("childValue");
+
+    fieldValue = ReflectionHelper.getFieldValue(new ChildVersionable(), "property");
+    assertThat(fieldValue).isNull();
+  }
+
+  @Test
   void shouldThrowExceptionOnNotExistingField() {
     // Given
 
@@ -61,32 +78,35 @@ import org.junit.jupiter.api.Test;
     // Then
   }
 
-   @Test
-   void shouldCopyObjectViaBuilder() {
-     // Given
-     ObjectWithToBuilder original = ObjectWithToBuilder.builder().property("original").build();
+  @Test
+  void shouldCopyObjectViaBuilder() {
+    // Given
+    ObjectWithToBuilder original = ObjectWithToBuilder.builder().property("original").build();
 
-     // When
-     Object copy = ReflectionHelper.copyObjectViaBuilder(original);
+    // When
+    Object copy = ReflectionHelper.copyObjectViaBuilder(original);
 
-     // Then
-     assertThat(copy).isNotSameAs(original).isEqualTo(original);
-   }
+    // Then
+    assertThat(copy).isNotSameAs(original).isEqualTo(original);
+  }
 
-   @Test
-   void shouldThrowExceptionIfToBuilderIsNotPresent() {
-     // Given
-     ParentVersionable original = new ParentVersionable();
+  @Test
+  void shouldThrowExceptionIfToBuilderIsNotPresent() {
+    // Given
+    ParentVersionable original = new ParentVersionable();
 
-     // When
-     assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> ReflectionHelper.copyObjectViaBuilder(original));
-   }
+    // When
+    assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> ReflectionHelper.copyObjectViaBuilder(original));
+  }
 
+  @Data
   private static class ParentVersionable {
 
     private String additionalProperty;
   }
 
+  @Data
+  @EqualsAndHashCode(callSuper = true)
   private static class ChildVersionable extends ParentVersionable {
 
     private String property;
@@ -94,7 +114,8 @@ import org.junit.jupiter.api.Test;
 
   @Data
   @Builder(toBuilder = true)
-  private static class ObjectWithToBuilder{
+  private static class ObjectWithToBuilder {
+
     private String property;
   }
 }

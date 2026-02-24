@@ -8,7 +8,6 @@ import ch.sbb.atlas.imports.bulk.BulkImportErrors;
 import ch.sbb.atlas.imports.bulk.BulkImportLogEntry.BulkImportError;
 import ch.sbb.atlas.imports.bulk.UpdateGeolocationModel;
 import ch.sbb.atlas.imports.bulk.Validatable;
-import ch.sbb.atlas.imports.model.ServicePointUpdateCsvModel;
 import ch.sbb.atlas.imports.model.create.ServicePointCreateCsvModel.Fields;
 import ch.sbb.atlas.servicepoint.Country;
 import ch.sbb.atlas.servicepoint.ServicePointNumber;
@@ -132,18 +131,8 @@ public class ServicePointCreateCsvModel implements Validatable<ServicePointCreat
   }
 
   private void validateNotNullFields(List<BulkImportError> errors) {
-    if (designationOfficial == null) {
-      errors.add(BulkImportErrors.notNull(Fields.designationOfficial));
-    }
-    if (businessOrganisation == null) {
-      errors.add(BulkImportErrors.notNull(Fields.businessOrganisation));
-    }
-    if (validFrom == null) {
-      errors.add(BulkImportErrors.notNull(ServicePointUpdateCsvModel.Fields.validFrom));
-    }
-    if (validTo == null) {
-      errors.add(BulkImportErrors.notNull(ServicePointUpdateCsvModel.Fields.validTo));
-    }
+    errors.addAll(BulkImportErrors.notNullForFields(this,
+        List.of(Fields.designationOfficial, Fields.businessOrganisation, Fields.validFrom, Fields.validTo)));
   }
 
   private void validateHeight(List<BulkImportError> errors) {

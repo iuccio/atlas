@@ -11,7 +11,6 @@ import ch.sbb.atlas.imports.model.create.SectorCreateCsvModel.Fields;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,29 +62,9 @@ public class SectorCreateCsvModel implements Validatable<SectorCreateCsvModel>, 
 
   @Override
   public List<BulkImportError> validate() {
-    List<BulkImportError> errors = new ArrayList<>();
-    if (trafficPointSloid == null) {
-      errors.add(BulkImportErrors.notNull(SectorCreateCsvModel.Fields.trafficPointSloid));
-    }
-    if (validFrom == null) {
-      errors.add(BulkImportErrors.notNull(SectorCreateCsvModel.Fields.validFrom));
-    }
-    if (validTo == null) {
-      errors.add(BulkImportErrors.notNull(SectorCreateCsvModel.Fields.validTo));
-    }
-    if (designation == null) {
-      errors.add(BulkImportErrors.notNull(SectorCreateCsvModel.Fields.designation));
-    }
-    if (north == null) {
-      errors.add(BulkImportErrors.notNull(SectorCreateCsvModel.Fields.north));
-    }
-    if (east == null) {
-      errors.add(BulkImportErrors.notNull(SectorCreateCsvModel.Fields.east));
-    }
-    if (spatialReference == null) {
-      errors.add(BulkImportErrors.notNull(SectorCreateCsvModel.Fields.spatialReference));
-    }
-    return errors;
+    return BulkImportErrors.notNullForFields(this,
+        List.of(Fields.trafficPointSloid, Fields.validFrom, Fields.validTo,
+            Fields.designation, Fields.north, Fields.east, Fields.spatialReference));
   }
 
   @Override

@@ -14,7 +14,6 @@ import ch.sbb.atlas.imports.model.TrafficPointUpdateCsvModel.Fields;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -90,17 +89,7 @@ public class TrafficPointUpdateCsvModel implements Validatable<TrafficPointUpdat
 
   @Override
   public List<BulkImportError> validate() {
-    List<BulkImportError> errors = new ArrayList<>();
-    if (sloid == null) {
-      errors.add(BulkImportErrors.notNull(Fields.sloid));
-    }
-    if (validFrom == null) {
-      errors.add(BulkImportErrors.notNull(Fields.validFrom));
-    }
-    if (validTo == null) {
-      errors.add(BulkImportErrors.notNull(Fields.validTo));
-    }
-    return errors;
+    return BulkImportErrors.notNullForFields(this, List.of(Fields.sloid, Fields.validFrom, Fields.validTo));
   }
 
   @Override

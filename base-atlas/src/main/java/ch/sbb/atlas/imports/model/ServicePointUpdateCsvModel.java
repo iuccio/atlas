@@ -128,13 +128,7 @@ public class ServicePointUpdateCsvModel implements Validatable<ServicePointUpdat
     }
     
     errors.addAll(BulkImportValidationHelper.validateServicePointNumber(number));
-
-    if (validFrom == null) {
-      errors.add(BulkImportErrors.notNull(Fields.validFrom));
-    }
-    if (validTo == null) {
-      errors.add(BulkImportErrors.notNull(Fields.validTo));
-    }
+    errors.addAll(BulkImportErrors.notNullForFields(this, List.of(Fields.validFrom, Fields.validTo)));
     return errors;
   }
 

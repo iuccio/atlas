@@ -3,21 +3,17 @@ package ch.sbb.importservice.module.bulkimport.job.sepodi.sector.create;
 import ch.sbb.atlas.imports.BulkImportItemExecutionResult;
 import ch.sbb.atlas.imports.bulk.BulkImportUpdateContainer;
 import ch.sbb.atlas.imports.model.create.SectorCreateCsvModel;
-import ch.sbb.atlas.imports.model.create.TrafficPointCreateCsvModel;
 import ch.sbb.importservice.module.bulkimport.client.SectorBulkImportClient;
-import ch.sbb.importservice.module.bulkimport.client.TrafficPointBulkImportClient;
 import ch.sbb.importservice.module.bulkimport.writer.BulkImportItemWriter;
 import ch.sbb.importservice.module.bulkimport.writer.WriterUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.step.StepExecution;
 import org.springframework.batch.infrastructure.item.Chunk;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 @StepScope
 @RequiredArgsConstructor
@@ -34,10 +30,7 @@ public class SectorCreateWriter extends SectorCreate implements BulkImportItemWr
         WriterUtil.getContainersWithoutDataValidationErrors(items);
     WriterUtil.addInNameOfTo(stepExecution, createContainers);
 
-    log.info("Writing {} containers to service-point-directory", createContainers.size());
-
     List<BulkImportItemExecutionResult> importResult = sectorBulkImportClient.bulkImportCreate(createContainers);
-
     WriterUtil.mapExecutionResultToLogEntry(importResult, createContainers);
   }
 
