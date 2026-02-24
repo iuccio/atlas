@@ -3,7 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { TimetableHearingStatementInternalService } from '../../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { forkJoin } from 'rxjs';
 
-export interface DossierMailData {
+export interface CantonDossierMailData {
   topic: string;
   statementIds: number[];
   question: string | null | undefined;
@@ -15,13 +15,13 @@ export interface DossierMailData {
 @Injectable({
   providedIn: 'root',
 })
-export class OpenDossierInMailService {
+export class OpenCantonDossierInMailService {
   private readonly translatePipe = inject(TranslatePipe);
   private readonly timetableHearingStatementInternalService = inject(
     TimetableHearingStatementInternalService
   );
 
-  openDossierInMailClient(dossierMailData: DossierMailData) {
+  openDossierInMailClient(dossierMailData: CantonDossierMailData) {
     forkJoin(
       dossierMailData.statementIds.map((id) =>
         this.timetableHearingStatementInternalService.getStatement(id)
@@ -59,7 +59,7 @@ export class OpenDossierInMailService {
           .join('\n\n')
       );
 
-      const subject = dossierMailData.topic;
+      const subject = 'Dossier ' + `"${dossierMailData.topic}"`;
       const body = `${topicInfo}${questionInfo}${answerInfo}${internalCommentInfo}${publicCommentInfo}${statementInfo}`;
       const link = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       window.open(link, '_self');

@@ -24,6 +24,7 @@ import { DossierInternalService } from '../../../../../api/service/workflow/doss
 import { BoAnswer } from '../../../../../api/model/boAnswer';
 import { NotificationService } from '../../../../../core/notification/notification.service';
 import { ValidationService } from '../../../../../core/validation/validation.service';
+import { OpenBoDossierInMailService } from './open-bo-dossier-in-mail.service';
 
 @Component({
   selector: 'atlas-bo-dossier-detail',
@@ -41,6 +42,7 @@ import { ValidationService } from '../../../../../core/validation/validation.ser
     DateComponent,
     CommentComponent,
   ],
+  providers: [OpenBoDossierInMailService, TranslatePipe],
   templateUrl: './bo-dossier-detail.component.html',
   styleUrls: ['./bo-dossier-detail.component.scss'],
 })
@@ -49,6 +51,9 @@ export class BoDossierDetailComponent implements DetailFormComponent, OnInit {
   private readonly router = inject(Router);
   private readonly dossierInternalService = inject(DossierInternalService);
   private readonly notificationService = inject(NotificationService);
+  private readonly openBoDossierInMailService = inject(
+    OpenBoDossierInMailService
+  );
 
   dossierForm!: FormGroup<DossierDetailFormGroup>;
   form = BoAnswerFormGroupBuilder.buildFormGroup(null);
@@ -104,9 +109,11 @@ export class BoDossierDetailComponent implements DetailFormComponent, OnInit {
   }
 
   openInMail() {
-    const subject = encodeURIComponent(this.currentDossier?.topic ?? '');
-    const body = encodeURIComponent(this.cantonQuestion);
-    window.open(`mailto:?subject=${subject}&body=${body}`, '_self');
+    this.openBoDossierInMailService.openDossierInMail({
+      topic: this.currentDossier!.topic,
+      cantonQuestion: this.cantonQuestion,
+      swissCanton: this.currentDossier!.swissCanton,
+    });
   }
 
   back() {
