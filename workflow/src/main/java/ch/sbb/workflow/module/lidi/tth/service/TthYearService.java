@@ -24,13 +24,15 @@ public class TthYearService {
   private final TthDossierYearRepository tthDossierYearRepository;
 
   @Transactional
-  public void addTimetableHearingYear(TimetableHearingYearModel timetableHearingYearModel) {
+  @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
+  public TimetableHearingYearModel startTimetableHearingYear(Long year) {
     TthDossierYear tthDossierYear = TthDossierYear.builder()
-        .timetableYear(timetableHearingYearModel.getTimetableYear())
-        .hearingStatus(timetableHearingYearModel.getHearingStatus())
+        .timetableYear(year)
+        .hearingStatus(HearingStatus.ACTIVE)
         .build();
-
     tthDossierYearRepository.save(tthDossierYear);
+
+    return timetableHearingYearApiInternalClient.startHearingYear(year);
   }
 
   @Transactional

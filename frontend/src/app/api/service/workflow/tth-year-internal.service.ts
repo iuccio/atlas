@@ -12,6 +12,11 @@ export class TthYearInternalService {
 
   private readonly atlasApiService = inject(AtlasApiService);
 
+  startTimetableHearingYear(year: number): Observable<TimetableHearingYear> {
+    this.atlasApiService.validateParams({ year });
+    return this.atlasApiService.post(`${this.BASE_PATH}/${encodeURIComponent(String(year))}/start`);
+  }
+
   closeTimetableHearingYear(year: number): Observable<TimetableHearingYear> {
     this.atlasApiService.validateParams({ year });
     return this.atlasApiService.post(`${this.BASE_PATH}/${encodeURIComponent(String(year))}/close`);
