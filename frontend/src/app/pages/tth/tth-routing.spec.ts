@@ -16,7 +16,7 @@ const testRoutes: Routes = [
   },
 ];
 
-fdescribe('TTH Routing', () => {
+describe('TTH Routing', () => {
   it('should construct router with tth routes', () => {
     TestBed.configureTestingModule({
       providers: [provideRouter(routes)],
