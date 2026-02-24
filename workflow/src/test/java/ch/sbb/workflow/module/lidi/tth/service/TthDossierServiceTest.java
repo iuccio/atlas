@@ -2,6 +2,7 @@ package ch.sbb.workflow.module.lidi.tth.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -145,6 +146,25 @@ class TthDossierServiceTest {
     assertThat(dossier.getId()).isNotNull();
     assertThat(dossier.getDossierQuestions()).hasSize(1);
     verify(timetableHearingStatementClient).updateStatements(any());
+  }
+
+  @Test
+  void shouldThrowExceptionWhenActiveTimetableHearingYearNotFound() {
+    tthDossierRepository.deleteAll();
+    tthDossierYearRepository.deleteAll();
+
+    TthDossier dossier = TthDossier.builder()
+        .swissCanton(SwissCanton.BERN)
+        .topic("Test Topic")
+        .boContactMail("test@example.com")
+        .statementIds(List.of(1L))
+        .boDeadlineToAnswer(LocalDate.now().plusDays(7))
+        .build();
+
+    assertThatThrownBy(() -> tthDossierService.createDossier(dossier))
+        .isInstanceOf(SimpleAtlasException.class)
+        .hasMessageContaining("Active timetable hearing year not found");
+
   }
 
   @Test

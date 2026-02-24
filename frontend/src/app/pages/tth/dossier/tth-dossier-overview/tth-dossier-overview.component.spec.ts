@@ -1,12 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-
 import { TthDossierOverviewComponent } from './tth-dossier-overview.component';
 import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
 import { TableService } from '../../../../core/components/table/table.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OverviewToTabShareDataService } from '../../overview-tab/service/overview-to-tab-share-data.service';
-import { SwissCanton } from '../../../../api';
+import { HearingStatus, SwissCanton } from '../../../../api';
 import { of, throwError } from 'rxjs';
+import { TthUtils } from '../../util/tth-utils';
+import { Cantons } from '../../../../core/cantons/Cantons';
+import { TthDossier } from '../../../../api/model/tthDossier';
+import { ContainerTthDossier } from '../../../../api/model/containerTthDossier';
 
 describe('TthDossierOverviewComponent', () => {
   let component: TthDossierOverviewComponent;
@@ -14,6 +17,7 @@ describe('TthDossierOverviewComponent', () => {
   let tableService: jasmine.SpyObj<TableService>;
   let router: jasmine.SpyObj<Router>;
   let overviewToTabService: OverviewToTabShareDataService;
+  let activatedRoute: ActivatedRoute;
 
   beforeEach(() => {
     dossierService = jasmine.createSpyObj('DossierInternalService', [
@@ -45,7 +49,11 @@ describe('TthDossierOverviewComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: { params: {}, queryParams: {} },
+            snapshot: {
+              params: {},
+              queryParams: {},
+              data: { hearingStatus: HearingStatus.Active },
+            },
             params: of({}),
             queryParams: of({}),
           },
@@ -55,8 +63,8 @@ describe('TthDossierOverviewComponent', () => {
 
     component = TestBed.inject(TthDossierOverviewComponent);
     overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
+    activatedRoute = TestBed.inject(ActivatedRoute);
 
-    // Setup für den Service
     overviewToTabService.changeData('ZH');
     overviewToTabService.setTimetableHearingYear({
       timetableYear: 2024,
@@ -70,58 +78,196 @@ describe('TthDossierOverviewComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should get canton short from service', () => {
-    expect(component.cantonShort).toBe('ZH');
-  });
+  describe('Getters', () => {
+    it('should get canton short from service', () => {
+      expect(component.cantonShort).toBe('ZH');
+    });
 
-  it('should get timetable hearing year from service', () => {
-    expect(component.foundTimetableHearingYear.timetableYear).toBe(2024);
-  });
+    it('should get timetable hearing year from service', () => {
+      expect(component.foundTimetableHearingYear.timetableYear).toBe(2024);
+    });
 
-  it('should call getOverview with correct parameters', () => {
-    const mockContainer = { objects: [], totalCount: 0 };
-    dossierService.getOverview.and.returnValue(of(mockContainer));
+    it('should return noTimetableHearingYearFound from service', () => {
+      spyOn(
+        overviewToTabService,
+        'getNoTimetableHearingYearFound'
+      ).and.returnValue(true);
 
-    component.getOverview({ page: 0, size: 10, sort: 'topic,asc' });
+      expect(component.noTimetableHearingYearFound).toBe(true);
+    });
 
-    expect(dossierService.getOverview).toHaveBeenCalledWith(
-      2024,
-      jasmine.any(String),
-      jasmine.anything(),
-      [],
-      0,
-      10,
-      jasmine.any(Array)
-    );
-    expect(component.totalCount$).toBe(0);
-  });
+    it('should check if hearing year is active', () => {
+      spyOn(TthUtils, 'isHearingStatusActive').and.returnValue(true);
+      component.hearingStatus = HearingStatus.Active;
 
-  it('should navigate to edit dossier', async () => {
-    router.navigate.and.returnValue(Promise.resolve(true));
+      expect(component.isHearingYearActive).toBe(true);
+    });
 
-    component.editDossier(123);
+    it('should return true when canton is swiss', () => {
+      overviewToTabService.changeData('CH');
 
-    expect(router.navigate).toHaveBeenCalledWith([123], {
-      relativeTo: jasmine.anything(),
+      expect(component.isSwissCanton).toBe(true);
+    });
+
+    it('should return false when canton is not swiss', () => {
+      overviewToTabService.changeData('ZH');
+
+      expect(component.isSwissCanton).toBe(false);
     });
   });
 
-  it('should map SwissCanton to short format', () => {
-    const result = component.mapToShortCanton(SwissCanton.Zurich);
+  describe('ngOnInit', () => {
+    it('should load data when year is available and not loading', (done) => {
+      const mockContainer: ContainerTthDossier = { objects: [], totalCount: 0 };
+      dossierService.getOverview.and.returnValue(of(mockContainer));
+      spyOn(TthUtils, 'isHearingStatusActive').and.returnValue(true);
 
-    expect(result).toBeTruthy();
+      component.ngOnInit();
+
+      setTimeout(() => {
+        expect(dossierService.getOverview).toHaveBeenCalled();
+        done();
+      }, 100);
+    });
+
+    it('should not load data when loading is true', (done) => {
+      overviewToTabService.setTimetableHearingYearLoading(true);
+      spyOn(component, 'loadData');
+
+      component.ngOnInit();
+
+      setTimeout(() => {
+        expect(component.loadData).not.toHaveBeenCalled();
+        done();
+      }, 100);
+    });
   });
 
-  it('should handle error gracefully', (done) => {
-    dossierService.getOverview.and.returnValue(
-      throwError(() => new Error('Test error'))
-    );
+  describe('loadData', () => {
+    it('should initialize table for active hearing status', () => {
+      spyOn(TthUtils, 'isHearingStatusActive').and.returnValue(true);
+      spyOn(component, 'initOverviewTable');
+      const mockContainer: ContainerTthDossier = { objects: [], totalCount: 0 };
+      dossierService.getOverview.and.returnValue(of(mockContainer));
 
-    component.getOverview({ page: 0, size: 10, sort: '' });
+      component.loadData();
 
-    setTimeout(() => {
-      expect(component.tthDossiers).toEqual([]);
-      done();
-    }, 100);
+      expect(component.hearingStatus).toBe(HearingStatus.Active);
+      expect(component.tableColumns).toBeDefined();
+      expect(tableService.initializeFilterConfig).toHaveBeenCalled();
+    });
+
+    it('should initialize table for archived hearing status', () => {
+      activatedRoute.snapshot.data = { hearingStatus: HearingStatus.Archived };
+      spyOn(TthUtils, 'isHearingStatusActive').and.returnValue(false);
+      spyOn(TthUtils, 'isHearingStatusArchived').and.returnValue(true);
+      spyOn(component, 'initOverviewTable');
+      const mockContainer: ContainerTthDossier = { objects: [], totalCount: 0 };
+      dossierService.getOverview.and.returnValue(of(mockContainer));
+
+      component.loadData();
+
+      expect(component.hearingStatus).toBe(HearingStatus.Archived);
+      expect(component.tableColumns).toBeDefined();
+    });
+  });
+
+  describe('getOverview', () => {
+    it('should call getOverview with correct parameters', () => {
+      const mockContainer: ContainerTthDossier = { objects: [], totalCount: 0 };
+      dossierService.getOverview.and.returnValue(of(mockContainer));
+
+      component.getOverview({ page: 0, size: 10, sort: 'topic,asc' });
+
+      expect(dossierService.getOverview).toHaveBeenCalledWith(
+        2024,
+        jasmine.any(String),
+        jasmine.anything(),
+        [],
+        0,
+        10,
+        jasmine.any(Array)
+      );
+      expect(component.totalCount$).toBe(0);
+    });
+
+    it('should update tthDossiers and totalCount on success', () => {
+      const mockDossiers: TthDossier[] = [
+        {
+          id: 1,
+          topic: 'Test',
+          swissCanton: SwissCanton.Zurich,
+          statementIds: [],
+          questions: [],
+          dossierStatus: 'ADDED',
+        },
+      ];
+
+      const mockContainer: ContainerTthDossier = {
+        objects: mockDossiers,
+        totalCount: 1,
+      };
+      dossierService.getOverview.and.returnValue(of(mockContainer));
+
+      component.getOverview({ page: 0, size: 10, sort: 'topic,asc' });
+
+      expect(component.tthDossiers).toEqual(mockDossiers);
+      expect(component.totalCount$).toBe(1);
+    });
+
+    it('should handle error gracefully', (done) => {
+      dossierService.getOverview.and.returnValue(
+        throwError(() => new Error('Test error'))
+      );
+
+      component.getOverview({ page: 0, size: 10, sort: '' });
+
+      setTimeout(() => {
+        expect(component.tthDossiers).toEqual([]);
+        done();
+      }, 100);
+    });
+  });
+
+  describe('editDossier', () => {
+    it('should navigate to edit dossier', async () => {
+      router.navigate.and.returnValue(Promise.resolve(true));
+
+      component.editDossier(123);
+
+      expect(router.navigate).toHaveBeenCalledWith([123], {
+        relativeTo: jasmine.anything(),
+      });
+    });
+  });
+
+  describe('mapToShortCanton', () => {
+    it('should map SwissCanton to short format', () => {
+      const result = component.mapToShortCanton(SwissCanton.Zurich);
+
+      expect(result).toBeTruthy();
+    });
+
+    it('should return undefined for unmapped canton', () => {
+      spyOn(Cantons, 'fromSwissCanton').and.returnValue(undefined);
+
+      const result = component.mapToShortCanton(SwissCanton.Zurich);
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('initOverviewTable', () => {
+    it('should call getOverview with table service parameters', () => {
+      spyOn(component, 'getOverview');
+
+      component.initOverviewTable();
+
+      expect(component.getOverview).toHaveBeenCalledWith({
+        page: 0,
+        size: 10,
+        sort: 'topic,asc',
+      });
+    });
   });
 });

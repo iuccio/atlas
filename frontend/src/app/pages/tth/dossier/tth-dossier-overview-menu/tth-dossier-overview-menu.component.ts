@@ -52,10 +52,6 @@ export class TthDossierOverviewMenuComponent {
     );
   }
 
-  //get isDossierArchived() {
-  //return this.row(). === DossierStatus.Archived;
-  //}
-
   get isDossierCompletable() {
     return this.isDossierCancelable || this.isDossierDissolvable;
   }

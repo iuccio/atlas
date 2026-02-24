@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter, Router, Routes } from '@angular/router';
 import {
   loadDossierDetailRoute,
   loadStatementDetailRoute,
@@ -7,8 +7,16 @@ import {
 } from './tth-routing';
 import { provideHttpClient } from '@angular/common/http';
 import { PermissionService } from '../../core/auth/permission/permission.service';
+import { Location } from '@angular/common';
 
-describe('TTH Routing', () => {
+const testRoutes: Routes = [
+  {
+    path: 'timetable-hearing',
+    children: routes,
+  },
+];
+
+fdescribe('TTH Routing', () => {
   it('should construct router with tth routes', () => {
     TestBed.configureTestingModule({
       providers: [provideRouter(routes)],
@@ -128,6 +136,62 @@ describe('TTH Routing', () => {
       });
 
       expect(result).toBeDefined();
+    });
+  });
+
+  it('should redirect active to statements', (done) => {
+    TestBed.configureTestingModule({
+      providers: [provideRouter(testRoutes)],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router.navigateByUrl('/timetable-hearing/zh/active').then(() => {
+      expect(location.path()).toBe('/timetable-hearing/zh/active/statements');
+      done();
+    });
+  });
+
+  it('should redirect archived to statements', (done) => {
+    TestBed.configureTestingModule({
+      providers: [provideRouter(testRoutes)],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router.navigateByUrl('/timetable-hearing/zh/archived').then(() => {
+      expect(location.path()).toBe('/timetable-hearing/zh/archived/statements');
+      done();
+    });
+  });
+
+  it('should resolve archived dossier route', (done) => {
+    TestBed.configureTestingModule({
+      providers: [provideRouter(testRoutes)],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router.navigateByUrl('/timetable-hearing/zh/archived/dossiers').then(() => {
+      expect(location.path()).toBe('/timetable-hearing/zh/archived/dossiers');
+      done();
+    });
+  });
+
+  it('should resolve active dossier route', (done) => {
+    TestBed.configureTestingModule({
+      providers: [provideRouter(testRoutes)],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router.navigateByUrl('/timetable-hearing/zh/active/dossiers').then(() => {
+      expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
+      done();
     });
   });
 });

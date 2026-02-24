@@ -32,6 +32,7 @@ import { TableComponent } from '../../../core/components/table/table.component';
 import { TthChangeCantonDialogService } from './tth-change-canton-dialog/service/tth-change-canton-dialog.service';
 import { MatDialog } from '@angular/material/dialog';
 import { OverviewToTabShareDataService } from '../overview-tab/service/overview-to-tab-share-data.service';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-tab-heading',
@@ -354,6 +355,105 @@ describe('TimetableHearingOverviewDetailComponent', () => {
       component.openTthExportAnonymizationChoiceDialog();
 
       expect(component.downloadCsv).toHaveBeenCalledOnceWith(false);
+    });
+
+    describe('collectingActions', () => {
+      beforeEach(() => {
+        component.statusChangeCollectingActionsEnabled = false;
+        component.cantonDeliveryCollectingActionsEnabled = false;
+        component.showCollectingActionButton = true;
+      });
+
+      it('should enable status change collecting actions when STATUS_CHANGE is selected', () => {
+        const mockSelectChange = {
+          value: 'STATUS_CHANGE',
+        } as MatSelectChange;
+
+        spyOn(component, 'loadData');
+
+        component.collectingActions(mockSelectChange);
+
+        expect(component.statusChangeCollectingActionsEnabled).toBe(true);
+        expect(component.showCollectingActionButton).toBe(false);
+        expect(component.loadData).toHaveBeenCalled();
+      });
+
+      it('should enable canton delivery collecting actions when CANTON_DELIVERY is selected', () => {
+        const mockSelectChange = {
+          value: 'CANTON_DELIVERY',
+        } as MatSelectChange;
+
+        spyOn(component, 'loadData');
+
+        component.collectingActions(mockSelectChange);
+
+        expect(component.cantonDeliveryCollectingActionsEnabled).toBe(true);
+        expect(component.showCollectingActionButton).toBe(false);
+        expect(component.loadData).toHaveBeenCalled();
+      });
+
+      it('should not change state when other value is selected', () => {
+        const mockSelectChange = {
+          value: 'OTHER_ACTION',
+        } as MatSelectChange;
+
+        spyOn(component, 'loadData');
+
+        component.collectingActions(mockSelectChange);
+
+        expect(component.statusChangeCollectingActionsEnabled).toBe(false);
+        expect(component.cantonDeliveryCollectingActionsEnabled).toBe(false);
+        expect(component.showCollectingActionButton).toBe(true);
+        expect(component.loadData).not.toHaveBeenCalled();
+      });
+
+      it('should call loadData only once for STATUS_CHANGE', () => {
+        const mockSelectChange = {
+          value: 'STATUS_CHANGE',
+        } as MatSelectChange;
+
+        spyOn(component, 'loadData');
+
+        component.collectingActions(mockSelectChange);
+
+        expect(component.loadData).toHaveBeenCalledTimes(1);
+      });
+
+      it('should call loadData only once for CANTON_DELIVERY', () => {
+        const mockSelectChange = {
+          value: 'CANTON_DELIVERY',
+        } as MatSelectChange;
+
+        spyOn(component, 'loadData');
+
+        component.collectingActions(mockSelectChange);
+
+        expect(component.loadData).toHaveBeenCalledTimes(1);
+      });
+
+      it('should not affect cantonDelivery when STATUS_CHANGE is selected', () => {
+        const mockSelectChange = {
+          value: 'STATUS_CHANGE',
+        } as MatSelectChange;
+
+        spyOn(component, 'loadData');
+
+        component.collectingActions(mockSelectChange);
+
+        expect(component.cantonDeliveryCollectingActionsEnabled).toBe(false);
+      });
+
+      it('should not affect statusChange when CANTON_DELIVERY is selected', () => {
+        const mockSelectChange = {
+          value: 'CANTON_DELIVERY',
+        } as MatSelectChange;
+
+        spyOn(component, 'loadData');
+
+        component.collectingActions(mockSelectChange);
+
+        expect(component.statusChangeCollectingActionsEnabled).toBe(false);
+      });
     });
   });
 

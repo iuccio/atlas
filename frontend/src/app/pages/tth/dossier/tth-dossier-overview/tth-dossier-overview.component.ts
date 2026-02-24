@@ -32,7 +32,7 @@ export class TthDossierOverviewComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly overviewToTabService = inject(OverviewToTabShareDataService);
-  private destroyRef = inject(DestroyRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   tthDossiers: TthDossier[] = [];
   totalCount$ = 0;
@@ -74,7 +74,7 @@ export class TthDossierOverviewComponent implements OnInit {
       });
   }
 
-  private loadData() {
+  loadData() {
     this.hearingStatus = this.route.snapshot.data.hearingStatus;
 
     if (TthUtils.isHearingStatusActive(this.hearingStatus)) {
@@ -166,7 +166,7 @@ export class TthDossierOverviewComponent implements OnInit {
     ];
   }
 
-  private initOverviewTable() {
+  initOverviewTable() {
     this.getOverview({
       page: this.tableService.pageIndex,
       size: this.tableService.pageSize,
