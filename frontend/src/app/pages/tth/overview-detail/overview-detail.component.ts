@@ -48,6 +48,7 @@ import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonym
 import { StatementOverviewMenuComponent } from './statement-overview-menu/statement-overview-menu.component';
 import { filter } from 'rxjs/operators';
 import { TableFilterBoolean } from '../../../core/components/table-filter/config/table-filter-boolean';
+import { TthYearInternalService } from '../../../api/service/workflow/tth-year-internal.service';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-detail',
@@ -121,6 +122,7 @@ export class OverviewDetailComponent implements OnInit {
     private readonly router: Router,
     private readonly timetableHearingStatementsService: TimetableHearingStatementInternalService,
     private readonly timetableHearingYearsService: TimetableHearingYearInternalService,
+    private readonly tthYearInternalService: TthYearInternalService,
     private readonly overviewToTabService: OverviewToTabShareDataService,
     private readonly tthStatusChangeDialogService: TthChangeStatusDialogService,
     private readonly tthChangeCantonDialogService: TthChangeCantonDialogService,
@@ -387,8 +389,8 @@ export class OverviewDetailComponent implements OnInit {
       })
       .subscribe((confirmed) => {
         if (confirmed) {
-          this.timetableHearingYearsService
-            .startHearingYear(this.yearSelection)
+          this.tthYearInternalService
+            .startTimetableHearingYear(this.yearSelection)
             .subscribe(() => {
               this.router
                 .navigate(

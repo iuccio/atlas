@@ -8,7 +8,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -17,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ch.sbb.atlas.api.bodi.TransportCompanyModel;
 import ch.sbb.atlas.api.client.bodi.TransportCompanyClient;
 import ch.sbb.atlas.api.client.user.administration.UserAdministrationClient;
-import ch.sbb.atlas.api.client.workflow.TthDossierYearApiInternalClient;
 import ch.sbb.atlas.api.lidi.enumaration.TtfnMeanOfTransport;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingStatementModelV2.Fields;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingYearModel;
@@ -72,9 +70,6 @@ class TimetableHearingStatementControllerV2ApiTest extends BaseControllerApiTest
   private final TimetableHearingStatementRepository timetableHearingStatementRepository;
   private final SharedTransportCompanyRepository sharedTransportCompanyRepository;
   private final TimetableFieldNumberVersionRepository timetableFieldNumberVersionRepository;
-
-  @MockitoBean
-  private TthDossierYearApiInternalClient tthDossierYearApiInternalClient;
 
   @MockitoBean
   private TimetableFieldNumberService timetableFieldNumberService;
@@ -216,9 +211,6 @@ class TimetableHearingStatementControllerV2ApiTest extends BaseControllerApiTest
         AuthorityUtils.createAuthorityList("ROLE_atlas-admin"));
     authentication.setAuthenticated(true);
     context.setAuthentication(authentication);
-
-    doNothing().when(tthDossierYearApiInternalClient)
-        .addTimetableHearingYear(any(TimetableHearingYearModel.class));
 
     timetableHearingYearController.startHearingYear(YEAR);
 

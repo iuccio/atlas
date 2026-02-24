@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingYearApiInternalClient;
-import ch.sbb.atlas.api.timetable.hearing.TimetableHearingYearModel;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
@@ -99,18 +98,23 @@ class TthYearServiceTest {
   }
 
   @Test
-  void shouldAddTimeTableHearingYear() {
+  void shouldAddTthDossierYearAndSendRequestToLidiOnStartYearCorrectly() {
     // given
-    TimetableHearingYearModel timetableHearingYearModel = TimetableHearingYearModel.builder()
-        .timetableYear(2027L)
-        .hearingStatus(HearingStatus.ACTIVE)
-        .build();
+    when(timetableHearingYearApiInternalClient.startHearingYear(anyLong())).thenReturn(null);
     // when
-    tthYearService.addTimetableHearingYear(timetableHearingYearModel);
+    tthYearService.startTimetableHearingYear(2028L);
     // then
-    TthDossierYear savedTthDossierYear = tthDossierYearRepository.findById(2027L).orElseThrow();
-    assertThat(savedTthDossierYear.getTimetableYear()).isEqualTo(2027L);
-    assertThat(savedTthDossierYear.getHearingStatus()).isEqualTo(HearingStatus.ACTIVE);
+    assertThat(tthDossierYearRepository.findById(2028L).get().getHearingStatus()).isEqualTo(HearingStatus.ACTIVE);
+    verify(timetableHearingYearApiInternalClient).startHearingYear(eq(2028L));
+  }
+
+  @Test
+  void shouldRollbackTthDossierYearWhenStartTimetableHearingInLidiFails() {
+    doThrow(FeignException.class).when(timetableHearingYearApiInternalClient).startHearingYear(anyLong());
+    // when
+    assertThrows(FeignException.class, () -> tthYearService.startTimetableHearingYear(2029L));
+    // then
+    assertThat(tthDossierYearRepository.findById(2029L).isEmpty()).isTrue();
   }
 
   @Test

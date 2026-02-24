@@ -33,6 +33,7 @@ import { TthChangeCantonDialogService } from './tth-change-canton-dialog/service
 import { MatDialog } from '@angular/material/dialog';
 import { OverviewToTabShareDataService } from '../overview-tab/service/overview-to-tab-share-data.service';
 import { MatSelectChange } from '@angular/material/select';
+import { TthYearInternalService } from '../../../api/service/workflow/tth-year-internal.service';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-tab-heading',
@@ -110,6 +111,10 @@ const containerTimetableHearingStatement: ContainerTimetableHearingStatementV2 =
     totalCount: 2,
   };
 
+const mockTthYearWfServiceSpy = jasmine.createSpyObj<TthYearInternalService>([
+  'startTimetableHearingYear',
+]);
+
 async function baseTestConfiguration() {
   mockTimetableHearingStatementsService.getStatements.and.returnValue(
     of(containerTimetableHearingStatement)
@@ -139,6 +144,10 @@ async function baseTestConfiguration() {
       {
         provide: TimetableHearingYearInternalService,
         useValue: mockTimetableHearingYearsService,
+      },
+      {
+        provide: TthYearInternalService,
+        useValue: mockTthYearWfServiceSpy,
       },
       OverviewToTabShareDataService,
       { provide: TranslatePipe },
@@ -501,6 +510,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
     mockTimetableHearingYearsService.getHearingYears.and.returnValue(
       of(hearingYears)
     );
+
     beforeEach(async () => {
       fixture = await baseTestConfiguration();
       route = TestBed.inject(ActivatedRoute);
@@ -587,6 +597,18 @@ describe('TimetableHearingOverviewDetailComponent', () => {
         'timetableFieldDescription'
       );
       expect(component.tableColumns[5].value).toEqual('documents');
+    });
+
+    it('should startTimetableHearingYear', () => {
+      mockTthYearWfServiceSpy.startTimetableHearingYear.and
+        .stub()
+        .and.returnValue(of({}));
+
+      component.startTimetableHearing();
+
+      expect(
+        mockTthYearWfServiceSpy.startTimetableHearingYear
+      ).toHaveBeenCalledOnceWith(2000);
     });
   });
 

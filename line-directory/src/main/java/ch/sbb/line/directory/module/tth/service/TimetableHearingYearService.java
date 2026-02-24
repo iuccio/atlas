@@ -1,12 +1,10 @@
 package ch.sbb.line.directory.module.tth.service;
 
-import ch.sbb.atlas.api.client.workflow.TthDossierYearApiInternalClient;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.line.directory.module.tth.entity.TimetableHearingYear;
 import ch.sbb.line.directory.module.tth.exception.HearingCurrentlyActiveException;
 import ch.sbb.line.directory.module.tth.exception.NoHearingCurrentlyActiveException;
-import ch.sbb.line.directory.module.tth.mapper.TimeTableHearingYearMapper;
 import ch.sbb.line.directory.module.tth.model.TimetableHearingYearSearchRestrictions;
 import ch.sbb.line.directory.module.tth.repository.TimetableHearingYearRepository;
 import java.util.List;
@@ -23,7 +21,6 @@ public class TimetableHearingYearService {
 
   private final TimetableHearingYearRepository timetableHearingYearRepository;
   private final TimetableHearingStatementService timetableHearingStatementService;
-  private final TthDossierYearApiInternalClient tthDossierYearApiInternalClient;
 
   public List<TimetableHearingYear> getHearingYears(TimetableHearingYearSearchRestrictions searchRestrictions) {
     return timetableHearingYearRepository.findAll(searchRestrictions.getSpecification());
@@ -60,7 +57,6 @@ public class TimetableHearingYearService {
     timetableHearingYear.setStatementCreatableInternal(true);
     timetableHearingYear.setStatementEditable(true);
 
-    tthDossierYearApiInternalClient.addTimetableHearingYear(TimeTableHearingYearMapper.toModel(timetableHearingYear));
     return timetableHearingYearRepository.save(timetableHearingYear);
   }
 
