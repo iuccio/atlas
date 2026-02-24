@@ -165,7 +165,7 @@ export class OverviewDetailComponent implements OnInit {
       });
   }
 
-  private loadData() {
+  loadData() {
     this.hearingStatus = this.route.snapshot.data.hearingStatus;
     this.statementEditable = this.foundTimetableHearingYear.statementEditable!;
 
@@ -691,7 +691,4 @@ export class OverviewDetailComponent implements OnInit {
       'TTH.OVERVIEW_TAB.STATEMENT_IN_DOSSIER_SLIDE'
     ),
   };
-  test() {
-    this.router.navigate(['dossiers'], { relativeTo: this.route });
-  }
 }

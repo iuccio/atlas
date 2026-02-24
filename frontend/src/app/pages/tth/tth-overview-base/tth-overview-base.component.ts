@@ -114,7 +114,7 @@ export class TthOverviewBaseComponent implements OnInit {
     this.tableService.resetTableSettings();
   }
 
-  private navigateTo(canton: string, timetableYear: number): void {
+  navigateTo(canton: string, timetableYear: number): void {
     const currentUrl = this.router.url;
     let currentView = Pages.TTH_STATEMENTS.path;
 
@@ -136,7 +136,7 @@ export class TthOverviewBaseComponent implements OnInit {
     );
   }
 
-  private syncCantonShortSharedData(): void {
+  syncCantonShortSharedData(): void {
     this.overviewToTabService.cantonShort$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => (this.cantonShort = res));
@@ -144,7 +144,7 @@ export class TthOverviewBaseComponent implements OnInit {
     this.checkIfRoutedCantonExists();
   }
 
-  private checkIfRoutedCantonExists(): void {
+  checkIfRoutedCantonExists(): void {
     const swissCantonEnum = Cantons.getSwissCantonEnum(this.cantonShort);
     if (!swissCantonEnum) {
       this.noTimetableHearingYearFound = true;
@@ -205,11 +205,11 @@ export class TthOverviewBaseComponent implements OnInit {
       });
   }
 
-  private initOverviewPlannedTable(): void {
+  initOverviewPlannedTable(): void {
     this.getTimetableHearingYear(HearingStatus.Planned, false);
   }
 
-  private initOverviewArchivedTable(): void {
+  initOverviewArchivedTable(): void {
     this.getTimetableHearingYear(HearingStatus.Archived, true);
   }
 

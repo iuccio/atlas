@@ -8,22 +8,20 @@ import moment from 'moment';
   providedIn: 'root',
 })
 export class OverviewToTabShareDataService {
-  private cantonShort = new BehaviorSubject(Cantons.swiss.path);
-  private timetableHearingYearSubject =
+  private readonly cantonShort = new BehaviorSubject(Cantons.swiss.path);
+  private readonly timetableHearingYearSubject =
     new BehaviorSubject<TimetableHearingYear>({
       timetableYear: moment().toDate().getFullYear() + 1,
       hearingFrom: moment().toDate(),
       hearingTo: moment().toDate(),
     });
-  private noTimetableHearingYearFoundSubject = new BehaviorSubject<boolean>(
-    false
-  );
-  private noPlannedTimetableHearingYearFoundSubject =
+  private readonly noTimetableHearingYearFoundSubject =
+    new BehaviorSubject<boolean>(false);
+  private readonly noPlannedTimetableHearingYearFoundSubject =
     new BehaviorSubject<boolean>(false);
 
-  private timetableHearingYearLoadingSubject = new BehaviorSubject<boolean>(
-    false
-  );
+  private readonly timetableHearingYearLoadingSubject =
+    new BehaviorSubject<boolean>(false);
 
   cantonShort$ = this.cantonShort.asObservable();
 
