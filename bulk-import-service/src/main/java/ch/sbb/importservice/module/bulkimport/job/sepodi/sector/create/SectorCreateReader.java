@@ -8,10 +8,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SectorCreateReader extends SectorCreate implements BulkImportItemReader {
@@ -20,8 +18,6 @@ public class SectorCreateReader extends SectorCreate implements BulkImportItemRe
   public List<BulkImportUpdateContainer<?>> apply(File file) {
     List<BulkImportUpdateContainer<SectorCreateCsvModel>> sectorCreateCsvModels = ReaderUtil.readAndValidate(file,
         SectorCreateCsvModel.class);
-
-    log.info("Read {} lines to import", sectorCreateCsvModels.size());
     return new ArrayList<>(sectorCreateCsvModels);
   }
 

@@ -85,15 +85,8 @@ public class TrafficPointCreateCsvModel implements Validatable<TrafficPointCreat
     if ((stopPointSloid == null) == (number == null)) {
       errors.add(BulkImportErrors.stopPointSloidXorNumber());
     }
-    if (trafficPointElementType == null) {
-      errors.add(BulkImportErrors.notNull(TrafficPointCreateCsvModel.Fields.trafficPointElementType));
-    }
-    if (validFrom == null) {
-      errors.add(BulkImportErrors.notNull(TrafficPointCreateCsvModel.Fields.validFrom));
-    }
-    if (validTo == null) {
-      errors.add(BulkImportErrors.notNull(TrafficPointCreateCsvModel.Fields.validTo));
-    }
+    errors.addAll(BulkImportErrors.notNullForFields(this, List.of(TrafficPointCreateCsvModel.Fields.trafficPointElementType,
+        TrafficPointCreateCsvModel.Fields.validFrom, TrafficPointCreateCsvModel.Fields.validTo)));
     return errors;
   }
 

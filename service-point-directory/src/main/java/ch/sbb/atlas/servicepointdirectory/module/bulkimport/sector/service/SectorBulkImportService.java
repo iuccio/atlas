@@ -29,7 +29,7 @@ public class SectorBulkImportService {
 
   public void createSector(BulkImportUpdateContainer<SectorCreateCsvModel> bulkImportContainer) {
     CreateSectorVersionModel createModel = SectorBulkImportCreate.apply(bulkImportContainer);
-    sectorApiClient.createTrafficPoint(createModel);
+    sectorApiClient.createSectorVersion(createModel);
   }
 
 }

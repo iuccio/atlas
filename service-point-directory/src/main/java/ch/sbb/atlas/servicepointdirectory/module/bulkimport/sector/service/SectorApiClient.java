@@ -11,7 +11,7 @@ public class SectorApiClient {
 
   private final SectorApiV1 sectorApiV1;
 
-  public void createTrafficPoint(CreateSectorVersionModel createSectorVersionModel) {
+  public void createSectorVersion(CreateSectorVersionModel createSectorVersionModel) {
     sectorApiV1.createSectorVersion(createSectorVersionModel);
   }
 
