@@ -23,5 +23,4 @@ public class TransportCompanyRelationMapper {
         .validFrom(entity.getValidFrom())
         .validTo(entity.getValidTo()).build();
   }
-
 }

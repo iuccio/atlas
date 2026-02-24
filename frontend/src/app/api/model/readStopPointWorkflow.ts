@@ -82,6 +82,10 @@ export interface ReadStopPointWorkflow {
      */
     creationDate?: string;
     /**
+     * Object edition date
+     */
+    editionDate?: string;
+    /**
      * User creator
      */
     readonly creator?: string;

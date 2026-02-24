@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { TransportCompanyBoRelation } from '../../model/transportCompanyBoRelation';
 import { TransportCompanyRelation } from '../../model/transportCompanyRelation';
 import { UpdateTransportCompanyRelation } from '../../model/updateTransportCompanyRelation';
+import { BoTransportCompanyRelation } from '../../model/boTransportCompanyRelation';
 
 @Injectable({
   providedIn: 'root',
@@ -24,9 +25,14 @@ export class TransportCompanyRelationInternalService {
     return this.atlasApiService.delete(`${this.BASE_PATH}/${relationId}`);
   }
 
-  getTransportCompanyRelations(transportCompanyId: number): Observable<TransportCompanyBoRelation[]> {
+  getTransportCompanyBoRelations(transportCompanyId: number): Observable<TransportCompanyBoRelation[]> {
     this.atlasApiService.validateParams({ transportCompanyId });
     return this.atlasApiService.get(`${this.BASE_PATH}/${transportCompanyId}`);
+  }
+
+  getBoTransportCompanyRelations(sboid: string): Observable<BoTransportCompanyRelation[]> {
+    this.atlasApiService.validateParams({ sboid });
+    return this.atlasApiService.get(`${this.BASE_PATH}/tc-of-bo`, this.atlasApiService.paramsOf({ sboid }));
   }
 
   updateTransportCompanyRelation(updateTransportCompanyRelation: UpdateTransportCompanyRelation): Observable<void> {

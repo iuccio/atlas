@@ -56,7 +56,7 @@ describe('TransportCompanyRelationInternalService', () => {
   it('should getTransportCompanyRelations', () => {
     const transportCompanyId = 202;
 
-    service.getTransportCompanyRelations(transportCompanyId);
+    service.getTransportCompanyBoRelations(transportCompanyId);
 
     expect(apiService.validateParams).toHaveBeenCalledOnceWith({ transportCompanyId });
     expect(apiService.get).toHaveBeenCalledOnceWith(

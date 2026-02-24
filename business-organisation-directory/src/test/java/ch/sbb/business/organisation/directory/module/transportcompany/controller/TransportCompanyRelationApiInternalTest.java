@@ -95,7 +95,7 @@ class TransportCompanyRelationApiInternalTest extends BaseControllerApiTest {
   }
 
   @Test
-  void shouldGetTransportCompanyRelationsForSpecificTU() throws Exception {
+  void shouldGetTransportCompanyBoRelationsForSpecificTU() throws Exception {
     transportCompanyRepository.save(TransportCompany.builder()
         .id(6L).build());
 

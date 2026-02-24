@@ -1,5 +1,6 @@
 package ch.sbb.business.organisation.directory.module.transportcompany.controller;
 
+import ch.sbb.atlas.api.bodi.BoTransportCompanyRelationModel;
 import ch.sbb.atlas.api.bodi.TransportCompanyBoRelationModel;
 import ch.sbb.atlas.api.bodi.TransportCompanyRelationApiInternal;
 import ch.sbb.atlas.api.bodi.TransportCompanyRelationModel;
@@ -41,13 +42,11 @@ public class TransportCompanyRelationControllerInternal implements TransportComp
     BusinessOrganisation businessOrganisation = businessOrganisationService.findBusinessOrganisationBySboid(
         savedRelationEntity.getSboid());
 
-    return TransportCompanyBoRelationMapper.toModel(
-        businessOrganisation,
-        savedRelationEntity);
+    return TransportCompanyBoRelationMapper.toModel(businessOrganisation, savedRelationEntity);
   }
 
   @Override
-  public List<TransportCompanyBoRelationModel> getTransportCompanyRelations(
+  public List<TransportCompanyBoRelationModel> getTransportCompanyBoRelations(
       Long transportCompanyId) {
 
     TransportCompany transportCompany = transportCompanyService.findById(transportCompanyId)
@@ -67,6 +66,11 @@ public class TransportCompanyRelationControllerInternal implements TransportComp
                   transportCompanyRelation);
             })
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<BoTransportCompanyRelationModel> getBoTransportCompanyRelations(String sboid) {
+    return transportCompanyRelationService.findAllBySboid(sboid);
   }
 
   @Override

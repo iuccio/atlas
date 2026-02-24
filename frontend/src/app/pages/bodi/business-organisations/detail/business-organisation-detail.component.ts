@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { BusinessOrganisationVersion, BusinessType } from '../../../../api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -38,6 +38,12 @@ import {
   Revokable,
   RevokeButton,
 } from '../../../../core/form-components/revoke-button/revoke-button';
+import { AtlasLabelFieldComponent } from '@atlas/form';
+import { TransportCompanyRelationInternalService } from '../../../../api/service/bodi/transport-company-relation-internal.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RelationComponent } from '../../../../core/components/relation/relation.component';
+import { TableColumn } from '../../../../core/components/table/table-column';
+import { BoTransportCompanyRelation } from '../../../../api/model/boTransportCompanyRelation';
 
 @Component({
   templateUrl: './business-organisation-detail.component.html',
@@ -57,8 +63,10 @@ import {
     DetailFooterComponent,
     AtlasButtonComponent,
     UserDetailInfoComponent,
-    RevokeButton
-],
+    RevokeButton,
+    AtlasLabelFieldComponent,
+    RelationComponent,
+  ],
 })
 export class BusinessOrganisationDetailComponent
   implements Revokable, OnInit, DetailFormComponent, DetailWithCancelEdit
@@ -74,13 +82,56 @@ export class BusinessOrganisationDetailComponent
   isSwitchVersionDisabled = false;
   selectedVersionIndex!: number;
 
+  protected readonly tuRelationColumns: TableColumn<BoTransportCompanyRelation>[] =
+    [
+      {
+        headerTitle: 'BODI.TRANSPORT_COMPANIES.ABBREVIATION',
+        columnDef: 'abbreviation',
+        valuePath: 'transportCompany.abbreviation',
+      },
+      {
+        headerTitle: 'BODI.TRANSPORT_COMPANIES.BUSINESS_REGISTER_NAME',
+        columnDef: 'businessRegisterName',
+        valuePath: 'transportCompany.businessRegisterName',
+      },
+      {
+        headerTitle: 'COMMON.VALID_FROM',
+        columnDef: 'validFrom',
+        value: 'validFrom',
+        formatAsDate: true,
+      },
+      {
+        headerTitle: 'COMMON.VALID_TO',
+        columnDef: 'validTo',
+        value: 'validTo',
+        formatAsDate: true,
+      },
+    ];
+
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly transportCompanyRelationInternalService = inject(
+    TransportCompanyRelationInternalService
+  );
+  private readonly getSboid = (): string | undefined =>
+    this.activatedRoute.snapshot.data.businessOrganisationDetail[0]?.sboid;
+  private readonly getTuRelations = () => {
+    const sboid = this.getSboid();
+    return sboid
+      ? this.transportCompanyRelationInternalService.getBoTransportCompanyRelations(
+          sboid
+        )
+      : EMPTY;
+  };
+  protected readonly tuRelations = toSignal(this.getTuRelations(), {
+    initialValue: [],
+  });
+
   constructor(
     private readonly businessOrganisationInternalService: BusinessOrganisationInternalService,
     private readonly businessOrganisationLanguageService: BusinessOrganisationLanguageService,
     private readonly router: Router,
     private readonly notificationService: NotificationService,
     private readonly dialogService: DialogService,
-    private readonly activatedRoute: ActivatedRoute,
     private readonly validityService: ValidityService,
     private readonly detailHelperService: DetailDialogHelperService
   ) {}
