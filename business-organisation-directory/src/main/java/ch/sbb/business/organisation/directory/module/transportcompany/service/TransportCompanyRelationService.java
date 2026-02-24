@@ -1,11 +1,13 @@
 package ch.sbb.business.organisation.directory.module.transportcompany.service;
 
+import ch.sbb.atlas.api.bodi.BoTransportCompanyRelationModel;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SboidNotFoundException;
 import ch.sbb.business.organisation.directory.module.businessorganisation.service.BusinessOrganisationService;
 import ch.sbb.business.organisation.directory.module.transportcompany.entity.TransportCompanyRelation;
 import ch.sbb.business.organisation.directory.module.transportcompany.exception.TransportCompanyNotFoundException;
 import ch.sbb.business.organisation.directory.module.transportcompany.exception.TransportCompanyRelationConflictException;
+import ch.sbb.business.organisation.directory.module.transportcompany.mapper.TransportCompanyMapper;
 import ch.sbb.business.organisation.directory.module.transportcompany.repository.TransportCompanyRelationRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 public class TransportCompanyRelationService {
 
   private final TransportCompanyRelationRepository transportCompanyRelationRepository;
-
   private final BusinessOrganisationService businessOrganisationService;
   private final TransportCompanyService transportCompanyService;
 
@@ -59,4 +60,16 @@ public class TransportCompanyRelationService {
     return transportCompanyRelationRepository.findById(id).orElseThrow(() -> new IdNotFoundException(id));
   }
 
+  public List<BoTransportCompanyRelationModel> findAllBySboid(String sboid) {
+    return transportCompanyRelationRepository.findAllBySboid(sboid)
+        .stream()
+        .map(tcr -> BoTransportCompanyRelationModel
+            .builder()
+            .id(tcr.getId())
+            .transportCompany(TransportCompanyMapper.fromEntity(tcr.getTransportCompany()))
+            .validFrom(tcr.getValidFrom())
+            .validTo(tcr.getValidTo())
+            .build())
+        .toList();
+  }
 }

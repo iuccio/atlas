@@ -10,7 +10,8 @@
 import { TthDossier } from './tthDossier';
 
 
-export interface ContainerTthDossier {
-  objects?: Array<TthDossier>;
-  totalCount?: number;
+export interface ContainerTthDossier { 
+    objects?: Array<TthDossier>;
+    totalCount?: number;
 }
+

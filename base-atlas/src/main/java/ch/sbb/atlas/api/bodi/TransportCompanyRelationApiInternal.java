@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Tag(name = "[INTERNAL] Transport Company Relations")
@@ -34,7 +35,12 @@ public interface TransportCompanyRelationApiInternal {
   TransportCompanyBoRelationModel createTransportCompanyRelation(@RequestBody @Valid TransportCompanyRelationModel model);
 
   @GetMapping("{transportCompanyId}")
-  List<TransportCompanyBoRelationModel> getTransportCompanyRelations(@PathVariable Long transportCompanyId);
+  List<TransportCompanyBoRelationModel> getTransportCompanyBoRelations(@PathVariable Long transportCompanyId);
+
+  @GetMapping("tc-of-bo")
+  List<BoTransportCompanyRelationModel> getBoTransportCompanyRelations(@RequestParam String sboid);
+  // todo: @Parameter for swagger needed?
+  // todo: tests
 
   @DeleteMapping("{relationId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
