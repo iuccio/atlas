@@ -15,7 +15,6 @@ import ch.sbb.atlas.imports.model.PlatformReducedUpdateCsvModel.Fields;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -99,17 +98,7 @@ public class PlatformReducedUpdateCsvModel implements Validatable<PlatformReduce
 
   @Override
   public List<BulkImportError> validate() {
-    List<BulkImportError> errors = new ArrayList<>();
-    mandatoryFieldIsNotNull(sloid, Fields.sloid, errors);
-    mandatoryFieldIsNotNull(validFrom, Fields.validFrom, errors);
-    mandatoryFieldIsNotNull(validTo, Fields.validTo, errors);
-    return errors;
-  }
-
-  private void mandatoryFieldIsNotNull(Object fieldValue, String fieldName, List<BulkImportError> errors) {
-    if (fieldValue == null) {
-      errors.add(BulkImportErrors.notNull(fieldName));
-    }
+    return BulkImportErrors.notNullForFields(this, List.of(Fields.sloid, Fields.validFrom, Fields.validTo));
   }
 
   @Override

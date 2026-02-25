@@ -103,7 +103,7 @@
       "DROPZONE": "Faire glisser le fichier sur cette surface",
       "OR": "ou",
       "SELECT_FILES": "Sélectionner des fichiers",
-      "SELECT_FILE": "Datei auswählen",
+      "SELECT_FILE": "Sélectionner le fichier",
       "ERROR": {
         "FILE_SIZE": "{{filename}} n'a pas pu être ajouté. La limite de {{maxsize}} a été dépassée.",
         "TYPE": "{{filename}} n'a pas pu être ajouté. Le type de fichier n'est pas pris en charge.",
@@ -220,6 +220,7 @@
       "OBJECT": "Objet",
       "SERVICE_POINT": "Service",
       "TRAFFIC_POINT": "Bordure d'arrêt",
+      "SECTOR": "Secteur",
       "LOADING_POINT": "Placs de chargement",
       "REFERENCE_POINT": "Point de référence",
       "STOP_POINT": "Arrêt",

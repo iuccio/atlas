@@ -14,7 +14,6 @@ import ch.sbb.atlas.imports.model.LineUpdateCsvModel.Fields;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -81,17 +80,7 @@ public class LineUpdateCsvModel implements Validatable<LineUpdateCsvModel> {
 
   @Override
   public List<BulkImportError> validate() {
-    List<BulkImportError> errors = new ArrayList<>();
-    if (slnid == null) {
-      errors.add(BulkImportErrors.notNull(Fields.slnid));
-    }
-    if (validFrom == null) {
-      errors.add(BulkImportErrors.notNull(Fields.validFrom));
-    }
-    if (validTo == null) {
-      errors.add(BulkImportErrors.notNull(Fields.validTo));
-    }
-    return errors;
+    return BulkImportErrors.notNullForFields(this, List.of(Fields.slnid, Fields.validFrom, Fields.validTo));
   }
 
   @Override

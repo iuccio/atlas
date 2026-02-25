@@ -66,6 +66,7 @@ const VALID_COMBINATIONS: [ApplicationType, BusinessObjectType, ImportType][] =
       BusinessObjectType.TrafficPoint,
       ImportType.Terminate,
     ],
+    [ApplicationType.Sepodi, BusinessObjectType.Sector, ImportType.Create],
     [
       ApplicationType.Prm,
       BusinessObjectType.PlatformReduced,
@@ -89,8 +90,8 @@ const VALID_COMBINATIONS: [ApplicationType, BusinessObjectType, ImportType][] =
     StringListComponent,
     FileUploadComponent,
     AtlasButtonComponent,
-    TranslatePipe
-],
+    TranslatePipe,
+  ],
   providers: [TranslatePipe],
 })
 export class BulkImportOverviewComponent implements OnInit {

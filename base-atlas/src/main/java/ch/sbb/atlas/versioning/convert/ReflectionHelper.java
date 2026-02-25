@@ -18,6 +18,15 @@ public final class ReflectionHelper {
         () -> new NoSuchFieldException(fieldName));
   }
 
+  public static Object getFieldValue(Object object, String fieldName) {
+    try {
+      Field field = ReflectionHelper.getFieldAccessible(object.getClass(), fieldName);
+      return field.get(object);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      throw new IllegalArgumentException(e);
+    }
+  }
+
   public static List<Field> getAllFieldsAccessible(Class<?> clazz) {
     List<Field> fields = getAllFields(clazz);
     fields.forEach(ReflectionUtils::makeAccessible);

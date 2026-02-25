@@ -220,6 +220,7 @@
       "OBJECT": "Objekt",
       "SERVICE_POINT": "Dienststelle",
       "TRAFFIC_POINT": "Haltekante",
+      "SECTOR": "Sektor",
       "LOADING_POINT": "Ladestelle",
       "REFERENCE_POINT": "Referenzpunkt",
       "STOP_POINT": "Haltestelle",
