@@ -1139,6 +1139,7 @@
         "MOVED": "Verschoben",
         "DISSOLVED": "Aufgelöst"
       },
+      "INQUIRY_FROM_THE_CANTON": "Rückfrage des Kantons",
       "CANCEL_DOSSIER": "Dossier aufheben",
       "DISSOLVE_DOSSIER": "Dossier auflösen",
       "TOPIC": "Thema",

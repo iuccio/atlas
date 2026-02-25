@@ -14,7 +14,7 @@ import { ActivatedRouteMockType } from '../../../../../app.testing.mocks';
 import { DossierStatus } from '../../../../../api/model/dossierStatus';
 import { FormatPipe } from '../../../../../core/components/table/pipe/format.pipe';
 import { DialogService } from '../../../../../core/components/dialog/dialog.service';
-import { OpenDossierInMailService } from './open-dossier-in-mail.service';
+import { OpenCantonDossierInMailService } from './open-canton-dossier-in-mail.service';
 
 const statement: TimetableHearingStatementV2 = {
   id: 456,
@@ -229,7 +229,7 @@ describe('DossierDetailComponent', () => {
         FormatPipe,
       ],
     })
-      .overrideProvider(OpenDossierInMailService, {
+      .overrideProvider(OpenCantonDossierInMailService, {
         useValue: openDossierInMailService,
       })
       .compileComponents()

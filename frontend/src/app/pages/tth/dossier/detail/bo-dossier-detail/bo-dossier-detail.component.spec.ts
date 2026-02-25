@@ -122,7 +122,7 @@ describe('BoDossierDetail', () => {
     component.openInMail();
     //then
     expect(window.open).toHaveBeenCalledOnceWith(
-      'mailto:?subject=Mehr%20Busse%20bitte&body=Habt%20ihr%20mehr%20Busse%3F',
+      'mailto:?subject=Dossier%20%22Mehr%20Busse%20bitte%22&body=TTH.DOSSIER.INQUIRY_FROM_THE_CANTON%20%5BTTH.CANTON.BE%5D%0AHabt%20ihr%20mehr%20Busse%3F',
       '_self'
     );
   });
