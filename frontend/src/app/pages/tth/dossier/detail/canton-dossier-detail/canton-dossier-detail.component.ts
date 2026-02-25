@@ -37,7 +37,7 @@ import { Cantons } from '../../../../../core/cantons/Cantons';
 import { DossierStatus } from '../../../../../api/model/dossierStatus';
 import { SelectComponent } from '../../../../../core/form-components/select/select.component';
 import { DialogService } from '../../../../../core/components/dialog/dialog.service';
-import { OpenDossierInMailService } from './open-dossier-in-mail.service';
+import { OpenCantonDossierInMailService } from './open-canton-dossier-in-mail.service';
 
 export const DOSSIER_EDITABLE_STATES = [
   DossierStatus.Added,
@@ -68,7 +68,7 @@ export const DOSSIER_EDITABLE_STATES = [
     UserSelectComponent,
     SelectComponent,
   ],
-  providers: [OpenDossierInMailService, TranslatePipe],
+  providers: [OpenCantonDossierInMailService, TranslatePipe],
   templateUrl: './canton-dossier-detail.component.html',
   styleUrls: ['./canton-dossier-detail.component.scss'],
 })
@@ -87,7 +87,9 @@ export class CantonDossierDetailComponent
     TimetableHearingStatementInternalService
   );
   private readonly dialogService = inject(DialogService);
-  private readonly openDossierInMailService = inject(OpenDossierInMailService);
+  private readonly openDossierInMailService = inject(
+    OpenCantonDossierInMailService
+  );
 
   readonly editableStates = DOSSIER_EDITABLE_STATES;
   readonly cancelableStates = [DossierStatus.Added];
