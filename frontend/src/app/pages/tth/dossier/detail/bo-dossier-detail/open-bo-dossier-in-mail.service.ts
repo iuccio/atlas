@@ -19,7 +19,7 @@ export class OpenBoDossierInMailService {
     const subject = 'Dossier ' + `"${data.topic}"`;
     const canton = this.getCantonLabel(data.swissCanton);
     const inquiryFromCantonLabel = this.getInquiryFromCantonLabel();
-    const body = `${inquiryFromCantonLabel} [${canton}] \n${data.cantonQuestion}`;
+    const body = `${inquiryFromCantonLabel} [${canton}]\n${data.cantonQuestion}`;
 
     window.open(
       `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,

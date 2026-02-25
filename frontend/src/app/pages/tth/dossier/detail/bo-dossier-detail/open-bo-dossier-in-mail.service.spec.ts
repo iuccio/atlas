@@ -40,7 +40,7 @@ describe('OpenBoDossierInMailService', () => {
     });
 
     const result =
-      'mailto:?subject=Dossier%20%22Thema%22&body=R%C3%BCckfrage%20des%20Kantons%20%5BBern%5D%20%0AFrage%20an%20das%20Transportunternehmen';
+      'mailto:?subject=Dossier%20%22Thema%22&body=R%C3%BCckfrage%20des%20Kantons%20%5BBern%5D%0AFrage%20an%20das%20Transportunternehmen';
     expect(window.open).toHaveBeenCalledWith(result, '_self');
   });
 });

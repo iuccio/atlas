@@ -82,7 +82,7 @@ describe('OpenStatementInMailService', () => {
     );
 
     expect(mailToLink).toBe(
-      'mailto:?subject=&body=Stellungnahme%3A%20Mehr%20B%C3%B6s%20pls'
+      'mailto:?subject=Anfrage%20Stellungnahme%20456%20&body=Stellungnahme%3A%20Mehr%20B%C3%B6s%20pls'
     );
   });
 
