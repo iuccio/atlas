@@ -54,7 +54,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/v1/users/current",
                     "/v1/users/*/displayname",
                     "/v1/users/display-info",
-                    "/v1/users/mail").hasAnyRole(Role.ATLAS_INTERNAL)
+                    "/v1/users/mail",
+                    "/v1/users/*").hasAnyRole(Role.ATLAS_INTERNAL)
                 .requestMatchers(HttpMethod.GET, UserInformationApiV1.ALLOWED_FOR_ATLAS_INTERNAL_ROLE.toArray(String[]::new)).hasAnyRole(Role.ATLAS_INTERNAL)
                 // Others only for atlas-admin
                 .requestMatchers("/**").hasRole(Role.ATLAS_ADMIN)
