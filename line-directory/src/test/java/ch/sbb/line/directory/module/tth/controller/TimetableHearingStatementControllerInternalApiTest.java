@@ -446,8 +446,8 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
             .build())
         .statement("Ich mag bitte mehr Bös fahren")
         .build();
-    timetableHearingStatementRepository.saveAndFlush(statement1);
-    timetableHearingStatementRepository.saveAndFlush(statement2);
+    statement1 = timetableHearingStatementRepository.saveAndFlush(statement1);
+    statement2 = timetableHearingStatementRepository.saveAndFlush(statement2);
     List<Long> ids = Stream.of(statement1, statement2).map(TimetableHearingStatement::getId).toList();
     UpdateHearingStatementStatusModel updateHearingStatementStatusModel =
         UpdateHearingStatementStatusModel.builder().ids(ids).justification("Forza Napoli")
@@ -458,6 +458,16 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
             .contentType(contentType)
             .content(mapper.writeValueAsString(updateHearingStatementStatusModel)))
         .andExpect(status().isOk());
+
+    statement1 = timetableHearingStatementRepository.findById(statement1.getId()).orElseThrow();
+    assertThat(statement1.getInternalComment()).isEqualTo("Forza Napoli");
+    assertThat(statement1.getPublicComment()).isNull();
+    assertThat(statement1.getStatementStatus()).isEqualTo(StatementStatus.ACCEPTED);
+
+    statement2 = timetableHearingStatementRepository.findById(statement2.getId()).orElseThrow();
+    assertThat(statement2.getInternalComment()).isEqualTo("Forza Napoli");
+    assertThat(statement2.getPublicComment()).isNull();
+    assertThat(statement2.getStatementStatus()).isEqualTo(StatementStatus.ACCEPTED);
   }
 
   @Test

@@ -303,7 +303,7 @@ public class TimetableHearingStatementService {
     checkThatStatementIsNotPartOfDossier(statement);
     statement.setStatementStatus(statementStatus);
     if (justification != null) {
-      statement.setPublicComment(justification);
+      statement.setInternalComment(justification);
     }
     timetableHearingStatementRepository.save(statement);
   }
