@@ -26,7 +26,7 @@ public class ServicePointTerminationService {
     log.info("Update on {}. isTermination={}", number, isTermination);
 
     if (isTermination
-        && afterUpdateVersions.stream().anyMatch(version -> version.getStatus() == Status.VALIDATED)
+        && currentVersions.stream().anyMatch(version -> version.getStatus() == Status.VALIDATED)
         && !businessOrganisationBasedUserAdministrationService.isAtLeastSupervisor(ApplicationType.SEPODI)) {
       throw new TerminationNotAllowedException(number);
     }
