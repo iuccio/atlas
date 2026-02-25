@@ -2,6 +2,9 @@ package ch.sbb.atlas.imports.bulk;
 
 import ch.sbb.atlas.api.model.ErrorResponse.DisplayInfo;
 import ch.sbb.atlas.imports.bulk.BulkImportLogEntry.BulkImportError;
+import ch.sbb.atlas.versioning.convert.ReflectionHelper;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -96,5 +99,16 @@ public class BulkImportErrors {
             .with("value", duplicatedValue)
             .build())
         .build();
+  }
+
+  public static List<BulkImportError> notNullForFields(Object model, List<String> notNullFields) {
+    List<BulkImportError> errors = new ArrayList<>();
+    notNullFields.forEach(notNullField -> {
+      Object fieldValue = ReflectionHelper.getFieldValue(model, notNullField);
+      if (fieldValue == null) {
+        errors.add(BulkImportErrors.notNull(notNullField));
+      }
+    });
+    return errors;
   }
 }
