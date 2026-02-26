@@ -148,7 +148,6 @@ describe('Service Points Navigation Helper', () => {
           Pages.SERVICE_POINTS.path
         );
         //then
-        console.log(result);
         expect(result).toEqual([
           'service-points',
           '8500001',
