@@ -45,12 +45,12 @@ class ServicePointTerminationHelperTest {
         .meansOfTransport(Set.of(MeanOfTransport.BUS))
         .validFrom(LocalDate.of(2020, 1, 1))
         .validTo(LocalDate.of(2020, 12, 31))
+        .status(Status.VALIDATED)
         .build());
     List<ServicePointVersion> afterUpdate = List.of(ServicePointVersion.builder()
         .meansOfTransport(Set.of(MeanOfTransport.BUS))
         .validFrom(LocalDate.of(2020, 1, 1))
         .validTo(LocalDate.of(2020, 12, 30))
-        .status(Status.VALIDATED)
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
@@ -96,12 +96,12 @@ class ServicePointTerminationHelperTest {
         .meansOfTransport(Set.of(MeanOfTransport.BUS))
         .validFrom(LocalDate.of(2020, 1, 1))
         .validTo(LocalDate.of(2020, 12, 31))
+        .status(Status.VALIDATED)
         .build());
     List<ServicePointVersion> afterUpdate = List.of(ServicePointVersion.builder()
         .meansOfTransport(Set.of(MeanOfTransport.BUS))
         .validFrom(LocalDate.of(2020, 1, 10))
         .validTo(LocalDate.of(2020, 12, 31))
-        .status(Status.VALIDATED)
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
@@ -123,11 +123,11 @@ class ServicePointTerminationHelperTest {
         .meansOfTransport(Set.of(MeanOfTransport.BUS))
         .validFrom(LocalDate.of(2020, 1, 1))
         .validTo(LocalDate.of(2020, 12, 31))
+        .status(Status.VALIDATED)
         .build());
     List<ServicePointVersion> afterUpdate = List.of(ServicePointVersion.builder()
         .validFrom(LocalDate.of(2020, 1, 1))
         .validTo(LocalDate.of(2020, 12, 31))
-        .status(Status.VALIDATED)
         .build());
 
     ThrowingCallable terminationCheck = () -> servicePointTerminationService.checkTerminationAllowed(currentVersions,
