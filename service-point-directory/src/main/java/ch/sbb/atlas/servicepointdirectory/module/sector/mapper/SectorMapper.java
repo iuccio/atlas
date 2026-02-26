@@ -37,6 +37,7 @@ public class SectorMapper {
     if (sectorVersion == null) {
       return null;
     }
+    GeolocationMapper.checkIfCoordinatesAreTransformable(sectorVersion);
     Map<SpatialReference, CoordinatePair> coordinates = GeolocationMapper.getTransformedCoordinates(sectorVersion);
     return GeolocationBaseReadModel.builder()
         .spatialReference(sectorVersion.getSpatialReference())
