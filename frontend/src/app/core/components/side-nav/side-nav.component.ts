@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { Page } from '../../model/page';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, map, switchMap } from 'rxjs/operators';
@@ -20,20 +20,43 @@ import { Cantons } from '../../cantons/Cantons';
 export class SideNavComponent {
   activePageIndex: number | null = 0;
   activeSubPageIndex = 0;
-  selectedPage: Page | null = null;
-  navParam!: Record<string, string>;
+  selectedPage = signal<Page | null>(null);
+
+  readonly navParam = computed<Record<string, string>>(() => ({
+    canton: this.overviewToTabService.cantonShort() || Cantons.swiss.path,
+  }));
+
+  subPageLinks = computed(() => {
+    const nav = this.navParam();
+    const page = this.selectedPage();
+
+    if (!page?.subpages) {
+      return new Map<Page, string[]>();
+    }
+
+    const links = new Map<Page, string[]>();
+    for (const subPage of page.subpages) {
+      const params = page.params ?? [];
+
+      if (params.length > 0) {
+        const values = params
+          .map((param: string) => nav[param].toLowerCase())
+          .filter(Boolean);
+
+        links.set(subPage, [page.path, ...values, subPage.path]);
+      } else {
+        links.set(subPage, [page.path, subPage.path]);
+      }
+    }
+
+    return links;
+  });
 
   constructor(
     private readonly router: Router,
     protected readonly pageService: PageService,
     private readonly overviewToTabService: OverviewToTabShareDataService
   ) {
-    this.overviewToTabService.cantonShort$
-      .pipe(takeUntilDestroyed())
-      .subscribe((canton) => {
-        this.navParam = { canton: canton || Cantons.swiss.path };
-      });
-
     this.router.events
       .pipe(
         takeUntilDestroyed(),
@@ -53,7 +76,7 @@ export class SideNavComponent {
     pages.forEach((page, index) => {
       if (currentUrl.includes(page.path)) {
         this.activePageIndex = index;
-        this.selectedPage = page;
+        this.selectedPage.set(page);
         if (page.subpages) {
           page.subpages.forEach((subPage, index) => {
             if (currentUrl.includes(subPage.path)) {
@@ -64,18 +87,5 @@ export class SideNavComponent {
         }
       }
     });
-  }
-
-  linkForSubPage(page: Page, subPage: Page) {
-    const params = page.params ?? [];
-    if (params.length) {
-      const values = params
-        .map((param) => this.navParam?.[param])
-        .filter(Boolean);
-
-      return [page.path, ...values, subPage.path];
-    }
-
-    return [page.path, subPage.path];
   }
 }

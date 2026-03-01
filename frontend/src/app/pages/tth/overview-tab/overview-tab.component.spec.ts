@@ -4,12 +4,11 @@ import { OverviewToTabShareDataService } from './service/overview-to-tab-share-d
 import { HearingStatus } from '../../../api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { Pages } from '../../pages';
 
 describe('OverviewTabComponent', () => {
   let component: OverviewTabComponent;
   let fixture: ComponentFixture<OverviewTabComponent>;
-  let route: ActivatedRoute;
-  let overviewToTabService: OverviewToTabShareDataService;
   let routerEventsSubject: Subject<Event>;
 
   beforeEach(async () => {
@@ -42,48 +41,23 @@ describe('OverviewTabComponent', () => {
 
     fixture = TestBed.createComponent(OverviewTabComponent);
     component = fixture.componentInstance;
-    route = TestBed.inject(ActivatedRoute);
-    overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
   });
 
-  describe('Canton Subscription', () => {
-    it('should update cantonShort when service emits new value', () => {
-      fixture.detectChanges();
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-      expect(component.cantonShort).toBe('ch');
+  it('should define two tabs with correct links and titles', () => {
+    expect(component.TABS.length).toBe(2);
 
-      overviewToTabService.changeData('be');
-
-      expect(component.cantonShort).toBe('be');
+    expect(component.TABS[0]).toEqual({
+      link: Pages.TTH_STATEMENTS.path,
+      title: 'TTH.TAB.STATEMENTS',
     });
 
-    it('should react to multiple canton changes', () => {
-      fixture.detectChanges();
-
-      overviewToTabService.changeData('ag');
-      expect(component.cantonShort).toBe('ag');
-
-      overviewToTabService.changeData('zh');
-      expect(component.cantonShort).toBe('zh');
-
-      overviewToTabService.changeData('ch');
-      expect(component.cantonShort).toBe('ch');
-    });
-
-    it('should have initial canton from route on init', () => {
-      route.snapshot.params = { canton: 'bl' };
-
-      fixture.detectChanges();
-
-      expect(component.cantonShort).toBe('bl');
-    });
-
-    it('should sync with service after external change', () => {
-      fixture.detectChanges();
-
-      overviewToTabService.changeData('gr');
-
-      expect(component.cantonShort).toBe('gr');
+    expect(component.TABS[1]).toEqual({
+      link: Pages.TTH_DOSSIERS.path,
+      title: 'TTH.TAB.DOSSIERS',
     });
   });
 });

@@ -105,7 +105,7 @@ class TthYearServiceTest {
     tthYearService.startTimetableHearingYear(2028L);
     // then
     assertThat(tthDossierYearRepository.findById(2028L).get().getHearingStatus()).isEqualTo(HearingStatus.ACTIVE);
-    verify(timetableHearingYearApiInternalClient).startHearingYear(eq(2028L));
+    verify(timetableHearingYearApiInternalClient).startHearingYear(2028L);
   }
 
   @Test
@@ -114,7 +114,7 @@ class TthYearServiceTest {
     // when
     assertThrows(FeignException.class, () -> tthYearService.startTimetableHearingYear(2029L));
     // then
-    assertThat(tthDossierYearRepository.findById(2029L).isEmpty()).isTrue();
+    assertThat(tthDossierYearRepository.findById(2029L)).isEmpty();
   }
 
   @Test

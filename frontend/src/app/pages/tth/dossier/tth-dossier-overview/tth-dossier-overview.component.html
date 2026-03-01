@@ -1,10 +1,10 @@
-@if (!noTimetableHearingYearFound) {
+@if (isTimetableHearingYearFound()) {
   <atlas-table
     (editElementEvent)="editDossier($event.id!)"
     (tableChanged)="getOverview($event)"
     [tableColumns]="tableColumns"
     [tableData]="tthDossiers"
-    [totalCount]="totalCount$"
+    [totalCount]="totalCount"
     [tableFilterConfig]="tableFilterConfig"
     data-cy="tthTable"
   >
@@ -12,39 +12,38 @@
       <atlas-tth-dossier-overview-menu
         [row]="row"
         [column]="column"
-        [hearingStatus]="hearingStatus"
-        (reloadTable)="ngOnInit()"
+        [hearingStatus]="hearingStatus()"
       ></atlas-tth-dossier-overview-menu>
     </ng-template>
     <div class="d-flex flex-row col-12 mb-3 mt-5">
-      @if (isHearingYearActive && isSwissCanton) {
+      @if (isHearingYearActive() && isSwissCanton()) {
         <span class="font-bold-lg">
           {{
             'TTH.TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX_DOSSIER'
-              | translate: { totalCount: totalCount$ }
+              | translate: { totalCount: totalCount }
           }}
           {{ 'TTH.WHOLE_SWISS' | translate }}
         </span>
       }
 
-      @if (isHearingYearActive && !isSwissCanton) {
+      @if (isHearingYearActive() && !isSwissCanton()) {
         <span class="font-bold-lg">
           {{
             'TTH.TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX_DOSSIER'
-              | translate: { totalCount: totalCount$ }
+              | translate: { totalCount: totalCount }
           }}
           {{ 'TTH.SWISS_CANTON' | translate }}
-          {{ 'TTH.CANTON.' + cantonShort.toUpperCase() | translate }}
+          {{ 'TTH.CANTON.' + cantonShort().toUpperCase() | translate }}
         </span>
       }
 
-      @if (!isHearingYearActive) {
+      @if (!isHearingYearActive()) {
         <span class="font-bold-lg">{{
           'TTH.TABLE_RESULT_HEADING_DOSSIER'
             | translate
               : {
-                  totalCount: totalCount$,
-                  year: foundTimetableHearingYear.timetableYear,
+                  totalCount: totalCount,
+                  year: timetableYear().timetableYear,
                 }
         }}</span>
       }

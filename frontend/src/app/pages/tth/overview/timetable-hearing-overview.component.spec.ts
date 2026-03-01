@@ -5,12 +5,18 @@ import { By } from '@angular/platform-browser';
 import { CantonCardComponent } from './canton-card/canton-card.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppTestingModule } from '../../../app.testing.module';
+import { OverviewToTabShareDataService } from '../overview-tab/service/overview-to-tab-share-data.service';
 
 describe('TimetableHearingOverviewComponent', () => {
   let component: TimetableHearingOverviewComponent;
   let fixture: ComponentFixture<TimetableHearingOverviewComponent>;
+  let service: jasmine.SpyObj<OverviewToTabShareDataService>;
 
   beforeEach(async () => {
+    service = jasmine.createSpyObj('OverviewToTabShareDataService', [
+      'setCantonShort',
+    ]);
+
     await TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -18,10 +24,14 @@ describe('TimetableHearingOverviewComponent', () => {
         TimetableHearingOverviewComponent,
         CantonCardComponent,
       ],
+      providers: [
+        { provide: OverviewToTabShareDataService, useValue: service },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TimetableHearingOverviewComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 
@@ -32,5 +42,11 @@ describe('TimetableHearingOverviewComponent', () => {
   it('should create 27 canton cards', () => {
     const cards = fixture.debugElement.queryAll(By.css('.card'));
     expect(cards.length).toBe(27);
+  });
+
+  it('should call setCantonShort on service when onCantonCardClick is triggered', () => {
+    const canton = 'BE';
+    component.onCantonCardClick(canton);
+    expect(service.setCantonShort).toHaveBeenCalledWith(canton);
   });
 });

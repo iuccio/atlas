@@ -112,7 +112,7 @@ describe('TthDossierOverviewMenuComponent', () => {
     });
     fixture.detectChanges();
 
-    expect(component.isDossierDissolvable).toBe(true);
+    expect(component.isDossierDissolvable()).toBe(true);
   });
 
   it('should return false for isDossierDissolvable when status is Added', () => {
@@ -122,7 +122,7 @@ describe('TthDossierOverviewMenuComponent', () => {
     });
     fixture.detectChanges();
 
-    expect(component.isDossierDissolvable).toBe(false);
+    expect(component.isDossierDissolvable()).toBe(false);
   });
 
   it('should return true for isDossierCancelable when status is Added', () => {
@@ -132,6 +132,6 @@ describe('TthDossierOverviewMenuComponent', () => {
     });
     fixture.detectChanges();
 
-    expect(component.isDossierCancelable).toBe(true);
+    expect(component.isDossierCancelable()).toBe(true);
   });
 });

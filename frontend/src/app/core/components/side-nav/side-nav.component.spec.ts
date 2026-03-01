@@ -12,11 +12,13 @@ import {
 import { PageService } from '../../pages/page.service';
 import { provideHttpClient } from '@angular/common/http';
 import { Page } from '../../model/page';
+import { OverviewToTabShareDataService } from '../../../pages/tth/overview-tab/service/overview-to-tab-share-data.service';
 
 describe('SideNavComponent', () => {
   let component: SideNavComponent;
   let fixture: ComponentFixture<SideNavComponent>;
   let router: Router;
+  let overviewTabService: OverviewToTabShareDataService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -40,11 +42,13 @@ describe('SideNavComponent', () => {
           provide: PageService,
           useValue: pageServiceMock,
         },
+        OverviewToTabShareDataService,
       ],
     }).compileComponents();
   });
 
   beforeEach(() => {
+    overviewTabService = TestBed.inject(OverviewToTabShareDataService);
     fixture = TestBed.createComponent(SideNavComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
@@ -109,31 +113,51 @@ describe('SideNavComponent', () => {
   });
 
   it('should return path array without params when page has no params', () => {
-    const page: Page = { title: '', path: '/tth', params: [] };
     const subPage: Page = { title: '', path: 'dossier', params: [] };
+    const page: Page = {
+      title: '',
+      path: '/tth',
+      params: [],
+      subpages: [subPage],
+    };
 
-    const result = component.linkForSubPage(page, subPage);
+    component.selectedPage.set(page);
 
-    expect(result).toEqual(['/tth', 'dossier']);
+    const result = component.subPageLinks();
+
+    expect(result.get(subPage)).toEqual(['/tth', 'dossier']);
   });
 
   it('should return path array without params when page.params is undefined', () => {
-    const page: Page = { title: '', path: '/tth' };
     const subPage: Page = { title: '', path: 'dossier' };
+    const page: Page = {
+      title: '',
+      path: '/tth',
+      subpages: [subPage],
+    };
 
-    const result = component.linkForSubPage(page, subPage);
+    component.selectedPage.set(page);
 
-    expect(result).toEqual(['/tth', 'dossier']);
+    const result = component.subPageLinks();
+
+    expect(result.get(subPage)).toEqual(['/tth', 'dossier']);
   });
 
   it('should include param values in path array when params exist', () => {
-    component.navParam = { canton: 'be' };
+    overviewTabService.setCantonShort('be');
 
-    const page: Page = { title: '', path: '/tth', params: ['canton'] };
     const subPage: Page = { title: '', path: 'dossier' };
+    const page: Page = {
+      title: '',
+      path: '/tth',
+      params: ['canton'],
+      subpages: [subPage],
+    };
 
-    const result = component.linkForSubPage(page, subPage);
+    component.selectedPage.set(page);
 
-    expect(result).toEqual(['/tth', 'be', 'dossier']);
+    const result = component.subPageLinks();
+
+    expect(result.get(subPage)).toEqual(['/tth', 'be', 'dossier']);
   });
 });

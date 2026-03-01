@@ -1,6 +1,5 @@
 <div class="ps-5 pt-5">
-  @let hasTabs = isHearingStatusActive$ | async;
-  @if (hasTabs) {
+  @if (!isHearingYearPlanned()) {
     <nav
       [tabPanel]="tabPanelCanton"
       class="tabs"
@@ -9,9 +8,8 @@
     >
       @for (tab of TABS; track tab) {
         <a
-          (click)="clickOnTab()"
           [attr.data-cy]="'tth-tab-' + tab.link"
-          [routerLink]="tabLink(tab)"
+          [routerLink]="[this.hearingStatus().toLowerCase(), tab.link]"
           [relativeTo]="route"
           routerLinkActive="active-tab"
           class="font-bold-xl"
@@ -23,7 +21,11 @@
     </nav>
   }
 
-  <div [ngClass]="hasTabs ? 'white-table-container-no-padding' : ''">
+  <div
+    [ngClass]="
+      !isHearingYearPlanned() ? 'white-table-container-no-padding' : ''
+    "
+  >
     <mat-tab-nav-panel #tabPanelCanton>
       <router-outlet></router-outlet>
     </mat-tab-nav-panel>

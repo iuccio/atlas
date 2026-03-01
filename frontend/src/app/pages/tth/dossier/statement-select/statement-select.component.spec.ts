@@ -77,7 +77,7 @@ describe('StatementSelectComponent', () => {
 
     component.goToStatement(statement);
 
-    const expectedUrl = '/timetable-hearing/be/active/456';
+    const expectedUrl = '/timetable-hearing/be/active/statements/456';
     expect(window.open).toHaveBeenCalledWith(expectedUrl, '_blank');
   });
 });

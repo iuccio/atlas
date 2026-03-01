@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { HearingStatus, TimetableHearingYear } from '../../../../api';
-import { Pages } from '../../../pages';
 import { DisplayDatePipe } from '../../../../core/pipe/display-date.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgOptimizedImage } from '@angular/common';
+import { OverviewToTabShareDataService } from '../service/overview-to-tab-share-data.service';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-tab-heading',
@@ -15,18 +15,15 @@ export class OverviewTabHeadingComponent {
   @Input() cantonShort!: string;
   @Input() foundTimetableHearingYear!: TimetableHearingYear;
   @Input() hearingStatus!: HearingStatus;
-  @Input() noTimetableHearingYearFound!: boolean;
-  @Input() noPlannedTimetableHearingYearFound!: boolean;
+  @Input() isTimetableHearingYearFound!: boolean;
+  @Input() isPlannedTimetableHearingYearFound!: boolean;
 
-  get isHearingStatusActive() {
-    return this.hearingStatus.toLowerCase() === Pages.TTH_ACTIVE.path;
-  }
+  overviewToTabShareDataService = inject(OverviewToTabShareDataService);
 
-  get isHearingStatusPlanned() {
-    return this.hearingStatus.toLowerCase() === Pages.TTH_PLANNED.path;
-  }
-
-  get isHearingStatusArchived() {
-    return this.hearingStatus.toLowerCase() === Pages.TTH_ARCHIVED.path;
-  }
+  readonly isHearingYearActive =
+    this.overviewToTabShareDataService.isHearingYearActive;
+  readonly isHearingYearPlanned =
+    this.overviewToTabShareDataService.isHearingYearPlanned;
+  readonly isHearingYearArchived =
+    this.overviewToTabShareDataService.isHearingYearArchived;
 }
