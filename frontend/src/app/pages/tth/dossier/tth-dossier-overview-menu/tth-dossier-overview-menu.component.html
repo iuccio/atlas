@@ -1,4 +1,4 @@
-@if (isDossierCompletable && isHearingStatusActive) {
+@if (isDossierCompletable() && isHearingStatusActive()) {
   <button
     matIconButton
     [matMenuTriggerFor]="menu"
@@ -8,38 +8,51 @@
     <i class="icon bi bi-three-dots-vertical"></i>
   </button>
   <mat-menu #menu="matMenu">
-    @if (isDossierCancelable) {
+    <ng-template #dossierAction let-cfg>
       <button
         mat-menu-item
         class="color-primary-400"
-        (click)="completeDossier('CANCELED')"
+        (click)="completeDossier(cfg.action)"
       >
         <img
           class="pe-2"
           height="22"
-          ngSrc="assets/images/collecting_action/X-CIRCLE.svg"
           width="22"
+          [ngSrc]="cfg.icon"
           alt="canton-delivery-icon"
         />
-        <span>{{ 'TTH.DOSSIER.CANCEL_DOSSIER' | translate }}</span>
+        <span>{{ cfg.label | translate }}</span>
       </button>
+    </ng-template>
+
+    @if (isDossierCancelable()) {
+      <ng-container
+        *ngTemplateOutlet="
+          dossierAction;
+          context: {
+            $implicit: {
+              action: 'CANCELED',
+              icon: 'assets/images/collecting_action/X-CIRCLE.svg',
+              label: 'TTH.DOSSIER.CANCEL_DOSSIER',
+            },
+          }
+        "
+      />
     }
 
-    @if (isDossierDissolvable) {
-      <button
-        mat-menu-item
-        class="color-primary-400"
-        (click)="completeDossier('DISSOLVED')"
-      >
-        <img
-          class="pe-2"
-          height="22"
-          ngSrc="assets/images/collecting_action/DASH-CIRCLE.svg"
-          width="22"
-          alt="canton-delivery-icon"
-        />
-        <span>{{ 'TTH.DOSSIER.DISSOLVE_DOSSIER' | translate }}</span>
-      </button>
+    @if (isDossierDissolvable()) {
+      <ng-container
+        *ngTemplateOutlet="
+          dossierAction;
+          context: {
+            $implicit: {
+              action: 'DISSOLVED',
+              icon: 'assets/images/collecting_action/DASH-CIRCLE.svg',
+              label: 'TTH.DOSSIER.DISSOLVE_DOSSIER',
+            },
+          }
+        "
+      />
     }
   </mat-menu>
 }

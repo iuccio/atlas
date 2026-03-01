@@ -19,14 +19,14 @@
         <em
           class="bi ms-auto"
           [ngClass]="{
-            'bi-arrow-right': selectedPage === page || !page.subpages,
-            'bi-chevron-down': selectedPage === page && page.subpages,
-            'bi-chevron-up': selectedPage !== page && page.subpages,
+            'bi-arrow-right': selectedPage() === page || !page.subpages,
+            'bi-chevron-down': selectedPage() === page && page.subpages,
+            'bi-chevron-up': selectedPage() !== page && page.subpages,
           }"
         ></em>
       </div>
     </a>
-    @if (selectedPage === page && page.subpages) {
+    @if (selectedPage() === page && page.subpages) {
       <div>
         @for (
           subPage of page.subpages;
@@ -39,7 +39,7 @@
               !activePageIndex && activeSubPageIndex === subPageIndex
             "
           >
-            <a mat-list-item [routerLink]="linkForSubPage(page, subPage)">
+            <a mat-list-item [routerLink]="subPageLinks().get(subPage)">
               <div class="list-item-content-wrapper subpage">
                 <span class="font-bold-base link-text">{{
                   subPage.titleMenu! | translate

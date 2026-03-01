@@ -1,11 +1,11 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { catchError, combineLatest, EMPTY } from 'rxjs';
+import { Component, effect, inject } from '@angular/core';
+import { catchError, EMPTY } from 'rxjs';
 import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
 import { TableComponent } from '../../../../core/components/table/table.component';
 import { TableColumn } from '../../../../core/components/table/table-column';
 import { TableFilter } from '../../../../core/components/table-filter/config/table-filter';
 import { TthDossier } from '../../../../api/model/tthDossier';
-import { HearingStatus, SwissCanton } from '../../../../api';
+import { SwissCanton } from '../../../../api';
 import { Cantons } from '../../../../core/cantons/Cantons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TthTableFilterSettingsService } from '../../tth-table-filter-settings.service';
@@ -13,12 +13,10 @@ import { Pages } from '../../../pages';
 import { TableService } from '../../../../core/components/table/table.service';
 import { TablePagination } from '../../../../core/components/table/table-pagination';
 import { OverviewToTabShareDataService } from '../../overview-tab/service/overview-to-tab-share-data.service';
-import { TthUtils } from '../../util/tth-utils';
-import { filter } from 'rxjs/operators';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TthDossierOverviewMenuComponent } from '../tth-dossier-overview-menu/tth-dossier-overview-menu.component';
 import { addElementsToArrayWhenNotUndefined } from '../../../../core/util/arrays';
 import { TranslatePipe } from '@ngx-translate/core';
+import { DossierStatus } from '../../../../api/model/dossierStatus';
 
 @Component({
   selector: 'atlas-tth-dossier-overview',
@@ -26,58 +24,43 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './tth-dossier-overview.component.html',
   providers: [TableService],
 })
-export class TthDossierOverviewComponent implements OnInit {
+export class TthDossierOverviewComponent {
   private readonly dossierInternalService = inject(DossierInternalService);
   private readonly tableService = inject(TableService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly overviewToTabService = inject(OverviewToTabShareDataService);
-  private readonly destroyRef = inject(DestroyRef);
+
+  readonly cantonShort = this.overviewToTabService.cantonShort;
+  readonly timetableYear = this.overviewToTabService.timetableYear;
+  readonly hearingStatus = this.overviewToTabService.hearingStatus;
+  readonly isTimetableHearingYearFound =
+    this.overviewToTabService.isTimetableHearingYearFound;
+  readonly isHearingYearActive = this.overviewToTabService.isHearingYearActive;
+  readonly isHearingYearArchived =
+    this.overviewToTabService.isHearingYearArchived;
+  readonly isSwissCanton = this.overviewToTabService.isSwissCanton;
+  readonly isYearLoading = this.overviewToTabService.isYearLoading;
 
   tthDossiers: TthDossier[] = [];
-  totalCount$ = 0;
+  totalCount = 0;
   tableColumns: TableColumn<TthDossier>[] = [];
   tableFilterConfig!: TableFilter<unknown>[][];
-  hearingStatus = HearingStatus.Active;
+
+  STATUS_OPTIONS = Object.values(DossierStatus);
 
   sorting = 'topic,asc';
 
-  get cantonShort() {
-    return this.overviewToTabService.getCantonShort();
-  }
-  get foundTimetableHearingYear() {
-    return this.overviewToTabService.getTimetableHearingYear();
-  }
-  get noTimetableHearingYearFound() {
-    return this.overviewToTabService.getNoTimetableHearingYearFound();
-  }
-
-  get isHearingYearActive() {
-    return TthUtils.isHearingStatusActive(this.hearingStatus);
-  }
-
-  get isSwissCanton(): boolean {
-    return this.cantonShort.toLowerCase() === Cantons.swiss.short.toLowerCase();
-  }
-
-  ngOnInit(): void {
-    combineLatest([
-      this.overviewToTabService.timetableHearingYear$,
-      this.overviewToTabService.timetableHearingYearLoading$,
-    ])
-      .pipe(
-        filter(([year, loading]) => !loading && !!year?.timetableYear),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe(() => {
+  constructor() {
+    effect(() => {
+      if (!this.isYearLoading()) {
         this.loadData();
-      });
+      }
+    });
   }
 
   loadData() {
-    this.hearingStatus = this.route.snapshot.data.hearingStatus;
-
-    if (TthUtils.isHearingStatusActive(this.hearingStatus)) {
+    if (this.isHearingYearActive()) {
       this.tableColumns = this.getTableColumns();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         TthTableFilterSettingsService.createDossierSettings(),
@@ -86,7 +69,7 @@ export class TthDossierOverviewComponent implements OnInit {
       this.initOverviewTable();
     }
 
-    if (TthUtils.isHearingStatusArchived(this.hearingStatus)) {
+    if (this.isHearingYearArchived()) {
       this.tableColumns = this.getTableColumns();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         TthTableFilterSettingsService.createDossierSettings(),
@@ -99,8 +82,8 @@ export class TthDossierOverviewComponent implements OnInit {
   getOverview(pagination: TablePagination) {
     this.dossierInternalService
       .getOverview(
-        this.foundTimetableHearingYear.timetableYear,
-        Cantons.getSwissCantonFromShort(this.cantonShort),
+        this.timetableYear().timetableYear,
+        Cantons.getSwissCantonFromShort(this.cantonShort()),
         this.tableService.filter.chipSearch.getActiveSearch(),
         this.tableService.filter.multiSelectDossierStatus.getActiveSearch(),
         pagination.page,
@@ -114,7 +97,7 @@ export class TthDossierOverviewComponent implements OnInit {
       .pipe(catchError(this.handleError()))
       .subscribe((container) => {
         this.tthDossiers = container.objects!;
-        this.totalCount$ = container.totalCount!;
+        this.totalCount = container.totalCount!;
       });
   }
 
@@ -142,6 +125,9 @@ export class TthDossierOverviewComponent implements OnInit {
       {
         headerTitle: 'TTH.STATEMENT_STATUS_HEADER',
         value: 'dossierStatus',
+        translate: {
+          withPrefix: 'TTH.DOSSIER.DOSSIER_STATUS.',
+        },
       },
       {
         headerTitle: 'TTH.SWISS_CANTON',

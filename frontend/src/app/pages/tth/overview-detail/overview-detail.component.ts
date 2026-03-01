@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, effect, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   ApplicationType,
@@ -13,7 +13,7 @@ import {
 import { Cantons } from '../../../core/cantons/Cantons';
 import { TableColumn } from '../../../core/components/table/table-column';
 import { Pages } from '../../pages';
-import { combineLatest, take } from 'rxjs';
+import { take } from 'rxjs';
 import { OverviewToTabShareDataService } from '../overview-tab/service/overview-to-tab-share-data.service';
 import { MatSelectChange } from '@angular/material/select';
 import { TthUtils } from '../util/tth-utils';
@@ -46,7 +46,6 @@ import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
 import { DialogData } from '../../../core/components/dialog/dialog.data';
 import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog/tth-export-anonymization-choice-dialog.component';
 import { StatementOverviewMenuComponent } from './statement-overview-menu/statement-overview-menu.component';
-import { filter } from 'rxjs/operators';
 import { TableFilterBoolean } from '../../../core/components/table-filter/config/table-filter-boolean';
 import { TthYearInternalService } from '../../../api/service/workflow/tth-year-internal.service';
 
@@ -66,12 +65,23 @@ import { TthYearInternalService } from '../../../api/service/workflow/tth-year-i
     StatementOverviewMenuComponent,
   ],
 })
-export class OverviewDetailComponent implements OnInit {
-  timeTableHearingStatements: TimetableHearingStatementV2[] = [];
-  totalCount$ = 0;
-  tableColumns: TableColumn<TimetableHearingStatementV2>[] = [];
+export class OverviewDetailComponent {
+  readonly cantonShort = this.overviewToTabService.cantonShort;
+  readonly timetableYear = this.overviewToTabService.timetableYear;
+  readonly hearingStatus = this.overviewToTabService.hearingStatus;
+  readonly isTimetableHearingYearFound =
+    this.overviewToTabService.isTimetableHearingYearFound;
+  readonly isHearingYearActive = this.overviewToTabService.isHearingYearActive;
+  readonly isHearingYearPlanned =
+    this.overviewToTabService.isHearingYearPlanned;
+  readonly isHearingYearArchived =
+    this.overviewToTabService.isHearingYearArchived;
+  readonly isSwissCanton = this.overviewToTabService.isSwissCanton;
+  readonly isYearLoading = this.overviewToTabService.isYearLoading;
 
-  hearingStatus = HearingStatus.Active;
+  timeTableHearingStatements: TimetableHearingStatementV2[] = [];
+  totalCount = 0;
+  tableColumns: TableColumn<TimetableHearingStatementV2>[] = [];
 
   CANTON_DROPDOWN_OPTIONS_WITHOUT_SWISS = Cantons.cantons.map(
     (value) => value.short
@@ -103,20 +113,6 @@ export class OverviewDetailComponent implements OnInit {
 
   tableFilterConfig!: TableFilter<unknown>[][];
 
-  get cantonShort() {
-    return this.overviewToTabService.getCantonShort();
-  }
-  get foundTimetableHearingYear() {
-    return this.overviewToTabService.getTimetableHearingYear();
-  }
-  get noTimetableHearingYearFound() {
-    return this.overviewToTabService.getNoTimetableHearingYearFound();
-  }
-
-  get yearSelection() {
-    return this.foundTimetableHearingYear.timetableYear;
-  }
-
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -132,47 +128,25 @@ export class OverviewDetailComponent implements OnInit {
     private readonly translateService: TranslateService,
     private readonly permissionService: PermissionService,
     private readonly matDialog: MatDialog
-  ) {}
-
-  get isHearingYearActive(): boolean {
-    return TthUtils.isHearingStatusActive(this.hearingStatus);
-  }
-
-  get isHearingYearPlanned(): boolean {
-    return TthUtils.isHearingStatusPlanned(this.hearingStatus);
-  }
-
-  get isSwissCanton(): boolean {
-    return this.cantonShort.toLowerCase() === Cantons.swiss.short.toLowerCase();
+  ) {
+    effect(() => {
+      if (!this.isYearLoading()) {
+        this.loadData();
+      }
+    });
   }
 
   get isCollectingActionEnabled(): boolean {
     return this.permissionService.hasWritePermissionsToForCanton(
       ApplicationType.TimetableHearing,
-      this.cantonShort.toLowerCase()
+      this.cantonShort().toLowerCase()
     );
   }
 
-  ngOnInit(): void {
-    combineLatest([
-      this.overviewToTabService.timetableHearingYear$,
-      this.overviewToTabService.timetableHearingYearLoading$,
-    ])
-      .pipe(
-        filter(([year, loading]) => !loading && !!year?.timetableYear),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe(() => {
-        this.loadData();
-      });
-  }
-
   loadData() {
-    this.hearingStatus = this.route.snapshot.data.hearingStatus;
-    this.statementEditable = this.foundTimetableHearingYear.statementEditable!;
-
     const settings = TthTableFilterSettingsService.createSettings();
-    if (TthUtils.isHearingStatusActive(this.hearingStatus)) {
+
+    if (this.isHearingYearActive()) {
       const activeSettings = this.getActiveSettings();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         activeSettings,
@@ -187,13 +161,13 @@ export class OverviewDetailComponent implements OnInit {
         this.disableChangeStatementStatusSelect();
       }
       this.enableCheckboxViewMode();
-      this.showManageTimetableHearingButton = this.isSwissCanton;
-      this.showAddNewStatementButton = !this.isSwissCanton;
+      this.showManageTimetableHearingButton = this.isSwissCanton();
+      this.showAddNewStatementButton = !this.isSwissCanton();
       this.showDownloadCsvButton = true;
       this.initOverviewTable();
     }
 
-    if (TthUtils.isHearingStatusPlanned(this.hearingStatus)) {
+    if (this.isHearingYearPlanned()) {
       this.removeCheckBoxViewMode();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         settings,
@@ -207,7 +181,7 @@ export class OverviewDetailComponent implements OnInit {
       this.initOverviewTable();
     }
 
-    if (TthUtils.isHearingStatusArchived(this.hearingStatus)) {
+    if (this.isHearingYearArchived()) {
       this.removeCheckBoxViewMode();
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
         settings,
@@ -230,9 +204,10 @@ export class OverviewDetailComponent implements OnInit {
 
   getOverview(pagination: TablePagination) {
     const selectedCantonEnum = this.getSelectedCantonToBeSearchFromNavigation();
+
     this.timetableHearingStatementsService
       .getStatements(
-        this.foundTimetableHearingYear.timetableYear,
+        this.timetableYear().timetableYear,
         selectedCantonEnum,
         this.tableService.filter.chipSearch.getActiveSearch(),
         this.tableService.filter.multiSelectStatementStatus.getActiveSearch(),
@@ -252,13 +227,13 @@ export class OverviewDetailComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((container) => {
         this.timeTableHearingStatements = container.objects!;
-        this.totalCount$ = container.totalCount!;
+        this.totalCount = container.totalCount!;
         this.isTableColumnsInitialized = true;
       });
   }
 
   getShowStatementInDossierFilter() {
-    if (this.hearingStatus === 'ACTIVE') {
+    if (this.isHearingYearActive()) {
       if (
         this.tableService.filter.showStatementInDossierFilter.getActiveSearch()
       ) {
@@ -280,7 +255,7 @@ export class OverviewDetailComponent implements OnInit {
     this.timetableHearingStatementsService
       .getStatementsAsCsv(
         this.translateService.currentLang,
-        this.foundTimetableHearingYear.timetableYear,
+        this.timetableYear().timetableYear,
         this.getSelectedCantonToBeSearchFromNavigation(),
         this.tableService.filter.chipSearch.getActiveSearch(),
         this.tableService.filter.multiSelectStatementStatus.getActiveSearch(),
@@ -330,7 +305,7 @@ export class OverviewDetailComponent implements OnInit {
       .open<DialogManageTthComponent, number, boolean>(
         DialogManageTthComponent,
         {
-          data: this.foundTimetableHearingYear.timetableYear,
+          data: this.timetableYear().timetableYear,
           disableClose: true,
           panelClass: 'atlas-dialog-panel',
           backdropClass: 'atlas-dialog-backdrop',
@@ -359,7 +334,7 @@ export class OverviewDetailComponent implements OnInit {
     this.router
       .navigate(['add'], {
         relativeTo: this.route,
-        state: { data: this.cantonShort },
+        state: { data: this.cantonShort() },
       })
       .then();
   }
@@ -369,7 +344,7 @@ export class OverviewDetailComponent implements OnInit {
       .openDialog()
       .subscribe((result) => {
         if (result) {
-          this.overviewToTabService.setNoTimetableHearingYearFound(false);
+          this.overviewToTabService.setTimetableHearingYearFound(false);
           this.loadData();
           this.router
             .navigate(['..'], {
@@ -390,7 +365,7 @@ export class OverviewDetailComponent implements OnInit {
       .subscribe((confirmed) => {
         if (confirmed) {
           this.tthYearInternalService
-            .startTimetableHearingYear(this.yearSelection)
+            .startTimetableHearingYear(this.timetableYear().timetableYear)
             .subscribe(() => {
               this.router
                 .navigate(
@@ -536,11 +511,11 @@ export class OverviewDetailComponent implements OnInit {
   }
 
   private getSelectedCantonToBeSearchFromNavigation(): SwissCanton | undefined {
-    if (this.cantonShort.toLowerCase() === Cantons.swiss.path) {
+    if (this.cantonShort().toLowerCase() === Cantons.swiss.path) {
       // we return undefined to get all cantons from backend
       return undefined;
     } else {
-      return Cantons.getSwissCantonEnum(this.cantonShort);
+      return Cantons.getSwissCantonEnum(this.cantonShort());
     }
   }
 
@@ -562,7 +537,7 @@ export class OverviewDetailComponent implements OnInit {
         headerTitle: 'TTH.STATEMENT_STATUS_HEADER',
         value: 'statementStatus',
         dropdown: {
-          disabled: !this.statementEditable,
+          disabled: !this.timetableYear().statementEditable!,
           options: this.STATUS_OPTIONS,
           changeSelectionCallback: this.changeSelectedStatus,
           selectedOption: '',
@@ -619,7 +594,7 @@ export class OverviewDetailComponent implements OnInit {
   }
 
   getActiveTableColumns(): TableColumn<TimetableHearingStatementV2>[] {
-    if (this.isSwissCanton) {
+    if (this.isSwissCanton()) {
       return this.getTableColumns().filter((col) =>
         this.activeTthAndSwissCanton(col)
       );
@@ -644,7 +619,7 @@ export class OverviewDetailComponent implements OnInit {
   }
 
   getPlannedOrArchivedTableColumns(): TableColumn<TimetableHearingStatementV2>[] {
-    if (this.isSwissCanton) {
+    if (this.isSwissCanton()) {
       return this.getTableColumns().filter((col) =>
         this.plannedOrArchivedTthAndSwissCanton(col)
       );

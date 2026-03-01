@@ -81,7 +81,7 @@ describe('TthOverviewBaseComponent', () => {
       of([hearingYear2024, hearingYear2025])
     );
 
-    overviewToTabService.changeData('ZH');
+    overviewToTabService.setCantonShort('ZH');
     overviewToTabService.setTimetableHearingYear({
       timetableYear: 2024,
       hearingFrom: new Date(),
@@ -101,7 +101,7 @@ describe('TthOverviewBaseComponent', () => {
       expect(
         mockTimetableHearingYearsService.getHearingYears
       ).toHaveBeenCalledWith([HearingStatus.Active]);
-      expect(component.foundTimetableHearingYear).toEqual(hearingYear2024);
+      expect(component.timetableYear()).toEqual(hearingYear2024);
     });
 
     it('should set noTimetableHearingYearFound when no years exist', () => {
@@ -109,7 +109,7 @@ describe('TthOverviewBaseComponent', () => {
 
       fixture.detectChanges();
 
-      expect(component.noTimetableHearingYearFound).toBeTruthy();
+      expect(component.isTimetableHearingYearFound()).toBeFalse();
     });
   });
 
@@ -119,8 +119,8 @@ describe('TthOverviewBaseComponent', () => {
 
       fixture.detectChanges();
 
-      expect(component.isHearingYearActive).toBeFalsy();
-      expect(component.isHearingYearPlanned).toBeTruthy();
+      expect(component.isHearingYearActive()).toBeFalsy();
+      expect(component.isHearingYearPlanned()).toBeTruthy();
       expect(
         mockTimetableHearingYearsService.getHearingYears
       ).toHaveBeenCalledWith([HearingStatus.Planned]);
@@ -133,7 +133,7 @@ describe('TthOverviewBaseComponent', () => {
 
       fixture.detectChanges();
 
-      expect(component.hearingStatus).toBe(HearingStatus.Archived);
+      expect(component.hearingStatus()).toBe(HearingStatus.Archived);
     });
   });
 
@@ -151,11 +151,11 @@ describe('TthOverviewBaseComponent', () => {
   describe('changeSelectedCantonFromDropdown', () => {
     beforeEach(() => {
       fixture.detectChanges();
-      component.foundTimetableHearingYear = {
+      overviewToTabService.setTimetableHearingYear({
         timetableYear: 2024,
         hearingFrom: new Date(),
         hearingTo: new Date(),
-      };
+      });
     });
 
     it('should change canton and navigate', () => {
@@ -163,12 +163,12 @@ describe('TthOverviewBaseComponent', () => {
         value: 'ZH',
       } as MatSelectChange;
 
-      spyOn(overviewToTabService, 'changeData');
+      spyOn(overviewToTabService, 'setCantonShort');
       spyOn(component, 'navigateTo');
 
       component.changeSelectedCantonFromDropdown(mockSelectChange);
 
-      expect(overviewToTabService.changeData).toHaveBeenCalledWith('zh');
+      expect(overviewToTabService.setCantonShort).toHaveBeenCalledWith('zh');
       expect(component.navigateTo).toHaveBeenCalledWith('zh', 2024);
       expect(tableService.resetTableSettings).toHaveBeenCalled();
     });
@@ -178,12 +178,12 @@ describe('TthOverviewBaseComponent', () => {
         value: 'BE',
       } as MatSelectChange;
 
-      spyOn(overviewToTabService, 'changeData');
+      spyOn(overviewToTabService, 'setCantonShort');
       spyOn(component, 'navigateTo');
 
       component.changeSelectedCantonFromDropdown(mockSelectChange);
 
-      expect(overviewToTabService.changeData).toHaveBeenCalledWith('be');
+      expect(overviewToTabService.setCantonShort).toHaveBeenCalledWith('be');
       expect(component.navigateTo).toHaveBeenCalledWith('be', 2024);
     });
   });
@@ -191,12 +191,12 @@ describe('TthOverviewBaseComponent', () => {
   describe('changeSelectedYearFromDropdown', () => {
     beforeEach(() => {
       fixture.detectChanges();
-      component.foundTimetableHearingYear = {
+      overviewToTabService.setTimetableHearingYear({
         timetableYear: 2024,
         hearingFrom: new Date(),
         hearingTo: new Date(),
-      };
-      component.cantonShort = 'ZH';
+      });
+      overviewToTabService.setCantonShort('ZH');
     });
 
     it('should change year and navigate', () => {
@@ -204,31 +204,31 @@ describe('TthOverviewBaseComponent', () => {
         value: 2025,
       } as MatSelectChange;
 
-      spyOn(overviewToTabService, 'setTimetableHearingYear');
+      spyOn(overviewToTabService, 'setYearSelection').and.callThrough();
       spyOn(component, 'navigateTo');
 
       component.changeSelectedYearFromDropdown(mockSelectChange);
 
-      expect(component.foundTimetableHearingYear.timetableYear).toBe(2025);
-      expect(overviewToTabService.setTimetableHearingYear).toHaveBeenCalledWith(
-        component.foundTimetableHearingYear
+      expect(overviewToTabService.setYearSelection).toHaveBeenCalledWith(
+        mockSelectChange.value
       );
+      expect(component.yearSelection()).toBe(2025);
       expect(component.navigateTo).toHaveBeenCalledWith('zh', 2025);
       expect(tableService.resetTableSettings).toHaveBeenCalled();
     });
 
     it('should update timetable hearing year object', () => {
+      overviewToTabService.setCantonShort('BE');
       const mockSelectChange = {
         value: 2026,
       } as MatSelectChange;
 
       spyOn(overviewToTabService, 'setTimetableHearingYear');
       spyOn(component, 'navigateTo');
-      component.cantonShort = 'BE';
 
       component.changeSelectedYearFromDropdown(mockSelectChange);
 
-      expect(component.foundTimetableHearingYear.timetableYear).toBe(2026);
+      expect(component.yearSelection()).toBe(2026);
     });
   });
 });

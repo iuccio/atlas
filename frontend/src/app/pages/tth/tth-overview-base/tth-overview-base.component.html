@@ -1,21 +1,21 @@
 <div class="white-table-container-no-tabs">
   <atlas-timetable-hearing-overview-tab-heading
-    [cantonShort]="cantonShort"
-    [foundTimetableHearingYear]="foundTimetableHearingYear"
-    [hearingStatus]="hearingStatus"
-    [noPlannedTimetableHearingYearFound]="noPlannedTimetableHearingYearFound"
-    [noTimetableHearingYearFound]="noTimetableHearingYearFound"
+    [cantonShort]="cantonShort()"
+    [foundTimetableHearingYear]="timetableYear()"
+    [hearingStatus]="hearingStatus()"
+    [isTimetableHearingYearFound]="isTimetableHearingYearFound()"
+    [isPlannedTimetableHearingYearFound]="isPlannedTimetableHearingYearFound()"
   ></atlas-timetable-hearing-overview-tab-heading>
 
   <div>
     <div class="d-flex flex-row col-12">
-      @if (!isHearingYearActive && !noTimetableHearingYearFound) {
+      @if (!isHearingYearActive() && isTimetableHearingYearFound()) {
         <div class="d-flex flex-column col-2 pe-3 pb-1">
           <atlas-select
             (selectChanged)="changeSelectedYearFromDropdown($event)"
             [additionalLabelspace]="0"
             [options]="YEAR_DROPDOWN_OPTIONS"
-            [value]="yearSelection"
+            [value]="yearSelection()"
             dataCy="selectTthYear"
             label="TTH.SELECT_YEAR"
           >
@@ -23,7 +23,7 @@
         </div>
       }
 
-      @if (!noTimetableHearingYearFound) {
+      @if (isTimetableHearingYearFound()) {
         <div class="d-flex flex-column col-3 pe-3 pb-2 mb-2">
           <atlas-select
             (selectChanged)="changeSelectedCantonFromDropdown($event)"

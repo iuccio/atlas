@@ -1,65 +1,81 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { computed, Injectable, signal } from '@angular/core';
 import { Cantons } from '../../../../core/cantons/Cantons';
-import { TimetableHearingYear } from '../../../../api';
+import { HearingStatus, TimetableHearingYear } from '../../../../api';
 import moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OverviewToTabShareDataService {
-  private readonly cantonShort = new BehaviorSubject(Cantons.swiss.path);
-  private readonly timetableHearingYearSubject =
-    new BehaviorSubject<TimetableHearingYear>({
-      timetableYear: moment().toDate().getFullYear() + 1,
-      hearingFrom: moment().toDate(),
-      hearingTo: moment().toDate(),
-    });
-  private readonly noTimetableHearingYearFoundSubject =
-    new BehaviorSubject<boolean>(false);
-  private readonly noPlannedTimetableHearingYearFoundSubject =
-    new BehaviorSubject<boolean>(false);
+  private readonly _hearingStatus = signal<HearingStatus>(HearingStatus.Active);
+  private readonly _cantonShort = signal<string>(Cantons.swiss.path);
+  private readonly _isPlannedTimetableHearingYearFound = signal<boolean>(false);
+  private readonly _timetableYear = signal<TimetableHearingYear>({
+    timetableYear: moment().toDate().getFullYear() + 1,
+    hearingFrom: moment().toDate(),
+    hearingTo: moment().toDate(),
+  });
+  private readonly _isYearLoading = signal<boolean>(false);
+  private readonly _isTimetableHearingYearFound = signal<boolean>(false);
+  private readonly _yearSelection = signal<number>(0);
 
-  private readonly timetableHearingYearLoadingSubject =
-    new BehaviorSubject<boolean>(false);
+  readonly cantonShort = this._cantonShort.asReadonly();
 
-  cantonShort$ = this.cantonShort.asObservable();
+  readonly hearingStatus = this._hearingStatus.asReadonly();
 
-  timetableHearingYear$: Observable<TimetableHearingYear> =
-    this.timetableHearingYearSubject.asObservable();
+  readonly timetableYear = this._timetableYear.asReadonly();
 
-  timetableHearingYearLoading$: Observable<boolean> =
-    this.timetableHearingYearLoadingSubject.asObservable();
+  readonly isPlannedTimetableHearingYearFound =
+    this._isPlannedTimetableHearingYearFound.asReadonly();
 
-  changeData(cantonShort: string) {
-    this.cantonShort.next(cantonShort);
+  readonly isYearLoading = this._isYearLoading.asReadonly();
+
+  readonly isTimetableHearingYearFound =
+    this._isTimetableHearingYearFound.asReadonly();
+
+  readonly yearSelection = this._yearSelection.asReadonly();
+
+  readonly isHearingYearActive = computed(
+    () => this.hearingStatus() === HearingStatus.Active
+  );
+
+  readonly isHearingYearArchived = computed(
+    () => this.hearingStatus() === HearingStatus.Archived
+  );
+
+  readonly isHearingYearPlanned = computed(
+    () => this.hearingStatus() === HearingStatus.Planned
+  );
+
+  readonly isSwissCanton = computed(
+    () => this.cantonShort().toLowerCase() === Cantons.swiss.short.toLowerCase()
+  );
+
+  setHearingStatus(hearingStatus: HearingStatus) {
+    this._hearingStatus.set(hearingStatus);
   }
 
-  setNoPlannedTimetableHearingYearFound(notFound: boolean): void {
-    this.noPlannedTimetableHearingYearFoundSubject.next(notFound);
+  setCantonShort(cantonShort: string): void {
+    this._cantonShort.set(cantonShort);
+  }
+
+  setPlannedTimetableHearingYearFound(isFound: boolean): void {
+    this._isPlannedTimetableHearingYearFound.set(isFound);
   }
 
   setTimetableHearingYear(year: TimetableHearingYear): void {
-    this.timetableHearingYearSubject.next(year);
+    this._timetableYear.set(year);
   }
 
-  setNoTimetableHearingYearFound(notFound: boolean): void {
-    this.noTimetableHearingYearFoundSubject.next(notFound);
+  setTimetableHearingYearFound(isFound: boolean): void {
+    this._isTimetableHearingYearFound.set(isFound);
   }
 
   setTimetableHearingYearLoading(loading: boolean): void {
-    this.timetableHearingYearLoadingSubject.next(loading);
+    this._isYearLoading.set(loading);
   }
 
-  getCantonShort(): string {
-    return this.cantonShort.getValue();
-  }
-
-  getTimetableHearingYear(): TimetableHearingYear {
-    return this.timetableHearingYearSubject.getValue();
-  }
-
-  getNoTimetableHearingYearFound(): boolean {
-    return this.noTimetableHearingYearFoundSubject.getValue();
+  setYearSelection(year: number): void {
+    this._yearSelection.set(year);
   }
 }

@@ -34,6 +34,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { OverviewToTabShareDataService } from '../overview-tab/service/overview-to-tab-share-data.service';
 import { MatSelectChange } from '@angular/material/select';
 import { TthYearInternalService } from '../../../api/service/workflow/tth-year-internal.service';
+import { DialogService } from '../../../core/components/dialog/dialog.service';
 
 @Component({
   selector: 'atlas-timetable-hearing-overview-tab-heading',
@@ -62,6 +63,8 @@ const tthChangeCantonDialogService = jasmine.createSpyObj(
   { onClick: of(true) }
 );
 const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+
+const dialogServiceSpy = jasmine.createSpyObj('DialogService', ['confirm']);
 
 const hearingYear2000: TimetableHearingYear = {
   timetableYear: 2000,
@@ -154,6 +157,7 @@ async function baseTestConfiguration() {
       { provide: DisplayDatePipe },
       { provide: PermissionService, useValue: adminPermissionServiceMock },
       { provide: MatDialog, useValue: dialogSpy },
+      { provide: DialogService, useValue: dialogServiceSpy },
       {
         provide: TthChangeCantonDialogService,
         useValue: tthChangeCantonDialogService,
@@ -183,7 +187,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
       route.snapshot.data = { hearingStatus: HearingStatus.Active };
 
-      overviewToTabService.changeData('ch');
+      overviewToTabService.setCantonShort('ch');
       overviewToTabService.setTimetableHearingYear(hearingYear2000);
       overviewToTabService.setTimetableHearingYearLoading(false);
 
@@ -197,16 +201,16 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('isSwissCanton false', () => {
       //given
-      overviewToTabService.changeData('ag');
+      overviewToTabService.setCantonShort('ag');
       //when
       fixture.detectChanges();
       //then
-      expect(component.isSwissCanton).toBeFalsy();
+      expect(component.isSwissCanton()).toBeFalsy();
     });
 
     it('isSwissCanton true', () => {
       //given
-      overviewToTabService.changeData('ch');
+      overviewToTabService.setCantonShort('ch');
       //when
       fixture.detectChanges();
       //then
@@ -219,7 +223,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display active ch timetableHearing', () => {
       //given
-      overviewToTabService.changeData('ch');
+      overviewToTabService.setCantonShort('ch');
       //when
       fixture.detectChanges();
       //then
@@ -255,7 +259,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display active table columns timetableHearing for Canton CH', () => {
       //given
-      overviewToTabService.changeData('ch');
+      overviewToTabService.setCantonShort('ch');
       //when
       component.tableColumns = component.getActiveTableColumns();
       //then
@@ -278,7 +282,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display active table columns timetableHearing for Canton BL', () => {
       //given
-      overviewToTabService.changeData('bl');
+      overviewToTabService.setCantonShort('bl');
       //when
       component.tableColumns = component.getActiveTableColumns();
       //then
@@ -300,15 +304,15 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should get statements table', async () => {
       //when
-      overviewToTabService.changeData('ch');
+      overviewToTabService.setCantonShort('ch');
       fixture.detectChanges();
       //then
       expect(component.timeTableHearingStatements).toEqual([
         timetableHearingStatement,
         timetableHearingStatement,
       ]);
-      expect(component.totalCount$).toEqual(2);
-      expect(component.noTimetableHearingYearFound).toBeFalsy();
+      expect(component.totalCount).toEqual(2);
+      expect(component.isTimetableHearingYearFound()).toBeFalsy();
     });
 
     it('should return the short form of the Swiss canton', () => {
@@ -516,19 +520,19 @@ describe('TimetableHearingOverviewDetailComponent', () => {
       route = TestBed.inject(ActivatedRoute);
       overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
 
-      route.snapshot.data = { hearingStatus: HearingStatus.Planned };
-
-      overviewToTabService.changeData('ch');
+      overviewToTabService.setHearingStatus(HearingStatus.Planned);
+      overviewToTabService.setCantonShort('ch');
       overviewToTabService.setTimetableHearingYear(hearingYear2000);
       overviewToTabService.setTimetableHearingYearLoading(false);
-      overviewToTabService.setNoTimetableHearingYearFound(true);
+      overviewToTabService.setTimetableHearingYearFound(false);
+      dialogServiceSpy.confirm.and.returnValue(of(true));
 
       component = fixture.componentInstance;
       fixture.detectChanges();
     });
 
     it('isHearingYearActive false', () => {
-      expect(component.isHearingYearActive).toBeFalsy();
+      expect(component.isHearingYearActive()).toBeFalsy();
     });
 
     it('should display planned button timetableHearing', () => {
@@ -562,7 +566,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display planned table columns timetableHearing for Canton CH', () => {
       //given
-      overviewToTabService.changeData('ch');
+      overviewToTabService.setCantonShort('ch');
       //when
       component.tableColumns = component.getPlannedOrArchivedTableColumns();
       //then
@@ -582,7 +586,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display planned table columns timetableHearing for Canton BL', () => {
       //given
-      overviewToTabService.changeData('bl');
+      overviewToTabService.setCantonShort('bl');
       //when
       component.tableColumns = component.getPlannedOrArchivedTableColumns();
       //then
@@ -630,19 +634,20 @@ describe('TimetableHearingOverviewDetailComponent', () => {
       route = TestBed.inject(ActivatedRoute);
       overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
 
-      route.snapshot.data = { hearingStatus: HearingStatus.Archived };
-
-      overviewToTabService.changeData('ch');
+      overviewToTabService.setHearingStatus(HearingStatus.Archived);
+      overviewToTabService.setCantonShort('ch');
       overviewToTabService.setTimetableHearingYear(hearingYear2000);
       overviewToTabService.setTimetableHearingYearLoading(false);
-      overviewToTabService.setNoTimetableHearingYearFound(true);
+      overviewToTabService.setTimetableHearingYearFound(true);
 
       component = fixture.componentInstance;
       fixture.detectChanges();
     });
 
     it('isHearingYearActive false', () => {
-      expect(component.isHearingYearActive).toBeFalsy();
+      overviewToTabService.setHearingStatus(HearingStatus.Planned);
+
+      expect(component.isHearingYearActive()).toBeFalsy();
     });
 
     it('should display archived button timetableHearing', () => {
@@ -677,7 +682,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display archived table columns timetableHearing for Canton CH', () => {
       //given
-      overviewToTabService.changeData('ch');
+      overviewToTabService.setCantonShort('ch');
       //when
       component.tableColumns = component.getPlannedOrArchivedTableColumns();
       //then
@@ -697,7 +702,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     it('should display archived table columns timetableHearing for Canton BL', () => {
       //given
-      overviewToTabService.changeData('bl');
+      overviewToTabService.setCantonShort('bl');
       //when
       component.tableColumns = component.getPlannedOrArchivedTableColumns();
       //then

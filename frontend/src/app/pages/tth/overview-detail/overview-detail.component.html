@@ -1,11 +1,11 @@
 <div class="d-flex justify-content-end">
   <div class="d-flex">
-    @if (showDownloadCsvButton && !noTimetableHearingYearFound) {
+    @if (showDownloadCsvButton && isTimetableHearingYearFound()) {
       <div class="d-flex">
         <atlas-spacer height="15px"></atlas-spacer>
         <atlas-button
           (buttonClicked)="openTthExportAnonymizationChoiceDialog()"
-          [canton]="cantonShort"
+          [canton]="cantonShort()"
           [disabled]="isCheckBoxModeActive"
           applicationType="TIMETABLE_HEARING"
           buttonDataCy="download-csv"
@@ -22,7 +22,7 @@
       </div>
     }
 
-    @if (showManageTimetableHearingButton && !noTimetableHearingYearFound) {
+    @if (showManageTimetableHearingButton && isTimetableHearingYearFound()) {
       <div class="d-flex left-position ms-3">
         <atlas-spacer height="15px"></atlas-spacer>
         <atlas-button
@@ -40,14 +40,14 @@
 
     @if (
       showAddNewStatementButton &&
-      !noTimetableHearingYearFound &&
-      foundTimetableHearingYear.statementCreatableInternal
+      isTimetableHearingYearFound() &&
+      timetableYear().statementCreatableInternal
     ) {
       <div class="d-flex left-position ms-3">
         <atlas-spacer height="15px"></atlas-spacer>
         <atlas-button
           (buttonClicked)="addNewStatement()"
-          [canton]="cantonShort"
+          [canton]="cantonShort()"
           [disabled]="isCheckBoxModeActive"
           applicationType="TIMETABLE_HEARING"
           buttonDataCy="addNewStatement"
@@ -59,7 +59,7 @@
       </div>
     }
 
-    @if (showStartTimetableHearingButton && !noTimetableHearingYearFound) {
+    @if (showStartTimetableHearingButton && isTimetableHearingYearFound()) {
       <div class="d-flex ms-3">
         <atlas-spacer height="15px"></atlas-spacer>
         <atlas-button
@@ -74,7 +74,7 @@
       </div>
     }
 
-    @if (showAddNewTimetableHearingButton && isHearingYearPlanned) {
+    @if (showAddNewTimetableHearingButton && isHearingYearPlanned()) {
       <div class="d-flex left-position ms-3">
         <atlas-spacer height="15px"></atlas-spacer>
         <atlas-button
@@ -92,7 +92,7 @@
   </div>
 </div>
 
-@if (!noTimetableHearingYearFound && isTableColumnsInitialized) {
+@if (isTimetableHearingYearFound() && isTableColumnsInitialized) {
   <atlas-table
     (changeDropdownEvent)="changeSelectedStatus($event)"
     (checkedBoxEvent)="checkedBoxEvent($event)"
@@ -102,7 +102,7 @@
     [checkBoxSelection]="selectedCheckBox"
     [tableColumns]="tableColumns"
     [tableData]="timeTableHearingStatements"
-    [totalCount]="totalCount$"
+    [totalCount]="totalCount"
     [tableFilterConfig]="tableFilterConfig"
     data-cy="tthTable"
   >
@@ -110,42 +110,41 @@
       <atlas-statement-overview-menu
         [row]="row"
         [column]="column"
-        [hearingStatus]="hearingStatus"
-        (reloadTable)="ngOnInit()"
+        [hearingStatus]="hearingStatus()"
       ></atlas-statement-overview-menu>
     </ng-template>
-    @if (!noTimetableHearingYearFound) {
+    @if (isTimetableHearingYearFound()) {
       <div class="d-flex flex-row col-12 mb-3 mt-5">
         <div class="d-flex flex-column col-6 pt-2">
           <div>
-            @if (isHearingYearActive && isSwissCanton) {
+            @if (isHearingYearActive() && isSwissCanton()) {
               <span class="font-bold-lg">
                 {{
                   'TTH.TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX'
-                    | translate: { totalCount: totalCount$ }
+                    | translate: { totalCount: totalCount }
                 }}
                 {{ 'TTH.WHOLE_SWISS' | translate }}
               </span>
             }
 
-            @if (isHearingYearActive && !isSwissCanton) {
+            @if (isHearingYearActive() && !isSwissCanton()) {
               <span class="font-bold-lg">
                 {{
                   'TTH.TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX'
-                    | translate: { totalCount: totalCount$ }
+                    | translate: { totalCount: totalCount }
                 }}
                 {{ 'TTH.SWISS_CANTON' | translate }}
-                {{ 'TTH.CANTON.' + cantonShort.toUpperCase() | translate }}
+                {{ 'TTH.CANTON.' + cantonShort().toUpperCase() | translate }}
               </span>
             }
 
-            @if (!isHearingYearActive) {
+            @if (!isHearingYearActive()) {
               <span class="font-bold-lg">{{
                 'TTH.TABLE_RESULT_HEADING'
                   | translate
                     : {
-                        totalCount: totalCount$,
-                        year: foundTimetableHearingYear.timetableYear,
+                        totalCount: totalCount,
+                        year: timetableYear().timetableYear,
                       }
               }}</span>
             }
@@ -154,9 +153,9 @@
           @if (showHearingDetail) {
             <div>
               <span
-                >{{ foundTimetableHearingYear.hearingFrom | displayDate }}
+                >{{ timetableYear().hearingFrom | displayDate }}
                 {{ 'COMMON.TO' | translate }}
-                {{ foundTimetableHearingYear.hearingTo | displayDate }}</span
+                {{ timetableYear().hearingTo | displayDate }}</span
               >
             </div>
           }
@@ -164,7 +163,7 @@
 
         @if (
           isCollectingActionEnabled &&
-          isHearingYearActive &&
+          isHearingYearActive() &&
           !statusChangeCollectingActionsEnabled &&
           !cantonDeliveryCollectingActionsEnabled
         ) {
@@ -173,7 +172,9 @@
               <atlas-select
                 (selectChanged)="collectingActions($event)"
                 [additionalLabelspace]="0"
-                [disabled]="totalCount$ === 0 || !statementEditable"
+                [disabled]="
+                  totalCount === 0 || !this.timetableYear().statementEditable!
+                "
                 [options]="COLLECTING_ACTION_DROPDOWN_OPTIONS"
                 dataCy="collect-action-type"
                 optionTranslateLabelPrefix="TTH.DROPDOWN.COLLECTING_ACTION.OPTION."

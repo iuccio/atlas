@@ -1,7 +1,7 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
-import { NgClass, NgOptimizedImage } from '@angular/common';
+import { NgClass, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from '../../../../core/components/dialog/dialog.service';
@@ -22,6 +22,7 @@ import { NotificationService } from '../../../../core/notification/notification.
     TranslatePipe,
     MatMenuTrigger,
     NgClass,
+    NgTemplateOutlet,
   ],
   templateUrl: './tth-dossier-overview-menu.component.html',
 })
@@ -42,23 +43,21 @@ export class TthDossierOverviewMenuComponent {
     DossierStatus.Moved,
   ];
 
-  get isHearingStatusActive() {
-    return this.hearingStatus() === HearingStatus.Active;
-  }
+  isHearingStatusActive = computed(
+    () => this.hearingStatus() === HearingStatus.Active
+  );
 
-  get isDossierDissolvable() {
-    return this.allowedDossierStatusForDissolve.includes(
-      this.row().dossierStatus!
-    );
-  }
+  isDossierCancelable = computed(
+    () => this.row().dossierStatus === DossierStatus.Added
+  );
 
-  get isDossierCompletable() {
-    return this.isDossierCancelable || this.isDossierDissolvable;
-  }
+  isDossierDissolvable = computed(() =>
+    this.allowedDossierStatusForDissolve.includes(this.row().dossierStatus!)
+  );
 
-  get isDossierCancelable() {
-    return this.row().dossierStatus === DossierStatus.Added;
-  }
+  isDossierCompletable = computed(
+    () => this.isDossierCancelable() || this.isDossierDissolvable()
+  );
 
   reloadTable = output();
 
@@ -73,7 +72,7 @@ export class TthDossierOverviewMenuComponent {
       .subscribe((confirmed) => {
         if (confirmed) {
           this.dossierInternalService
-            .completeDossier(this.row()!.id!, status)
+            .completeDossier(this.row().id!, status)
             .subscribe(() => {
               this.notificationService.success(
                 'TTH.DOSSIER.NOTIFICATION.EDIT_SUCCESS'

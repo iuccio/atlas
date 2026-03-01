@@ -5,15 +5,17 @@ import { HearingStatus } from '../../../../api';
 import moment from 'moment';
 import { DisplayDatePipe } from '../../../../core/pipe/display-date.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
+import { OverviewToTabShareDataService } from '../service/overview-to-tab-share-data.service';
 
 describe('TimetableHearingOverviewTabHeadingComponent', () => {
   let component: OverviewTabHeadingComponent;
   let fixture: ComponentFixture<OverviewTabHeadingComponent>;
+  let service: OverviewToTabShareDataService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppTestingModule, OverviewTabHeadingComponent, DisplayDatePipe],
-      providers: [{ provide: TranslatePipe }],
+      providers: [{ provide: TranslatePipe }, OverviewToTabShareDataService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OverviewTabHeadingComponent);
@@ -25,24 +27,26 @@ describe('TimetableHearingOverviewTabHeadingComponent', () => {
       hearingFrom: moment().toDate(),
       hearingTo: moment().toDate(),
     };
+    service = TestBed.inject(OverviewToTabShareDataService);
+
     fixture.detectChanges();
   });
 
   it('should return when hearingStatus is Active', () => {
-    component.hearingStatus = HearingStatus.Active;
+    service.setHearingStatus(HearingStatus.Active);
 
-    expect(component.isHearingStatusActive).toBeTruthy();
+    expect(component.isHearingYearActive()).toBeTruthy();
   });
 
   it('should return when hearingStatus is Planned', () => {
-    component.hearingStatus = HearingStatus.Planned;
+    service.setHearingStatus(HearingStatus.Planned);
 
-    expect(component.isHearingStatusPlanned).toBeTruthy();
+    expect(component.isHearingYearPlanned()).toBeTruthy();
   });
 
   it('should return when hearingStatus is Archived', () => {
-    component.hearingStatus = HearingStatus.Archived;
+    service.setHearingStatus(HearingStatus.Archived);
 
-    expect(component.isHearingStatusArchived).toBeTruthy();
+    expect(component.isHearingYearArchived()).toBeTruthy();
   });
 });
