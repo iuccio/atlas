@@ -125,7 +125,7 @@ export class StatementSelectDialogComponent implements OnInit {
     this.selectedStatements = this.data.selectedStatements;
     this.tableFilterConfig = this.tableService.initializeFilterConfig(
       TthTableFilterSettingsService.createSettings(),
-      Pages.TTH_ACTIVE
+      Pages.TTH_STATEMENTS
     );
   }
 

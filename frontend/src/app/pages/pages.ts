@@ -91,13 +91,9 @@ export class Pages {
     path: 'clients',
   };
 
-  public static readonly TTH: Page = {
-    title: 'PAGES.TTH.TITLE',
-    titleMenu: 'PAGES.TTH.TITLE_MENU',
-    headerTitle: 'PAGES.TTH.TITLE_MENU',
-    path: 'timetable-hearing',
-    pathText: 'PAGES.TTH.PATH_TEXT',
-    description: 'PAGES.TTH.DESCRIPTION',
+  public static readonly TTH_STATEMENTS: Page = {
+    title: 'PAGES.DETAILS',
+    path: 'statements',
   };
 
   public static readonly TTH_ACTIVE: Page = {
@@ -107,12 +103,25 @@ export class Pages {
 
   public static readonly TTH_PLANNED: Page = {
     title: 'PAGES.DETAILS',
+    titleMenu: 'PAGES.TTH.SUBPAGE.PLANNED',
     path: 'planned',
   };
 
   public static readonly TTH_ARCHIVED: Page = {
     title: 'PAGES.DETAILS',
+    titleMenu: 'PAGES.TTH.SUBPAGE.ARCHIVED',
     path: 'archived',
+  };
+
+  public static readonly TTH: Page = {
+    title: 'PAGES.TTH.TITLE',
+    titleMenu: 'PAGES.TTH.TITLE_MENU',
+    headerTitle: 'PAGES.TTH.TITLE_MENU',
+    path: 'timetable-hearing',
+    pathText: 'PAGES.TTH.PATH_TEXT',
+    description: 'PAGES.TTH.DESCRIPTION',
+    subpages: [Pages.TTH_PLANNED, Pages.TTH_ARCHIVED],
+    params: ['canton'],
   };
 
   public static readonly TTH_OVERVIEW_DETAIL: Page = {

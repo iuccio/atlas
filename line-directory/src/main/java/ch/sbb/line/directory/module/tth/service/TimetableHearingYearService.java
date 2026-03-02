@@ -56,6 +56,7 @@ public class TimetableHearingYearService {
     timetableHearingYear.setStatementCreatableExternal(true);
     timetableHearingYear.setStatementCreatableInternal(true);
     timetableHearingYear.setStatementEditable(true);
+
     return timetableHearingYearRepository.save(timetableHearingYear);
   }
 
@@ -79,7 +80,6 @@ public class TimetableHearingYearService {
     timetableHearingYear.setStatementCreatableExternal(false);
     timetableHearingYear.setStatementEditable(false);
     timetableHearingYear.setHearingStatus(HearingStatus.ARCHIVED);
-
     return timetableHearingYearRepository.save(timetableHearingYear);
   }
 

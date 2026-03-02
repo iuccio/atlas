@@ -23,6 +23,18 @@ class TthYearApiInternalControllerUnitTest {
   private TthYearApiInternalController tthYearApiInternalController;
 
   @Test
+  void shouldStartTimetableHearingYear() {
+    // given
+    TimetableHearingYearModel tthYear = TimetableHearingYearModel.builder().build();
+    when(tthYearService.startTimetableHearingYear(anyLong())).thenReturn(tthYear);
+    // when
+    TimetableHearingYearModel startedYear = tthYearApiInternalController.startTimetableHearingYear(2027L);
+    // then
+    assertThat(startedYear).isEqualTo(tthYear);
+    verify(tthYearService).startTimetableHearingYear(2027L);
+  }
+
+  @Test
   void shouldCloseTimetableHearingYear() {
     // given
     TimetableHearingYearModel tthYear = TimetableHearingYearModel.builder().build();

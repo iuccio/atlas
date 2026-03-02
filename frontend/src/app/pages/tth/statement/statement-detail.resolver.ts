@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn, Router } from '@angular/router';
 import { catchError, Observable, of } from 'rxjs';
-import { TimetableHearingStatementV2 ,} from '../../../api';
+import { TimetableHearingStatementV2 } from '../../../api';
 import { Pages } from '../../pages';
 import { TimetableHearingStatementInternalService } from '../../../api/service/lidi/timetable-hearing-statement-internal.service';
 

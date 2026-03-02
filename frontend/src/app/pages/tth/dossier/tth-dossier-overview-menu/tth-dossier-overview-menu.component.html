@@ -1,0 +1,58 @@
+@if (isDossierCompletable() && isHearingStatusActive()) {
+  <button
+    matIconButton
+    [matMenuTriggerFor]="menu"
+    [disabled]="column().disabled"
+    [ngClass]="column().disabled ? 'color-gray-400' : 'color-primary-400'"
+  >
+    <i class="icon bi bi-three-dots-vertical"></i>
+  </button>
+  <mat-menu #menu="matMenu">
+    <ng-template #dossierAction let-cfg>
+      <button
+        mat-menu-item
+        class="color-primary-400"
+        (click)="completeDossier(cfg.action)"
+      >
+        <img
+          class="pe-2"
+          height="22"
+          width="22"
+          [ngSrc]="cfg.icon"
+          alt="canton-delivery-icon"
+        />
+        <span>{{ cfg.label | translate }}</span>
+      </button>
+    </ng-template>
+
+    @if (isDossierCancelable()) {
+      <ng-container
+        *ngTemplateOutlet="
+          dossierAction;
+          context: {
+            $implicit: {
+              action: 'CANCELED',
+              icon: 'assets/images/collecting_action/X-CIRCLE.svg',
+              label: 'TTH.DOSSIER.CANCEL_DOSSIER',
+            },
+          }
+        "
+      />
+    }
+
+    @if (isDossierDissolvable()) {
+      <ng-container
+        *ngTemplateOutlet="
+          dossierAction;
+          context: {
+            $implicit: {
+              action: 'DISSOLVED',
+              icon: 'assets/images/collecting_action/DASH-CIRCLE.svg',
+              label: 'TTH.DOSSIER.DISSOLVE_DOSSIER',
+            },
+          }
+        "
+      />
+    }
+  </mat-menu>
+}

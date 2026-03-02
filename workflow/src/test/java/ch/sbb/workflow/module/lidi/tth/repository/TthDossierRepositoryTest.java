@@ -2,10 +2,12 @@ package ch.sbb.workflow.module.lidi.tth.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
 import ch.sbb.atlas.model.controller.IntegrationTest;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossierYear;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -30,6 +32,11 @@ class TthDossierRepositoryTest {
   @Test
   void shouldFindStatementIdsByDossierStatusIn() {
     // given
+    TthDossierYear tthDossierYear = TthDossierYear.builder()
+        .timetableYear(2024L)
+        .hearingStatus(HearingStatus.ACTIVE)
+        .build();
+
     tthDossierRepository.saveAll(List.of(
         TthDossier.builder()
             .swissCanton(SwissCanton.BERN)
@@ -38,6 +45,7 @@ class TthDossierRepositoryTest {
             .boContactMail("test@bo.ch")
             .boDeadlineToAnswer(LocalDate.of(2025, 12, 31))
             .statementIds(List.of(1L, 5L))
+            .tthDossierYear(tthDossierYear)
             .build(),
         TthDossier.builder()
             .swissCanton(SwissCanton.BERN)
@@ -46,6 +54,7 @@ class TthDossierRepositoryTest {
             .boContactMail("test@bo.ch")
             .boDeadlineToAnswer(LocalDate.of(2025, 12, 31))
             .statementIds(List.of(7L))
+            .tthDossierYear(tthDossierYear)
             .build(),
         TthDossier.builder()
             .swissCanton(SwissCanton.BERN)
@@ -54,6 +63,7 @@ class TthDossierRepositoryTest {
             .boContactMail("test@bo.ch")
             .boDeadlineToAnswer(LocalDate.of(2025, 12, 31))
             .statementIds(List.of(3L, 4L))
+            .tthDossierYear(tthDossierYear)
             .build()
     ));
     // when
@@ -66,6 +76,11 @@ class TthDossierRepositoryTest {
   @Test
   void shouldUpdateDossierStatus() {
     // given
+    TthDossierYear tthDossierYear = TthDossierYear.builder()
+        .timetableYear(2024L)
+        .hearingStatus(HearingStatus.ACTIVE)
+        .build();
+
     List<Long> savedIds = tthDossierRepository.saveAll(List.of(
         TthDossier.builder()
             .swissCanton(SwissCanton.BERN)
@@ -74,6 +89,7 @@ class TthDossierRepositoryTest {
             .boContactMail("test@bo.ch")
             .boDeadlineToAnswer(LocalDate.of(2025, 12, 31))
             .statementIds(List.of(1L, 5L))
+            .tthDossierYear(tthDossierYear)
             .build(),
         TthDossier.builder()
             .swissCanton(SwissCanton.BERN)
@@ -82,6 +98,7 @@ class TthDossierRepositoryTest {
             .boContactMail("test@bo.ch")
             .boDeadlineToAnswer(LocalDate.of(2025, 12, 31))
             .statementIds(List.of(7L))
+            .tthDossierYear(tthDossierYear)
             .build(),
         TthDossier.builder()
             .swissCanton(SwissCanton.BERN)
@@ -90,6 +107,7 @@ class TthDossierRepositoryTest {
             .boContactMail("test@bo.ch")
             .boDeadlineToAnswer(LocalDate.of(2025, 12, 31))
             .statementIds(List.of(8L))
+            .tthDossierYear(tthDossierYear)
             .build(),
         TthDossier.builder()
             .swissCanton(SwissCanton.BERN)
@@ -98,6 +116,7 @@ class TthDossierRepositoryTest {
             .boContactMail("test@bo.ch")
             .boDeadlineToAnswer(LocalDate.of(2025, 12, 31))
             .statementIds(List.of(10L))
+            .tthDossierYear(tthDossierYear)
             .build()
     )).stream().map(TthDossier::getId).toList();
     // when

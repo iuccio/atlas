@@ -8,13 +8,15 @@
       height="121"
     />
   </div>
-  @if (isHearingStatusActive) {
+  @if (isHearingYearActive()) {
     <div class="ps-4">
       <div class="table-heading font-bold-4xl color-gray-900 mb-3">
         {{ 'PAGES.TTH.TITLE_MENU' | translate }}
         {{ foundTimetableHearingYear.timetableYear }}
       </div>
-      @if (noPlannedTimetableHearingYearFound) {
+      @if (
+        !isPlannedTimetableHearingYearFound && !isTimetableHearingYearFound
+      ) {
         <div class="mb-5">
           <span>{{
             'TTH.OVERVIEW_TAB.OVERVIEW_ACTUAL_NO_PLANNED_HEARING_YEAR_FOUND'
@@ -22,7 +24,7 @@
           }}</span>
         </div>
       }
-      @if (!noTimetableHearingYearFound) {
+      @if (isTimetableHearingYearFound) {
         <div>
           <div class="mb-5">
             <span>{{
@@ -43,7 +45,7 @@
           </div>
         </div>
       }
-      @if (noTimetableHearingYearFound && !noPlannedTimetableHearingYearFound) {
+      @if (!isTimetableHearingYearFound && isPlannedTimetableHearingYearFound) {
         <div>
           <div class="mb-5">
             <span>{{
@@ -66,17 +68,17 @@
       }
     </div>
   }
-  @if (isHearingStatusPlanned) {
+  @if (isHearingYearPlanned()) {
     <div class="ps-4">
       <div class="table-heading font-bold-4xl color-gray-900 mb-3">
-        {{ 'TTH.TAB.PLANNED' | translate }}
+        {{ 'PAGES.TTH.SUBPAGE.PLANNED' | translate }}
       </div>
       <div class="mb-5">
         <span>{{
           'TTH.OVERVIEW_TAB.OVERVIEW_PLANNED_SUBHEADING' | translate
         }}</span>
       </div>
-      @if (noTimetableHearingYearFound) {
+      @if (!isTimetableHearingYearFound) {
         <div class="table-heading font-bold-lg color-gray-900 mb-3">
           <span>{{
             'TTH.OVERVIEW_TAB.OVERVIEW_PLANNED_NOT_FOUND' | translate
@@ -85,17 +87,17 @@
       }
     </div>
   }
-  @if (isHearingStatusArchived) {
+  @if (isHearingYearArchived()) {
     <div class="ps-4">
       <div class="table-heading font-bold-4xl color-gray-900 mb-3">
-        {{ 'TTH.TAB.ARCHIVED' | translate }}
+        {{ 'PAGES.TTH.SUBPAGE.ARCHIVED' | translate }}
       </div>
       <div class="mb-5">
         <span>{{
           'TTH.OVERVIEW_TAB.OVERVIEW_ARCHIVED_SUBHEADING' | translate
         }}</span>
       </div>
-      @if (noTimetableHearingYearFound) {
+      @if (!isTimetableHearingYearFound) {
         <div class="table-heading font-bold-lg color-gray-900 mb-3">
           <span>{{
             'TTH.OVERVIEW_TAB.OVERVIEW_ARCHIVED_NOT_FOUND' | translate

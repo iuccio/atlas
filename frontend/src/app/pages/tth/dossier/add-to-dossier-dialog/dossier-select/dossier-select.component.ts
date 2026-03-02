@@ -32,6 +32,7 @@ export class DossierSelectComponent implements OnInit {
 
   controlName = input<string>('dossier');
   canton = input<SwissCanton>();
+  year = input<number>();
   statusRestriction = input<DossierStatus[]>();
   bindValue = input<string>('');
 
@@ -49,7 +50,12 @@ export class DossierSelectComponent implements OnInit {
       return;
     }
     this.searchResults$ = this.dossierInternalService
-      .getOverview(this.canton(), [searchQuery], this.statusRestriction())
+      .getOverview(
+        this.year(),
+        this.canton(),
+        [searchQuery],
+        this.statusRestriction()
+      )
       .pipe(map((response) => response.objects ?? []));
   }
 }

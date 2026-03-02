@@ -213,6 +213,7 @@ class TimetableHearingStatementControllerV2ApiTest extends BaseControllerApiTest
     context.setAuthentication(authentication);
 
     timetableHearingYearController.startHearingYear(YEAR);
+
     final MockMultipartFile statementJson = getMockMultipartFile();
 
     mvc.perform(multipart(HttpMethod.POST, "/v2/timetable-hearing/statements/external")

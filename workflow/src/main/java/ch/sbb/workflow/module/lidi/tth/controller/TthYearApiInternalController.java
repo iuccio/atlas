@@ -13,6 +13,11 @@ public class TthYearApiInternalController implements TthYearApiInternal {
   private final TthYearService tthYearService;
 
   @Override
+  public TimetableHearingYearModel startTimetableHearingYear(Long year) {
+    return tthYearService.startTimetableHearingYear(year);
+  }
+
+  @Override
   public TimetableHearingYearModel closeTimetableHearingYear(Long year) {
     return tthYearService.closeTimetableHearingYear(year);
   }
