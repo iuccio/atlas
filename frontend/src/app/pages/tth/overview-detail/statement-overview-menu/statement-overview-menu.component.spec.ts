@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
 import { AddToDossierDialogService } from '../../dossier/add-to-dossier-dialog/add-to-dossier-dialog.service';
+import { Pages } from '../../../pages';
 
 const tthChangeCantonDialogService = jasmine.createSpyObj(
   'TthChangeCantonDialogService',
@@ -130,7 +131,7 @@ describe('StatementOverviewMenuComponent', () => {
     };
     component.createDossier(statement);
     expect(router.navigate).toHaveBeenCalledWith(
-      ['dossiers', 'add'],
+      ['..', Pages.TTH_DOSSIERS.path, 'add'],
       jasmine.any(Object)
     );
   });

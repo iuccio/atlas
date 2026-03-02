@@ -177,7 +177,7 @@ export class CantonDossierDetailComponent
   }
 
   back() {
-    this.router.navigate(['../..'], { relativeTo: this.activatedRoute }).then();
+    this.router.navigate(['..'], { relativeTo: this.activatedRoute }).then();
   }
 
   save() {

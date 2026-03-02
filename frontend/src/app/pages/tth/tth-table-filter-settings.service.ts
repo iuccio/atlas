@@ -8,6 +8,7 @@ import { TableFilterMultiSelect } from '../../core/components/table-filter/confi
 import { TableFilterSearchSelect } from '../../core/components/table-filter/config/table-filter-search-select';
 import { TableFilterChip } from '../../core/components/table-filter/config/table-filter-chip';
 import { TableFilterSearchType } from '../../core/components/table-filter/config/table-filter-search-type';
+import { DossierStatus } from '../../api/model/dossierStatus';
 
 export class TthTableFilterSettingsService {
   static createSettings() {
@@ -36,6 +37,20 @@ export class TthTableFilterSettingsService {
         new FormGroup({
           ttfnid: new FormControl(),
         })
+      ),
+    };
+  }
+
+  static createDossierSettings() {
+    return {
+      chipSearch: new TableFilterChip(0, 'col-6'),
+      multiSelectDossierStatus: new TableFilterMultiSelect(
+        'TTH.DOSSIER.DOSSIER_STATUS.',
+        'COMMON.STATUS',
+        Object.values(DossierStatus),
+        1,
+        'filter-width',
+        []
       ),
     };
   }

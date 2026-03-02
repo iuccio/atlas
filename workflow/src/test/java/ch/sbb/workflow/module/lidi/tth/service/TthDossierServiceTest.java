@@ -2,6 +2,7 @@ package ch.sbb.workflow.module.lidi.tth.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -10,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
 import ch.sbb.atlas.api.client.user.administration.UserAdministrationClient;
+import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.user.administration.PermissionModel;
@@ -23,8 +25,10 @@ import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import ch.sbb.atlas.user.administration.security.service.BoUserMailCheckService;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossierYear;
 import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
+import ch.sbb.workflow.module.lidi.tth.repository.TthDossierYearRepository;
 import ch.sbb.workflow.module.lidi.tth.search.TthDossierRequestParams;
 import ch.sbb.workflow.module.lidi.tth.search.TthDossierSearchRestrictions;
 import java.time.LocalDate;
@@ -50,6 +54,9 @@ class TthDossierServiceTest {
 
   @Autowired
   private TthDossierRepository tthDossierRepository;
+
+  @Autowired
+  private TthDossierYearRepository tthDossierYearRepository;
 
   @MockitoBean
   private TimetableHearingStatementClient timetableHearingStatementClient;
@@ -80,6 +87,12 @@ class TthDossierServiceTest {
 
     when(boUserMailCheckService.isCurrentUserMailAssignedTo(any())).thenReturn(true);
 
+    TthDossierYear tthDossierYear = TthDossierYear.builder()
+        .timetableYear(2024L)
+        .hearingStatus(HearingStatus.ACTIVE)
+        .build();
+    tthDossierYearRepository.save(tthDossierYear);
+
     TthDossier dossier = TthDossier.builder()
         .swissCanton(SwissCanton.BERN)
         .topic("Bern, Salem - Takt")
@@ -89,6 +102,7 @@ class TthDossierServiceTest {
         .dossierStatus(DossierStatus.ADDED)
         .statementIds(List.of(132L, 145L))
         .boDeadlineToAnswer(LocalDate.now().plusDays(7))
+        .tthDossierYear(tthDossierYear)
         .build();
     question = TthDossierQuestion.builder()
         .tthDossier(dossier)
@@ -132,6 +146,25 @@ class TthDossierServiceTest {
     assertThat(dossier.getId()).isNotNull();
     assertThat(dossier.getDossierQuestions()).hasSize(1);
     verify(timetableHearingStatementClient).updateStatements(any());
+  }
+
+  @Test
+  void shouldThrowExceptionWhenActiveTimetableHearingYearNotFound() {
+    tthDossierRepository.deleteAll();
+    tthDossierYearRepository.deleteAll();
+
+    TthDossier dossier = TthDossier.builder()
+        .swissCanton(SwissCanton.BERN)
+        .topic("Test Topic")
+        .boContactMail("test@example.com")
+        .statementIds(List.of(1L))
+        .boDeadlineToAnswer(LocalDate.now().plusDays(7))
+        .build();
+
+    assertThatThrownBy(() -> tthDossierService.createDossier(dossier))
+        .isInstanceOf(SimpleAtlasException.class)
+        .hasMessageContaining("Active timetable hearing year not found");
+
   }
 
   @Test

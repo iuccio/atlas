@@ -24,6 +24,7 @@ public class TthDossierSearchRestrictions {
   public Specification<TthDossier> getSpecification() {
     return new EnumSpecification<>(requestParams.getCanton(), TthDossier_.swissCanton)
         .and(new EnumSpecification<>(requestParams.getStatusRestrictions(), TthDossier_.dossierStatus))
+        .and(new EnumSpecification<>(requestParams.getTimetableHearingYear(), TthDossier_.tthDossierYear))
         .and(new SearchCriteriaSpecification<>(requestParams.getSearchCriterias(), List.of(Fields.id, Fields.topic)));
   }
 }

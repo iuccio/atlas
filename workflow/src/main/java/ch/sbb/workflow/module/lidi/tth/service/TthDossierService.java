@@ -1,6 +1,7 @@
 package ch.sbb.workflow.module.lidi.tth.service;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
+import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
@@ -11,10 +12,12 @@ import ch.sbb.workflow.aop.LoggingAspect.WorkflowType;
 import ch.sbb.workflow.aop.MethodLogged;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossierQuestion;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossierYear;
 import ch.sbb.workflow.module.lidi.tth.mail.TthDossierNotificationService;
 import ch.sbb.workflow.module.lidi.tth.mapper.TthDossierMapper;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierQuestionRepository;
 import ch.sbb.workflow.module.lidi.tth.repository.TthDossierRepository;
+import ch.sbb.workflow.module.lidi.tth.repository.TthDossierYearRepository;
 import ch.sbb.workflow.module.lidi.tth.search.TthDossierSearchRestrictions;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,7 @@ public class TthDossierService {
 
   private final TthDossierRepository dossierRepository;
   private final TthDossierQuestionRepository questionRepository;
+  private final TthDossierYearRepository tthDossierYearRepository;
   private final TimetableHearingStatementClient timetableHearingStatementClient;
   private final TthDossierNotificationService notificationService;
   private final BoContactPermissionService boContactPermissionService;
@@ -67,9 +71,17 @@ public class TthDossierService {
       + ".TIMETABLE_HEARING, #dossier)")
   @MethodLogged(workflowType = WorkflowType.TTH_DOSSIER_WORKFLOW)
   public TthDossier createDossier(TthDossier dossier) {
+    TthDossierYear dossierYear =
+        tthDossierYearRepository.findTthDossierYearByHearingStatus(HearingStatus.ACTIVE)
+            .orElseThrow(() -> SimpleAtlasException.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .messageAndError("Active timetable hearing year not found")
+                .build());
+    
     boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
 
     dossier.setDossierStatus(DossierStatus.ADDED);
+    dossier.setTthDossierYear(dossierYear);
     TthDossier tthDossier = dossierRepository.saveAndFlush(dossier);
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(dossier));
     return tthDossier;
@@ -124,6 +136,9 @@ public class TthDossierService {
           .messageAndError("Answer to canton must not be edited")
           .build();
     }
+
+    dossier.setTthDossierYear(currentDossier.getTthDossierYear());
+
     TthDossier updatedDossier = dossierRepository.saveAndFlush(dossier);
     updateRemovedStatements(previousStatementIds, dossier);
     timetableHearingStatementClient.updateStatements(TthDossierMapper.toBatchUpdateModel(updatedDossier));

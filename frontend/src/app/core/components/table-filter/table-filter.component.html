@@ -33,9 +33,7 @@
                     chipSearch.addSearchFromChipInputEvent($event); emitSearch()
                   "
                   [matChipInputFor]="chipList"
-                  [attr.data-cy]="
-                    `table-filter-chip-search-${rowIdx}-${filterConfigIndex}`
-                  "
+                  [attr.data-cy]="`table-filter-chip-search-${rowIdx}-${filterConfigIndex}`"
                   class="font-regular-base"
                 />
                 <i class="bi bi-search"></i>
@@ -49,7 +47,7 @@
           as booleanFilter
         ) {
           <div [class]="booleanFilter.elementWidthCssClass">
-            <div class="slide-toggle-row-wrapper pb-3">
+            <div class="slide-toggle-row-wrapper pb-3 mt-3">
               <atlas-label-field
                 [fieldLabel]="booleanFilter.fieldLabel"
               ></atlas-label-field>
@@ -151,9 +149,7 @@
                   [matDatepicker]="picker"
                   [max]="MAX_DATE"
                   [min]="MIN_DATE"
-                  [attr.data-cy]="
-                    `table-filter-date-select-${rowIdx}-${filterConfigIndex}`
-                  "
+                  [attr.data-cy]="`table-filter-date-select-${rowIdx}-${filterConfigIndex}`"
                   matInput
                 />
                 <atlas-form-date-icon
@@ -207,9 +203,7 @@
                     emitSearch()
                   "
                   [matChipInputFor]="singleSearchChipList"
-                  [attr.data-cy]="
-                    `table-filter-single-search-${rowIdx}-${filterConfigIndex}`
-                  "
+                  [attr.data-cy]="`table-filter-single-search-${rowIdx}-${filterConfigIndex}`"
                   class="font-regular-base"
                 />
               </mat-chip-grid>

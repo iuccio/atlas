@@ -7,9 +7,9 @@ import { inject } from '@angular/core';
 import { PermissionService } from '../../core/auth/permission/permission.service';
 import { dossierResolver } from './dossier/detail/dossier-detail-resolver.service';
 
-const statementActiveDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ACTIVE.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
-const statementPlannedDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_PLANNED.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
-const statementArchivedDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ARCHIVED.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
+const statementActiveDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ACTIVE.path}/${Pages.TTH_STATEMENTS.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
+const statementPlannedDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_PLANNED.path}/${Pages.TTH_STATEMENTS.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
+const statementArchivedDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ARCHIVED.path}/${Pages.TTH_STATEMENTS.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
 
 export async function loadStatementDetailRoute() {
   const permissionService = inject(PermissionService);
@@ -61,15 +61,7 @@ export const routes: Routes = [
     },
     runGuardsAndResolvers: 'always',
   },
-  {
-    path: `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ACTIVE.path}/${Pages.TTH_DOSSIERS.path}/:id`,
-    loadComponent: loadDossierDetailRoute,
-    canDeactivate: [canLeaveDirtyForm],
-    resolve: {
-      dossier: dossierResolver,
-    },
-    runGuardsAndResolvers: 'always',
-  },
+
   {
     path: statementPlannedDetailPath,
     loadComponent: () =>
@@ -101,6 +93,26 @@ export const routes: Routes = [
     runGuardsAndResolvers: 'always',
   },
   {
+    path: `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ACTIVE.path}/${Pages.TTH_DOSSIERS.path}/:id`,
+    loadComponent: loadDossierDetailRoute,
+    canDeactivate: [canLeaveDirtyForm],
+    resolve: {
+      dossier: dossierResolver,
+    },
+    runGuardsAndResolvers: 'always',
+  },
+
+  {
+    path: `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ARCHIVED.path}/${Pages.TTH_DOSSIERS.path}/:id`,
+    loadComponent: loadDossierDetailRoute,
+    canDeactivate: [canLeaveDirtyForm],
+    resolve: {
+      dossier: dossierResolver,
+    },
+    runGuardsAndResolvers: 'always',
+  },
+
+  {
     path: Pages.TTH_OVERVIEW_DETAIL.path,
     loadComponent: () =>
       import('./overview-tab/overview-tab.component').then(
@@ -108,34 +120,105 @@ export const routes: Routes = [
       ),
     children: [
       {
-        path: Pages.TTH_ACTIVE.path,
-        loadComponent: () =>
-          import('./overview-detail/overview-detail.component').then(
-            (m) => m.OverviewDetailComponent
-          ),
-        data: {
-          hearingStatus: HearingStatus.Active,
-        },
-      },
-      {
         path: Pages.TTH_PLANNED.path,
         loadComponent: () =>
-          import('./overview-detail/overview-detail.component').then(
-            (m) => m.OverviewDetailComponent
+          import('./tth-overview-base/tth-overview-base.component').then(
+            (m) => m.TthOverviewBaseComponent
           ),
         data: {
           hearingStatus: HearingStatus.Planned,
         },
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: Pages.TTH_STATEMENTS.path,
+          },
+          {
+            path: Pages.TTH_STATEMENTS.path,
+            loadComponent: () =>
+              import('./overview-detail/overview-detail.component').then(
+                (m) => m.OverviewDetailComponent
+              ),
+            data: {
+              hearingStatus: HearingStatus.Planned,
+            },
+          },
+        ],
+      },
+      {
+        path: Pages.TTH_ACTIVE.path,
+        loadComponent: () =>
+          import('./tth-overview-base/tth-overview-base.component').then(
+            (m) => m.TthOverviewBaseComponent
+          ),
+        data: {
+          hearingStatus: HearingStatus.Active,
+        },
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: Pages.TTH_STATEMENTS.path,
+          },
+          {
+            path: Pages.TTH_DOSSIERS.path,
+            loadComponent: () =>
+              import('./dossier/tth-dossier-overview/tth-dossier-overview.component').then(
+                (m) => m.TthDossierOverviewComponent
+              ),
+            data: {
+              hearingStatus: HearingStatus.Active,
+            },
+          },
+          {
+            path: Pages.TTH_STATEMENTS.path,
+            loadComponent: () =>
+              import('./overview-detail/overview-detail.component').then(
+                (m) => m.OverviewDetailComponent
+              ),
+            data: {
+              hearingStatus: HearingStatus.Active,
+            },
+          },
+        ],
       },
       {
         path: Pages.TTH_ARCHIVED.path,
         loadComponent: () =>
-          import('./overview-detail/overview-detail.component').then(
-            (m) => m.OverviewDetailComponent
+          import('./tth-overview-base/tth-overview-base.component').then(
+            (m) => m.TthOverviewBaseComponent
           ),
         data: {
           hearingStatus: HearingStatus.Archived,
         },
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: Pages.TTH_STATEMENTS.path,
+          },
+          {
+            path: Pages.TTH_DOSSIERS.path,
+            loadComponent: () =>
+              import('./dossier/tth-dossier-overview/tth-dossier-overview.component').then(
+                (m) => m.TthDossierOverviewComponent
+              ),
+            data: {
+              hearingStatus: HearingStatus.Archived,
+            },
+          },
+          {
+            path: Pages.TTH_STATEMENTS.path,
+            loadComponent: () =>
+              import('./overview-detail/overview-detail.component').then(
+                (m) => m.OverviewDetailComponent
+              ),
+            data: {
+              hearingStatus: HearingStatus.Archived,
+            },
+          },
+        ],
       },
       { path: '**', redirectTo: Pages.TTH_ACTIVE.path },
     ],

@@ -158,7 +158,9 @@ class TimetableHearingYearServiceTest {
   @Test
   void shouldCloseHearingStatus() {
     TimetableHearingYear timetableHearing = timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
+
     TimetableHearingYear startedTimetableHearing = timetableHearingYearService.startTimetableHearing(timetableHearing);
+
     TimetableHearingYear closed = timetableHearingYearService.closeTimetableHearing(startedTimetableHearing,
         Collections.emptyList());
 
@@ -169,6 +171,7 @@ class TimetableHearingYearServiceTest {
   void shouldCloseTimetableHearingWithCorrectStatementAndYearUpdates() {
     // given
     TimetableHearingYear timetableHearing = timetableHearingYearService.createTimetableHearing(getTimetableHearingYear());
+
     TimetableHearingYear startedTimetableHearing = timetableHearingYearService.startTimetableHearing(timetableHearing);
 
     TimetableHearingStatementModelV2 statementModel;

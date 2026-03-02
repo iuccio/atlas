@@ -271,7 +271,11 @@
       "TITLE": "Fahrplananhörung Schweiz",
       "TITLE_MENU": "Fahrplananhörung",
       "DESCRIPTION": "Einsehen und Bearbeiten der Rückmeldungen zum Fahrplanentwurf.",
-      "PATH_TEXT": "Fahrplananhörung"
+      "PATH_TEXT": "Fahrplananhörung",
+      "SUBPAGE": {
+        "PLANNED": "Geplante Anhörungen",
+        "ARCHIVED": "Archivierte Anhörungen"
+      }
     },
     "PRM": {
       "TITLE": "Daten zur Barrierefreiheit verwalten",
@@ -845,9 +849,8 @@
       "CONFIRM": "Starten"
     },
     "TAB": {
-      "ACTUAL": "Aktuelle Anhörung",
-      "PLANNED": "Geplante Anhörungen",
-      "ARCHIVED": "Archivierte Anhörungen"
+      "STATEMENTS": "Stellungnahmen",
+      "DOSSIERS": "Dossiers"
     },
     "BUTTON": {
       "DUPLICATE": "Duplizieren",
@@ -894,7 +897,9 @@
     "SELECT_CANTON": "Kanton auswählen",
     "SELECT_YEAR": "Jahr auswählen",
     "TABLE_RESULT_HEADING": "{{totalCount}} Stellungnahmen für das Fahrplanjahr {{year}}",
+    "TABLE_RESULT_HEADING_DOSSIER": "{{totalCount}} Dossier für das Fahrplanjahr {{year}}",
     "TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX": "{{totalCount}} Stellungnahmen ",
+    "TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX_DOSSIER": "{{totalCount}} Dossier ",
     "WHOLE_SWISS": "gesamte Schweiz",
     "OPEN": "{{canton}} öffnen",
     "STATEMENT_STATUS_HEADER": "Status",

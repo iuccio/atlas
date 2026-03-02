@@ -2,6 +2,7 @@ package ch.sbb.workflow.module.lidi.tth.search;
 
 import ch.sbb.atlas.api.workflow.tth.dossier.DossierStatus;
 import ch.sbb.atlas.kafka.model.SwissCanton;
+import ch.sbb.workflow.module.lidi.tth.entity.TthDossierYear;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,8 @@ import lombok.ToString;
 @ToString
 @Builder
 public class TthDossierRequestParams {
+
+  private TthDossierYear timetableHearingYear;
 
   private SwissCanton canton;
 

@@ -62,15 +62,15 @@ export class StatementOverviewMenuComponent {
   duplicateStatement(statement: TimetableHearingStatementV2) {
     this.statementShareService.statement = statement;
     this.router
-      .navigate([this.hearingStatus().toLowerCase(), 'add'], {
-        relativeTo: this.route.parent,
+      .navigate(['add'], {
+        relativeTo: this.route,
       })
       .then();
   }
 
   createDossier(statement: TimetableHearingStatementV2) {
     this.router
-      .navigate([Pages.TTH_DOSSIERS.path, 'add'], {
+      .navigate(['..', Pages.TTH_DOSSIERS.path, 'add'], {
         relativeTo: this.route,
         queryParams: { statementIds: [statement.id!] },
       })

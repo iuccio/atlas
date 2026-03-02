@@ -56,7 +56,7 @@ export class StatementDataComponent {
 
   goToDossier(dossierId: number) {
     this.router
-      .navigate(['..', Pages.TTH_DOSSIERS.path, dossierId], {
+      .navigate(['../..', Pages.TTH_DOSSIERS.path, dossierId], {
         relativeTo: this.route,
       })
       .then();

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { Page } from '../../model/page';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, map, switchMap } from 'rxjs/operators';
@@ -7,6 +7,8 @@ import { PageService } from '../../pages/page.service';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { MatListItem } from '@angular/material/list';
 import { TranslatePipe } from '@ngx-translate/core';
+import { OverviewToTabShareDataService } from '../../../pages/tth/overview-tab/service/overview-to-tab-share-data.service';
+import { Cantons } from '../../cantons/Cantons';
 
 @Component({
   selector: 'atlas-side-nav',
@@ -18,11 +20,42 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class SideNavComponent {
   activePageIndex: number | null = 0;
   activeSubPageIndex = 0;
-  selectedPage: Page | null = null;
+  selectedPage = signal<Page | null>(null);
+
+  readonly navParam = computed<Record<string, string>>(() => ({
+    canton: this.overviewToTabService.cantonShort() || Cantons.swiss.path,
+  }));
+
+  subPageLinks = computed(() => {
+    const nav = this.navParam();
+    const page = this.selectedPage();
+
+    if (!page?.subpages) {
+      return new Map<Page, string[]>();
+    }
+
+    const links = new Map<Page, string[]>();
+    for (const subPage of page.subpages) {
+      const params = page.params ?? [];
+
+      if (params.length > 0) {
+        const values = params
+          .map((param: string) => nav[param].toLowerCase())
+          .filter(Boolean);
+
+        links.set(subPage, [page.path, ...values, subPage.path]);
+      } else {
+        links.set(subPage, [page.path, subPage.path]);
+      }
+    }
+
+    return links;
+  });
 
   constructor(
     private readonly router: Router,
-    protected readonly pageService: PageService
+    protected readonly pageService: PageService,
+    private readonly overviewToTabService: OverviewToTabShareDataService
   ) {
     this.router.events
       .pipe(
@@ -43,7 +76,7 @@ export class SideNavComponent {
     pages.forEach((page, index) => {
       if (currentUrl.includes(page.path)) {
         this.activePageIndex = index;
-        this.selectedPage = page;
+        this.selectedPage.set(page);
         if (page.subpages) {
           page.subpages.forEach((subPage, index) => {
             if (currentUrl.includes(subPage.path)) {

@@ -118,7 +118,7 @@ describe('StatementData', () => {
   it('should go to dossier with id', () => {
     component.goToDossier(5);
 
-    expect(router.navigate).toHaveBeenCalledWith(['..', 'dossiers', 5], {
+    expect(router.navigate).toHaveBeenCalledWith(['../..', 'dossiers', 5], {
       relativeTo: {},
     });
   });

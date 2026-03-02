@@ -99,6 +99,7 @@ export class StatementSelectComponent {
         Pages.TTH.path,
         Cantons.fromSwissCanton(statement.swissCanton)?.path,
         Pages.TTH_ACTIVE.path,
+        Pages.TTH_STATEMENTS.path,
         statement.id,
       ])
     );

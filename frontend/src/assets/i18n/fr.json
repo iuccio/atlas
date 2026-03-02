@@ -271,7 +271,11 @@
       "TITLE": "Consultation du projet d'horaire",
       "TITLE_MENU": "Consultation du projet d'horaire",
       "DESCRIPTION": "Consulter et modifier les commentaires du projet d'horaire.",
-      "PATH_TEXT": "Consultation sur le projet d'horaire"
+      "PATH_TEXT": "Consultation sur le projet d'horaire",
+      "SUBPAGE": {
+        "PLANNED": "Auditions prévues",
+        "ARCHIVED": "Auditions archivées"
+      }
     },
     "PRM": {
       "TITLE": "Gérer les données d'accessibilité",
@@ -845,9 +849,8 @@
       "CONFIRM": "Commencer"
     },
     "TAB": {
-      "ACTUAL": "Audition actuelle",
-      "PLANNED": "Auditions prévues",
-      "ARCHIVED": "Auditions archivées"
+      "STATEMENTS": "Avis",
+      "DOSSIERS": "Dossiers"
     },
     "BUTTON": {
       "DUPLICATE": "Dupliquer",
@@ -894,7 +897,9 @@
     "SELECT_CANTON": "Sélectionner un canton",
     "SELECT_YEAR": "Sélectionner l'année",
     "TABLE_RESULT_HEADING": "{{totalCount}} Prises de position pour l'année d'horaire {{year}}",
+    "TABLE_RESULT_HEADING_DOSSIER": "{{totalCount}} dossiers pour l'année d'horaire {{year}}",
     "TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX": "{{totalCount}} Prises de position ",
+    "TABLE_RESULT_ACTUAL_HEARING_HEADING_PREFIX_DOSSIER": "{{totalCount}} dossiers ",
     "WHOLE_SWISS": "pour toute la Suisse",
     "OPEN": "{{canton}} ouvrir",
     "STATEMENT_STATUS_HEADER": "Statut",
@@ -1121,23 +1126,23 @@
       "NOTIFICATION": {
         "ADD_SUCCESS": "Nouveau dossier enregistré avec succès.",
         "EDIT_SUCCESS": "Le dossier a été enregistré avec succès.",
-        "SENT_TO_BO": "Das Dossier wurde an das Transportunternehmen weitergegeben.",
+        "SENT_TO_BO": "Le dossier a été transmis à l'entreprise de transport.",
         "SENT_TO_CANTON": "Le dossier a été transmis au canton.",
-        "COMPLETE_TITLE": "Dossier wird abgeschlossen",
-        "COMPLETE_MESSAGE": "Mit dieser Aktion wird das Dossier geschlossen. Die Stellungnahmen können danach wieder einzeln bearbeitet werden. Möchten Sie fortfahren?"
+        "COMPLETE_TITLE": "Le dossier est clos",
+        "COMPLETE_MESSAGE": "Cette action clôt le dossier. Les avis peuvent ensuite être traités individuellement. Souhaitez-vous continuer?"
       },
-      "STATUS": "Dossier-Status",
-      "STATUS_CHANGE": "Status ändern",
-      "STATUS_CHANGE_INFO": "Der Status wird auf die zugehörigen Stellungnahmen übertragen.",
+      "STATUS": "Statut du dossier",
+      "STATUS_CHANGE": "Modifier le statut",
+      "STATUS_CHANGE_INFO": "Le statut est transféré aux avis correspondants.",
       "DOSSIER_STATUS": {
-        "ADDED": "Erfasst",
-        "CANCELED": "Abgebrochen",
-        "DOSSIER_BO_CHECK": "In Abklärung bei TU",
-        "DOSSIER_CANTON_CHECK": "Rückmeldung TU eingetroffen",
-        "ACCEPTED": "Angenommen",
-        "REJECTED": "Abgelehnt",
-        "MOVED": "Verschoben",
-        "DISSOLVED": "Aufgelöst"
+        "ADDED": "saisie",
+        "CANCELED": "annulé",
+        "DOSSIER_BO_CHECK": "En cours de clarification auprès de TU",
+        "DOSSIER_CANTON_CHECK": "Réponse TU reçue",
+        "ACCEPTED": "supposé",
+        "REJECTED": "refusée",
+        "MOVED": "reporté",
+        "DISSOLVED": "dissous"
       },
       "INQUIRY_FROM_THE_CANTON": "Demande de renseignements du canton",
       "CANCEL_DOSSIER": "Supprimer le dossier",

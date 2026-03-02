@@ -74,6 +74,7 @@ class TimetableHearingYearClosingTest {
         .hearingFrom(LocalDate.of(2022, 1, 1))
         .hearingTo(LocalDate.of(2022, 2, 1))
         .build());
+
     timetableHearingYearController.startHearingYear(YEAR);
 
     // given Statement 1
