@@ -1,5 +1,9 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+import {
+  EventTypes,
+  OidcSecurityService,
+  PublicEventsService,
+} from 'angular-auth-oidc-client';
 import { UserService } from './user/user.service';
 import { PageService } from '../pages/page.service';
 import { TokenUser, User } from './user/user';
@@ -15,7 +19,7 @@ import {
 import { jwtDecode } from 'jwt-decode';
 import { Role } from './role';
 import { Router } from '@angular/router';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 
 export const BC_TOKEN = new InjectionToken<
   (logoutFn: () => void) => BroadcastChannel
@@ -48,9 +52,27 @@ export class AuthService {
 
   private readonly createBC = inject(BC_TOKEN);
   private readonly oidcSecurityService = inject(OidcSecurityService);
+  private readonly publicEventsService = inject(PublicEventsService);
   private readonly userService = inject(UserService);
   private readonly pageService = inject(PageService);
   private readonly router = inject(Router);
+
+  constructor() {
+    this.publicEventsService
+      .registerForEvents()
+      .pipe(
+        filter(
+          (notification) => notification.type === EventTypes.SilentRenewFailed
+        )
+      )
+      .subscribe((value) => {
+        console.error(
+          'SilentRenewFailed Event occurred, trying to reinitialize authentication',
+          value
+        );
+        this.initAuth().subscribe();
+      });
+  }
 
   initAuth() {
     return this.oidcSecurityService.getUserData().pipe(
