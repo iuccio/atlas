@@ -48,6 +48,10 @@ export interface ReadSublineVersionV2 {
      */
     readonly slnid?: string;
     /**
+     * LinienID / LineRef - Only available temporarily until SLNID Migration is complete
+     */
+    linienId?: string;
+    /**
      * Description
      */
     description: string;

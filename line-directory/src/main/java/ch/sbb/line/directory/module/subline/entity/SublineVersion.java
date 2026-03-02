@@ -63,6 +63,10 @@ public class SublineVersion extends BaseVersion implements Versionable,
   @AtlasVersionableProperty
   private String slnid;
 
+  @Size(max = AtlasFieldLengths.LENGTH_20)
+  @AtlasVersionableProperty
+  private String linienId;
+
   @NotNull
   @Enumerated(EnumType.STRING)
   @AtlasVersionableProperty
