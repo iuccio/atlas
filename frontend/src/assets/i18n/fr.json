@@ -487,7 +487,9 @@
         "EDIT_ERROR": "Une erreur est survenue lors de l’édition de la ligne.",
         "REVOKE_SUCCESS": "La ligne a été marquée avec succès comme étant une saisie d'erreur.",
         "DELETE_SUCCESS": "La ligne a été supprimée avec succès."
-      }
+      },
+      "LINE_ID": "LinienID / LineRef",
+      "LINE_ID_INFO": "Nécessaire pour représenter le nouveau modèle de ligne avec l'ancien ID (VDV : LinienID ; SIRI : LineRef) - comme base pour la migration SLNID."
     },
     "SUBLINE": {
       "NO_LINE_DESIGNATION_AVAILABLE": "aucune désignation de ligne disponible",

@@ -39,8 +39,8 @@ import { LineWorkflowService } from '../../../../api/service/workflow/line-workf
     DetailFooterComponent,
     AtlasButtonComponent,
     BackButtonDirective,
-    TranslatePipe
-],
+    TranslatePipe,
+  ],
   providers: [TranslatePipe],
 })
 export class LineVersionSnapshotDetailComponent implements OnInit {
@@ -110,6 +110,7 @@ export class LineVersionSnapshotDetailComponent implements OnInit {
       workflowId: new FormControl(version.workflowId),
       workflowStatus: new FormControl(version.workflowStatus),
       swissLineNumber: new FormControl(version.description!),
+      linienId: new FormControl(),
       lineType: new FormControl(version.lineType),
       businessOrganisation: new FormControl(version.businessOrganisation),
       number: new FormControl(version.number),

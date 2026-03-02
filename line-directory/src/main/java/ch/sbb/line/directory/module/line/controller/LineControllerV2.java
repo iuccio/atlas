@@ -54,6 +54,7 @@ public class LineControllerV2 implements LineApiV2 {
   public LineVersionModelV2 createLineVersionV2(LineVersionModelV2 newVersion) {
     LineVersion newLineVersion = toEntity(newVersion);
     newLineVersion.setStatus(Status.VALIDATED);
+
     LineVersion createdVersion = lineService.createV2(newLineVersion);
     return toModel(createdVersion);
   }
@@ -73,6 +74,7 @@ public class LineControllerV2 implements LineApiV2 {
         .status(lineVersion.getStatus())
         .lineType(lineVersion.getLineType())
         .slnid(lineVersion.getSlnid())
+        .linienId(lineVersion.getLinienId())
         .number(lineVersion.getNumber())
         .longName(lineVersion.getLongName())
         .shortNumber(lineVersion.getShortNumber())
@@ -104,6 +106,7 @@ public class LineControllerV2 implements LineApiV2 {
         .id(lineVersionModel.getId())
         .lineType(lineVersionModel.getLineType())
         .slnid(lineVersionModel.getSlnid())
+        .linienId(lineVersionModel.getLinienId())
         .number(lineVersionModel.getNumber())
         .longName(lineVersionModel.getLongName())
         .concessionType(lineVersionModel.getLineConcessionType())

@@ -38,6 +38,10 @@ public abstract class BaseLineVersionModel extends BaseVersionModel implements D
   @Schema(description = "SLNID", accessMode = AccessMode.READ_ONLY, example = "ch:1:slnid:10001234")
   private String slnid;
 
+  @Schema(description = "LinienID / LineRef - Only available temporarily until SLNID Migration is complete", example = "1012")
+  @Size(max = AtlasFieldLengths.LENGTH_20)
+  private String linienId;
+
   @Schema(description = "LongName", example = "Spiseggfräser; Talstation - Bergstation; Ersatzbus")
   @Size(min = 1, max = AtlasFieldLengths.LENGTH_255)
   @Pattern(regexp = AtlasCharacterSetsRegex.ISO_8859_1)
