@@ -39,8 +39,6 @@ public interface TransportCompanyRelationApiInternal {
 
   @GetMapping("tc-of-bo")
   List<BoTransportCompanyRelationModel> getBoTransportCompanyRelations(@RequestParam String sboid);
-  // todo: @Parameter for swagger needed?
-  // todo: tests
 
   @DeleteMapping("{relationId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)

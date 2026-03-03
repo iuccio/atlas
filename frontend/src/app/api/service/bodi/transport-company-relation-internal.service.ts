@@ -32,7 +32,8 @@ export class TransportCompanyRelationInternalService {
 
   getBoTransportCompanyRelations(sboid: string): Observable<BoTransportCompanyRelation[]> {
     this.atlasApiService.validateParams({ sboid });
-    return this.atlasApiService.get(`${this.BASE_PATH}/tc-of-bo`, this.atlasApiService.paramsOf({ sboid }));
+    const params = this.atlasApiService.paramsOf({ sboid });
+    return this.atlasApiService.get(`${this.BASE_PATH}/tc-of-bo`, params);
   }
 
   updateTransportCompanyRelation(updateTransportCompanyRelation: UpdateTransportCompanyRelation): Observable<void> {

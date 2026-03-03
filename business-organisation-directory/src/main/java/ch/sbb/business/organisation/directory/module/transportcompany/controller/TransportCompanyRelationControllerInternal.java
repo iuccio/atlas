@@ -70,7 +70,7 @@ public class TransportCompanyRelationControllerInternal implements TransportComp
 
   @Override
   public List<BoTransportCompanyRelationModel> getBoTransportCompanyRelations(String sboid) {
-    return transportCompanyRelationService.findAllBySboid(sboid);
+    return transportCompanyRelationService.findAllWithTransportCompanyBySboid(sboid);
   }
 
   @Override

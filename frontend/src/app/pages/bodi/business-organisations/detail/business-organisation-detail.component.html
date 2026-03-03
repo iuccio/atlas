@@ -257,14 +257,18 @@
           </div>
         </div>
 
-        @if (tuRelations().length) {
+        @if (tcRelations().length) {
           <atlas-label-field
             fieldLabel="BODI.BUSINESS_ORGANISATION.TU_RELATION_TITLE"
           />
-          <atlas-relation
-            [records]="tuRelations()"
-            [tableColumns]="tuRelationColumns"
-          ></atlas-relation>
+          <atlas-table
+            [tableData]="tcRelations()"
+            [tableColumns]="tcRelationColumns"
+            (editElementEvent)="openInNewTab($event.transportCompanyId)"
+            [sortingDisabled]="true"
+            [showTableFilter]="false"
+            [showPaginator]="false"
+          />
         }
 
         <span class="font-bold-2xl">{{
