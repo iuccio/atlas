@@ -256,6 +256,21 @@
             </atlas-select>
           </div>
         </div>
+
+        @if (tcRelations().length) {
+          <atlas-label-field
+            fieldLabel="BODI.BUSINESS_ORGANISATION.TU_RELATION_TITLE"
+          />
+          <atlas-table
+            [tableData]="tcRelations()"
+            [tableColumns]="tcRelationColumns"
+            (editElementEvent)="openInNewTab($event.transportCompanyId)"
+            [sortingDisabled]="true"
+            [showTableFilter]="false"
+            [showPaginator]="false"
+          />
+        }
+
         <span class="font-bold-2xl">{{
           'FORM.SUPPLEMENTARY_INFORMATION' | translate
         }}</span>
@@ -285,7 +300,8 @@
         @if (!isNew) {
           <atlas-user-detail-info
             [record]="selectedVersion"
-            [applicationType]="'BODI'"></atlas-user-detail-info>
+            [applicationType]="'BODI'"
+          ></atlas-user-detail-info>
         }
       </div>
     </div>

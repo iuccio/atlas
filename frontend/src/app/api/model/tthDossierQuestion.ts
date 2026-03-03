@@ -33,7 +33,7 @@ export interface TthDossierQuestion {
     /**
      * Question for the BO to answer
      */
-    question: string;
+    question?: string;
     /**
      * Answer from the BO to the canton
      */

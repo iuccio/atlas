@@ -34,7 +34,7 @@ export class TransportCompanyDetailResolver {
         })
       ),
       this.transportCompanyRelationInternalService
-        .getTransportCompanyRelations(idParameter)
+        .getTransportCompanyBoRelations(idParameter)
         .pipe(catchError(() => this.routeOnFailure())),
     ]);
   }

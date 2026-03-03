@@ -586,6 +586,7 @@
       "ORGANISATION_NUMBER": "GO-Nummer",
       "CONTACT": "Kontakt E-Mail Unternehmung",
       "BUSINESS_TYPE": "Geschäftsorganisationstyp",
+      "TU_RELATION_TITLE": "Zugehörig zu Transportunternehmen",
       "BUSINESS_TYPES": {
         "STREET": "Strasse",
         "STREET_WITHOUT_TRAFFIC": "Strasse ohne Verkehrsabrechnung",

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TableColumn } from '../../../core/components/table/table-column';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BusinessOrganisation, Status } from '../../../api';
 import { BusinessOrganisationLanguageService } from '../../../core/form-components/bo-select/business-organisation-language.service';
@@ -20,7 +20,7 @@ import { BusinessOrganisationService } from '../../../api/service/bodi/business-
 @Component({
   selector: 'atlas-bodi-business-organisations',
   templateUrl: './business-organisation.component.html',
-  imports: [TableComponent, RouterOutlet, TranslatePipe],
+  imports: [TableComponent, TranslatePipe],
   providers: [TranslatePipe],
 })
 export class BusinessOrganisationComponent implements OnInit, OnDestroy {

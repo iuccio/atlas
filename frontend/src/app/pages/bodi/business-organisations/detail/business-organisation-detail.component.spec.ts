@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { BusinessOrganisationVersion } from '../../../../api';
 import { BusinessOrganisationDetailComponent } from './business-organisation-detail.component';
@@ -11,6 +11,7 @@ import { InfoIconComponent } from '@atlas/form';
 import {
   adminPermissionServiceMock,
   MockSelectComponent,
+  MockTableComponent,
 } from '../../../../app.testing.mocks';
 import { FormModule } from '../../../../core/module/form.module';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -21,6 +22,10 @@ import { PermissionService } from '../../../../core/auth/permission/permission.s
 import { BusinessOrganisationInternalService } from '../../../../api/service/bodi/business-organisation-internal.service';
 import { DialogService } from '../../../../core/components/dialog/dialog.service';
 import moment from 'moment';
+import { Pages } from '../../../pages';
+import { TransportCompanyRelationInternalService } from '../../../../api/service/bodi/transport-company-relation-internal.service';
+import { TableComponent } from '../../../../core/components/table/table.component';
+import SpyObj = jasmine.SpyObj;
 
 const businessOrganisationVersion: BusinessOrganisationVersion = {
   id: 1234,
@@ -83,10 +88,8 @@ const dialogService = jasmine.createSpyObj<DialogService>('DialogService', {
 });
 
 describe('BusinessOrganisationDetailComponent for existing BusinessOrganisationVersion', () => {
-  const mockBusinessOrganisationsService = jasmine.createSpyObj([
-    'updateBusinessOrganisationVersion',
-    'deleteBusinessOrganisation',
-  ]);
+  let mockBusinessOrganisationsService: SpyObj<BusinessOrganisationInternalService>;
+  let mockTransportCompanyRelationInternalService: SpyObj<TransportCompanyRelationInternalService>;
 
   const mockData = {
     businessOrganisationDetail: [businessOrganisationVersion],
@@ -104,7 +107,31 @@ describe('BusinessOrganisationDetailComponent for existing BusinessOrganisationV
   );
 
   beforeEach(() => {
-    setupTestBed(mockBusinessOrganisationsService, validityService, mockData);
+    mockBusinessOrganisationsService = jasmine.createSpyObj([
+      'updateBusinessOrganisationVersion',
+      'deleteBusinessOrganisation',
+    ]);
+    mockTransportCompanyRelationInternalService =
+      jasmine.createSpyObj<TransportCompanyRelationInternalService>({
+        getBoTransportCompanyRelations: of([
+          {
+            validFrom: new Date('2026-01-01'),
+            validTo: new Date('2026-01-05'),
+            transportCompany: {
+              id: 5,
+              businessRegisterName: 'regName',
+              abbreviation: 'RN',
+            },
+          },
+        ]),
+      });
+
+    setupTestBed(
+      mockBusinessOrganisationsService,
+      mockTransportCompanyRelationInternalService,
+      validityService,
+      mockData
+    );
 
     fixture = TestBed.createComponent(BusinessOrganisationDetailComponent);
     component = fixture.componentInstance;
@@ -117,9 +144,15 @@ describe('BusinessOrganisationDetailComponent for existing BusinessOrganisationV
     expect(component.isNew).toBeFalse();
   });
 
+  it('should load tu relations', () => {
+    expect(
+      mockTransportCompanyRelationInternalService.getBoTransportCompanyRelations
+    ).toHaveBeenCalled();
+  });
+
   it('should update BusinessOrganisationVersion successfully', () => {
     mockBusinessOrganisationsService.updateBusinessOrganisationVersion.and.returnValue(
-      of(businessOrganisationVersion)
+      of([businessOrganisationVersion])
     );
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
@@ -165,7 +198,7 @@ describe('BusinessOrganisationDetailComponent for existing BusinessOrganisationV
 
   it('should delete BusinessOrganisationVersion successfully', () => {
     mockBusinessOrganisationsService.deleteBusinessOrganisation.and.returnValue(
-      of({})
+      of(undefined)
     );
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
@@ -182,13 +215,31 @@ describe('BusinessOrganisationDetailComponent for existing BusinessOrganisationV
     expect(snackBarContainer.classList).toContain('success');
     expect(router.navigate).toHaveBeenCalled();
   });
+
+  it('should open transport company in new tab', () => {
+    const transportCompanyId = 123;
+    const mockUrl = '/bodi/transport-companies/123';
+
+    spyOn(router, 'createUrlTree').and.returnValue({} as UrlTree);
+    spyOn(router, 'serializeUrl').and.returnValue(mockUrl);
+    spyOn(window, 'open');
+
+    component.openInNewTab(transportCompanyId);
+
+    expect(router.createUrlTree).toHaveBeenCalledOnceWith([
+      Pages.BODI.path,
+      Pages.TRANSPORT_COMPANIES.path,
+      transportCompanyId,
+    ]);
+    expect(router.serializeUrl).toHaveBeenCalledOnceWith({} as UrlTree);
+    expect(window.open).toHaveBeenCalledOnceWith(mockUrl, '_blank');
+  });
 });
 
 describe('BusinessOrganisationDetailComponent for new BusinessOrganisationVersion', () => {
-  const mockLinesService = jasmine.createSpyObj(
-    'businessOrganisationsService',
-    ['createBusinessOrganisationVersion']
-  );
+  let mockBusinessOrganisationInternalService: SpyObj<BusinessOrganisationInternalService>;
+  let mockTransportCompanyRelationInternalService: SpyObj<TransportCompanyRelationInternalService>;
+
   const mockData = {
     businessOrganisationDetail: [],
   };
@@ -198,7 +249,19 @@ describe('BusinessOrganisationDetailComponent for new BusinessOrganisationVersio
     ['initValidity', 'updateValidity', 'validate']
   );
   beforeEach(() => {
-    setupTestBed(mockLinesService, validityService, mockData);
+    mockBusinessOrganisationInternalService = jasmine.createSpyObj([
+      'createBusinessOrganisationVersion',
+    ]);
+    mockTransportCompanyRelationInternalService = jasmine.createSpyObj([
+      'getBoTransportCompanyRelations',
+    ]);
+
+    setupTestBed(
+      mockBusinessOrganisationInternalService,
+      mockTransportCompanyRelationInternalService,
+      validityService,
+      mockData
+    );
 
     fixture = TestBed.createComponent(BusinessOrganisationDetailComponent);
     component = fixture.componentInstance;
@@ -211,10 +274,17 @@ describe('BusinessOrganisationDetailComponent for new BusinessOrganisationVersio
     expect(component.isNew).toBeTrue();
   });
 
+  it('should get tu relations ', () => {
+    fixture.detectChanges();
+    expect(
+      mockTransportCompanyRelationInternalService.getBoTransportCompanyRelations
+    ).not.toHaveBeenCalled();
+  });
+
   describe('create new Version', () => {
     it('successfully', () => {
       spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-      mockLinesService.createBusinessOrganisationVersion.and.returnValue(
+      mockBusinessOrganisationInternalService.createBusinessOrganisationVersion.and.returnValue(
         of(businessOrganisationVersion)
       );
 
@@ -248,7 +318,7 @@ describe('BusinessOrganisationDetailComponent for new BusinessOrganisationVersio
     });
 
     it('displaying error', () => {
-      mockLinesService.createBusinessOrganisationVersion.and.returnValue(
+      mockBusinessOrganisationInternalService.createBusinessOrganisationVersion.and.returnValue(
         throwError(() => error)
       );
       component.ngOnInit();
@@ -262,6 +332,7 @@ describe('BusinessOrganisationDetailComponent for new BusinessOrganisationVersio
 
 function setupTestBed(
   businessOrganisationInternalService: BusinessOrganisationInternalService,
+  transportCompanyRelationInternalService: TransportCompanyRelationInternalService,
   validityService: ValidityService,
   data: { businessOrganisationDetail: BusinessOrganisationVersion[] }
 ) {
@@ -282,6 +353,10 @@ function setupTestBed(
         provide: BusinessOrganisationInternalService,
         useValue: businessOrganisationInternalService,
       },
+      {
+        provide: TransportCompanyRelationInternalService,
+        useValue: transportCompanyRelationInternalService,
+      },
       { provide: PermissionService, useValue: adminPermissionServiceMock },
       { provide: ValidityService, useValue: validityService },
       { provide: DialogService, useValue: dialogService },
@@ -289,6 +364,14 @@ function setupTestBed(
       { provide: TranslatePipe },
     ],
   })
+    .overrideComponent(BusinessOrganisationDetailComponent, {
+      remove: {
+        imports: [TableComponent],
+      },
+      add: {
+        imports: [MockTableComponent],
+      },
+    })
     .compileComponents()
     .then();
 }
