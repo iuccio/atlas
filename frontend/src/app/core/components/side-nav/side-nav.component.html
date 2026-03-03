@@ -35,6 +35,9 @@
         ) {
           <div
             class="list-item-wrapper"
+            attr.data-cy="{{
+              subPage.path ? 'sidemenu-' + subPage.path : 'sidemenu-start'
+            }}"
             [class.route-active]="
               !activePageIndex && activeSubPageIndex === subPageIndex
             "
