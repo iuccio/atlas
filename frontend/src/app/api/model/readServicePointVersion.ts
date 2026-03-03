@@ -108,6 +108,22 @@ export interface ReadServicePointVersion {
     servicePointGeolocation?: ServicePointGeolocation;
     country: Country;
     /**
+     * ServicePoint is FareStop
+     */
+    fareStop?: boolean;
+    /**
+     * ServicePoint is StopPoint
+     */
+    stopPoint?: boolean;
+    /**
+     * ServicePoint is BorderPoint
+     */
+    borderPoint?: boolean;
+    /**
+     * ServicePoint is TrafficPoint
+     */
+    trafficPoint?: boolean;
+    /**
      * ServicePoint is OperatingPointKilometer
      */
     operatingPointKilometer?: boolean;
@@ -115,22 +131,6 @@ export interface ReadServicePointVersion {
      * ServicePoint has a Geolocation
      */
     hasGeolocation?: boolean;
-    /**
-     * ServicePoint is StopPoint
-     */
-    stopPoint?: boolean;
-    /**
-     * ServicePoint is FareStop
-     */
-    fareStop?: boolean;
-    /**
-     * ServicePoint is TrafficPoint
-     */
-    trafficPoint?: boolean;
-    /**
-     * ServicePoint is BorderPoint
-     */
-    borderPoint?: boolean;
 }
 export namespace ReadServicePointVersion {
 }

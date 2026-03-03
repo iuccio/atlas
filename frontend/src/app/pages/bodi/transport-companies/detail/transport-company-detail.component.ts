@@ -55,8 +55,8 @@ import { BusinessOrganisationService } from '../../../../api/service/bodi/busine
     DetailFooterComponent,
     AtlasButtonComponent,
     BackButtonDirective,
-    TranslatePipe
-],
+    TranslatePipe,
+  ],
 })
 export class TransportCompanyDetailComponent
   implements OnInit, DetailFormComponent
@@ -272,7 +272,7 @@ export class TransportCompanyDetailComponent
 
   updateRelation() {
     this.transportCompanyRelationInternalService
-      .getTransportCompanyRelations(this.transportCompany.id!)
+      .getTransportCompanyBoRelations(this.transportCompany.id!)
       .subscribe((relations) => {
         const foundRelation = relations.find(
           (_, index) => index === this.selectedTransportCompanyRelationIndex
@@ -316,7 +316,7 @@ export class TransportCompanyDetailComponent
 
   private reloadRelations(): Observable<TransportCompanyBoRelation[]> {
     return this.transportCompanyRelationInternalService
-      .getTransportCompanyRelations(this.transportCompany.id!)
+      .getTransportCompanyBoRelations(this.transportCompany.id!)
       .pipe(
         tap(
           (transportCompanyRelations) =>

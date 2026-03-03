@@ -1,5 +1,6 @@
 package ch.sbb.business.organisation.directory.module.transportcompany.controller;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -9,8 +10,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import ch.sbb.atlas.api.bodi.BoTransportCompanyRelationModel;
 import ch.sbb.atlas.api.bodi.BusinessOrganisationModel;
 import ch.sbb.atlas.api.bodi.TransportCompanyBoRelationModel.Fields;
+import ch.sbb.atlas.api.bodi.TransportCompanyModel;
 import ch.sbb.atlas.api.bodi.TransportCompanyRelationModel;
 import ch.sbb.atlas.model.controller.BaseControllerApiTest;
 import ch.sbb.business.organisation.directory.module.businessorganisation.BusinessOrganisationData;
@@ -95,7 +98,7 @@ class TransportCompanyRelationApiInternalTest extends BaseControllerApiTest {
   }
 
   @Test
-  void shouldGetTransportCompanyRelationsForSpecificTU() throws Exception {
+  void shouldGetTransportCompanyBoRelationsForSpecificTU() throws Exception {
     transportCompanyRepository.save(TransportCompany.builder()
         .id(6L).build());
 
@@ -126,6 +129,55 @@ class TransportCompanyRelationApiInternalTest extends BaseControllerApiTest {
         .andExpect(jsonPath("$[0]." + Fields.validFrom, is("2020-01-01")))
         .andExpect(jsonPath("$[0]." + Fields.validTo, is("2021-01-01")))
         .andExpect(jsonPath("$[0]." + Fields.id, is(savedRelationOne.getId().intValue())));
+  }
+
+  @Test
+  void shouldGetBoTransportCompanyRelationsForSpecificBo() throws Exception {
+    transportCompanyRepository.save(TransportCompany.builder()
+        .id(6L).build());
+    transportCompanyRepository.save(TransportCompany.builder()
+        .id(7L).build());
+
+    transportCompanyRelationRepository.save(
+        TransportCompanyRelation.builder()
+            .sboid("ch:1:sboid:1000000")
+            .transportCompany(
+                TransportCompany.builder().id(5L).build())
+            .validFrom(LocalDate.of(2020, 1, 1))
+            .validTo(LocalDate.of(2021, 1, 1))
+            .build());
+    transportCompanyRelationRepository.save(
+        TransportCompanyRelation.builder()
+            .sboid("ch:1:sboid:1000000")
+            .transportCompany(
+                TransportCompany.builder().id(6L).build())
+            .validFrom(LocalDate.of(2023, 1, 1))
+            .validTo(LocalDate.of(2024, 1, 1))
+            .build());
+    transportCompanyRelationRepository.save(
+        TransportCompanyRelation.builder()
+            .sboid("ch:1:sboid:222")
+            .transportCompany(
+                TransportCompany.builder().id(7L).build())
+            .validFrom(LocalDate.of(2023, 1, 1))
+            .validTo(LocalDate.of(2024, 1, 1))
+            .build());
+
+    mvc.perform(get("/internal/transport-company-relations/tc-of-bo?sboid=ch:1:sboid:1000000"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", hasSize(2)))
+
+        .andExpect(jsonPath(
+            "$[0]." + BoTransportCompanyRelationModel.Fields.transportCompany + "." + TransportCompanyModel.Fields.id,
+            is(5)))
+        .andExpect(jsonPath("$[0]." + BoTransportCompanyRelationModel.Fields.validFrom, is("2020-01-01")))
+        .andExpect(jsonPath("$[0]." + BoTransportCompanyRelationModel.Fields.validTo, is("2021-01-01")))
+
+        .andExpect(jsonPath(
+            "$[1]." + BoTransportCompanyRelationModel.Fields.transportCompany + "." + TransportCompanyModel.Fields.id,
+            is(6)))
+        .andExpect(jsonPath("$[1]." + BoTransportCompanyRelationModel.Fields.validFrom, is("2023-01-01")))
+        .andExpect(jsonPath("$[1]." + BoTransportCompanyRelationModel.Fields.validTo, is("2024-01-01")));
   }
 
   @Test

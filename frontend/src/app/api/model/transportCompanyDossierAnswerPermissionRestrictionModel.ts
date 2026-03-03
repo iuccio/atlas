@@ -14,3 +14,5 @@ export interface TransportCompanyDossierAnswerPermissionRestrictionModel extends
 }
 export namespace TransportCompanyDossierAnswerPermissionRestrictionModel {
 }
+
+

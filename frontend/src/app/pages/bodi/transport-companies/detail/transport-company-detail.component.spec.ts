@@ -158,7 +158,7 @@ describe('TransportCompanyDetailComponent', () => {
       validTo: moment('2021-05-05').toDate(),
     });
     expect(
-      transportCompanyRelationInternalServiceSpy.getTransportCompanyRelations
+      transportCompanyRelationInternalServiceSpy.getTransportCompanyBoRelations
     ).toHaveBeenCalledOnceWith(1234);
   });
 
@@ -190,7 +190,7 @@ describe('TransportCompanyDetailComponent', () => {
       validTo: moment('2021-05-05').toDate(),
     });
     expect(
-      transportCompanyRelationInternalServiceSpy.getTransportCompanyRelations
+      transportCompanyRelationInternalServiceSpy.getTransportCompanyBoRelations
     ).toHaveBeenCalledOnceWith(1234);
   });
 
@@ -201,7 +201,7 @@ describe('TransportCompanyDetailComponent', () => {
       transportCompanyRelationInternalServiceSpy.deleteTransportCompanyRelation
     ).toHaveBeenCalledOnceWith(1);
     expect(
-      transportCompanyRelationInternalServiceSpy.getTransportCompanyRelations
+      transportCompanyRelationInternalServiceSpy.getTransportCompanyBoRelations
     ).toHaveBeenCalledOnceWith(1234);
   });
 });
@@ -212,7 +212,7 @@ function setupTestBed(
   transportCompanyRelationInternalServiceSpy =
     jasmine.createSpyObj<TransportCompanyRelationInternalService>({
       createTransportCompanyRelation: of({}),
-      getTransportCompanyRelations: of([]),
+      getTransportCompanyBoRelations: of([]),
       updateTransportCompanyRelation: of(undefined),
       deleteTransportCompanyRelation: of(undefined),
     });

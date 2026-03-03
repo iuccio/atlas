@@ -93,7 +93,7 @@ export class BoDossierDetailComponent implements DetailFormComponent, OnInit {
     if (this.currentDossier) {
       this.selectedStatements = this.currentDossier.statementIds;
       const tthDossierQuestion = this.currentDossier.questions[0];
-      this.cantonQuestion = tthDossierQuestion.question;
+      this.cantonQuestion = tthDossierQuestion.question ?? '';
       this.dossierForm.disable();
       if (this.currentDossier.dossierStatus !== 'DOSSIER_BO_CHECK') {
         this.form.disable();
