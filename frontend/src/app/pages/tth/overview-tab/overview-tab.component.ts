@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Pages } from '../../pages';
 import {
   ActivatedRoute,
@@ -12,6 +12,7 @@ import { MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
 
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
+import { PermissionService } from '../../../core/auth/permission/permission.service';
 
 @Component({
   templateUrl: './overview-tab.component.html',
@@ -26,9 +27,11 @@ import { NgClass } from '@angular/common';
     NgClass,
   ],
 })
-export class OverviewTabComponent implements OnInit {
+export class OverviewTabComponent {
   protected readonly isHearingYearPlanned =
     this.overviewToTabService.isHearingYearPlanned;
+
+  private readonly permissionService = inject(PermissionService);
 
   protected readonly hearingStatus = this.overviewToTabService.hearingStatus;
 
@@ -43,15 +46,23 @@ export class OverviewTabComponent implements OnInit {
     },
   ];
 
+  BO_TTH_TABS: HearingOverviewTab[] = [
+    {
+      link: Pages.TTH_DOSSIERS.path,
+      title: 'TTH.TAB.DOSSIERS',
+    },
+  ];
+
   constructor(
     public readonly route: ActivatedRoute,
     private readonly overviewToTabService: OverviewToTabShareDataService
-  ) {}
-
-  ngOnInit(): void {
-    console.log('call');
+  ) {
     this.overviewToTabService.setCantonShort(
       this.route.snapshot.params['canton']
     );
+
+    if (this.permissionService.isTthBoUser()) {
+      this.TABS = this.BO_TTH_TABS;
+    }
   }
 }
