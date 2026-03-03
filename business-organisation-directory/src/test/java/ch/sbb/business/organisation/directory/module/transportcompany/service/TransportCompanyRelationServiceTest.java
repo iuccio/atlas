@@ -1,11 +1,14 @@
 package ch.sbb.business.organisation.directory.module.transportcompany.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ch.sbb.atlas.api.bodi.BoTransportCompanyRelationModel;
+import ch.sbb.atlas.api.bodi.TransportCompanyModel;
 import ch.sbb.atlas.model.exception.NotFoundException.IdNotFoundException;
 import ch.sbb.atlas.model.exception.SboidNotFoundException;
 import ch.sbb.business.organisation.directory.module.businessorganisation.entity.BusinessOrganisationVersion;
@@ -16,6 +19,7 @@ import ch.sbb.business.organisation.directory.module.transportcompany.exception.
 import ch.sbb.business.organisation.directory.module.transportcompany.repository.TransportCompanyRelationRepository;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -127,4 +131,37 @@ class TransportCompanyRelationServiceTest {
     verify(transportCompanyRelationRepository, times(0)).deleteById(5L);
   }
 
+  @Test
+  void shouldFindAllWithTransportCompanyBySboid() {
+    // given
+    when(transportCompanyRelationRepository.findAllBySboidOrderByValidFrom("ch:1:sboid:100500"))
+        .thenReturn(
+            Collections.singletonList(
+                TransportCompanyRelation.builder()
+                    .id(5L)
+                    .transportCompany(
+                        TransportCompany.builder().id(10L).build()
+                    )
+                    .sboid("ch:1:sboid:100500")
+                    .validFrom(LocalDate.of(2020, 1, 1))
+                    .validTo(LocalDate.of(2021, 1, 1))
+                    .build()
+            )
+        );
+    // when
+    List<BoTransportCompanyRelationModel> result = transportCompanyRelationService
+        .findAllWithTransportCompanyBySboid("ch:1:sboid:100500");
+    // then
+    assertThat(result).hasSize(1);
+    assertThat(result.getFirst()).usingRecursiveComparison().isEqualTo(
+        BoTransportCompanyRelationModel.builder()
+            .id(5L)
+            .transportCompany(
+                TransportCompanyModel.builder().id(10L).build()
+            )
+            .validFrom(LocalDate.of(2020, 1, 1))
+            .validTo(LocalDate.of(2021, 1, 1))
+            .build()
+    );
+  }
 }

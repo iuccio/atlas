@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Signal } from '@angular/core';
 import { BusinessOrganisationVersion, BusinessType } from '../../../../api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -12,7 +12,6 @@ import {
 } from './business-organisation-detail-form-group';
 import { BusinessOrganisationLanguageService } from '../../../../core/form-components/bo-select/business-organisation-language.service';
 import { ValidityService } from '../../../sepodi/validity/validity.service';
-
 import { TextFieldComponent } from '../../../../core/form-components/text-field/text-field.component';
 import { DateRangeComponent } from '../../../../core/form-components/date-range/date-range.component';
 import { SelectComponent } from '../../../../core/form-components/select/select.component';
@@ -41,9 +40,17 @@ import {
 import { AtlasLabelFieldComponent } from '@atlas/form';
 import { TransportCompanyRelationInternalService } from '../../../../api/service/bodi/transport-company-relation-internal.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RelationComponent } from '../../../../core/components/relation/relation.component';
 import { TableColumn } from '../../../../core/components/table/table-column';
-import { BoTransportCompanyRelation } from '../../../../api/model/boTransportCompanyRelation';
+import { TableComponent } from '../../../../core/components/table/table.component';
+import { map } from 'rxjs/operators';
+
+type TransportCompanyRelationTableEntry = {
+  abbreviation?: string;
+  businessRegisterName?: string;
+  validFrom?: Date;
+  validTo?: Date;
+  transportCompanyId?: number;
+};
 
 @Component({
   templateUrl: './business-organisation-detail.component.html',
@@ -65,7 +72,7 @@ import { BoTransportCompanyRelation } from '../../../../api/model/boTransportCom
     UserDetailInfoComponent,
     RevokeButton,
     AtlasLabelFieldComponent,
-    RelationComponent,
+    TableComponent,
   ],
 })
 export class BusinessOrganisationDetailComponent
@@ -82,27 +89,23 @@ export class BusinessOrganisationDetailComponent
   isSwitchVersionDisabled = false;
   selectedVersionIndex!: number;
 
-  protected readonly tuRelationColumns: TableColumn<BoTransportCompanyRelation>[] =
+  protected readonly tcRelationColumns: TableColumn<TransportCompanyRelationTableEntry>[] =
     [
       {
         headerTitle: 'BODI.TRANSPORT_COMPANIES.ABBREVIATION',
-        columnDef: 'abbreviation',
-        valuePath: 'transportCompany.abbreviation',
+        value: 'abbreviation',
       },
       {
         headerTitle: 'BODI.TRANSPORT_COMPANIES.BUSINESS_REGISTER_NAME',
-        columnDef: 'businessRegisterName',
-        valuePath: 'transportCompany.businessRegisterName',
+        value: 'businessRegisterName',
       },
       {
         headerTitle: 'COMMON.VALID_FROM',
-        columnDef: 'validFrom',
         value: 'validFrom',
         formatAsDate: true,
       },
       {
         headerTitle: 'COMMON.VALID_TO',
-        columnDef: 'validTo',
         value: 'validTo',
         formatAsDate: true,
       },
@@ -114,7 +117,7 @@ export class BusinessOrganisationDetailComponent
   );
   private readonly getSboid = (): string | undefined =>
     this.activatedRoute.snapshot.data.businessOrganisationDetail[0]?.sboid;
-  private readonly getTuRelations = () => {
+  private readonly getTcRelations = () => {
     const sboid = this.getSboid();
     return sboid
       ? this.transportCompanyRelationInternalService.getBoTransportCompanyRelations(
@@ -122,9 +125,25 @@ export class BusinessOrganisationDetailComponent
         )
       : EMPTY;
   };
-  protected readonly tuRelations = toSignal(this.getTuRelations(), {
-    initialValue: [],
-  });
+  protected readonly tcRelations: Signal<TransportCompanyRelationTableEntry[]> =
+    toSignal(
+      this.getTcRelations().pipe(
+        map((relations) =>
+          relations.map(
+            (rel): TransportCompanyRelationTableEntry => ({
+              abbreviation: rel.transportCompany?.abbreviation,
+              businessRegisterName: rel.transportCompany?.businessRegisterName,
+              validFrom: rel.validFrom,
+              validTo: rel.validTo,
+              transportCompanyId: rel.transportCompany?.id,
+            })
+          )
+        )
+      ),
+      {
+        initialValue: [],
+      }
+    );
 
   constructor(
     private readonly businessOrganisationInternalService: BusinessOrganisationInternalService,
@@ -277,6 +296,17 @@ export class BusinessOrganisationDetailComponent
 
   back() {
     this.router.navigate(['..'], { relativeTo: this.activatedRoute }).then();
+  }
+
+  openInNewTab(transportCompanyId?: number) {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree([
+        Pages.BODI.path,
+        Pages.TRANSPORT_COMPANIES.path,
+        transportCompanyId,
+      ])
+    );
+    window.open(url, '_blank');
   }
 
   private initSelectedVersion() {

@@ -60,8 +60,8 @@ public class TransportCompanyRelationService {
     return transportCompanyRelationRepository.findById(id).orElseThrow(() -> new IdNotFoundException(id));
   }
 
-  public List<BoTransportCompanyRelationModel> findAllBySboid(String sboid) {
-    return transportCompanyRelationRepository.findAllBySboid(sboid)
+  public List<BoTransportCompanyRelationModel> findAllWithTransportCompanyBySboid(String sboid) {
+    return transportCompanyRelationRepository.findAllBySboidOrderByValidFrom(sboid)
         .stream()
         .map(tcr -> BoTransportCompanyRelationModel
             .builder()

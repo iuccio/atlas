@@ -586,6 +586,7 @@
       "ORGANISATION_NUMBER": "Numéro",
       "CONTACT": "E-mail organisation",
       "BUSINESS_TYPE": "Type d'organisation commerciale",
+      "TU_RELATION_TITLE": "Appartenant à l’entreprise de transport",
       "BUSINESS_TYPES": {
         "STREET": "Route",
         "STREET_WITHOUT_TRAFFIC": "Route sans rapport de circulation",

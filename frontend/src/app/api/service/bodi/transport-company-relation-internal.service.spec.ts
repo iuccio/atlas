@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { AtlasApiService } from '../atlas-api.service';
 import { TransportCompanyRelationInternalService } from './transport-company-relation-internal.service';
 import { TransportCompanyRelation } from '../../model/transportCompanyRelation';
 import { UpdateTransportCompanyRelation } from '../../model/updateTransportCompanyRelation';
 import { UserService } from '../../../core/auth/user/user.service';
+import any = jasmine.any;
 
 describe('TransportCompanyRelationInternalService', () => {
   let service: TransportCompanyRelationInternalService;
@@ -24,6 +25,7 @@ describe('TransportCompanyRelationInternalService', () => {
     apiService = TestBed.inject(AtlasApiService);
 
     spyOn(apiService, 'validateParams').and.callThrough();
+    spyOn(apiService, 'paramsOf').and.callThrough();
     spyOn(apiService, 'post');
     spyOn(apiService, 'delete');
     spyOn(apiService, 'get');
@@ -53,7 +55,7 @@ describe('TransportCompanyRelationInternalService', () => {
     );
   });
 
-  it('should getTransportCompanyRelations', () => {
+  it('should getTransportCompanyBoRelations', () => {
     const transportCompanyId = 202;
 
     service.getTransportCompanyBoRelations(transportCompanyId);
@@ -61,6 +63,18 @@ describe('TransportCompanyRelationInternalService', () => {
     expect(apiService.validateParams).toHaveBeenCalledOnceWith({ transportCompanyId });
     expect(apiService.get).toHaveBeenCalledOnceWith(
       `/business-organisation-directory/internal/transport-company-relations/${transportCompanyId}`,
+    );
+  });
+
+  it('should getBoTransportCompanyRelations', () => {
+    const sboid = "ch:1:sboid:100";
+
+    service.getBoTransportCompanyRelations(sboid);
+
+    expect(apiService.validateParams).toHaveBeenCalledOnceWith({ sboid });
+    expect(apiService.paramsOf).toHaveBeenCalledOnceWith({ sboid });
+    expect(apiService.get).toHaveBeenCalledOnceWith(
+      '/business-organisation-directory/internal/transport-company-relations/tc-of-bo', any(HttpParams),
     );
   });
 

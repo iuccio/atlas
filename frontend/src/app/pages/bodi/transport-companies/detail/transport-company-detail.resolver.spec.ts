@@ -33,9 +33,10 @@ describe('TransportCompanyDetailResolver', () => {
     transportCompanyServiceSpy = jasmine.createSpyObj({
       getTransportCompany: of(transportCompany),
     });
-    transportCompanyRelationInternalServiceSpy = jasmine.createSpyObj({
-      getTransportCompanyRelations: of(transportCompanyRelations),
-    });
+    transportCompanyRelationInternalServiceSpy =
+      jasmine.createSpyObj<TransportCompanyRelationInternalService>({
+        getTransportCompanyBoRelations: of(transportCompanyRelations),
+      });
 
     TestBed.configureTestingModule({
       imports: [AppTestingModule],

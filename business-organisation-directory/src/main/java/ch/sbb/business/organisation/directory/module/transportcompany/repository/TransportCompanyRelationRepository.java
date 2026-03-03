@@ -13,5 +13,5 @@ public interface TransportCompanyRelationRepository extends
   List<TransportCompanyRelation> findAllByValidToGreaterThanEqualAndValidFromLessThanEqualAndSboid(
       LocalDate validFrom, LocalDate validTo, String sboid);
 
-  List<TransportCompanyRelation> findAllBySboid(String sboid);
+  List<TransportCompanyRelation> findAllBySboidOrderByValidFrom(String sboid);
 }
