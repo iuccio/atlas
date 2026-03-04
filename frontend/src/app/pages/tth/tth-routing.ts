@@ -6,6 +6,7 @@ import { canLeaveDirtyForm } from '../../core/leave-guard/leave-dirty-form-guard
 import { inject } from '@angular/core';
 import { PermissionService } from '../../core/auth/permission/permission.service';
 import { dossierResolver } from './dossier/detail/dossier-detail-resolver.service';
+import { boUserGuard } from './tth-permissions.guard';
 
 const statementActiveDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ACTIVE.path}/${Pages.TTH_STATEMENTS.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
 const statementPlannedDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_PLANNED.path}/${Pages.TTH_STATEMENTS.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
@@ -105,6 +106,7 @@ export const routes: Routes = [
   {
     path: `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ARCHIVED.path}/${Pages.TTH_DOSSIERS.path}/:id`,
     loadComponent: loadDossierDetailRoute,
+    canActivate: [boUserGuard],
     canDeactivate: [canLeaveDirtyForm],
     resolve: {
       dossier: dossierResolver,

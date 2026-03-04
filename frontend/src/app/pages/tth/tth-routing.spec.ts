@@ -250,4 +250,142 @@ describe('TTH Routing', () => {
       done();
     });
   });
+
+  it('should redirect BO active to dossiers', (done) => {
+    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        {
+          provide: PermissionService,
+          useValue: permissionServiceSpy,
+        },
+      ],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router.navigateByUrl('/timetable-hearing/zh/active').then(() => {
+      expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
+      done();
+    });
+  });
+
+  it('should redirect BO archived dossiers to active dossiers', (done) => {
+    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        {
+          provide: PermissionService,
+          useValue: permissionServiceSpy,
+        },
+      ],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router
+      .navigateByUrl('/timetable-hearing/zh/archived/dossiers/1000')
+      .then(() => {
+        expect(location.path()).toBe('/timetable-hearing/ch/active/dossiers');
+        done();
+      });
+  });
+
+  it('should not redirect Canton archived dossiers', (done) => {
+    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        {
+          provide: PermissionService,
+          useValue: permissionServiceSpy,
+        },
+      ],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router
+      .navigateByUrl('/timetable-hearing/zh/archived/dossiers/1000')
+      .then(() => {
+        expect(location.path()).toBe(
+          '/timetable-hearing/zh/archived/dossiers/1000'
+        );
+        done();
+      });
+  });
+
+  it('should resolve BO active dossier route', (done) => {
+    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        {
+          provide: PermissionService,
+          useValue: permissionServiceSpy,
+        },
+      ],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router.navigateByUrl('/timetable-hearing/zh/active/dossiers').then(() => {
+      expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
+      done();
+    });
+  });
+
+  it('should redirect unknown BO route to active', (done) => {
+    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        {
+          provide: PermissionService,
+          useValue: permissionServiceSpy,
+        },
+      ],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router.navigateByUrl('/timetable-hearing/zh/unknown-path').then(() => {
+      expect(location.path()).toContain('/timetable-hearing/zh/active');
+      done();
+    });
+  });
 });

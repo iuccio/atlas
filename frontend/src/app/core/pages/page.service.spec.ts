@@ -4,6 +4,7 @@ import {
   PermissionService,
   TthApplicationUserType,
 } from '../auth/permission/permission.service';
+import { Pages } from '../../pages/pages';
 
 const permissionServiceMock: Partial<PermissionService> = {
   mayAccessBulkImport: () => true,
@@ -37,6 +38,32 @@ describe('PageService', () => {
     pageService.addPagesBasedOnPermissions();
     pageService.enabledPages.subscribe((enabledPages) => {
       expect(enabledPages).toHaveSize(9);
+      done();
+    });
+  });
+
+  it('should remove TTH subpages for BO_TTH user', (done) => {
+    permissionServiceMock.getTthApplicationUserType = () =>
+      'BO_TTH' as TthApplicationUserType;
+    pageService.addPagesBasedOnPermissions();
+
+    pageService.enabledPages.subscribe((enabledPages) => {
+      const tthPage = enabledPages.find((p) => p.path === Pages.TTH.path);
+      expect(tthPage).toBeDefined();
+      expect(tthPage?.subpages).toBeUndefined();
+      done();
+    });
+  });
+
+  it('should keep TTH subpages for CANTON_TTH user', (done) => {
+    permissionServiceMock.getTthApplicationUserType = () =>
+      'CANTON_TTH' as TthApplicationUserType;
+    pageService.addPagesBasedOnPermissions();
+
+    pageService.enabledPages.subscribe((enabledPages) => {
+      const tthPage = enabledPages.find((p) => p.path === Pages.TTH.path);
+      expect(tthPage).toBeDefined();
+      expect(tthPage?.subpages).toBeDefined();
       done();
     });
   });

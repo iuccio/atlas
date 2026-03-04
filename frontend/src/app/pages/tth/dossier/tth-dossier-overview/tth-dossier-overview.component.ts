@@ -17,7 +17,10 @@ import { TthDossierOverviewMenuComponent } from '../tth-dossier-overview-menu/tt
 import { addElementsToArrayWhenNotUndefined } from '../../../../core/util/arrays';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DossierStatus } from '../../../../api/model/dossierStatus';
-import { PermissionService } from '../../../../core/auth/permission/permission.service';
+import {
+  PermissionService,
+  TthApplicationUserType,
+} from '../../../../core/auth/permission/permission.service';
 import { UserService } from '../../../../core/auth/user/user.service';
 
 @Component({
@@ -54,8 +57,11 @@ export class TthDossierOverviewComponent {
   STATUS_OPTIONS = Object.values(DossierStatus);
 
   sorting = 'topic,asc';
+  userType!: TthApplicationUserType;
 
   constructor() {
+    this.userType = this.permissionService.getTthApplicationUserType();
+
     effect(() => {
       if (!this.isYearLoading()) {
         this.loadData();
@@ -84,7 +90,7 @@ export class TthDossierOverviewComponent {
   }
 
   getOverview(pagination: TablePagination) {
-    if (this.permissionService.isTthBoUser()) {
+    if (this.userType === 'BO_TTH') {
       this.fetchOverview(
         this.userService.currentUser!.email,
         [DossierStatus.DossierBoCheck],
