@@ -128,5 +128,5 @@ export const routes: Routes = [
       return import('./tth-canton-routing').then((m) => m.TTH_CANTON_BO_ROUTES);
     },
   },
-  { path: '**', redirectTo: Pages.TTH.path },
+  { path: '**', redirectTo: Pages.TTH_ACTIVE.path },
 ];

@@ -11,10 +11,14 @@ import org.springframework.stereotype.Service;
 public class BoUserMailCheckService {
 
   public boolean isCurrentUserMailAssignedTo(BoMailAssociated boMail) {
-    String preferredUsername = UserService.getPreferredUsername();
-    boolean isAssignedToStatement = Objects.equals(boMail.getBoContactMail(), preferredUsername);
-    log.info("{} is assigned to statement: {}", preferredUsername, isAssignedToStatement);
+    boolean isAssignedToStatement = isCurrentUserMailAssignedTo(boMail.getBoContactMail());
+    log.info("{} is assigned to statement: {}", boMail.getBoContactMail(), isAssignedToStatement);
     return isAssignedToStatement;
+  }
+
+  public boolean isCurrentUserMailAssignedTo(String boMail) {
+    String preferredUsername = UserService.getPreferredUsername();
+    return Objects.equals(boMail, preferredUsername);
   }
 
 }

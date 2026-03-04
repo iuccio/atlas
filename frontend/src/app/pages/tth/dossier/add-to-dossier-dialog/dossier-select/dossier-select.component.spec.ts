@@ -63,6 +63,7 @@ describe('DossierSelectComponent', () => {
     expect(dossierInternalService.getOverview).toHaveBeenCalledOnceWith(
       2026,
       SwissCanton.Bern,
+      undefined,
       ['testQuery'],
       [DossierStatus.Added]
     );

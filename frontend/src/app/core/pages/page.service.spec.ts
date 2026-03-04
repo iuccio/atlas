@@ -1,12 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { PageService } from './page.service';
-import { PermissionService } from '../auth/permission/permission.service';
+import {
+  PermissionService,
+  TthApplicationUserType,
+} from '../auth/permission/permission.service';
 
 const permissionServiceMock: Partial<PermissionService> = {
   mayAccessBulkImport: () => true,
   mayAccessTimetableHearing: () => true,
   mayAccessTtfn: () => true,
   isAdmin: true,
+  getTthApplicationUserType: () => 'CANTON_TTH' as TthApplicationUserType,
 };
 
 describe('PageService', () => {

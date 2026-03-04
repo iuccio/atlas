@@ -148,6 +148,7 @@ describe('TthDossierOverviewComponent', () => {
       expect(dossierService.getOverview).toHaveBeenCalledWith(
         2024,
         jasmine.any(String),
+        undefined,
         jasmine.anything(),
         [],
         0,
