@@ -3,7 +3,7 @@ import { AuthService, BC_TOKEN } from './auth.service';
 import { of } from 'rxjs';
 import { UserService } from './user/user.service';
 import { PageService } from '../pages/page.service';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
 import { User } from './user/user';
 import SpyObj = jasmine.SpyObj;
@@ -44,10 +44,9 @@ describe('AuthService', () => {
     pageServiceSpy = jasmine.createSpyObj(['addPagesBasedOnPermissions']);
 
     oidcSecurityServiceSpy = jasmine.createSpyObj<OidcSecurityService>([
-      'getUserData',
+      'checkAuth',
       'authorize',
       'logoffAndRevokeTokens',
-      'getAccessToken',
     ]);
 
     bcTokenSpy = jasmine.createSpy('BC_TOKEN_SPY');
@@ -110,14 +109,17 @@ describe('AuthService', () => {
 
   it('should initAuth when userData defined', (done) => {
     // Arrange
-    oidcSecurityServiceSpy.getUserData.and.returnValue(
-      of({
+    const loginResponse: LoginResponse = {
+      accessToken: fakeToken,
+      idToken: fakeToken,
+      isAuthenticated: true,
+      userData: {
         email: 'test@sbb.ch',
         name: 'test',
         sbbuid: 'u123456',
-      })
-    );
-    oidcSecurityServiceSpy.getAccessToken.and.returnValue(of(fakeToken));
+      },
+    };
+    oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
     routerSpy.navigateByUrl.and.returnValue(Promise.resolve(true));
     userServiceSpy.setCurrentUserAndLoadPermissions.and.returnValue(
       of({} as User)
@@ -127,7 +129,7 @@ describe('AuthService', () => {
     // Act
     authService.initAuth().subscribe((result) => {
       // Assert
-      expect(oidcSecurityServiceSpy.getUserData).toHaveBeenCalledOnceWith();
+      expect(oidcSecurityServiceSpy.checkAuth).toHaveBeenCalledOnceWith();
       expect(bcTokenSpy).toHaveBeenCalledTimes(1);
       expect(
         userServiceSpy.setCurrentUserAndLoadPermissions
@@ -152,12 +154,18 @@ describe('AuthService', () => {
   describe('should initAuth when userData is not defined', () => {
     it('should not try login', (done) => {
       // Arrange
-      oidcSecurityServiceSpy.getUserData.and.returnValue(of(null));
+      const loginResponse: LoginResponse = {
+        accessToken: '',
+        idToken: '',
+        isAuthenticated: false,
+        userData: {},
+      };
+      oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
       authService = TestBed.inject(AuthService);
       // Act
       authService.initAuth().subscribe((result) => {
         // Assert
-        expect(oidcSecurityServiceSpy.getUserData).toHaveBeenCalledOnceWith();
+        expect(oidcSecurityServiceSpy.checkAuth).toHaveBeenCalledOnceWith();
         expect(
           userServiceSpy.setToUnauthenticatedUser
         ).toHaveBeenCalledOnceWith();
@@ -168,14 +176,20 @@ describe('AuthService', () => {
 
     it('should try login', (done) => {
       // Arrange
-      oidcSecurityServiceSpy.getUserData.and.returnValue(of(null));
+      const loginResponse: LoginResponse = {
+        accessToken: '',
+        idToken: '',
+        isAuthenticated: false,
+        userData: {},
+      };
+      oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
       authService = TestBed.inject(AuthService);
       const loginSpy = spyOn(authService, 'login');
       localStorage.setItem('tryLogin', 'yes');
       // Act
       authService.initAuth().subscribe((result) => {
         // Assert
-        expect(oidcSecurityServiceSpy.getUserData).toHaveBeenCalledOnceWith();
+        expect(oidcSecurityServiceSpy.checkAuth).toHaveBeenCalledOnceWith();
         expect(localStorage.getItem('tryLogin')).toEqual('');
         expect(loginSpy).toHaveBeenCalledOnceWith();
         expect(result).toBeTrue();
@@ -186,10 +200,19 @@ describe('AuthService', () => {
 
   it('should catchError in initAuth', (done) => {
     // Arrange
-    oidcSecurityServiceSpy.getUserData.and.returnValue(
-      of({ email: 'test@sbb.ch' })
-    );
-    oidcSecurityServiceSpy.getAccessToken.and.throwError('testError');
+    const loginResponse: LoginResponse = {
+      accessToken: fakeToken,
+      idToken: fakeToken,
+      isAuthenticated: true,
+      userData: {
+        email: 'test@sbb.ch',
+        name: 'test',
+        sbbuid: 'u123456',
+      },
+    };
+    oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
+
+    userServiceSpy.setCurrentUserAndLoadPermissions.and.throwError('testError');
     authService = TestBed.inject(AuthService);
     // Act
     authService.initAuth().subscribe((result) => {

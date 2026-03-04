@@ -1,14 +1,14 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
 import { UserService } from './user/user.service';
 import { PageService } from '../pages/page.service';
 import { TokenUser, User } from './user/user';
 import {
   catchError,
-  combineLatest,
   defaultIfEmpty,
   EMPTY,
   from,
+  Observable,
   of,
   take,
 } from 'rxjs';
@@ -53,21 +53,19 @@ export class AuthService {
   private readonly router = inject(Router);
 
   initAuth() {
-    return this.oidcSecurityService.getUserData().pipe(
-      switchMap((userData: UserData) => {
-        if (!userData) {
+    return this.oidcSecurityService.checkAuth().pipe(
+      switchMap((loginResponse: LoginResponse): Observable<User> => {
+        if (!loginResponse.isAuthenticated) {
           this.handleNotLoggedIn();
           return EMPTY;
         }
         this._bc = this.createBC(() => this.logout());
         localStorage.setItem(this._tryLoginKey, this._tryLoginValue);
-        return combineLatest([
-          of(userData),
-          this.oidcSecurityService.getAccessToken(),
-        ]);
-      }),
-      switchMap(([userData, accessToken]) => {
-        const user = this.buildUser(userData, accessToken);
+
+        const user = this.buildUser(
+          loginResponse.userData,
+          loginResponse.accessToken
+        );
         return this.userService.setCurrentUserAndLoadPermissions(user);
       }),
       switchMap(() => {
@@ -76,12 +74,15 @@ export class AuthService {
       }),
       map((routingSuccess) => {
         if (!routingSuccess) {
-          console.error('Error occurred during routing to returnUrl');
+          console.log('Error occurred during routing to returnUrl');
         }
         return true;
       }),
-      catchError(() => {
-        console.error('Error occurred during authentication initialisation');
+      catchError((error) => {
+        console.log(
+          'Error occurred during authentication initialisation',
+          error
+        );
         return EMPTY;
       }),
       defaultIfEmpty(true),
