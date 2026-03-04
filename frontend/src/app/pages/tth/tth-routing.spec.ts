@@ -140,8 +140,22 @@ describe('TTH Routing', () => {
   });
 
   it('should redirect active to statements', (done) => {
+    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
+
     TestBed.configureTestingModule({
-      providers: [provideRouter(testRoutes)],
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        {
+          provide: PermissionService,
+          useValue: permissionServiceSpy,
+        },
+      ],
     });
 
     const router = TestBed.inject(Router);
@@ -154,8 +168,22 @@ describe('TTH Routing', () => {
   });
 
   it('should redirect archived to statements', (done) => {
+    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
+
     TestBed.configureTestingModule({
-      providers: [provideRouter(testRoutes)],
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        {
+          provide: PermissionService,
+          useValue: permissionServiceSpy,
+        },
+      ],
     });
 
     const router = TestBed.inject(Router);
@@ -168,8 +196,22 @@ describe('TTH Routing', () => {
   });
 
   it('should resolve archived dossier route', (done) => {
+    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
+
     TestBed.configureTestingModule({
-      providers: [provideRouter(testRoutes)],
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        {
+          provide: PermissionService,
+          useValue: permissionServiceSpy,
+        },
+      ],
     });
 
     const router = TestBed.inject(Router);
@@ -182,8 +224,22 @@ describe('TTH Routing', () => {
   });
 
   it('should resolve active dossier route', (done) => {
+    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
+
     TestBed.configureTestingModule({
-      providers: [provideRouter(testRoutes)],
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        {
+          provide: PermissionService,
+          useValue: permissionServiceSpy,
+        },
+      ],
     });
 
     const router = TestBed.inject(Router);

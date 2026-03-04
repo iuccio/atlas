@@ -26,6 +26,8 @@ public class TthDossierRequestParams {
 
   private SwissCanton canton;
 
+  private String boContactMail;
+
   @Singular(ignoreNullCollections = true)
   private List<String> searchCriterias = new ArrayList<>();
 

@@ -53,6 +53,7 @@ export class DossierSelectComponent implements OnInit {
       .getOverview(
         this.year(),
         this.canton(),
+        undefined,
         [searchQuery],
         this.statusRestriction()
       )

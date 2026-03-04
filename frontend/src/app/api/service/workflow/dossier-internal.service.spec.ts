@@ -50,7 +50,7 @@ describe('DossierInternalService', () => {
 
   it('should get dossier overview', () => {
     // when
-    service.getOverview(2026, SwissCanton.Bern, ['Busse']);
+    service.getOverview(2026, SwissCanton.Bern, undefined, ['Busse']);
 
     // then
     expect(apiService.get).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier', jasmine.any(HttpParams));

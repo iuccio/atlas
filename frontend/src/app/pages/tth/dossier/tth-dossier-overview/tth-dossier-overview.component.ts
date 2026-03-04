@@ -17,6 +17,8 @@ import { TthDossierOverviewMenuComponent } from '../tth-dossier-overview-menu/tt
 import { addElementsToArrayWhenNotUndefined } from '../../../../core/util/arrays';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DossierStatus } from '../../../../api/model/dossierStatus';
+import { PermissionService } from '../../../../core/auth/permission/permission.service';
+import { UserService } from '../../../../core/auth/user/user.service';
 
 @Component({
   selector: 'atlas-tth-dossier-overview',
@@ -30,6 +32,8 @@ export class TthDossierOverviewComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly overviewToTabService = inject(OverviewToTabShareDataService);
+  private readonly permissionService = inject(PermissionService);
+  private readonly userService = inject(UserService);
 
   readonly cantonShort = this.overviewToTabService.cantonShort;
   readonly timetableYear = this.overviewToTabService.timetableYear;
@@ -80,12 +84,33 @@ export class TthDossierOverviewComponent {
   }
 
   getOverview(pagination: TablePagination) {
+    if (this.permissionService.isTthBoUser()) {
+      this.fetchOverview(
+        this.userService.currentUser!.email,
+        [DossierStatus.DossierBoCheck],
+        pagination
+      );
+    } else {
+      this.fetchOverview(
+        undefined,
+        this.tableService.filter.multiSelectDossierStatus.getActiveSearch(),
+        pagination
+      );
+    }
+  }
+
+  private fetchOverview(
+    email: string | undefined,
+    dossierStatus: DossierStatus[],
+    pagination: TablePagination
+  ) {
     this.dossierInternalService
       .getOverview(
         this.timetableYear().timetableYear,
         Cantons.getSwissCantonFromShort(this.cantonShort()),
+        email,
         this.tableService.filter.chipSearch.getActiveSearch(),
-        this.tableService.filter.multiSelectDossierStatus.getActiveSearch(),
+        dossierStatus,
         pagination.page,
         pagination.size,
         addElementsToArrayWhenNotUndefined(

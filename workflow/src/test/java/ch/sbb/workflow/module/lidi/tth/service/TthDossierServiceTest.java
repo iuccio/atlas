@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
 import ch.sbb.atlas.api.client.user.administration.UserAdministrationClient;
+import ch.sbb.atlas.api.model.BoMailAssociated;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
@@ -85,7 +86,7 @@ class TthDossierServiceTest {
             .build()))
         .build());
 
-    when(boUserMailCheckService.isCurrentUserMailAssignedTo(any())).thenReturn(true);
+    when(boUserMailCheckService.isCurrentUserMailAssignedTo(any(BoMailAssociated.class))).thenReturn(true);
 
     TthDossierYear tthDossierYear = TthDossierYear.builder()
         .timetableYear(2024L)
