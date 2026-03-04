@@ -2,6 +2,7 @@ import 'angular-server-side-configuration/process';
 import { atlasReleaseNotes, authority } from './environment.common';
 import { Environment } from './environment.model';
 import {
+  LogLevel,
   OpenIdConfiguration,
   PassedInitialConfig,
 } from 'angular-auth-oidc-client';
@@ -40,6 +41,7 @@ const app: OpenIdConfiguration = {
   // Docs: https://angular-auth-oidc-client.com/docs/documentation/interceptors
   secureRoutes: [process.env.ATLAS_API_URL!],
   postLogoutRedirectUri: location.origin,
+  logLevel: LogLevel.Error,
 };
 
 const authConfig: PassedInitialConfig = {
