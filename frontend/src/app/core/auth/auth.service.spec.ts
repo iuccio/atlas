@@ -3,11 +3,7 @@ import { AuthService, BC_TOKEN } from './auth.service';
 import { of } from 'rxjs';
 import { UserService } from './user/user.service';
 import { PageService } from '../pages/page.service';
-import {
-  EventTypes,
-  OidcSecurityService,
-  PublicEventsService,
-} from 'angular-auth-oidc-client';
+import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
 import { User } from './user/user';
 import SpyObj = jasmine.SpyObj;
@@ -36,7 +32,6 @@ describe('AuthService', () => {
   let userServiceSpy: SpyObj<UserService>;
   let pageServiceSpy: SpyObj<PageService>;
   let oidcSecurityServiceSpy: SpyObj<OidcSecurityService>;
-  let publicEventsService: SpyObj<PublicEventsService>;
   let bcTokenSpy: Spy;
   let routerSpy: SpyObj<Router>;
 
@@ -49,14 +44,10 @@ describe('AuthService', () => {
     pageServiceSpy = jasmine.createSpyObj(['addPagesBasedOnPermissions']);
 
     oidcSecurityServiceSpy = jasmine.createSpyObj<OidcSecurityService>([
-      'getUserData',
+      'checkAuth',
       'authorize',
       'logoffAndRevokeTokens',
-      'getAccessToken',
     ]);
-    publicEventsService = jasmine.createSpyObj<PublicEventsService>({
-      registerForEvents: of(),
-    });
 
     bcTokenSpy = jasmine.createSpy('BC_TOKEN_SPY');
     routerSpy = jasmine.createSpyObj(['navigateByUrl']);
@@ -66,7 +57,6 @@ describe('AuthService', () => {
         { provide: UserService, useValue: userServiceSpy },
         { provide: PageService, useValue: pageServiceSpy },
         { provide: OidcSecurityService, useValue: oidcSecurityServiceSpy },
-        { provide: PublicEventsService, useValue: publicEventsService },
         { provide: BC_TOKEN, useValue: bcTokenSpy },
         { provide: Router, useValue: routerSpy },
         AuthService,
@@ -119,14 +109,17 @@ describe('AuthService', () => {
 
   it('should initAuth when userData defined', (done) => {
     // Arrange
-    oidcSecurityServiceSpy.getUserData.and.returnValue(
-      of({
+    const loginResponse: LoginResponse = {
+      accessToken: fakeToken,
+      idToken: fakeToken,
+      isAuthenticated: true,
+      userData: {
         email: 'test@sbb.ch',
         name: 'test',
         sbbuid: 'u123456',
-      })
-    );
-    oidcSecurityServiceSpy.getAccessToken.and.returnValue(of(fakeToken));
+      },
+    };
+    oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
     routerSpy.navigateByUrl.and.returnValue(Promise.resolve(true));
     userServiceSpy.setCurrentUserAndLoadPermissions.and.returnValue(
       of({} as User)
@@ -136,7 +129,7 @@ describe('AuthService', () => {
     // Act
     authService.initAuth().subscribe((result) => {
       // Assert
-      expect(oidcSecurityServiceSpy.getUserData).toHaveBeenCalledOnceWith();
+      expect(oidcSecurityServiceSpy.checkAuth).toHaveBeenCalledOnceWith();
       expect(bcTokenSpy).toHaveBeenCalledTimes(1);
       expect(
         userServiceSpy.setCurrentUserAndLoadPermissions
@@ -158,33 +151,21 @@ describe('AuthService', () => {
     });
   });
 
-  it('should initAuth on silentRenewFailed Event', () => {
-    // Arrange
-    publicEventsService.registerForEvents.and.returnValue(
-      of({ type: EventTypes.SilentRenewFailed, value: {} })
-    );
-    oidcSecurityServiceSpy.getUserData.and.returnValue(
-      of({
-        email: 'test@sbb.ch',
-        name: 'test',
-        sbbuid: 'u123456',
-      })
-    );
-    authService = TestBed.inject(AuthService);
-
-    // Assert
-    expect(oidcSecurityServiceSpy.getUserData).toHaveBeenCalled();
-  });
-
   describe('should initAuth when userData is not defined', () => {
     it('should not try login', (done) => {
       // Arrange
-      oidcSecurityServiceSpy.getUserData.and.returnValue(of(null));
+      const loginResponse: LoginResponse = {
+        accessToken: '',
+        idToken: '',
+        isAuthenticated: false,
+        userData: {},
+      };
+      oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
       authService = TestBed.inject(AuthService);
       // Act
       authService.initAuth().subscribe((result) => {
         // Assert
-        expect(oidcSecurityServiceSpy.getUserData).toHaveBeenCalledOnceWith();
+        expect(oidcSecurityServiceSpy.checkAuth).toHaveBeenCalledOnceWith();
         expect(
           userServiceSpy.setToUnauthenticatedUser
         ).toHaveBeenCalledOnceWith();
@@ -195,14 +176,20 @@ describe('AuthService', () => {
 
     it('should try login', (done) => {
       // Arrange
-      oidcSecurityServiceSpy.getUserData.and.returnValue(of(null));
+      const loginResponse: LoginResponse = {
+        accessToken: '',
+        idToken: '',
+        isAuthenticated: false,
+        userData: {},
+      };
+      oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
       authService = TestBed.inject(AuthService);
       const loginSpy = spyOn(authService, 'login');
       localStorage.setItem('tryLogin', 'yes');
       // Act
       authService.initAuth().subscribe((result) => {
         // Assert
-        expect(oidcSecurityServiceSpy.getUserData).toHaveBeenCalledOnceWith();
+        expect(oidcSecurityServiceSpy.checkAuth).toHaveBeenCalledOnceWith();
         expect(localStorage.getItem('tryLogin')).toEqual('');
         expect(loginSpy).toHaveBeenCalledOnceWith();
         expect(result).toBeTrue();
@@ -213,10 +200,19 @@ describe('AuthService', () => {
 
   it('should catchError in initAuth', (done) => {
     // Arrange
-    oidcSecurityServiceSpy.getUserData.and.returnValue(
-      of({ email: 'test@sbb.ch' })
-    );
-    oidcSecurityServiceSpy.getAccessToken.and.throwError('testError');
+    const loginResponse: LoginResponse = {
+      accessToken: fakeToken,
+      idToken: fakeToken,
+      isAuthenticated: true,
+      userData: {
+        email: 'test@sbb.ch',
+        name: 'test',
+        sbbuid: 'u123456',
+      },
+    };
+    oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
+
+    userServiceSpy.setCurrentUserAndLoadPermissions.and.throwError('testError');
     authService = TestBed.inject(AuthService);
     // Act
     authService.initAuth().subscribe((result) => {
