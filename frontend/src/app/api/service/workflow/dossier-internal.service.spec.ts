@@ -1,4 +1,5 @@
 import {TestBed} from '@angular/core/testing';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
 import {AtlasApiService} from '../atlas-api.service';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {UserService} from '../../../core/auth/user/user.service';
@@ -7,6 +8,7 @@ import {TthDossier} from '../../model/tthDossier';
 import {SwissCanton} from '../../model/swissCanton';
 import {DossierStatus} from '../../model/dossierStatus';
 import {BoAnswer} from '../../model/boAnswer';
+import {EMPTY} from 'rxjs';
 
 describe('DossierInternalService', () => {
   let service: DossierInternalService;
@@ -33,11 +35,11 @@ describe('DossierInternalService', () => {
     });
     service = TestBed.inject(DossierInternalService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'get');
-    spyOn(apiService, 'post');
-    spyOn(apiService, 'put');
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'paramsOf').and.callThrough();
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'put').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'paramsOf');
   });
 
   it('should get dossier', () => {
@@ -45,7 +47,7 @@ describe('DossierInternalService', () => {
     service.getDossier(5);
 
     // then
-    expect(apiService.get).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier/5');
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith('/workflow/internal/tth/dossier/5');
   });
 
   it('should get dossier overview', () => {
@@ -53,7 +55,7 @@ describe('DossierInternalService', () => {
     service.getOverview(2026, SwissCanton.Bern, undefined, ['Busse']);
 
     // then
-    expect(apiService.get).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier', jasmine.any(HttpParams));
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith('/workflow/internal/tth/dossier', expect.any(HttpParams));
   });
 
   it('should create dossier', () => {
@@ -61,7 +63,7 @@ describe('DossierInternalService', () => {
     service.createDossier(dossier);
 
     // then
-    expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier', dossier);
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith('/workflow/internal/tth/dossier', dossier);
   });
 
   it('should update dossier', () => {
@@ -69,7 +71,7 @@ describe('DossierInternalService', () => {
     service.updateDossier(dossier);
 
     // then
-    expect(apiService.put).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier/1234', dossier);
+    expect(apiService.put).toHaveBeenCalledExactlyOnceWith('/workflow/internal/tth/dossier/1234', dossier);
   });
 
   it('should send dossier to bo', () => {
@@ -77,7 +79,7 @@ describe('DossierInternalService', () => {
     service.sendDossierToBo(5);
 
     // then
-    expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier/5/send-to-bo');
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith('/workflow/internal/tth/dossier/5/send-to-bo');
   });
 
   it('should complete dossier', () => {
@@ -85,9 +87,8 @@ describe('DossierInternalService', () => {
     service.completeDossier(5, DossierStatus.Accepted);
 
     // then
-    expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier/5/complete/ACCEPTED');
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith('/workflow/internal/tth/dossier/5/complete/ACCEPTED');
   });
-
 
   it('should answer question', () => {
     // when
@@ -95,7 +96,7 @@ describe('DossierInternalService', () => {
     service.answerQuestion(5, baAnswer);
 
     // then
-    expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/tth/dossier/answer/5', baAnswer);
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith('/workflow/internal/tth/dossier/answer/5', baAnswer);
   });
 
 });

@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AtlasApiService } from '../atlas-api.service';
 import { TransportCompanyRelationInternalService } from './transport-company-relation-internal.service';
 import { TransportCompanyRelation } from '../../model/transportCompanyRelation';
 import { UpdateTransportCompanyRelation } from '../../model/updateTransportCompanyRelation';
 import { UserService } from '../../../core/auth/user/user.service';
-import any = jasmine.any;
+import { EMPTY } from 'rxjs';
 
 describe('TransportCompanyRelationInternalService', () => {
   let service: TransportCompanyRelationInternalService;
@@ -24,12 +25,12 @@ describe('TransportCompanyRelationInternalService', () => {
     service = TestBed.inject(TransportCompanyRelationInternalService);
     apiService = TestBed.inject(AtlasApiService);
 
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'paramsOf').and.callThrough();
-    spyOn(apiService, 'post');
-    spyOn(apiService, 'delete');
-    spyOn(apiService, 'get');
-    spyOn(apiService, 'put');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'paramsOf');
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'delete').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'put').mockImplementation(() => EMPTY);
   });
 
   it('should createTransportCompanyRelation', () => {
@@ -37,8 +38,8 @@ describe('TransportCompanyRelationInternalService', () => {
 
     service.createTransportCompanyRelation(transportCompanyRelation);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({ transportCompanyRelation });
-    expect(apiService.post).toHaveBeenCalledOnceWith(
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({ transportCompanyRelation });
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
       '/business-organisation-directory/internal/transport-company-relations',
       transportCompanyRelation,
     );
@@ -49,8 +50,8 @@ describe('TransportCompanyRelationInternalService', () => {
 
     service.deleteTransportCompanyRelation(relationId);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({ relationId });
-    expect(apiService.delete).toHaveBeenCalledOnceWith(
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({ relationId });
+    expect(apiService.delete).toHaveBeenCalledExactlyOnceWith(
       `/business-organisation-directory/internal/transport-company-relations/${relationId}`,
     );
   });
@@ -60,8 +61,8 @@ describe('TransportCompanyRelationInternalService', () => {
 
     service.getTransportCompanyBoRelations(transportCompanyId);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({ transportCompanyId });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({ transportCompanyId });
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       `/business-organisation-directory/internal/transport-company-relations/${transportCompanyId}`,
     );
   });
@@ -71,10 +72,10 @@ describe('TransportCompanyRelationInternalService', () => {
 
     service.getBoTransportCompanyRelations(sboid);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({ sboid });
-    expect(apiService.paramsOf).toHaveBeenCalledOnceWith({ sboid });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
-      '/business-organisation-directory/internal/transport-company-relations/tc-of-bo', any(HttpParams),
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({ sboid });
+    expect(apiService.paramsOf).toHaveBeenCalledExactlyOnceWith({ sboid });
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
+      '/business-organisation-directory/internal/transport-company-relations/tc-of-bo', expect.any(HttpParams),
     );
   });
 
@@ -83,8 +84,8 @@ describe('TransportCompanyRelationInternalService', () => {
 
     service.updateTransportCompanyRelation(updateTransportCompanyRelation);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({ updateTransportCompanyRelation });
-    expect(apiService.put).toHaveBeenCalledOnceWith(
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({ updateTransportCompanyRelation });
+    expect(apiService.put).toHaveBeenCalledExactlyOnceWith(
       '/business-organisation-directory/internal/transport-company-relations',
       updateTransportCompanyRelation,
     );
