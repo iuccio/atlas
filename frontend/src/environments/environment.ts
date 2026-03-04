@@ -6,7 +6,6 @@ import { Environment } from './environment.model';
 import packageJson from '../../package.json';
 import { atlasReleaseNotes, authority } from './environment.common';
 import {
-  LogLevel,
   OpenIdConfiguration,
   PassedInitialConfig,
 } from 'angular-auth-oidc-client';
@@ -31,7 +30,6 @@ const app: OpenIdConfiguration = {
   // Docs: https://angular-auth-oidc-client.com/docs/documentation/interceptors
   secureRoutes: ['http://localhost:8888'],
   postLogoutRedirectUri: 'http://localhost:4200',
-  logLevel: LogLevel.Error,
 };
 
 const authConfig: PassedInitialConfig = {
