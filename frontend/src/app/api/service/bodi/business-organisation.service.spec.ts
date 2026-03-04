@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AtlasApiService } from '../atlas-api.service';
 import { BusinessOrganisationService } from './business-organisation.service';
 import { UserService } from '../../../core/auth/user/user.service';
 import { Status } from '../../model/status';
-import any = jasmine.any;
+import { EMPTY } from 'rxjs';
 
 describe('BusinessOrganisationService', () => {
   let service: BusinessOrganisationService;
@@ -22,9 +23,9 @@ describe('BusinessOrganisationService', () => {
     service = TestBed.inject(BusinessOrganisationService);
     apiService = TestBed.inject(AtlasApiService);
 
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'paramsOf').and.callThrough();
-    spyOn(apiService, 'get');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'paramsOf');
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
   });
 
   it('should getVersions', () => {
@@ -32,8 +33,8 @@ describe('BusinessOrganisationService', () => {
 
     service.getVersions(sboid);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({ sboid });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({ sboid });
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/business-organisation-directory/v1/business-organisations/versions/' + encodeURIComponent(sboid),
     );
   });
@@ -49,7 +50,7 @@ describe('BusinessOrganisationService', () => {
 
     service.getAllBusinessOrganisations(searchCriteria, inSboids, validOn, statusChoices, page, size, sort);
 
-    expect(apiService.paramsOf).toHaveBeenCalledOnceWith({
+    expect(apiService.paramsOf).toHaveBeenCalledExactlyOnceWith({
       searchCriteria,
       inSboids,
       validOn,
@@ -58,9 +59,9 @@ describe('BusinessOrganisationService', () => {
       size,
       sort,
     });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/business-organisation-directory/v1/business-organisations',
-      any(HttpParams)
+      expect.any(HttpParams)
     );
   });
 });

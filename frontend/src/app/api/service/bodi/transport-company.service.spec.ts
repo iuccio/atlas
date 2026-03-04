@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AtlasApiService } from '../atlas-api.service';
 import { TransportCompanyStatus } from '../../model/transportCompanyStatus';
 import { UserService } from '../../../core/auth/user/user.service';
 import { TransportCompanyService } from './transport-company.service';
-import any = jasmine.any;
+import { EMPTY } from 'rxjs';
 
 describe('TransportCompanyService', () => {
   let service: TransportCompanyService;
@@ -23,9 +24,9 @@ describe('TransportCompanyService', () => {
     service = TestBed.inject(TransportCompanyService);
     apiService = TestBed.inject(AtlasApiService);
 
-    spyOn(apiService, 'paramsOf').and.callThrough();
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'get');
+    vi.spyOn(apiService, 'paramsOf');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
   });
 
   it('should getTransportCompanies', () => {
@@ -37,16 +38,16 @@ describe('TransportCompanyService', () => {
 
     service.getTransportCompanies(searchCriteria, statusChoices, page, size, sort);
 
-    expect(apiService.paramsOf).toHaveBeenCalledOnceWith({
+    expect(apiService.paramsOf).toHaveBeenCalledExactlyOnceWith({
       searchCriteria,
       statusChoices,
       page,
       size,
       sort,
     });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/business-organisation-directory/v1/transport-companies',
-      any(HttpParams),
+      expect.any(HttpParams),
     );
   });
 
@@ -55,8 +56,8 @@ describe('TransportCompanyService', () => {
 
     service.getTransportCompany(id);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({ id });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({ id });
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       `/business-organisation-directory/v1/transport-companies/${id}`,
     );
   });

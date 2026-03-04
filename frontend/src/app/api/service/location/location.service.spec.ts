@@ -1,35 +1,35 @@
+import { LocationService } from './location.service';
 import { TestBed } from '@angular/core/testing';
+import { HttpClient } from '@angular/common/http';
 import { AtlasApiService } from '../atlas-api.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserService } from '../../../core/auth/user/user.service';
-import { TthUserAdministrationService } from './tth-user-administration.service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EMPTY } from 'rxjs';
 
-describe('TthUserAdministrationService', () => {
-  let service: TthUserAdministrationService;
+describe('LocationService', () => {
+  let service: LocationService;
   let apiService: AtlasApiService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TthUserAdministrationService, AtlasApiService,
+      providers: [LocationService, AtlasApiService,
         { provide: HttpClient, useValue: {} },
         { provide: UserService, useValue: {} },
       ],
     });
 
-    service = TestBed.inject(TthUserAdministrationService);
+    service = TestBed.inject(LocationService);
     apiService = TestBed.inject(AtlasApiService);
-    vi.spyOn(apiService, 'validateParams');
+
     vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
   });
 
-  it('should searchBoDossierAnsweringUsers', () => {
-    service.searchBoDossierAnsweringUsers('mail@sbb.ch');
+  it('should getSloidLocationModel', () => {
+    const sloid = 'ch:1:slnid:123';
+    service.getSloidLocationModel(sloid);
 
     expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
-      '/user-administration/v1/search-bo-dossier-answering-users', expect.any(HttpParams)
+      `/location/v1/sloid/${encodeURIComponent(sloid)}`,
     );
   });
-
 });

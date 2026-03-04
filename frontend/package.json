@@ -11,7 +11,7 @@
     "test:components": "ng test components",
     "test-debug:components": "ng test components --watch=true",
     "test:atlas-frontend": "ng test atlas-frontend",
-    "test-debug:atlas-frontend": "ng test atlas-frontend --watch=true --browsers=Chrome",
+    "test-debug:atlas-frontend": "ng test atlas-frontend --watch=true",
     "lint": "ng lint",
     "format": "prettier --write src/**/*.ts",
     "e2e": "ng e2e",

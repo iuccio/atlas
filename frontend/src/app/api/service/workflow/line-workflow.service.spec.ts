@@ -1,11 +1,14 @@
-import {TestBed} from '@angular/core/testing';
-import {AtlasApiService} from '../atlas-api.service';
-import {HttpClient} from '@angular/common/http';
-import {UserService} from '../../../core/auth/user/user.service';
-import {LineWorkflowService} from "./line-workflow.service";
-import {WorkflowStart} from "../../model/workflowStart";
-import {Workflow} from "../../model/workflow";
-import {ExaminantWorkflowCheck} from "../../model/examinantWorkflowCheck";
+import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { EMPTY } from 'rxjs';
+
+import { AtlasApiService } from '../atlas-api.service';
+import { HttpClient } from '@angular/common/http';
+import { UserService } from '../../../core/auth/user/user.service';
+import { LineWorkflowService } from './line-workflow.service';
+import { WorkflowStart } from '../../model/workflowStart';
+import { Workflow } from '../../model/workflow';
+import { ExaminantWorkflowCheck } from '../../model/examinantWorkflowCheck';
 import WorkflowTypeEnum = Workflow.WorkflowTypeEnum;
 
 describe('LineWorkflowService', () => {
@@ -23,10 +26,10 @@ describe('LineWorkflowService', () => {
     });
     service = TestBed.inject(LineWorkflowService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'get');
-    spyOn(apiService, 'post');
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'paramsOf').and.callThrough();
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'paramsOf');
   });
 
   it('should startWorkflow', () => {
@@ -51,7 +54,7 @@ describe('LineWorkflowService', () => {
     service.startWorkflow(workflowStart);
 
     // then
-    expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/line/workflows', workflowStart);
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith('/workflow/internal/line/workflows', workflowStart);
   });
 
   it('should getWorkflow', () => {
@@ -59,7 +62,7 @@ describe('LineWorkflowService', () => {
     service.getWorkflow(5);
 
     // then
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/workflow/internal/line/workflows/5',
     );
   });
@@ -80,6 +83,6 @@ describe('LineWorkflowService', () => {
     service.examinantCheck(123, examinantWorkflowCheck);
 
     // then
-    expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/line/workflows/123/examinant-check', examinantWorkflowCheck);
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith('/workflow/internal/line/workflows/123/examinant-check', examinantWorkflowCheck);
   });
 });

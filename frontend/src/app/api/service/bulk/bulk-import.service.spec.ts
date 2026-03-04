@@ -6,6 +6,7 @@ import { BusinessObjectType } from '../../model/businessObjectType';
 import { ImportType } from '../../model/importType';
 import { BulkImportRequest } from '../../model/bulkImportRequest';
 import { provideHttpClient } from '@angular/common/http';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('BulkImportService', () => {
   let service: BulkImportService;
@@ -67,12 +68,12 @@ describe('BulkImportService', () => {
       r.method === 'POST' &&
       r.url.endsWith('/bulk-import-service/v1/import/bulk')
     );
-    expect(req.request.body instanceof FormData).toBeTrue();
+    expect(req.request.body instanceof FormData).toBe(true);
 
     const formData: FormData = req.request.body;
 
-    expect(formData.has('bulkImportRequest')).toBeTrue();
-    expect(formData.has('file')).toBeTrue();
+    expect(formData.has('bulkImportRequest')).toBe(true);
+    expect(formData.has('file')).toBe(true);
 
   });
 

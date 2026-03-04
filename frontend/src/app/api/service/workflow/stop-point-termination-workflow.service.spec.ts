@@ -1,4 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { EMPTY } from 'rxjs';
+
 import { StopPointTerminationWorkflowService } from './stop-point-termination-workflow.service';
 import { AtlasApiService } from '../atlas-api.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -7,7 +10,6 @@ import { TerminationAbort } from '../../model/terminationAbort';
 import { TerminationDecision } from '../../model/terminationDecision';
 import { JudgementType } from '../../model/judgementType';
 import { StartTerminationStopPointAddWorkflow } from '../../model/startTerminationStopPointAddWorkflow';
-import any = jasmine.any;
 import TerminationDecisionPersonEnum = TerminationDecision.TerminationDecisionPersonEnum;
 
 describe('StopPointTerminationWorkflowService', () => {
@@ -25,10 +27,10 @@ describe('StopPointTerminationWorkflowService', () => {
     });
     service = TestBed.inject(StopPointTerminationWorkflowService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'get');
-    spyOn(apiService, 'post');
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'paramsOf').and.callThrough();
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'paramsOf');
   });
 
   it('should start termination', () => {
@@ -45,7 +47,10 @@ describe('StopPointTerminationWorkflowService', () => {
     service.startTermination(terminationStopPointAddWorkflow);
 
     // then
-    expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/v1/termination-stop-point/workflows', terminationStopPointAddWorkflow);
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
+      '/workflow/v1/termination-stop-point/workflows',
+      terminationStopPointAddWorkflow,
+    );
   });
 
   it('should getTerminationInfoBySloid', () => {
@@ -53,8 +58,8 @@ describe('StopPointTerminationWorkflowService', () => {
     service.getTerminationInfoBySloid('ch:1:sloid:1');
 
     // then
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({ sloid: 'ch:1:sloid:1' });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({ sloid: 'ch:1:sloid:1' });
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/workflow/internal/termination-stop-point/workflows/termination-info/ch%3A1%3Asloid%3A1',
     );
   });
@@ -64,63 +69,66 @@ describe('StopPointTerminationWorkflowService', () => {
     service.getTerminationStopPointWorkflows(undefined, undefined, [1, 2]);
 
     // then
-    expect(apiService.paramsOf).toHaveBeenCalledOnceWith(
-      {
-        searchCriterias: undefined,
-        workflowIds: [1, 2],
-        sboids: undefined,
-        status: undefined,
-        page: undefined,
-        size: undefined,
-        sort: undefined,
-      },
-    );
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.paramsOf).toHaveBeenCalledExactlyOnceWith({
+      searchCriterias: undefined,
+      workflowIds: [1, 2],
+      sboids: undefined,
+      status: undefined,
+      page: undefined,
+      size: undefined,
+      sort: undefined,
+    });
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/workflow/v1/termination-stop-point/workflows',
-      any(HttpParams)
+      expect.any(HttpParams),
     );
   });
 
   it('should decide as info+', () => {
     const decision: TerminationDecision = {
-      judgement: JudgementType.No, terminationDecisionPerson: TerminationDecisionPersonEnum.InfoPlus
+      judgement: JudgementType.No,
+      terminationDecisionPerson: TerminationDecisionPersonEnum.InfoPlus,
     };
 
     // when
     service.decisionInfoPlus(1, decision);
 
     // then
-    expect(apiService.post).toHaveBeenCalledOnceWith(
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
       '/workflow/internal/termination-stop-point/workflows/decision/info-plus/1',
-      decision
+      decision,
     );
   });
 
   it('should decide as nova', () => {
     const decision: TerminationDecision = {
-      judgement: JudgementType.No, terminationDecisionPerson: TerminationDecisionPersonEnum.Nova
+      judgement: JudgementType.No,
+      terminationDecisionPerson: TerminationDecisionPersonEnum.Nova,
     };
 
     // when
     service.decisionNova(1, decision);
 
     // then
-    expect(apiService.post).toHaveBeenCalledOnceWith(
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
       '/workflow/internal/termination-stop-point/workflows/decision/nova/1',
-      decision
+      decision,
     );
   });
 
   it('should abort termination', () => {
     // given
     const terminationAbort: TerminationAbort = {
-      abortComment: 'abort comment'
+      abortComment: 'abort comment',
     };
 
     // when
     service.abortTermination(123, terminationAbort);
 
     // then
-    expect(apiService.post).toHaveBeenCalledOnceWith('/workflow/internal/termination-stop-point/workflows/abort/123', terminationAbort);
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
+      '/workflow/internal/termination-stop-point/workflows/abort/123',
+      terminationAbort,
+    );
   });
 });
