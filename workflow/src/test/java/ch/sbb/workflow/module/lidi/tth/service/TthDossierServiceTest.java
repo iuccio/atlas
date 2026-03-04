@@ -76,6 +76,7 @@ class TthDossierServiceTest {
 
   private TthDossier exampleDossier;
   private TthDossierQuestion question;
+  private TthDossierYear year;
 
   @BeforeEach
   void setUp() {
@@ -92,7 +93,7 @@ class TthDossierServiceTest {
         .timetableYear(2024L)
         .hearingStatus(HearingStatus.ACTIVE)
         .build();
-    tthDossierYearRepository.save(tthDossierYear);
+    year = tthDossierYearRepository.save(tthDossierYear);
 
     TthDossier dossier = TthDossier.builder()
         .swissCanton(SwissCanton.BERN)
@@ -358,6 +359,59 @@ class TthDossierServiceTest {
             .pageable(Pageable.unpaged())
             .build()).getContent();
     assertThat(dossiers).isEmpty();
+  }
+
+  @Test
+  void shouldFindDossiersBySearchCriteriaForBo() {
+    TthDossier dossier = TthDossier.builder()
+        .swissCanton(SwissCanton.BERN)
+        .topic("Bern, Salem - Takt")
+        .internalComment("Noch mit Bernmobil abklären")
+        .publicComment("In Abklärung mit GO")
+        .boContactMail("bern@mobil.be")
+        .dossierStatus(DossierStatus.DOSSIER_BO_CHECK)
+        .statementIds(List.of(132L, 145L))
+        .boDeadlineToAnswer(LocalDate.now().plusDays(7))
+        .tthDossierYear(year)
+        .build();
+
+    TthDossier dossier2 = TthDossier.builder()
+        .swissCanton(SwissCanton.BERN)
+        .topic("Bern, Salem - Takt")
+        .internalComment("Noch mit Bernmobil abklären")
+        .publicComment("In Abklärung mit GO")
+        .boContactMail("wrongMail@mail.com")
+        .dossierStatus(DossierStatus.DOSSIER_BO_CHECK)
+        .statementIds(List.of(132L, 145L))
+        .boDeadlineToAnswer(LocalDate.now().plusDays(7))
+        .tthDossierYear(year)
+        .build();
+
+    TthDossier dossier3 = TthDossier.builder()
+        .swissCanton(SwissCanton.BERN)
+        .topic("Bern, Salem - Takt")
+        .internalComment("Noch mit Bernmobil abklären")
+        .publicComment("In Abklärung mit GO")
+        .boContactMail("bern@mobil.be")
+        .dossierStatus(DossierStatus.ADDED)
+        .statementIds(List.of(132L, 145L))
+        .boDeadlineToAnswer(LocalDate.now().plusDays(7))
+        .tthDossierYear(year)
+        .build();
+
+    tthDossierRepository.saveAndFlush(dossier);
+    tthDossierRepository.saveAndFlush(dossier2);
+    tthDossierRepository.saveAndFlush(dossier3);
+
+    List<TthDossier> dossiers =
+        tthDossierService.getDossiers(TthDossierSearchRestrictions.builder()
+            .requestParams(TthDossierRequestParams.builder()
+                .boContactMail("bern@mobil.be")
+                .statusRestriction(DossierStatus.DOSSIER_BO_CHECK)
+                .build())
+            .pageable(Pageable.unpaged())
+            .build()).getContent();
+    assertThat(dossiers).hasSize(1);
   }
 
   @Test

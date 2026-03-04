@@ -61,7 +61,7 @@ export class OverviewTabComponent {
       this.route.snapshot.params['canton']
     );
 
-    if (this.permissionService.isTthBoUser()) {
+    if (this.permissionService.getTthApplicationUserType() === 'BO_TTH') {
       this.TABS = this.BO_TTH_TABS;
     }
   }
