@@ -30,7 +30,7 @@ import lombok.experimental.FieldNameConstants;
 @Builder
 @FieldNameConstants
 @EqualsAndHashCode
-@JsonPropertyOrder({Fields.slnid, Fields.validFrom, Fields.validTo, Fields.description,
+@JsonPropertyOrder({Fields.slnid, Fields.linienId, Fields.validFrom, Fields.validTo, Fields.description,
     Fields.number, Fields.swissLineNumber, Fields.lineConcessionType, Fields.shortNumber,
     Fields.offerCategory, Fields.longName, Fields.businessOrganisation, Fields.comment})
 @CopyFromCurrentVersion({
@@ -40,6 +40,10 @@ import lombok.experimental.FieldNameConstants;
 public class LineUpdateCsvModel implements Validatable<LineUpdateCsvModel> {
 
   private String slnid;
+
+  @DefaultMapping
+  @Nulling
+  private String linienId;
 
   @DefaultMapping
   @JsonDeserialize(using = LocalDateDeserializer.class)
