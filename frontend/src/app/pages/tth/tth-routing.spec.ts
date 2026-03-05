@@ -8,6 +8,9 @@ import {
 import { provideHttpClient } from '@angular/common/http';
 import { PermissionService } from '../../core/auth/permission/permission.service';
 import { Location } from '@angular/common';
+import { DossierDetailResolver } from './dossier/detail/dossier-detail-resolver.service';
+import { of } from 'rxjs';
+import { UserService } from '../../core/auth/user/user.service';
 
 const testRoutes: Routes = [
   {
@@ -17,6 +20,19 @@ const testRoutes: Routes = [
 ];
 
 describe('TTH Routing', () => {
+  let permissionServiceSpy: jasmine.SpyObj<PermissionService>;
+  let userServiceSpy: jasmine.SpyObj<UserService>;
+
+  beforeEach(() => {
+    permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    userServiceSpy = jasmine.createSpyObj('UserService', [
+      'onPermissionsLoaded',
+    ]);
+    userServiceSpy.onPermissionsLoaded.and.returnValue(of(void 0));
+  });
+
   it('should construct router with tth routes', () => {
     TestBed.configureTestingModule({
       providers: [provideRouter(routes)],
@@ -28,9 +44,6 @@ describe('TTH Routing', () => {
   });
 
   it('should load CantonStatementDetailComponent', () => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue(
       'CANTON_TTH'
     );
@@ -39,10 +52,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(routes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
       const router = TestBed.inject(Router);
@@ -51,25 +61,18 @@ describe('TTH Routing', () => {
         expect(component).toBeDefined();
         expect(component.name).toBe('_CantonStatementDetailComponent');
       });
-
       expect(result).toBeDefined();
     });
   });
 
   it('should load BoStatementDetailComponent', () => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
         provideRouter(routes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
       const router = TestBed.inject(Router);
@@ -78,25 +81,18 @@ describe('TTH Routing', () => {
         expect(component).toBeDefined();
         expect(component.name).toBe('_BoStatementDetailComponent');
       });
-
       expect(result).toBeDefined();
     });
   });
 
   it('should load BoDossierDetailComponent', () => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
         provideRouter(routes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
       const router = TestBed.inject(Router);
@@ -105,15 +101,11 @@ describe('TTH Routing', () => {
         expect(component).toBeDefined();
         expect(component.name).toBe('_BoDossierDetailComponent');
       });
-
       expect(result).toBeDefined();
     });
   });
 
   it('should load CantonDossierDetailComponent', () => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue(
       'CANTON_TTH'
     );
@@ -122,10 +114,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(routes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
       const router = TestBed.inject(Router);
@@ -134,15 +123,11 @@ describe('TTH Routing', () => {
         expect(component).toBeDefined();
         expect(component.name).toBe('_CantonDossierDetailComponent');
       });
-
       expect(result).toBeDefined();
     });
   });
 
   it('should redirect active to statements', (done) => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue(
       'CANTON_TTH'
     );
@@ -151,10 +136,8 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
       ],
     });
 
@@ -168,9 +151,6 @@ describe('TTH Routing', () => {
   });
 
   it('should redirect archived to statements', (done) => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue(
       'CANTON_TTH'
     );
@@ -179,10 +159,8 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
       ],
     });
 
@@ -196,9 +174,6 @@ describe('TTH Routing', () => {
   });
 
   it('should resolve archived dossier route', (done) => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue(
       'CANTON_TTH'
     );
@@ -207,10 +182,8 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
       ],
     });
 
@@ -224,9 +197,6 @@ describe('TTH Routing', () => {
   });
 
   it('should resolve active dossier route', (done) => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue(
       'CANTON_TTH'
     );
@@ -235,10 +205,8 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
       ],
     });
 
@@ -252,19 +220,14 @@ describe('TTH Routing', () => {
   });
 
   it('should redirect BO active to dossiers', (done) => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
       ],
     });
 
@@ -278,19 +241,14 @@ describe('TTH Routing', () => {
   });
 
   it('should redirect BO archived dossiers to active dossiers', (done) => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
       ],
     });
 
@@ -306,9 +264,6 @@ describe('TTH Routing', () => {
   });
 
   it('should not redirect Canton archived dossiers', (done) => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue(
       'CANTON_TTH'
     );
@@ -317,9 +272,11 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
         {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
+          provide: DossierDetailResolver,
+          useValue: { resolve: () => of(null) },
         },
       ],
     });
@@ -338,19 +295,14 @@ describe('TTH Routing', () => {
   });
 
   it('should resolve BO active dossier route', (done) => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
       ],
     });
 
@@ -364,19 +316,14 @@ describe('TTH Routing', () => {
   });
 
   it('should redirect unknown BO route to active', (done) => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
       ],
     });
 

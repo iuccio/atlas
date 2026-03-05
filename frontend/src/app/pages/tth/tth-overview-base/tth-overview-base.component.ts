@@ -224,6 +224,7 @@ export class TthOverviewBaseComponent implements OnInit {
 
     const paramYear = this.route.snapshot.queryParams.year;
     if (paramYear) {
+      this.overviewToTabService.setYearSelection(paramYear);
       this.setFoundHearingYearWhenQueryParamIsProvided(
         timetableHearingYears,
         Number(paramYear)

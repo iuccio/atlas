@@ -72,10 +72,16 @@ export class TthDossierOverviewComponent {
   loadData() {
     if (this.isHearingYearActive()) {
       this.tableColumns = this.getTableColumns();
+      const filterSettings =
+        this.userType === 'BO_TTH'
+          ? TthTableFilterSettingsService.createDossierSettingsForBo()
+          : TthTableFilterSettingsService.createDossierSettings();
+
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
-        TthTableFilterSettingsService.createDossierSettings(),
+        filterSettings,
         Pages.TTH_DOSSIERS
       );
+
       this.initOverviewTable();
     }
 

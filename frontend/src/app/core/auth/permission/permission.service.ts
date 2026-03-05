@@ -280,7 +280,9 @@ export class PermissionService {
   }
 
   getTthApplicationUserType(): TthApplicationUserType {
-    if (this.isTthCanton()) {
+    if (this.isTthCanton() === this.isTthBoUser()) {
+      throw new Error('Wrong Tth application user type configuration.');
+    } else if (this.isTthCanton()) {
       return TthApplicationUserType.CantonTth;
     } else {
       return TthApplicationUserType.BoTth;
