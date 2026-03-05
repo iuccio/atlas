@@ -10,6 +10,7 @@
         <a
           [attr.data-cy]="'tth-tab-' + tab.link"
           [routerLink]="[this.hearingStatus().toLowerCase(), tab.link]"
+          queryParamsHandling="preserve"
           [relativeTo]="route"
           routerLinkActive="active-tab"
           class="font-bold-xl"

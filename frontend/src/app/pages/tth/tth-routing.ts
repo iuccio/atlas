@@ -7,6 +7,8 @@ import { inject } from '@angular/core';
 import { PermissionService } from '../../core/auth/permission/permission.service';
 import { dossierResolver } from './dossier/detail/dossier-detail-resolver.service';
 import { boUserGuard } from './tth-permissions.guard';
+import { firstValueFrom } from 'rxjs';
+import { UserService } from '../../core/auth/user/user.service';
 
 const statementActiveDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ACTIVE.path}/${Pages.TTH_STATEMENTS.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
 const statementPlannedDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_PLANNED.path}/${Pages.TTH_STATEMENTS.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
@@ -34,7 +36,7 @@ export async function loadDossierDetailRoute() {
       await import('./dossier/detail/bo-dossier-detail/bo-dossier-detail.component');
     return m.BoDossierDetailComponent;
   }
-  if (permissionService.getTthApplicationUserType() === 'CANTON_TTH') {
+  if ((await permissionService.getTthApplicationUserType()) === 'CANTON_TTH') {
     const m =
       await import('./dossier/detail/canton-dossier-detail/canton-dossier-detail.component');
     return m.CantonDossierDetailComponent;
@@ -120,8 +122,11 @@ export const routes: Routes = [
       import('./overview-tab/overview-tab.component').then(
         (m) => m.OverviewTabComponent
       ),
-    loadChildren: () => {
+    loadChildren: async () => {
       const permissionService = inject(PermissionService);
+      const userService = inject(UserService);
+      await firstValueFrom(userService.onPermissionsLoaded());
+
       const userType = permissionService.getTthApplicationUserType();
 
       if (userType === 'BO_TTH') {

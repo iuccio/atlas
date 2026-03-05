@@ -583,5 +583,53 @@ describe('PermissionService', () => {
       //then
       expect(result).toBe('CANTON_TTH');
     });
+
+    it('should get Wrong Tth application user type configuration when user is Canton and BO', () => {
+      //given
+      userServiceMock.permissions = [
+        {
+          isAdmin: true,
+          application: ApplicationType.TimetableHearing,
+          role: ApplicationRole.Reader,
+          permissionRestrictions: [
+            {
+              type: PermissionRestrictionType.TransportCompanyDossierAnswer,
+              valueAsString: 'false',
+            },
+          ],
+        },
+      ];
+      //when && then
+      expect(() => permissionService.getTthApplicationUserType()).toThrowError(
+        'Wrong Tth application user type configuration.'
+      );
+    });
+
+    [
+      ApplicationRole.Writer,
+      ApplicationRole.Supervisor,
+      ApplicationRole.ExplicitReader,
+    ].forEach((role) => {
+      it('should get Wrong Tth application user type configuration when user is not Canton and not BO', () => {
+        //given
+        userServiceMock.permissions = [
+          {
+            isAdmin: false,
+            application: ApplicationType.TimetableHearing,
+            role: role,
+            permissionRestrictions: [
+              {
+                type: PermissionRestrictionType.TransportCompanyDossierAnswer,
+                valueAsString: 'true',
+              },
+            ],
+          },
+        ];
+        //when && then
+        expect(() =>
+          permissionService.getTthApplicationUserType()
+        ).toThrowError('Wrong Tth application user type configuration.');
+      });
+    });
   });
 });
