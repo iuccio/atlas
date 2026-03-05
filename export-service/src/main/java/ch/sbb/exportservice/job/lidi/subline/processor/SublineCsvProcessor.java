@@ -16,6 +16,7 @@ public class SublineCsvProcessor implements ItemProcessor<Subline, SublineCsvMod
   public SublineCsvModel process(Subline subline) {
     return SublineCsvModel.builder()
         .slnid(subline.getSlnid())
+        .linienId(subline.getLinienId())
         .mainlineSlnid(subline.getMainlineSlnid())
         .validFrom(DATE_FORMATTER.format(subline.getValidFrom()))
         .validTo(DATE_FORMATTER.format(subline.getValidTo()))

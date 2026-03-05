@@ -15,6 +15,7 @@ public class LineCsvProcessor implements ItemProcessor<Line, LineCsvModel> {
   public LineCsvModel process(Line line) {
     return LineCsvModel.builder()
         .slnid(line.getSlnid())
+        .linienId(line.getLinienId())
         .validFrom(DATE_FORMATTER.format(line.getValidFrom()))
         .validTo(DATE_FORMATTER.format(line.getValidTo()))
         .status(line.getStatus())

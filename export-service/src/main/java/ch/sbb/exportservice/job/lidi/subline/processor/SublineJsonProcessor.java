@@ -19,6 +19,7 @@ public class SublineJsonProcessor implements ItemProcessor<Subline, ReadSublineV
         .status(subline.getStatus())
         .sublineType(subline.getSublineType())
         .slnid(subline.getSlnid())
+        .linienId(subline.getLinienId())
         .description(subline.getDescription())
         .longName(subline.getLongName())
         .validFrom(subline.getValidFrom())

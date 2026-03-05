@@ -17,6 +17,7 @@ public class LineJsonProcessor implements ItemProcessor<Line, LineVersionModelV2
         .lineConcessionType(line.getConcessionType())
         .swissLineNumber(line.getSwissLineNumber())
         .slnid(line.getSlnid())
+        .linienId(line.getLinienId())
         .number(line.getNumber())
         .longName(line.getLongName())
         .shortNumber(line.getShortNumber())
