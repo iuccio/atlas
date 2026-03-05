@@ -1,9 +1,6 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ErrorNotificationComponent } from './error-notification.component';
-import { RouterModule } from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MAT_SNACK_BAR_DATA,
   MatSnackBarRef,
@@ -46,19 +43,12 @@ const errorResponse = new HttpErrorResponse({
   },
 });
 
-let component: ErrorNotificationComponent;
-let fixture: ComponentFixture<ErrorNotificationComponent>;
-
 describe('Error Notification component', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientTestingModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        ErrorNotificationComponent,
-      ],
+  let component: ErrorNotificationComponent;
+  let fixture: ComponentFixture<ErrorNotificationComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       providers: [
         translateServiceProvider,
         {
@@ -70,10 +60,8 @@ describe('Error Notification component', () => {
           useValue: {}, // Add any data you wish to test if it is passed/used correctly
         },
       ],
-    }).compileComponents();
-  });
+    });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(ErrorNotificationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

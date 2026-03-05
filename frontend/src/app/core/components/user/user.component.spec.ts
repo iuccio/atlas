@@ -4,7 +4,7 @@ import { AuthService } from '../../auth/auth.service';
 import { By } from '@angular/platform-browser';
 import {
   adminUserServiceMock,
-  authServiceSpy,
+  authServiceMock,
   translateServiceProvider,
 } from '../../../app.testing.mocks';
 import { UserService } from '../../auth/user/user.service';
@@ -20,7 +20,7 @@ describe('UserComponent', () => {
       providers: [
         translateServiceProvider,
         provideHttpClient(),
-        { provide: AuthService, useValue: authServiceSpy },
+        { provide: AuthService, useValue: authServiceMock },
         { provide: UserService, useValue: adminUserServiceMock },
       ],
     }).compileComponents();
@@ -55,7 +55,7 @@ describe('UserComponent', () => {
       const logoutButton = fixture.debugElement.query(By.css('#logout'));
       logoutButton.nativeElement.click();
 
-      expect(authServiceSpy.logout).toHaveBeenCalled();
+      expect(authServiceMock.logout).toHaveBeenCalled();
     });
 
     it('should login', () => {
@@ -66,7 +66,7 @@ describe('UserComponent', () => {
       const loginButton = fixture.debugElement.query(By.css('#login'));
       loginButton.nativeElement.click();
 
-      expect(authServiceSpy.login).toHaveBeenCalled();
+      expect(authServiceMock.login).toHaveBeenCalled();
     });
   });
 

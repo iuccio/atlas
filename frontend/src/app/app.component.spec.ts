@@ -10,7 +10,7 @@ import { AppTestingModule } from './app.testing.module';
 import { SwUpdate } from '@angular/service-worker';
 import { MaintenanceIconComponent } from './core/components/header/maintenance-icon/maintenance-icon.component';
 import { InfoIconComponent } from '@atlas/form';
-import { authServiceSpy } from './app.testing.mocks';
+import { authServiceMock } from './app.testing.mocks';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -30,7 +30,7 @@ describe('AppComponent', () => {
         AppComponent,
       ],
       providers: [
-        { provide: AuthService, useValue: authServiceSpy },
+        { provide: AuthService, useValue: authServiceMock },
         {
           provide: SwUpdate,
           useValue: {},
