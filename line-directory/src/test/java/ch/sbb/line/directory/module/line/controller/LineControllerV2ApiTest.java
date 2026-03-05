@@ -72,6 +72,7 @@ class LineControllerV2ApiTest extends BaseControllerApiTest {
         LineTestData.createLineVersionModelBuilder()
             .validTo(LocalDate.of(2000, 12, 31))
             .validFrom(LocalDate.of(2000, 1, 1))
+            .linienId("100")
             .businessOrganisation("sbb")
             .longName("long name")
             .lineType(LineType.ORDERLY)

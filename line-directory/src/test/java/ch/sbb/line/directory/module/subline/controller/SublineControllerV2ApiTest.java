@@ -88,6 +88,7 @@ class SublineControllerV2ApiTest extends BaseControllerApiTest {
         CreateSublineVersionModelV2.builder()
             .validFrom(LocalDate.of(2020, 2, 1))
             .validTo(LocalDate.of(2020, 11, 30))
+            .linienId("100")
             .businessOrganisation("sbb")
             .description("b0.Ic2-sibline")
             .sublineType(SublineType.TECHNICAL)
