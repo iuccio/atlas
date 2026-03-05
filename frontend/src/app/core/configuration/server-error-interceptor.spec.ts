@@ -1,11 +1,10 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-
 import { ServerErrorInterceptor } from './server-error-interceptor';
 import { NotificationService } from '../notification/notification.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   HttpErrorResponse,
   HttpEventType,
@@ -21,7 +20,6 @@ describe('Server Error Interceptor', () => {
         MatSnackBarModule,
         TranslateModule.forRoot(),
         RouterModule.forRoot([]),
-        BrowserAnimationsModule,
       ],
       providers: [NotificationService, ServerErrorInterceptor],
     });

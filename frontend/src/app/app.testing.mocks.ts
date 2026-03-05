@@ -26,6 +26,7 @@ import { TargetPageType } from './core/navigation-sepodi-prm/navigation-sepodi-p
 import { Page } from './core/model/page';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { Mocked, vi } from 'vitest';
 
 @Component({
   selector: 'atlas-switch-version',
@@ -269,11 +270,14 @@ export const pageServiceMock: Partial<PageService> = {
   },
 };
 
-export const authServiceSpy = jasmine.createSpyObj<AuthService>([
-  'login',
-  'logout',
-  'initAuth',
-]);
+type AuthServiceMock = Mocked<
+  Pick<AuthService, 'login' | 'logout' | 'initAuth'>
+>;
+export const authServiceMock: AuthServiceMock = {
+  login: vi.fn(),
+  logout: vi.fn(),
+  initAuth: vi.fn(),
+};
 
 export const translateServiceProvider = provideTranslateService({
   loader: provideTranslateHttpLoader({

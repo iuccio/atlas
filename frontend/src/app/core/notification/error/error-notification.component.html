@@ -6,8 +6,11 @@
           <ul>
             <li>
               {{
-              detail.displayInfo.code
-              | translate: notificationService.arrayParametersToObject(detail.displayInfo)
+                detail.displayInfo.code
+                  | translate
+                    : notificationService.arrayParametersToObject(
+                        detail.displayInfo
+                      )
               }}
             </li>
           </ul>
@@ -16,9 +19,7 @@
     </div>
   }
   @if (!notificationService.showOnlyCode()) {
-    <div
-      class="snack-bar-error-generic-text mt-3 mb-3 ms-3 me-3"
-      >
+    <div class="snack-bar-error-generic-text mt-3 mb-3 ms-3 me-3">
       {{ notificationService.displayCode | translate }}
     </div>
   }
@@ -28,6 +29,10 @@
 </div>
 @if (notificationService.correlationId) {
   <div class="data ms-3 me-3 mb-3">
-    {{ 'ERROR.CORRELATION_ID' | translate: { correlationId: notificationService.correlationId } }}
+    {{
+      'ERROR.CORRELATION_ID'
+        | translate: { correlationId: notificationService.correlationId }
+    }}
   </div>
 }
+<!--todo: how to print fixture html in debug window-->

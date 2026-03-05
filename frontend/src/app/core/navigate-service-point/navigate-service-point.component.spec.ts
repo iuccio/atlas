@@ -1,46 +1,60 @@
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type MockedObject,
+  vi,
+} from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import {
   NavigateServicePointComponent,
   NOTFOUND_LABEL,
 } from './navigate-service-point.component';
-import { provideHttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
-import { translateServiceProvider } from '../../app.testing.mocks';
-import { inputBinding, signal } from '@angular/core';
-import { ServicePointSearch } from '../search-service-point/service-point-search';
 import { LocationService } from '../../api/service/location/location.service';
 import { of } from 'rxjs';
-import SpyObj = jasmine.SpyObj;
+import { inputBinding } from '@angular/core';
+import { ServicePointSearch } from '../search-service-point/service-point-search';
+import { translateServiceProvider } from '../../app.testing.mocks';
 
 describe('NavigateServicePoint', () => {
+  type LocationServiceMock = MockedObject<
+    Pick<LocationService, 'getSloidLocationModel'>
+  >;
   let component: NavigateServicePointComponent;
   let fixture: ComponentFixture<NavigateServicePointComponent>;
-  let locationServiceSpy: SpyObj<LocationService>;
+  let locationService: LocationServiceMock;
   let router: Router;
-  const searchType = signal(ServicePointSearch.PRM);
 
-  beforeEach(async () => {
-    locationServiceSpy = jasmine.createSpyObj<LocationService>(
-      'locationService',
-      ['getSloidLocationModel']
-    );
+  beforeEach(() => {
+    // Mocking: stub only the used method of LocationService
+    locationService = {
+      getSloidLocationModel: vi
+        .fn()
+        .mockName('locationService.getSloidLocationModel'),
+    };
 
-    await TestBed.configureTestingModule({
-      imports: [NavigateServicePointComponent, RouterModule.forRoot([])],
+    // Config: wire TestBed with the mocked service and component
+    TestBed.configureTestingModule({
+      imports: [RouterModule.forRoot([])],
       providers: [
-        provideHttpClient(),
         translateServiceProvider,
-        { provide: LocationService, useValue: locationServiceSpy },
+        { provide: LocationService, useValue: locationService },
       ],
-    }).compileComponents();
+    });
 
+    // Arrangement: obtain the fixture/component/router instances
+    type ComponentProp = keyof NavigateServicePointComponent;
+    const searchTypeInputName: ComponentProp = 'searchType';
     fixture = TestBed.createComponent(NavigateServicePointComponent, {
-      bindings: [inputBinding('searchType', searchType)],
+      bindings: [
+        inputBinding(searchTypeInputName, () => ServicePointSearch.PRM),
+      ],
     });
     component = fixture.componentInstance;
-    fixture.detectChanges();
     router = TestBed.inject(Router);
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -49,11 +63,10 @@ describe('NavigateServicePoint', () => {
 
   it('should find and navigate PRM', () => {
     //given
-    locationServiceSpy.getSloidLocationModel.and.returnValue(
+    locationService.getSloidLocationModel.mockReturnValue(
       of([{ sloid: 'ch:1:sloid:12:0:1:1', sloidType: 'REFERENCE_POINT' }])
     );
-
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
     //when
     component.doSearch('ch:1:sloid:12:0:1');
     //then
@@ -62,9 +75,8 @@ describe('NavigateServicePoint', () => {
 
   it('should not find and no navigate PRM', () => {
     //given
-    locationServiceSpy.getSloidLocationModel.and.returnValue(of([]));
-
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    locationService.getSloidLocationModel.mockReturnValue(of([]));
+    vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
     //when
     component.doSearch('ch:1:sloid:12:0:1:1');
     //then

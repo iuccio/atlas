@@ -6,7 +6,14 @@ import {
   PermissionRestrictionType,
 } from '../../../api';
 import { TerminationDecision } from '../../../api/model/terminationDecision';
+import { TestBed } from '@angular/core/testing';
+import { UserService } from '../user/user.service';
 import TerminationDecisionPersonEnum = TerminationDecision.TerminationDecisionPersonEnum;
+
+type UserServiceMock = Pick<
+  { -readonly [P in keyof UserService]: UserService[P] },
+  'permissions' | 'isAdmin'
+>;
 
 describe('PermissionService', () => {
   describe('Permissions for create Button', () => {
@@ -16,7 +23,7 @@ describe('PermissionService', () => {
         [],
         true
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Bodi,
@@ -29,7 +36,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Bodi,
@@ -42,7 +49,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Bodi,
@@ -55,7 +62,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Bodi,
@@ -68,7 +75,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
     });
 
     it('Permissions for create Button LIDI are set up correctly', () => {
@@ -77,7 +84,7 @@ describe('PermissionService', () => {
         [],
         true
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Lidi,
@@ -90,7 +97,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Lidi,
@@ -103,7 +110,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Lidi,
@@ -116,7 +123,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Lidi,
@@ -129,7 +136,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
     });
 
     it('Permissions for create Button TTFN are set up correctly', () => {
@@ -138,7 +145,7 @@ describe('PermissionService', () => {
         [],
         true
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Ttfn,
@@ -151,7 +158,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Ttfn,
@@ -164,7 +171,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Ttfn,
@@ -177,7 +184,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToCreateWithPermissions(
         ApplicationType.Ttfn,
@@ -190,7 +197,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
     });
   });
 
@@ -202,7 +209,7 @@ describe('PermissionService', () => {
         [],
         true
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToWriteWithPermissions(
         ApplicationType.Lidi,
@@ -216,7 +223,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToWriteWithPermissions(
         ApplicationType.Lidi,
@@ -230,7 +237,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
 
       result = PermissionService.hasPermissionsToWriteWithPermissions(
         ApplicationType.Lidi,
@@ -244,7 +251,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
 
       result = PermissionService.hasPermissionsToWriteWithPermissions(
         ApplicationType.Lidi,
@@ -263,7 +270,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
     });
   });
 
@@ -283,7 +290,7 @@ describe('PermissionService', () => {
         ],
         false
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
     });
 
     it('should not be able to edit Canton if user is not for canton enabled', () => {
@@ -311,16 +318,31 @@ describe('PermissionService', () => {
         [],
         true
       );
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
     });
   });
 
   describe('Available Pages based on permissions', () => {
     let permissionService: PermissionService;
-    const userServiceMock = jasmine.createSpyObj({}, { isAdmin: false });
+
+    let userServiceMock: UserServiceMock;
 
     beforeEach(() => {
-      permissionService = new PermissionService(userServiceMock);
+      userServiceMock = {
+        isAdmin: false,
+        permissions: [],
+      };
+
+      TestBed.configureTestingModule({
+        providers: [
+          {
+            provide: UserService,
+            useValue: userServiceMock,
+          },
+        ],
+      });
+
+      permissionService = TestBed.inject(PermissionService);
     });
 
     it('should show TTFN if supervisor', () => {
@@ -333,7 +355,7 @@ describe('PermissionService', () => {
       ];
 
       const mayAccessTtfn = permissionService.mayAccessTtfn();
-      expect(mayAccessTtfn).toBeTrue();
+      expect(mayAccessTtfn).toBe(true);
     });
 
     it('should not show TTFN if reader', () => {
@@ -346,7 +368,7 @@ describe('PermissionService', () => {
       ];
 
       const mayAccessTtfn = permissionService.mayAccessTtfn();
-      expect(mayAccessTtfn).toBeFalse();
+      expect(mayAccessTtfn).toBe(false);
     });
 
     it('should show Bulk Import if supervisor', () => {
@@ -359,7 +381,7 @@ describe('PermissionService', () => {
       ];
 
       const mayAccessTtfn = permissionService.mayAccessBulkImport();
-      expect(mayAccessTtfn).toBeTrue();
+      expect(mayAccessTtfn).toBe(true);
     });
 
     it('should not show Bulk Import if reader', () => {
@@ -372,7 +394,7 @@ describe('PermissionService', () => {
       ];
 
       const mayAccessTtfn = permissionService.mayAccessBulkImport();
-      expect(mayAccessTtfn).toBeFalse();
+      expect(mayAccessTtfn).toBe(false);
     });
 
     it('should show TTH if explicit reader', () => {
@@ -385,7 +407,7 @@ describe('PermissionService', () => {
       ];
 
       const mayAccessTth = permissionService.mayAccessTimetableHearing();
-      expect(mayAccessTth).toBeTrue();
+      expect(mayAccessTth).toBe(true);
     });
 
     it('should not show TTH if reader', () => {
@@ -398,7 +420,7 @@ describe('PermissionService', () => {
       ];
 
       const mayAccessTth = permissionService.mayAccessTimetableHearing();
-      expect(mayAccessTth).toBeFalse();
+      expect(mayAccessTth).toBe(false);
     });
 
     it('should show TTH if reader with special restriction', () => {
@@ -416,7 +438,7 @@ describe('PermissionService', () => {
       ];
 
       const mayAccessTth = permissionService.mayAccessTimetableHearing();
-      expect(mayAccessTth).toBeTrue();
+      expect(mayAccessTth).toBe(true);
     });
 
     it('should evaluate at least supervisor', () => {
@@ -431,16 +453,31 @@ describe('PermissionService', () => {
       const ttfnSupervisor = permissionService.isAtLeastSupervisor(
         ApplicationType.Ttfn
       );
-      expect(ttfnSupervisor).toBeTrue();
+      expect(ttfnSupervisor).toBe(true);
     });
   });
 
   describe('Permissions for termination', () => {
     let permissionService: PermissionService;
-    const userServiceMock = jasmine.createSpyObj({}, { isAdmin: false });
+
+    let userServiceMock: UserServiceMock;
 
     beforeEach(() => {
-      permissionService = new PermissionService(userServiceMock);
+      userServiceMock = {
+        isAdmin: false,
+        permissions: [],
+      };
+
+      TestBed.configureTestingModule({
+        providers: [
+          {
+            provide: UserService,
+            useValue: userServiceMock,
+          },
+        ],
+      });
+
+      permissionService = TestBed.inject(PermissionService);
     });
 
     it('should have no termination permission', () => {
@@ -582,6 +619,54 @@ describe('PermissionService', () => {
       const result = permissionService.getTthApplicationUserType();
       //then
       expect(result).toBe('CANTON_TTH');
+    });
+
+    it('should get Wrong Tth application user type configuration when user is Canton and BO', () => {
+      //given
+      userServiceMock.permissions = [
+        {
+          isAdmin: true,
+          application: ApplicationType.TimetableHearing,
+          role: ApplicationRole.Reader,
+          permissionRestrictions: [
+            {
+              type: PermissionRestrictionType.TransportCompanyDossierAnswer,
+              valueAsString: 'false',
+            },
+          ],
+        },
+      ];
+      //when && then
+      expect(() => permissionService.getTthApplicationUserType()).toThrowError(
+        'Wrong Tth application user type configuration.'
+      );
+    });
+
+    [
+      ApplicationRole.Writer,
+      ApplicationRole.Supervisor,
+      ApplicationRole.ExplicitReader,
+    ].forEach((role) => {
+      it('should get Wrong Tth application user type configuration when user is not Canton and not BO', () => {
+        //given
+        userServiceMock.permissions = [
+          {
+            isAdmin: false,
+            application: ApplicationType.TimetableHearing,
+            role: role,
+            permissionRestrictions: [
+              {
+                type: PermissionRestrictionType.TransportCompanyDossierAnswer,
+                valueAsString: 'true',
+              },
+            ],
+          },
+        ];
+        //when && then
+        expect(() =>
+          permissionService.getTthApplicationUserType()
+        ).toThrowError('Wrong Tth application user type configuration.');
+      });
     });
   });
 });

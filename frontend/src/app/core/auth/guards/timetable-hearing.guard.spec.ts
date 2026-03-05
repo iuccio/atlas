@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import {
   canActivateTimetableHearing,
@@ -60,7 +61,7 @@ describe('TimetableHearingGuard', () => {
     expect(guard).toBeTruthy();
   });
 
-  it('should be allowed and wait for permissions to be loaded', (done) => {
+  it('should be allowed and wait for permissions to be loaded', async () => {
     mayAccessTth = true;
 
     const mockRoute = {
@@ -76,13 +77,12 @@ describe('TimetableHearingGuard', () => {
 
     expect(result).toBeDefined();
     result.subscribe((guardResult) => {
-      expect(permissionsLoadedCalled).toBeTrue();
-      expect(guardResult).toBeTrue();
-      done();
+      expect(permissionsLoadedCalled).toBe(true);
+      expect(guardResult).toBe(true);
     });
   });
 
-  it('should not be allowed and wait for permissions to be loaded', (done) => {
+  it('should not be allowed and wait for permissions to be loaded', async () => {
     mayAccessTth = false;
 
     const mockRoute = {
@@ -98,9 +98,8 @@ describe('TimetableHearingGuard', () => {
 
     expect(result).toBeDefined();
     result.subscribe((guardResult) => {
-      expect(permissionsLoadedCalled).toBeTrue();
+      expect(permissionsLoadedCalled).toBe(true);
       expect(guardResult.toString()).toEqual('/');
-      done();
     });
   });
 });

@@ -1,25 +1,27 @@
-import { beforeEach, describe, expect, it, Mocked, vi } from 'vitest';
+import { beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
 import { AtlasApiService } from './atlas-api.service';
 import { TestBed } from '@angular/core/testing';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserService } from '../../core/auth/user/user.service';
 import { BulkImportRequest } from '../model/bulkImportRequest';
 import { ImportType } from '../model/importType';
 import { BusinessObjectType } from '../model/businessObjectType';
 import { ApplicationType } from '../model/applicationType';
 
+type HttpClientMock = Pick<{ [P in keyof HttpClient]: MockInstance }, 'get'|'put'|'post'|'delete'>;
+
 describe('AtlasApiService', () => {
   let service: AtlasApiService;
 
-  let httpClient;
+  let httpClient: HttpClientMock;
 
   beforeEach(() => {
     httpClient = {
-      get: vi.fn<() => void>().mockImplementation(() => {}),
-      // put: vi.fn().mockImplementation(() => {}) as MockInstance<() => void>,
-      // post: vi.fn().mockImplementation(() => {}) as MockInstance<() => void>,
-      // delete: vi.fn().mockImplementation(() => {}) as MockInstance<() => void>,
-    } as Mocked<Partial<HttpClient>>;
+      get: vi.fn(),
+      put: vi.fn(),
+      post: vi.fn(),
+      delete: vi.fn(),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -28,6 +30,7 @@ describe('AtlasApiService', () => {
         { provide: UserService, useValue: { loggedIn: true } },
       ],
     });
+
     service = TestBed.inject(AtlasApiService);
   });
 
@@ -67,9 +70,9 @@ describe('AtlasApiService', () => {
 
     const callArgs = httpClient.get.mock.calls[0];
     expect(callArgs[0]).toEqual('http://localhost:8888/path');
-    expect((callArgs[1]?.headers as HttpHeaders).get('Accept')).toEqual('*/*');
-    expect((callArgs[1]?.params as HttpParams).get('param')).toEqual('uno');
-    expect(callArgs[1]?.responseType).toEqual('json');
+    expect(callArgs[1].headers.get('Accept')).toEqual('*/*');
+    expect(callArgs[1].params.get('param')).toEqual('uno');
+    expect(callArgs[1].responseType).toEqual('json');
   });
 
   it('should getBlob', () => {
@@ -77,9 +80,9 @@ describe('AtlasApiService', () => {
 
     const callArgs = httpClient.get.mock.calls[0];
     expect(callArgs[0]).toEqual('http://localhost:8888/path');
-    expect((callArgs[1]?.headers as HttpHeaders).get('Accept')).toEqual('*/*');
-    expect((callArgs[1]?.params as HttpParams).get('param')).toEqual('uno');
-    expect(callArgs[1]?.responseType as any).toEqual('blob');
+    expect(callArgs[1].headers.get('Accept')).toEqual('*/*');
+    expect(callArgs[1].params.get('param')).toEqual('uno');
+    expect(callArgs[1].responseType).toEqual('blob');
   });
 
   it('should put', () => {
@@ -88,8 +91,8 @@ describe('AtlasApiService', () => {
     const callArgs = httpClient.put.mock.calls[0];
     expect(callArgs[0]).toEqual('http://localhost:8888/path');
     expect(callArgs[1]).toEqual({ value: 'test' });
-    expect((callArgs[2]?.headers as HttpHeaders).get('Content-Type')).toEqual('application/json');
-    expect(callArgs[2]?.responseType).toEqual('json');
+    expect(callArgs[2].headers.get('Content-Type')).toEqual('application/json');
+    expect(callArgs[2].responseType).toEqual('json');
   });
 
   it('should post', () => {
@@ -98,8 +101,8 @@ describe('AtlasApiService', () => {
     const callArgs = httpClient.post.mock.calls[0];
     expect(callArgs[0]).toEqual('http://localhost:8888/path');
     expect(callArgs[1]).toEqual({ value: 'test' });
-    expect((callArgs[2]?.headers as HttpHeaders).get('Content-Type')).toEqual('application/json');
-    expect(callArgs[2]?.responseType).toEqual('json');
+    expect(callArgs[2].headers.get('Content-Type')).toEqual('application/json');
+    expect(callArgs[2].responseType).toEqual('json');
   });
 
   it('should delete', () => {
@@ -114,9 +117,8 @@ describe('AtlasApiService', () => {
     const data = service.createFormData({ file, object: { attribute: 1 } });
     expect(data.get('file')).toBe(file);
 
-    const blob = data.get('object') as Blob;
-    const text = await new Response(blob).text();
-    expect(JSON.parse(text)).toEqual({ attribute: 1 });
+    const blob = data.get('object') as File;
+    expect(JSON.parse(await blob.text())).toEqual({ attribute: 1 });
   });
 
   it('should createFormData with array', async () => {
@@ -134,10 +136,8 @@ describe('AtlasApiService', () => {
     };
 
     const data = service.createFormData({ bulkImportRequest });
-
     const values = data.getAll('bulkImportRequest') as Blob[];
     const blob = values[0];
-
     const text = await blob.text();
 
     expect(JSON.parse(text)).toEqual(bulkImportRequest);
