@@ -42,7 +42,7 @@ import { TthUtils } from '../../../util/tth-utils';
     TableComponent,
     AtlasButtonComponent,
   ],
-  providers: [TranslatePipe],
+  providers: [TranslatePipe, TableService],
 })
 export class StatementSelectDialogComponent implements OnInit {
   private readonly dialogRef =
