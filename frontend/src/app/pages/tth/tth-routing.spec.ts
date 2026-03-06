@@ -8,6 +8,9 @@ import {
 import { provideHttpClient } from '@angular/common/http';
 import { PermissionService } from '../../core/auth/permission/permission.service';
 import { Location } from '@angular/common';
+import { DossierDetailResolver } from './dossier/detail/dossier-detail-resolver.service';
+import { of } from 'rxjs';
+import { UserService } from '../../core/auth/user/user.service';
 
 const testRoutes: Routes = [
   {
@@ -17,6 +20,19 @@ const testRoutes: Routes = [
 ];
 
 describe('TTH Routing', () => {
+  let permissionServiceSpy: jasmine.SpyObj<PermissionService>;
+  let userServiceSpy: jasmine.SpyObj<UserService>;
+
+  beforeEach(() => {
+    permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+    userServiceSpy = jasmine.createSpyObj('UserService', [
+      'onPermissionsLoaded',
+    ]);
+    userServiceSpy.onPermissionsLoaded.and.returnValue(of(void 0));
+  });
+
   it('should construct router with tth routes', () => {
     TestBed.configureTestingModule({
       providers: [provideRouter(routes)],
@@ -28,9 +44,6 @@ describe('TTH Routing', () => {
   });
 
   it('should load CantonStatementDetailComponent', () => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue(
       'CANTON_TTH'
     );
@@ -39,10 +52,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(routes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
       const router = TestBed.inject(Router);
@@ -51,25 +61,18 @@ describe('TTH Routing', () => {
         expect(component).toBeDefined();
         expect(component.name).toBe('_CantonStatementDetailComponent');
       });
-
       expect(result).toBeDefined();
     });
   });
 
   it('should load BoStatementDetailComponent', () => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
         provideRouter(routes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
       const router = TestBed.inject(Router);
@@ -78,25 +81,18 @@ describe('TTH Routing', () => {
         expect(component).toBeDefined();
         expect(component.name).toBe('_BoStatementDetailComponent');
       });
-
       expect(result).toBeDefined();
     });
   });
 
   it('should load BoDossierDetailComponent', () => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
         provideRouter(routes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
       const router = TestBed.inject(Router);
@@ -105,15 +101,11 @@ describe('TTH Routing', () => {
         expect(component).toBeDefined();
         expect(component.name).toBe('_BoDossierDetailComponent');
       });
-
       expect(result).toBeDefined();
     });
   });
 
   it('should load CantonDossierDetailComponent', () => {
-    const permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
     permissionServiceSpy.getTthApplicationUserType.and.returnValue(
       'CANTON_TTH'
     );
@@ -122,10 +114,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(routes),
         provideHttpClient(),
-        {
-          provide: PermissionService,
-          useValue: permissionServiceSpy,
-        },
+        { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
       const router = TestBed.inject(Router);
@@ -134,14 +123,22 @@ describe('TTH Routing', () => {
         expect(component).toBeDefined();
         expect(component.name).toBe('_CantonDossierDetailComponent');
       });
-
       expect(result).toBeDefined();
     });
   });
 
   it('should redirect active to statements', (done) => {
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
+
     TestBed.configureTestingModule({
-      providers: [provideRouter(testRoutes)],
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
+      ],
     });
 
     const router = TestBed.inject(Router);
@@ -154,8 +151,17 @@ describe('TTH Routing', () => {
   });
 
   it('should redirect archived to statements', (done) => {
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
+
     TestBed.configureTestingModule({
-      providers: [provideRouter(testRoutes)],
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
+      ],
     });
 
     const router = TestBed.inject(Router);
@@ -168,8 +174,17 @@ describe('TTH Routing', () => {
   });
 
   it('should resolve archived dossier route', (done) => {
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
+
     TestBed.configureTestingModule({
-      providers: [provideRouter(testRoutes)],
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
+      ],
     });
 
     const router = TestBed.inject(Router);
@@ -182,8 +197,17 @@ describe('TTH Routing', () => {
   });
 
   it('should resolve active dossier route', (done) => {
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
+
     TestBed.configureTestingModule({
-      providers: [provideRouter(testRoutes)],
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
+      ],
     });
 
     const router = TestBed.inject(Router);
@@ -191,6 +215,123 @@ describe('TTH Routing', () => {
 
     router.navigateByUrl('/timetable-hearing/zh/active/dossiers').then(() => {
       expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
+      done();
+    });
+  });
+
+  it('should redirect BO active to dossiers', (done) => {
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
+      ],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router.navigateByUrl('/timetable-hearing/zh/active').then(() => {
+      expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
+      done();
+    });
+  });
+
+  it('should redirect BO archived dossiers to active dossiers', (done) => {
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
+      ],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router
+      .navigateByUrl('/timetable-hearing/zh/archived/dossiers/1000')
+      .then(() => {
+        expect(location.path()).toBe('/timetable-hearing/ch/active/dossiers');
+        done();
+      });
+  });
+
+  it('should not redirect Canton archived dossiers', (done) => {
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+      'CANTON_TTH'
+    );
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
+        {
+          provide: DossierDetailResolver,
+          useValue: { resolve: () => of(null) },
+        },
+      ],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router
+      .navigateByUrl('/timetable-hearing/zh/archived/dossiers/1000')
+      .then(() => {
+        expect(location.path()).toBe(
+          '/timetable-hearing/zh/archived/dossiers/1000'
+        );
+        done();
+      });
+  });
+
+  it('should resolve BO active dossier route', (done) => {
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
+      ],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router.navigateByUrl('/timetable-hearing/zh/active/dossiers').then(() => {
+      expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
+      done();
+    });
+  });
+
+  it('should redirect unknown BO route to active', (done) => {
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(testRoutes),
+        provideHttpClient(),
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
+      ],
+    });
+
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router.navigateByUrl('/timetable-hearing/zh/unknown-path').then(() => {
+      expect(location.path()).toContain('/timetable-hearing/zh/active');
       done();
     });
   });

@@ -6,6 +6,9 @@ import { canLeaveDirtyForm } from '../../core/leave-guard/leave-dirty-form-guard
 import { inject } from '@angular/core';
 import { PermissionService } from '../../core/auth/permission/permission.service';
 import { dossierResolver } from './dossier/detail/dossier-detail-resolver.service';
+import { boUserGuard } from './tth-permissions.guard';
+import { firstValueFrom } from 'rxjs';
+import { UserService } from '../../core/auth/user/user.service';
 
 const statementActiveDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ACTIVE.path}/${Pages.TTH_STATEMENTS.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
 const statementPlannedDetailPath = `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_PLANNED.path}/${Pages.TTH_STATEMENTS.path}/${Pages.TTH_STATEMENT_DETAILS.path}`;
@@ -33,7 +36,7 @@ export async function loadDossierDetailRoute() {
       await import('./dossier/detail/bo-dossier-detail/bo-dossier-detail.component');
     return m.BoDossierDetailComponent;
   }
-  if (permissionService.getTthApplicationUserType() === 'CANTON_TTH') {
+  if ((await permissionService.getTthApplicationUserType()) === 'CANTON_TTH') {
     const m =
       await import('./dossier/detail/canton-dossier-detail/canton-dossier-detail.component');
     return m.CantonDossierDetailComponent;
@@ -105,6 +108,7 @@ export const routes: Routes = [
   {
     path: `${Pages.TTH_OVERVIEW_DETAIL.path}/${Pages.TTH_ARCHIVED.path}/${Pages.TTH_DOSSIERS.path}/:id`,
     loadComponent: loadDossierDetailRoute,
+    canActivate: [boUserGuard],
     canDeactivate: [canLeaveDirtyForm],
     resolve: {
       dossier: dossierResolver,
@@ -118,110 +122,18 @@ export const routes: Routes = [
       import('./overview-tab/overview-tab.component').then(
         (m) => m.OverviewTabComponent
       ),
-    children: [
-      {
-        path: Pages.TTH_PLANNED.path,
-        loadComponent: () =>
-          import('./tth-overview-base/tth-overview-base.component').then(
-            (m) => m.TthOverviewBaseComponent
-          ),
-        data: {
-          hearingStatus: HearingStatus.Planned,
-        },
-        children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            redirectTo: Pages.TTH_STATEMENTS.path,
-          },
-          {
-            path: Pages.TTH_STATEMENTS.path,
-            loadComponent: () =>
-              import('./overview-detail/overview-detail.component').then(
-                (m) => m.OverviewDetailComponent
-              ),
-            data: {
-              hearingStatus: HearingStatus.Planned,
-            },
-          },
-        ],
-      },
-      {
-        path: Pages.TTH_ACTIVE.path,
-        loadComponent: () =>
-          import('./tth-overview-base/tth-overview-base.component').then(
-            (m) => m.TthOverviewBaseComponent
-          ),
-        data: {
-          hearingStatus: HearingStatus.Active,
-        },
-        children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            redirectTo: Pages.TTH_STATEMENTS.path,
-          },
-          {
-            path: Pages.TTH_DOSSIERS.path,
-            loadComponent: () =>
-              import('./dossier/tth-dossier-overview/tth-dossier-overview.component').then(
-                (m) => m.TthDossierOverviewComponent
-              ),
-            data: {
-              hearingStatus: HearingStatus.Active,
-            },
-          },
-          {
-            path: Pages.TTH_STATEMENTS.path,
-            loadComponent: () =>
-              import('./overview-detail/overview-detail.component').then(
-                (m) => m.OverviewDetailComponent
-              ),
-            data: {
-              hearingStatus: HearingStatus.Active,
-            },
-          },
-        ],
-      },
-      {
-        path: Pages.TTH_ARCHIVED.path,
-        loadComponent: () =>
-          import('./tth-overview-base/tth-overview-base.component').then(
-            (m) => m.TthOverviewBaseComponent
-          ),
-        data: {
-          hearingStatus: HearingStatus.Archived,
-        },
-        children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            redirectTo: Pages.TTH_STATEMENTS.path,
-          },
-          {
-            path: Pages.TTH_DOSSIERS.path,
-            loadComponent: () =>
-              import('./dossier/tth-dossier-overview/tth-dossier-overview.component').then(
-                (m) => m.TthDossierOverviewComponent
-              ),
-            data: {
-              hearingStatus: HearingStatus.Archived,
-            },
-          },
-          {
-            path: Pages.TTH_STATEMENTS.path,
-            loadComponent: () =>
-              import('./overview-detail/overview-detail.component').then(
-                (m) => m.OverviewDetailComponent
-              ),
-            data: {
-              hearingStatus: HearingStatus.Archived,
-            },
-          },
-        ],
-      },
-      { path: '**', redirectTo: Pages.TTH_ACTIVE.path },
-    ],
+    loadChildren: async () => {
+      const permissionService = inject(PermissionService);
+      const userService = inject(UserService);
+      await firstValueFrom(userService.onPermissionsLoaded());
+
+      const userType = permissionService.getTthApplicationUserType();
+
+      if (userType === 'BO_TTH') {
+        return import('./tth-bo-routing').then((m) => m.TTH_BO_ROUTES);
+      }
+      return import('./tth-canton-routing').then((m) => m.TTH_CANTON_BO_ROUTES);
+    },
   },
-  { path: '**', redirectTo: Pages.TTH.path },
+  { path: '**', redirectTo: Pages.TTH_ACTIVE.path },
 ];

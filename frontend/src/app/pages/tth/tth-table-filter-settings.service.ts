@@ -54,4 +54,10 @@ export class TthTableFilterSettingsService {
       ),
     };
   }
+
+  static createDossierSettingsForBo() {
+    return {
+      chipSearch: new TableFilterChip(0, 'col-6'),
+    };
+  }
 }

@@ -8,7 +8,19 @@ import { HearingStatus, SwissCanton } from '../../../../api';
 import { of, throwError } from 'rxjs';
 import { Cantons } from '../../../../core/cantons/Cantons';
 import { TthDossier } from '../../../../api/model/tthDossier';
-import { ContainerTthDossier } from '../../../../api/model/containerTthDossier';
+import { DossierStatus } from '../../../../api/model/dossierStatus';
+import { PermissionService } from '../../../../core/auth/permission/permission.service';
+import { UserService } from '../../../../core/auth/user/user.service';
+
+const activatedRouteStub = {
+  snapshot: {
+    params: {},
+    queryParams: {},
+    data: { hearingStatus: HearingStatus.Active },
+  },
+  params: of({}),
+  queryParams: of({}),
+};
 
 describe('TthDossierOverviewComponent', () => {
   let component: TthDossierOverviewComponent;
@@ -17,11 +29,49 @@ describe('TthDossierOverviewComponent', () => {
   let router: jasmine.SpyObj<Router>;
   let overviewToTabService: OverviewToTabShareDataService;
   let activatedRoute: ActivatedRoute;
+  let permissionServiceSpy: jasmine.SpyObj<PermissionService>;
+  let userService: jasmine.SpyObj<UserService>;
+
+  function createTestBed() {
+    TestBed.configureTestingModule({
+      providers: [
+        TthDossierOverviewComponent,
+        OverviewToTabShareDataService,
+        { provide: DossierInternalService, useValue: dossierService },
+        { provide: PermissionService, useValue: permissionServiceSpy },
+        { provide: UserService, useValue: userService },
+        { provide: TableService, useValue: tableService },
+        { provide: Router, useValue: router },
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
+      ],
+    });
+
+    component = TestBed.inject(TthDossierOverviewComponent);
+    overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
+
+    overviewToTabService.setCantonShort('ZH');
+    overviewToTabService.setTimetableHearingYear({
+      timetableYear: 2024,
+      hearingFrom: new Date(),
+      hearingTo: new Date(),
+    });
+    overviewToTabService.setTimetableHearingYearLoading(false);
+  }
 
   beforeEach(() => {
     dossierService = jasmine.createSpyObj('DossierInternalService', [
       'getOverview',
     ]);
+
+    permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
+
+    userService = jasmine.createSpyObj(
+      'UserService',
+      ['setCurrentUserAndLoadPermissions'],
+      { currentUser: { email: 'test@example.com' } }
+    );
 
     tableService = jasmine.createSpyObj(
       'TableService',
@@ -36,41 +86,12 @@ describe('TthDossierOverviewComponent', () => {
         },
       }
     );
+
     router = jasmine.createSpyObj('Router', ['navigate']);
 
-    TestBed.configureTestingModule({
-      providers: [
-        TthDossierOverviewComponent,
-        OverviewToTabShareDataService,
-        { provide: DossierInternalService, useValue: dossierService },
-        { provide: TableService, useValue: tableService },
-        { provide: Router, useValue: router },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              params: {},
-              queryParams: {},
-              data: { hearingStatus: HearingStatus.Active },
-            },
-            params: of({}),
-            queryParams: of({}),
-          },
-        },
-      ],
-    });
+    createTestBed();
 
-    component = TestBed.inject(TthDossierOverviewComponent);
-    overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
     activatedRoute = TestBed.inject(ActivatedRoute);
-
-    overviewToTabService.setCantonShort('ZH');
-    overviewToTabService.setTimetableHearingYear({
-      timetableYear: 2024,
-      hearingFrom: new Date(),
-      hearingTo: new Date(),
-    });
-    overviewToTabService.setTimetableHearingYearLoading(false);
   });
 
   it('should create', () => {
@@ -88,7 +109,6 @@ describe('TthDossierOverviewComponent', () => {
 
     it('should return timetableHearingYearFound from service', () => {
       overviewToTabService.setTimetableHearingYearFound(true);
-
       expect(component.isTimetableHearingYearFound()).toBe(true);
     });
 
@@ -99,13 +119,11 @@ describe('TthDossierOverviewComponent', () => {
 
     it('should return true when canton is swiss', () => {
       overviewToTabService.setCantonShort('CH');
-
       expect(component.isSwissCanton()).toBe(true);
     });
 
     it('should return false when canton is not swiss', () => {
       overviewToTabService.setCantonShort('ZH');
-
       expect(component.isSwissCanton()).toBe(false);
     });
   });
@@ -114,8 +132,9 @@ describe('TthDossierOverviewComponent', () => {
     it('should initialize table for active hearing status', () => {
       spyOn(component, 'initOverviewTable');
       overviewToTabService.setHearingStatus(HearingStatus.Active);
-      const mockContainer: ContainerTthDossier = { objects: [], totalCount: 0 };
-      dossierService.getOverview.and.returnValue(of(mockContainer));
+      dossierService.getOverview.and.returnValue(
+        of({ objects: [], totalCount: 0 })
+      );
 
       component.loadData();
 
@@ -128,8 +147,9 @@ describe('TthDossierOverviewComponent', () => {
       activatedRoute.snapshot.data = { hearingStatus: HearingStatus.Archived };
       overviewToTabService.setHearingStatus(HearingStatus.Archived);
       spyOn(component, 'initOverviewTable');
-      const mockContainer: ContainerTthDossier = { objects: [], totalCount: 0 };
-      dossierService.getOverview.and.returnValue(of(mockContainer));
+      dossierService.getOverview.and.returnValue(
+        of({ objects: [], totalCount: 0 })
+      );
 
       component.loadData();
 
@@ -139,17 +159,43 @@ describe('TthDossierOverviewComponent', () => {
   });
 
   describe('getOverview', () => {
-    it('should call getOverview with correct parameters', () => {
-      const mockContainer: ContainerTthDossier = { objects: [], totalCount: 0 };
-      dossierService.getOverview.and.returnValue(of(mockContainer));
+    it('should call getOverview with correct parameters if canton', () => {
+      dossierService.getOverview.and.returnValue(
+        of({ objects: [], totalCount: 0 })
+      );
 
       component.getOverview({ page: 0, size: 10, sort: 'topic,asc' });
 
       expect(dossierService.getOverview).toHaveBeenCalledWith(
         2024,
         jasmine.any(String),
+        undefined,
         jasmine.anything(),
         [],
+        0,
+        10,
+        jasmine.any(Array)
+      );
+      expect(component.totalCount).toBe(0);
+    });
+
+    it('should call getOverview with correct parameters if bo', () => {
+      TestBed.resetTestingModule();
+      permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+      createTestBed();
+
+      dossierService.getOverview.and.returnValue(
+        of({ objects: [], totalCount: 0 })
+      );
+
+      component.getOverview({ page: 0, size: 10, sort: 'topic,asc' });
+
+      expect(dossierService.getOverview).toHaveBeenCalledWith(
+        2024,
+        jasmine.any(String),
+        'test@example.com',
+        jasmine.anything(),
+        [DossierStatus.DossierBoCheck],
         0,
         10,
         jasmine.any(Array)
@@ -168,12 +214,9 @@ describe('TthDossierOverviewComponent', () => {
           dossierStatus: 'ADDED',
         },
       ];
-
-      const mockContainer: ContainerTthDossier = {
-        objects: mockDossiers,
-        totalCount: 1,
-      };
-      dossierService.getOverview.and.returnValue(of(mockContainer));
+      dossierService.getOverview.and.returnValue(
+        of({ objects: mockDossiers, totalCount: 1 })
+      );
 
       component.getOverview({ page: 0, size: 10, sort: 'topic,asc' });
 
@@ -210,15 +253,12 @@ describe('TthDossierOverviewComponent', () => {
   describe('mapToShortCanton', () => {
     it('should map SwissCanton to short format', () => {
       const result = component.mapToShortCanton(SwissCanton.Zurich);
-
       expect(result).toBeTruthy();
     });
 
     it('should return undefined for unmapped canton', () => {
       spyOn(Cantons, 'fromSwissCanton').and.returnValue(undefined);
-
       const result = component.mapToShortCanton(SwissCanton.Zurich);
-
       expect(result).toBeUndefined();
     });
   });

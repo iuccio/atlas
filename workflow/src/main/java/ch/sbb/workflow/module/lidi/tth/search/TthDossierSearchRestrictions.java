@@ -2,6 +2,7 @@ package ch.sbb.workflow.module.lidi.tth.search;
 
 import ch.sbb.atlas.searching.specification.EnumSpecification;
 import ch.sbb.atlas.searching.specification.SearchCriteriaSpecification;
+import ch.sbb.atlas.searching.specification.SingleStringSpecification;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier.Fields;
 import ch.sbb.workflow.module.lidi.tth.entity.TthDossier_;
@@ -25,6 +26,7 @@ public class TthDossierSearchRestrictions {
     return new EnumSpecification<>(requestParams.getCanton(), TthDossier_.swissCanton)
         .and(new EnumSpecification<>(requestParams.getStatusRestrictions(), TthDossier_.dossierStatus))
         .and(new EnumSpecification<>(requestParams.getTimetableHearingYear(), TthDossier_.tthDossierYear))
+        .and(new SingleStringSpecification<>(requestParams.getBoContactMail(), Fields.boContactMail))
         .and(new SearchCriteriaSpecification<>(requestParams.getSearchCriterias(), List.of(Fields.id, Fields.topic)));
   }
 }
