@@ -49,8 +49,15 @@ export class TthTableFilterSettingsService {
         'COMMON.STATUS',
         Object.values(DossierStatus),
         1,
-        'filter-width',
-        []
+        'filter-width-single',
+        [
+          'ADDED',
+          'DOSSIER_BO_CHECK',
+          'DOSSIER_CANTON_CHECK',
+          'ACCEPTED',
+          'REJECTED',
+          'MOVED',
+        ]
       ),
     };
   }
