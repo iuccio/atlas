@@ -59,8 +59,10 @@ public class TthDossierService {
     return findDossier(dossierId);
   }
 
-  @PostAuthorize("@cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin"
-      + ".ApplicationType).TIMETABLE_HEARING)")
+  @TthRedacted
+  @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin"
+      + ".ApplicationType).TIMETABLE_HEARING) || @boUserMailCheckService.isCurrentUserMailAssignedTo(#searchRestrictions"
+      + ".getRequestParams().getBoContactMail())")
   public Page<TthDossier> getDossiers(TthDossierSearchRestrictions searchRestrictions) {
     return dossierRepository.findAll(searchRestrictions.getSpecification(),
         searchRestrictions.getPageable());
@@ -77,7 +79,7 @@ public class TthDossierService {
                 .status(HttpStatus.BAD_REQUEST)
                 .messageAndError("Active timetable hearing year not found")
                 .build());
-    
+
     boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
 
     dossier.setDossierStatus(DossierStatus.ADDED);

@@ -5,14 +5,20 @@ import { HearingStatus } from '../../../api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { Pages } from '../../pages';
+import { PermissionService } from '../../../core/auth/permission/permission.service';
 
 describe('OverviewTabComponent', () => {
   let component: OverviewTabComponent;
   let fixture: ComponentFixture<OverviewTabComponent>;
   let routerEventsSubject: Subject<Event>;
+  let permissionServiceSpy: jasmine.SpyObj<PermissionService>;
 
   beforeEach(async () => {
     routerEventsSubject = new Subject();
+
+    permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
+      'getTthApplicationUserType',
+    ]);
 
     const routerSpy = jasmine.createSpyObj('Router', ['navigate'], {
       events: routerEventsSubject.asObservable(),
@@ -22,6 +28,7 @@ describe('OverviewTabComponent', () => {
       imports: [OverviewTabComponent],
       providers: [
         { provide: Router, useValue: routerSpy },
+        { provide: PermissionService, useValue: permissionServiceSpy },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -38,24 +45,37 @@ describe('OverviewTabComponent', () => {
         OverviewToTabShareDataService,
       ],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(OverviewTabComponent);
-    component = fixture.componentInstance;
   });
 
   it('should create', () => {
+    fixture = TestBed.createComponent(OverviewTabComponent);
+    component = fixture.componentInstance;
     expect(component).toBeTruthy();
   });
 
-  it('should define two tabs with correct links and titles', () => {
-    expect(component.TABS.length).toBe(2);
+  it('should define two tabs with correct links and titles for Canton', () => {
+    fixture = TestBed.createComponent(OverviewTabComponent);
+    component = fixture.componentInstance;
 
+    expect(component.TABS.length).toBe(2);
     expect(component.TABS[0]).toEqual({
       link: Pages.TTH_STATEMENTS.path,
       title: 'TTH.TAB.STATEMENTS',
     });
-
     expect(component.TABS[1]).toEqual({
+      link: Pages.TTH_DOSSIERS.path,
+      title: 'TTH.TAB.DOSSIERS',
+    });
+  });
+
+  it('should define only one tab for BO_TTH', () => {
+    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+
+    fixture = TestBed.createComponent(OverviewTabComponent);
+    component = fixture.componentInstance;
+
+    expect(component.TABS.length).toBe(1);
+    expect(component.TABS[0]).toEqual({
       link: Pages.TTH_DOSSIERS.path,
       title: 'TTH.TAB.DOSSIERS',
     });

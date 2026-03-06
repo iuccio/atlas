@@ -17,6 +17,11 @@ import { TthDossierOverviewMenuComponent } from '../tth-dossier-overview-menu/tt
 import { addElementsToArrayWhenNotUndefined } from '../../../../core/util/arrays';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DossierStatus } from '../../../../api/model/dossierStatus';
+import {
+  PermissionService,
+  TthApplicationUserType,
+} from '../../../../core/auth/permission/permission.service';
+import { UserService } from '../../../../core/auth/user/user.service';
 
 @Component({
   selector: 'atlas-tth-dossier-overview',
@@ -30,6 +35,8 @@ export class TthDossierOverviewComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly overviewToTabService = inject(OverviewToTabShareDataService);
+  private readonly permissionService = inject(PermissionService);
+  private readonly userService = inject(UserService);
 
   readonly cantonShort = this.overviewToTabService.cantonShort;
   readonly timetableYear = this.overviewToTabService.timetableYear;
@@ -50,8 +57,11 @@ export class TthDossierOverviewComponent {
   STATUS_OPTIONS = Object.values(DossierStatus);
 
   sorting = 'topic,asc';
+  userType!: TthApplicationUserType;
 
   constructor() {
+    this.userType = this.permissionService.getTthApplicationUserType();
+
     effect(() => {
       if (!this.isYearLoading()) {
         this.loadData();
@@ -62,10 +72,16 @@ export class TthDossierOverviewComponent {
   loadData() {
     if (this.isHearingYearActive()) {
       this.tableColumns = this.getTableColumns();
+      const filterSettings =
+        this.userType === 'BO_TTH'
+          ? TthTableFilterSettingsService.createDossierSettingsForBo()
+          : TthTableFilterSettingsService.createDossierSettings();
+
       this.tableFilterConfig = this.tableService.initializeFilterConfig(
-        TthTableFilterSettingsService.createDossierSettings(),
+        filterSettings,
         Pages.TTH_DOSSIERS
       );
+
       this.initOverviewTable();
     }
 
@@ -80,12 +96,33 @@ export class TthDossierOverviewComponent {
   }
 
   getOverview(pagination: TablePagination) {
+    if (this.userType === 'BO_TTH') {
+      this.fetchOverview(
+        this.userService.currentUser!.email,
+        [DossierStatus.DossierBoCheck],
+        pagination
+      );
+    } else {
+      this.fetchOverview(
+        undefined,
+        this.tableService.filter.multiSelectDossierStatus.getActiveSearch(),
+        pagination
+      );
+    }
+  }
+
+  private fetchOverview(
+    email: string | undefined,
+    dossierStatus: DossierStatus[],
+    pagination: TablePagination
+  ) {
     this.dossierInternalService
       .getOverview(
         this.timetableYear().timetableYear,
         Cantons.getSwissCantonFromShort(this.cantonShort()),
+        email,
         this.tableService.filter.chipSearch.getActiveSearch(),
-        this.tableService.filter.multiSelectDossierStatus.getActiveSearch(),
+        dossierStatus,
         pagination.page,
         pagination.size,
         addElementsToArrayWhenNotUndefined(
