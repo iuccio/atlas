@@ -77,6 +77,12 @@
     flex: 1 1 auto;
   }
 
+  .filter-width-single {
+    width: 5rem;
+    flex: 1 1 auto;
+    max-width: 50%;
+  }
+
   .filter-width-quarter {
     width: calc(25% - 0.5rem);
   }
