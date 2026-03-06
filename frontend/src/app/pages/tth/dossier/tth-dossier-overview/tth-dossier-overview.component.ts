@@ -91,7 +91,7 @@ export class TthDossierOverviewComponent {
         addElementsToArrayWhenNotUndefined(
           pagination.sort,
           this.sorting,
-          'id,ASC'
+          'id,DESC'
         )
       )
       .pipe(catchError(this.handleError()))
