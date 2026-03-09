@@ -11,6 +11,8 @@ public class LineVersionSnapshotMapper {
     return LineVersionSnapshotModel.builder()
         .id(lineVersionSnapshot.getId())
         .lineConcessionType(lineVersionSnapshot.getConcessionType())
+        .linienId(lineVersionSnapshot.getLinienId())
+        .swissLineNumber(lineVersionSnapshot.getSwissLineNumber())
         .shortNumber(lineVersionSnapshot.getShortNumber())
         .offerCategory(lineVersionSnapshot.getOfferCategory())
         .workflowId(lineVersionSnapshot.getWorkflowId())
