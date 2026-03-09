@@ -31,6 +31,7 @@ export class SublineFormGroupBuilder {
       {
         linienId: new FormControl(version?.linienId, [
           Validators.maxLength(20),
+          AtlasCharsetsValidator.alphaNumeric,
         ]),
         swissSublineNumber: new FormControl(version?.swissSublineNumber, [
           AtlasFieldLengthValidator.length_50,

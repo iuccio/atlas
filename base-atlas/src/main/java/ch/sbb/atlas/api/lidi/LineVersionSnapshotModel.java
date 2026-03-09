@@ -61,6 +61,12 @@ public class LineVersionSnapshotModel extends BaseVersionModel {
   @Schema(description = "SLNID", accessMode = AccessMode.READ_ONLY, example = "ch:1:slnid:10001234")
   private String slnid;
 
+  @Schema(description = "LinienID / LineRef - Only available temporarily until SLNID Migration is complete", example = "1012")
+  private String linienId;
+
+  @Schema(description = "SwissLineNumber", example = "b1.L1")
+  private String swissLineNumber;
+
   @Schema(description = "Number", example = "L1", accessMode = AccessMode.READ_ONLY)
   private String number;
 
