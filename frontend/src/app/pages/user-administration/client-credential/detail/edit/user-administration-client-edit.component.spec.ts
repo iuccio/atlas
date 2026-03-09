@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { UserAdministrationClientEditComponent } from './user-administration-client-edit.component';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { NotificationService } from '../../../../../core/notification/notification.service';
@@ -16,38 +17,30 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ClientCredentialAdministrationService } from '../../../../../api/service/user-administration/client-credential-administration.service';
 import { UserPermissionGivenClientService } from './user-permission-given-client.service';
 import { UserPermissionProviderService } from '../../../../../core/components/permissions/application-permission/user-permission-provider-service';
-import SpyObj = jasmine.SpyObj;
 
 describe('UserAdministrationClientEditComponent', () => {
   let component: UserAdministrationClientEditComponent;
   let fixture: ComponentFixture<UserAdministrationClientEditComponent>;
 
-  const dialogMock = {
-    closeCalled: false,
-    close: () => {
-      // Mock implementation
-      dialogMock.closeCalled = true;
-    },
-  };
-
-  let clientCredentialAdministrationService: SpyObj<ClientCredentialAdministrationService>;
-  let notificationServiceSpy: SpyObj<NotificationService>;
-  let dialogServiceSpy: SpyObj<DialogService>;
+  let clientCredentialAdministrationService: Mocked<
+    Pick<
+      ClientCredentialAdministrationService,
+      'updateClientCredentialPermissions'
+    >
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
+  let dialogService: Mocked<Pick<DialogService, 'confirmLeave'>>;
 
   beforeEach(async () => {
-    clientCredentialAdministrationService =
-      jasmine.createSpyObj<ClientCredentialAdministrationService>(
-        'ClientCredentialAdministrationService',
-        ['updateClientCredentialPermissions']
-      );
-    clientCredentialAdministrationService.updateClientCredentialPermissions.and.returnValue(
-      of()
-    );
-    notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
-      'success',
-    ]);
-    dialogServiceSpy = jasmine.createSpyObj('DialogService', ['confirmLeave']);
-    dialogServiceSpy.confirmLeave.and.returnValue(of(true));
+    clientCredentialAdministrationService = {
+      updateClientCredentialPermissions: vi.fn().mockReturnValue(of()),
+    };
+    notificationService = {
+      success: vi.fn(),
+    };
+    dialogService = {
+      confirmLeave: vi.fn().mockReturnValue(of(true)),
+    };
     await TestBed.configureTestingModule({
       imports: [
         UserAdministrationClientEditComponent,
@@ -68,11 +61,11 @@ describe('UserAdministrationClientEditComponent', () => {
         },
         {
           provide: NotificationService,
-          useValue: notificationServiceSpy,
+          useValue: notificationService,
         },
         {
           provide: DialogService,
-          useValue: dialogServiceSpy,
+          useValue: dialogService,
         },
         {
           provide: ActivatedRoute,
@@ -110,7 +103,6 @@ describe('UserAdministrationClientEditComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-
     expect(component.record.editionDate).toBe('');
   });
 
@@ -122,12 +114,12 @@ describe('UserAdministrationClientEditComponent', () => {
   });
 
   it('should toggleEdit', () => {
-    expect(component.editMode).toBeFalse();
+    expect(component.editMode).toBe(false);
 
     component.toggleEdit();
-    expect(component.editMode).toBeTrue();
+    expect(component.editMode).toBe(true);
 
     component.toggleEdit();
-    expect(component.editMode).toBeFalse();
+    expect(component.editMode).toBe(false);
   });
 });

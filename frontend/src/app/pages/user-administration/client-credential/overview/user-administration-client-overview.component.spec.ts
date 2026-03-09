@@ -1,33 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { UserAdministrationClientOverviewComponent } from './user-administration-client-overview.component';
-import { ContainerClientCredential } from '../../../../api';
-import { Observable, of, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { ClientCredentialAdministrationService } from '../../../../api/service/user-administration/client-credential-administration.service';
 import { TableComponent } from '../../../../core/components/table/table.component';
 import { MockTableComponent } from '../../../../app.testing.mocks';
-import SpyObj = jasmine.SpyObj;
-import Spy = jasmine.Spy;
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 describe('UserAdministrationClientOverviewComponent', () => {
   let component: UserAdministrationClientOverviewComponent;
   let fixture: ComponentFixture<UserAdministrationClientOverviewComponent>;
 
-  let clientCredentialAdministrationServiceSpy: SpyObj<ClientCredentialAdministrationService>;
+  let clientCredentialAdministrationService: Mocked<
+    Pick<ClientCredentialAdministrationService, 'getClientCredentials'>
+  >;
 
   beforeEach(async () => {
-    clientCredentialAdministrationServiceSpy =
-      jasmine.createSpyObj<ClientCredentialAdministrationService>(
-        'ClientCredentialAdministrationServiceSpy',
-        ['getClientCredentials']
-      );
-
-    (
-      clientCredentialAdministrationServiceSpy.getClientCredentials as Spy<
-        () => Observable<ContainerClientCredential>
-      >
-    ).and.returnValue(of());
+    clientCredentialAdministrationService = {
+      getClientCredentials: vi.fn().mockReturnValue(of()),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -37,7 +29,7 @@ describe('UserAdministrationClientOverviewComponent', () => {
       providers: [
         {
           provide: ClientCredentialAdministrationService,
-          useValue: clientCredentialAdministrationServiceSpy,
+          useValue: clientCredentialAdministrationService,
         },
         { provide: ActivatedRoute, useValue: { paramMap: new Subject() } },
         TranslatePipe,
@@ -71,7 +63,7 @@ describe('UserAdministrationClientOverviewComponent', () => {
 
     //then
     expect(
-      clientCredentialAdministrationServiceSpy.getClientCredentials
+      clientCredentialAdministrationService.getClientCredentials
     ).toHaveBeenCalledWith(0, 10, ['clientCredentialId,asc']);
     expect(component.clientCredentials.length).toEqual(1);
     expect(component.clientCredentials[0].alias).toEqual('öV-info.ch');

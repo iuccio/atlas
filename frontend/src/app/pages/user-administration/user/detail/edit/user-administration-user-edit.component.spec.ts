@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { UserAdministrationUserEditComponent } from './user-administration-user-edit.component';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
@@ -18,48 +18,53 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UserAdministrationService } from '../../../../../api/service/user-administration/user-administration.service';
 import { UserPermissionGivenUserService } from './user-permission-given-user.service';
 import { UserPermissionProviderService } from '../../../../../core/components/permissions/application-permission/user-permission-provider-service';
-import SpyObj = jasmine.SpyObj;
 
 describe('UserAdministrationUserEditComponent', () => {
   let component: UserAdministrationUserEditComponent;
   let fixture: ComponentFixture<UserAdministrationUserEditComponent>;
 
-  let userAdministrationServiceSpy: SpyObj<UserAdministrationService>;
-  let notificationServiceSpy: SpyObj<NotificationService>;
-  let dialogServiceSpy: SpyObj<DialogService>;
+  let userAdministrationService: Mocked<
+    Pick<
+      UserAdministrationService,
+      'updateUserPermission' | 'getUserDisplayName'
+    >
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
+  let dialogService: Mocked<Pick<DialogService, 'confirmLeave'>>;
 
   beforeEach(async () => {
-    userAdministrationServiceSpy =
-      jasmine.createSpyObj<UserAdministrationService>(
-        'UserAdministrationService',
-        ['updateUserPermission', 'getUserDisplayName']
-      );
+    userAdministrationService = {
+      updateUserPermission: vi.fn(),
+      getUserDisplayName: vi.fn(),
+    };
     const userDisplayName: UserDisplayName = {
       sbbUserId: 'u123456',
       displayName: 'UserDisplayName',
     };
-    userAdministrationServiceSpy.getUserDisplayName.and.returnValue(
+    userAdministrationService.getUserDisplayName.mockReturnValue(
       of(userDisplayName)
     );
-    notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
-      'success',
-    ]);
-    dialogServiceSpy = jasmine.createSpyObj('DialogService', ['confirmLeave']);
+    notificationService = {
+      success: vi.fn(),
+    };
+    dialogService = {
+      confirmLeave: vi.fn(),
+    };
     await TestBed.configureTestingModule({
       imports: [UserAdministrationUserEditComponent, TranslateModule.forRoot()],
       providers: [
         TranslatePipe,
         {
           provide: UserAdministrationService,
-          useValue: userAdministrationServiceSpy,
+          useValue: userAdministrationService,
         },
         {
           provide: NotificationService,
-          useValue: notificationServiceSpy,
+          useValue: notificationService,
         },
         {
           provide: DialogService,
-          useValue: dialogServiceSpy,
+          useValue: dialogService,
         },
         {
           provide: UserPermissionGivenUserService,
@@ -118,7 +123,7 @@ describe('UserAdministrationUserEditComponent', () => {
   });
 
   it('test saveEdits', () => {
-    userAdministrationServiceSpy.updateUserPermission.and.returnValue(
+    userAdministrationService.updateUserPermission.mockReturnValue(
       of({
         sbbUserId: 'u123456',
         permissions: new Set<Permission>(),
@@ -128,18 +133,18 @@ describe('UserAdministrationUserEditComponent', () => {
     component.saveUser();
 
     expect(
-      userAdministrationServiceSpy.updateUserPermission
-    ).toHaveBeenCalledOnceWith('u123456', ApplicationType.Ttfn, {
+      userAdministrationService.updateUserPermission
+    ).toHaveBeenCalledExactlyOnceWith('u123456', ApplicationType.Ttfn, {
       role: ApplicationRole.Reader,
       application: ApplicationType.Ttfn,
       permissionRestrictions: [],
     });
-    expect(component.editMode).toBeFalse();
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
+    expect(component.editMode).toBe(false);
+    expect(notificationService.success).toHaveBeenCalledExactlyOnceWith(
       'USER_ADMIN.NOTIFICATIONS.EDIT_SUCCESS'
     );
 
-    userAdministrationServiceSpy.updateUserPermission.and.returnValue(
+    userAdministrationService.updateUserPermission.mockReturnValue(
       new Observable<User>((subscriber) => subscriber.error('error'))
     );
     component.saveUser();
@@ -183,12 +188,12 @@ describe('UserAdministrationUserEditComponent', () => {
   });
 
   it('should toggleEdit', () => {
-    expect(component.editMode).toBeFalse();
+    expect(component.editMode).toBe(false);
 
     component.toggleEdit();
-    expect(component.editMode).toBeTrue();
+    expect(component.editMode).toBe(true);
 
     component.toggleEdit();
-    expect(component.editMode).toBeFalse();
+    expect(component.editMode).toBe(false);
   });
 });
