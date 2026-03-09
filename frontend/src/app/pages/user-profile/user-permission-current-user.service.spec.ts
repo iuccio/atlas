@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
+import { beforeEach, describe, expect, it, type Mocked } from 'vitest';
 import { UserPermissionCurrentUserService } from './user-permission-current-user.service';
 import { UserService } from '../../core/auth/user/user.service';
 import { ApplicationType } from '../../api';
@@ -7,16 +8,18 @@ import { ApplicationType } from '../../api';
 describe('UserPermissionCurrentUserService', () => {
   let userPermissionCurrentUserService: UserPermissionCurrentUserService;
 
-  const userService = jasmine.createSpyObj('UserService', ['getUser']);
-  userService.currentUser = {
-    email: 'muster@sbb.ch',
-    isAdmin: false,
-    name: 'Herr Muster',
-    permissions: [],
-    sbbuid: 'u1234356',
-  };
+  let userService: Mocked<Pick<UserService, 'currentUser'>>;
 
   beforeEach(() => {
+    userService = {
+      currentUser: {
+        email: 'muster@sbb.ch',
+        isAdmin: false,
+        name: 'Herr Muster',
+        permissions: [],
+        sbbuid: 'u1234356',
+      },
+    };
     TestBed.configureTestingModule({
       imports: [RouterModule.forRoot([])],
       providers: [
@@ -34,9 +37,9 @@ describe('UserPermissionCurrentUserService', () => {
 
   it('should be created', () => {
     expect(userPermissionCurrentUserService).toBeTruthy();
-    expect(
-      userPermissionCurrentUserService.showAllSpecialPermissions()
-    ).toBeFalse();
+    expect(userPermissionCurrentUserService.showAllSpecialPermissions()).toBe(
+      false
+    );
   });
 
   it('should load formgroup from user permissions', () => {

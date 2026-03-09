@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { UserAdministrationClientCreateComponent } from './user-administration-client-create.component';
 import { NotificationService } from '../../../../../core/notification/notification.service';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -12,23 +13,23 @@ import { ClientCredentialAdministrationService } from '../../../../../api/servic
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
 import { tickAsync } from '../../../../../../test/tick-async';
-import SpyObj = jasmine.SpyObj;
 
 describe('UserAdministrationClientCreateComponent', () => {
   let component: UserAdministrationClientCreateComponent;
   let fixture: ComponentFixture<UserAdministrationClientCreateComponent>;
 
-  let clientCredentialAdministrationServiceSpy: SpyObj<ClientCredentialAdministrationService>;
-  let notificationServiceSpy: SpyObj<NotificationService>;
+  let clientCredentialAdministrationService: Mocked<
+    Pick<ClientCredentialAdministrationService, 'createClientCredential'>
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
 
   beforeEach(async () => {
-    clientCredentialAdministrationServiceSpy = jasmine.createSpyObj(
-      'ClientCredentialAdministrationService',
-      ['createClientCredential']
-    );
-    notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
-      'success',
-    ]);
+    clientCredentialAdministrationService = {
+      createClientCredential: vi.fn(),
+    };
+    notificationService = {
+      success: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -43,11 +44,11 @@ describe('UserAdministrationClientCreateComponent', () => {
         translateServiceProvider,
         {
           provide: ClientCredentialAdministrationService,
-          useValue: clientCredentialAdministrationServiceSpy,
+          useValue: clientCredentialAdministrationService,
         },
         {
           provide: NotificationService,
-          useValue: notificationServiceSpy,
+          useValue: notificationService,
         },
         TranslatePipe,
         {
@@ -79,20 +80,20 @@ describe('UserAdministrationClientCreateComponent', () => {
     component.form.controls.clientCredentialId.setValue('client-id');
     component.form.controls.alias.setValue('alias');
 
-    clientCredentialAdministrationServiceSpy.createClientCredential.and.returnValue(
+    clientCredentialAdministrationService.createClientCredential.mockReturnValue(
       of({
         clientCredentialId: 'client-id',
       })
     );
-    spyOn(router, 'navigate').and.resolveTo(true);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.create();
     expect(
-      clientCredentialAdministrationServiceSpy.createClientCredential
+      clientCredentialAdministrationService.createClientCredential
     ).toHaveBeenCalledTimes(1);
     expect(router.navigate).toHaveBeenCalledTimes(1);
     await tickAsync(1000);
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
+    expect(notificationService.success).toHaveBeenCalledExactlyOnceWith(
       'USER_ADMIN.NOTIFICATIONS.ADD_SUCCESS'
     );
   });

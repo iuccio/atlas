@@ -8,25 +8,24 @@ import {
   clientCredentialResolver,
 } from './client-credential-administration.resolver';
 import { ClientCredentialAdministrationService } from '../../../../api/service/user-administration/client-credential-administration.service';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 const clientCredential: ClientCredential = {
   clientCredentialId: '23456789',
 };
 
-const routerStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['']);
+const routerStateSnapshot = {} as any;
 
 describe('ClientCredentialAdministrationResolver', () => {
-  const clientCredentialAdministrationService = jasmine.createSpyObj(
-    'ClientCredentialAdministrationService',
-    ['getClientCredential']
-  );
-  clientCredentialAdministrationService.getClientCredential.and.returnValue(
-    of(clientCredential)
-  );
-
+  let clientCredentialAdministrationService: Mocked<
+    Pick<ClientCredentialAdministrationService, 'getClientCredential'>
+  >;
   let resolver: ClientCredentialAdministrationResolver;
 
   beforeEach(() => {
+    clientCredentialAdministrationService = {
+      getClientCredential: vi.fn().mockReturnValue(of(clientCredential)),
+    };
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
@@ -58,6 +57,6 @@ describe('ClientCredentialAdministrationResolver', () => {
     });
     expect(
       clientCredentialAdministrationService.getClientCredential
-    ).toHaveBeenCalled();
+    ).toHaveBeenCalledExactlyOnceWith('23456789');
   });
 });

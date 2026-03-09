@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { UserAdministrationUserCreateComponent } from './user-administration-user-create.component';
 import { Permission } from '../../../../../api';
 import { NotificationService } from '../../../../../core/notification/notification.service';
@@ -16,7 +16,6 @@ import { UserAdministrationService } from '../../../../../api/service/user-admin
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
 import { tickAsync } from '../../../../../../test/tick-async';
-import SpyObj = jasmine.SpyObj;
 
 @Component({
   selector: 'atlas-user-select',
@@ -30,18 +29,19 @@ describe('UserAdministrationUserCreateComponent', () => {
   let component: UserAdministrationUserCreateComponent;
   let fixture: ComponentFixture<UserAdministrationUserCreateComponent>;
 
-  let userAdministrationServiceSpy: SpyObj<UserAdministrationService>;
-  let notificationServiceSpy: SpyObj<NotificationService>;
+  let userAdministrationService: Mocked<
+    Pick<UserAdministrationService, 'getUser' | 'createUserPermission'>
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
 
   beforeEach(async () => {
-    userAdministrationServiceSpy = jasmine.createSpyObj('UserService', [
-      'getUser',
-      'getPermissionsFromUserModelAsArray',
-      'createUserPermission',
-    ]);
-    notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
-      'success',
-    ]);
+    userAdministrationService = {
+      getUser: vi.fn(),
+      createUserPermission: vi.fn(),
+    };
+    notificationService = {
+      success: vi.fn(),
+    };
     await TestBed.configureTestingModule({
       imports: [
         RouterModule.forRoot([]),
@@ -56,11 +56,11 @@ describe('UserAdministrationUserCreateComponent', () => {
         provideHttpClient(),
         {
           provide: UserAdministrationService,
-          useValue: userAdministrationServiceSpy,
+          useValue: userAdministrationService,
         },
         {
           provide: NotificationService,
-          useValue: notificationServiceSpy,
+          useValue: notificationService,
         },
         TranslatePipe,
         {
@@ -91,7 +91,7 @@ describe('UserAdministrationUserCreateComponent', () => {
   });
 
   it('test selectUser with valid user', () => {
-    userAdministrationServiceSpy.getUser.and.callFake((userId) =>
+    userAdministrationService.getUser.mockImplementation((userId) =>
       of({
         sbbUserId: userId,
         permissions: new Set<Permission>(),
@@ -107,7 +107,7 @@ describe('UserAdministrationUserCreateComponent', () => {
       sbbUserId: 'user1',
       permissions: new Set(),
     });
-    expect(userAdministrationServiceSpy.getUser).toHaveBeenCalledOnceWith(
+    expect(userAdministrationService.getUser).toHaveBeenCalledExactlyOnceWith(
       'user1'
     );
   });
@@ -118,20 +118,20 @@ describe('UserAdministrationUserCreateComponent', () => {
       sbbUserId: 'user1',
       permissions: new Set(),
     };
-    userAdministrationServiceSpy.createUserPermission.and.returnValue(
+    userAdministrationService.createUserPermission.mockReturnValue(
       of({
         sbbUserId: 'user1',
         permissions: new Set<Permission>(),
       })
     );
-    spyOn(router, 'navigate').and.resolveTo(true);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
     component.createUser();
     expect(
-      userAdministrationServiceSpy.createUserPermission
+      userAdministrationService.createUserPermission
     ).toHaveBeenCalledTimes(1);
     expect(router.navigate).toHaveBeenCalledTimes(1);
     await tickAsync(1000);
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
+    expect(notificationService.success).toHaveBeenCalledExactlyOnceWith(
       'USER_ADMIN.NOTIFICATIONS.ADD_SUCCESS'
     );
   });
