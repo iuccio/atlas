@@ -1,7 +1,7 @@
 package ch.sbb.line.directory.module.tth.entity;
 
 import ch.sbb.atlas.api.AtlasFieldLengths;
-import ch.sbb.atlas.api.model.BoMailAssociated;
+import ch.sbb.atlas.api.model.BoContactAssociated;
 import ch.sbb.atlas.api.model.CantonAssociated;
 import ch.sbb.atlas.api.timetable.hearing.TimetableHearingConstants;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
@@ -46,7 +46,8 @@ import lombok.experimental.SuperBuilder;
 @FieldNameConstants
 @Entity(name = "timetable_hearing_statement")
 @Redacted
-public class TimetableHearingStatement extends BaseEntity implements CantonAssociated, StatementDossierLinked, BoMailAssociated {
+public class TimetableHearingStatement extends BaseEntity implements CantonAssociated, StatementDossierLinked,
+    BoContactAssociated {
 
   private static final String VERSION_SEQ = "timetable_hearing_statement_seq";
 
@@ -124,6 +125,8 @@ public class TimetableHearingStatement extends BaseEntity implements CantonAssoc
 
   private String dossierContactMail;
 
+  private String dossierContactSbbuid;
+
   public void removeDocument(String documentFilename) {
     Optional<StatementDocument> optionalStatementDocument = documents.stream()
         .filter(doc -> Objects.equals(documentFilename, doc.getFileName())).findFirst();
@@ -156,5 +159,10 @@ public class TimetableHearingStatement extends BaseEntity implements CantonAssoc
   @Override
   public String getBoContactMail() {
     return dossierContactMail;
+  }
+
+  @Override
+  public String getBoContactSbbuid() {
+    return dossierContactSbbuid;
   }
 }

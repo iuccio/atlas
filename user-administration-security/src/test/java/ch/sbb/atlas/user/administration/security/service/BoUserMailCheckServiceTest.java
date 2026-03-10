@@ -5,7 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
-import ch.sbb.atlas.api.model.BoMailAssociated;
+import ch.sbb.atlas.api.model.BoContactAssociated;
 import ch.sbb.atlas.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +26,8 @@ class BoUserMailCheckServiceTest {
     boUserMailCheckService = new BoUserMailCheckService();
     userServiceMock = Mockito.mockStatic(UserService.class);
 
+    userServiceMock.when(UserService::getPreferredUsername).thenReturn("user@yb.com");
+    userServiceMock.when(UserService::getUserIdentifier).thenReturn("u123456");
   }
 
   @AfterEach
@@ -36,8 +38,7 @@ class BoUserMailCheckServiceTest {
   @Test
   void shouldReturnTrueWhenMailsAreMatching() {
     //given
-    BoMailAssociated boMail = mock(BoMailAssociated.class);
-    userServiceMock.when(UserService::getPreferredUsername).thenReturn("user@yb.com");
+    BoContactAssociated boMail = mock(BoContactAssociated.class);
     when(boMail.getBoContactMail()).thenReturn("user@yb.com");
 
     //when
@@ -46,20 +47,31 @@ class BoUserMailCheckServiceTest {
     //then
     assertThat(result).isTrue();
     userServiceMock.verify(UserService::getPreferredUsername, times(1));
-
   }
 
   @Test
   void shouldReturnFalseWhenMailsAreNotMatching() {
     //given
-    BoMailAssociated boMail = mock(BoMailAssociated.class);
-    userServiceMock.when(UserService::getPreferredUsername).thenReturn("fc@zueri.com");
-    when(boMail.getBoContactMail()).thenReturn("user@yb.com");
+    BoContactAssociated boMail = mock(BoContactAssociated.class);
+    when(boMail.getBoContactMail()).thenReturn("fc@zueri.com");
     //when
     boolean result = boUserMailCheckService.isCurrentUserMailAssignedTo(boMail);
     //then
     assertThat(result).isFalse();
     userServiceMock.verify(UserService::getPreferredUsername, times(1));
+  }
 
+  @Test
+  void shouldReturnTrueWhenMailsAreNotMatchingButSbbuidIs() {
+    //given
+    BoContactAssociated boMail = mock(BoContactAssociated.class);
+    when(boMail.getBoContactMail()).thenReturn("u123456@yb.com");
+    when(boMail.getBoContactSbbuid()).thenReturn("u123456");
+
+    //when
+    boolean result = boUserMailCheckService.isCurrentUserMailAssignedTo(boMail);
+
+    //then
+    assertThat(result).isTrue();
   }
 }

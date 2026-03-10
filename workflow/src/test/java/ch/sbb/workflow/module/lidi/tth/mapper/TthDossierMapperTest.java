@@ -47,6 +47,7 @@ class TthDossierMapperTest {
         .statementStatus(StatementStatus.RECEIVED)
         .dossierId(null)
         .dossierContactMail(null)
+        .dossierContactSbbuid(null)
         .build();
     assertThat(batchUpdateModel).isEqualTo(expected);
   }
@@ -65,6 +66,7 @@ class TthDossierMapperTest {
         .statementStatus(StatementStatus.ACCEPTED)
         .dossierId(dossier.getId())
         .dossierContactMail(dossier.getBoContactMail())
+        .dossierContactSbbuid(dossier.getBoContactSbbuid())
         .build();
     assertThat(batchUpdateModel).isEqualTo(expected);
   }
@@ -83,6 +85,7 @@ class TthDossierMapperTest {
         .statementStatus(StatementStatus.REJECTED)
         .dossierId(dossier.getId())
         .dossierContactMail(dossier.getBoContactMail())
+        .dossierContactSbbuid(dossier.getBoContactSbbuid())
         .build();
     assertThat(batchUpdateModel).isEqualTo(expected);
   }
@@ -101,6 +104,7 @@ class TthDossierMapperTest {
         .statementStatus(StatementStatus.MOVED)
         .dossierId(dossier.getId())
         .dossierContactMail(dossier.getBoContactMail())
+        .dossierContactSbbuid(dossier.getBoContactSbbuid())
         .build();
     assertThat(batchUpdateModel).isEqualTo(expected);
   }
@@ -119,6 +123,7 @@ class TthDossierMapperTest {
         .statementStatus(StatementStatus.REJECTED)
         .dossierId(null)
         .dossierContactMail(null)
+        .dossierContactSbbuid(null)
         .build();
     assertThat(batchUpdateModel).isEqualTo(expected);
   }

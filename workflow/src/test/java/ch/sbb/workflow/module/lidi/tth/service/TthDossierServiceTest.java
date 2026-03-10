@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 
 import ch.sbb.atlas.api.client.line.workflow.TimetableHearingStatementClient;
 import ch.sbb.atlas.api.client.user.administration.UserAdministrationClient;
-import ch.sbb.atlas.api.model.BoMailAssociated;
+import ch.sbb.atlas.api.model.BoContactAssociated;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.HearingStatus;
 import ch.sbb.atlas.api.timetable.hearing.enumeration.StatementStatus;
 import ch.sbb.atlas.api.timetable.hearing.model.BatchUpdateTimetableHearingStatementsModel;
@@ -81,13 +81,14 @@ class TthDossierServiceTest {
   @BeforeEach
   void setUp() {
     when(userAdministrationClient.getUserByMail(any())).thenReturn(UserModel.builder()
+        .sbbUserId("u123456")
         .permissions(Set.of(PermissionModel.builder()
             .application(ApplicationType.TIMETABLE_HEARING)
             .permissionRestrictions(List.of(new TransportCompanyDossierAnswerPermissionRestrictionModel(true)))
             .build()))
         .build());
 
-    when(boUserMailCheckService.isCurrentUserMailAssignedTo(any(BoMailAssociated.class))).thenReturn(true);
+    when(boUserMailCheckService.isCurrentUserMailAssignedTo(any(BoContactAssociated.class))).thenReturn(true);
 
     TthDossierYear tthDossierYear = TthDossierYear.builder()
         .timetableYear(2024L)
@@ -286,6 +287,7 @@ class TthDossierServiceTest {
             .statementStatus(StatementStatus.RECEIVED)
             .dossierId(null)
             .dossierContactMail(null)
+            .dossierContactSbbuid(null)
             .publicComment(exampleDossier.getPublicComment())
             .internalComment(exampleDossier.getInternalComment())
             .topic(exampleDossier.getTopic())
@@ -297,6 +299,7 @@ class TthDossierServiceTest {
             .statementStatus(StatementStatus.IN_REVIEW)
             .dossierId(updatedDossier.getId())
             .dossierContactMail("bern@mobil.be")
+            .dossierContactSbbuid("u123456")
             .publicComment(exampleDossier.getPublicComment())
             .internalComment(exampleDossier.getInternalComment())
             .topic(exampleDossier.getTopic())
