@@ -1,57 +1,61 @@
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PrmRecordingObligationComponent } from './prm-recording-obligation.component';
 import { StopPointInternalService } from '../../api/service/prm/stop-point/stop-point-internal.service';
 import { EMPTY, of } from 'rxjs';
 import { PermissionService } from '../auth/permission/permission.service';
-import { adminPermissionServiceMock } from '../../app.testing.mocks';
-import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
+import {
+  adminPermissionServiceMock,
+  translateServiceProvider,
+} from '../../app.testing.mocks';
 
 describe('PrmRecordingObligationComponent', () => {
+  type StopPointInternalServiceMock = Mocked<
+    Pick<
+      StopPointInternalService,
+      'getRecordingObligation' | 'updateRecordingObligation'
+    >
+  >;
+
   let component: PrmRecordingObligationComponent;
   let fixture: ComponentFixture<PrmRecordingObligationComponent>;
+  let stopPointInternalServiceMock: StopPointInternalServiceMock;
 
-  const personWithReducedMobilityServiceSpy = jasmine.createSpyObj(
-    'personWithReducedMobilityService',
-    ['getRecordingObligation', 'updateRecordingObligation']
-  );
-  personWithReducedMobilityServiceSpy.getRecordingObligation.and.returnValue(
-    of({ value: true })
-  );
-  personWithReducedMobilityServiceSpy.updateRecordingObligation.and.returnValue(
-    of(EMPTY)
-  );
+  beforeEach(() => {
+    stopPointInternalServiceMock = {
+      getRecordingObligation: vi.fn().mockReturnValue(of({ value: true })),
+      updateRecordingObligation: vi.fn().mockReturnValue(of(EMPTY)),
+    };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [PrmRecordingObligationComponent, TranslateModule.forRoot()],
+    TestBed.configureTestingModule({
       providers: [
-        TranslatePipe,
+        translateServiceProvider,
         {
           provide: StopPointInternalService,
-          useValue: personWithReducedMobilityServiceSpy,
+          useValue: stopPointInternalServiceMock,
         },
         { provide: PermissionService, useValue: adminPermissionServiceMock },
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(PrmRecordingObligationComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create and init', () => {
-    expect(component).toBeTruthy();
+    fixture.detectChanges();
 
-    expect(component.recordingObligation).toBeTrue();
+    expect(component).toBeTruthy();
+    expect(component.recordingObligation).toBe(true);
     expect(
-      personWithReducedMobilityServiceSpy.getRecordingObligation
-    ).toHaveBeenCalled();
+      stopPointInternalServiceMock.getRecordingObligation
+    ).toHaveBeenCalledExactlyOnceWith(undefined);
   });
 
   it('should toggle recording obligation', () => {
-    expect(component.recordingObligation).toBeTrue();
+    expect(component.recordingObligation).toBe(true);
 
     component.toggleRecordingObligation();
-    expect(component.recordingObligation).toBeFalse();
+    expect(component.recordingObligation).toBe(false);
   });
 });
