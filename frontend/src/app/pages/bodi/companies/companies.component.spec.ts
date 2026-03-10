@@ -7,7 +7,7 @@ import { MockTableComponent } from '../../../app.testing.mocks';
 import { TableComponent } from '../../../core/components/table/table.component';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { CompanyService } from '../../../api/service/bodi/company.service';
-import SpyObj = jasmine.SpyObj;
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const company: ContainerCompany = {
   objects: [
@@ -22,27 +22,21 @@ const company: ContainerCompany = {
 describe('CompaniesComponent', () => {
   let component: CompaniesComponent;
   let fixture: ComponentFixture<CompaniesComponent>;
-
-  let companyInternalServiceSpy: SpyObj<CompanyService>;
+  let companyService: Mocked<Pick<CompanyService, 'getCompanies'>>;
 
   beforeEach(() => {
-    companyInternalServiceSpy = jasmine.createSpyObj<CompanyService>({
-      getCompanies: of(company),
-    });
+    companyService = {
+      getCompanies: vi.fn(),
+    };
+    companyService.getCompanies.mockReturnValue(of(company));
 
     TestBed.configureTestingModule({
       imports: [CompaniesComponent, TranslateModule.forRoot()],
       providers: [
         TranslatePipe,
         RouterOutlet,
-        {
-          provide: CompanyService,
-          useValue: companyInternalServiceSpy,
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: { paramMap: new Subject() },
-        },
+        { provide: CompanyService, useValue: companyService },
+        { provide: ActivatedRoute, useValue: { paramMap: new Subject() } },
       ],
     })
       .overrideComponent(CompaniesComponent, {
@@ -66,7 +60,7 @@ describe('CompaniesComponent', () => {
       size: 10,
     });
 
-    expect(companyInternalServiceSpy.getCompanies).toHaveBeenCalledOnceWith(
+    expect(companyService.getCompanies).toHaveBeenCalledExactlyOnceWith(
       [],
       0,
       10,

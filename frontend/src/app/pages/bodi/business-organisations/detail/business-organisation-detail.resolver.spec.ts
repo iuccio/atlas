@@ -12,6 +12,7 @@ import {
 } from './business-organisation-detail-resolver.service';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { BusinessOrganisationService } from '../../../../api/service/bodi/business-organisation.service';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const version: BusinessOrganisationVersion = {
   id: 1234,
@@ -31,25 +32,28 @@ const version: BusinessOrganisationVersion = {
 };
 
 describe('BusinessOrganisationDetailResolver', () => {
-  const businessOrganisationsServiceSpy = jasmine.createSpyObj(
-    'businessOrganisationsService',
-    ['getVersions']
-  );
-  businessOrganisationsServiceSpy.getVersions.and.returnValue(of([version]));
-
   let resolver: BusinessOrganisationDetailResolver;
+  let businessOrganisationsService: Mocked<
+    Pick<BusinessOrganisationService, 'getVersions'>
+  >;
 
   beforeEach(() => {
+    businessOrganisationsService = {
+      getVersions: vi.fn(),
+    };
+    businessOrganisationsService.getVersions.mockReturnValue(of([version]));
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
         BusinessOrganisationDetailResolver,
         {
           provide: BusinessOrganisationService,
-          useValue: businessOrganisationsServiceSpy,
+          useValue: businessOrganisationsService,
         },
       ],
     });
+
     resolver = TestBed.inject(BusinessOrganisationDetailResolver);
   });
 
