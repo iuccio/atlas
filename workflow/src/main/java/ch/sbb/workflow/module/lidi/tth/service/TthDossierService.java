@@ -22,6 +22,7 @@ import ch.sbb.workflow.module.lidi.tth.search.TthDossierSearchRestrictions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -80,7 +81,7 @@ public class TthDossierService {
                 .messageAndError("Active timetable hearing year not found")
                 .build());
 
-    boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
+    checkPermissionForBoContactMailAndSetSbbuid(dossier);
 
     dossier.setDossierStatus(DossierStatus.ADDED);
     dossier.setTthDossierYear(dossierYear);
@@ -130,7 +131,7 @@ public class TthDossierService {
     if (!dossier.getDossierStatus().isAllowedForUpdate()) {
       dossier.setDossierStatus(currentDossier.getDossierStatus());
     }
-    boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
+    checkPermissionForBoContactMailAndSetSbbuid(dossier);
     if (!Objects.equals(currentDossier.getDossierQuestions().getFirst().getAnswerToCanton(),
         dossier.getDossierQuestions().getFirst().getAnswerToCanton())) {
       throw SimpleAtlasException.builder()
@@ -164,6 +165,11 @@ public class TthDossierService {
   private List<Long> getRemovedStatementIds(List<Long> previousStatementIds, TthDossier updatedDossier) {
     previousStatementIds.removeAll(updatedDossier.getStatementIds());
     return previousStatementIds;
+  }
+
+  private void checkPermissionForBoContactMailAndSetSbbuid(TthDossier dossier) {
+    Optional<String> sbbuid = boContactPermissionService.checkPermissionForBoContactMail(dossier.getBoContactMail());
+    sbbuid.ifPresent(dossier::setBoContactSbbuid);
   }
 
   private static void checkDossierIsInEditableStatus(TthDossier dossier) {
