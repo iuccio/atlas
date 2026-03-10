@@ -6,7 +6,7 @@ import { AppTestingModule } from '../../../../app.testing.module';
 import { TransportCompanyDetailResolver } from './transport-company-detail-resolver.service';
 import { TransportCompanyRelationInternalService } from '../../../../api/service/bodi/transport-company-relation-internal.service';
 import { TransportCompanyService } from '../../../../api/service/bodi/transport-company.service';
-import SpyObj = jasmine.SpyObj;
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const transportCompany: TransportCompany = {
   id: 1234,
@@ -15,43 +15,49 @@ const transportCompany: TransportCompany = {
 };
 
 const transportCompanyRelations: TransportCompanyBoRelation[] = [
-  {
-    id: 1,
-  },
-  {
-    id: 2,
-  },
+  { id: 1 },
+  { id: 2 },
 ];
 
 describe('TransportCompanyDetailResolver', () => {
   let resolver: TransportCompanyDetailResolver;
-
-  let transportCompanyServiceSpy: SpyObj<TransportCompanyService>;
-  let transportCompanyRelationInternalServiceSpy: SpyObj<TransportCompanyRelationInternalService>;
+  let transportCompanyService: Mocked<
+    Pick<TransportCompanyService, 'getTransportCompany'>
+  >;
+  let transportCompanyRelationInternalService: Mocked<
+    Pick<
+      TransportCompanyRelationInternalService,
+      'getTransportCompanyBoRelations'
+    >
+  >;
 
   beforeEach(() => {
-    transportCompanyServiceSpy = jasmine.createSpyObj({
-      getTransportCompany: of(transportCompany),
-    });
-    transportCompanyRelationInternalServiceSpy =
-      jasmine.createSpyObj<TransportCompanyRelationInternalService>({
-        getTransportCompanyBoRelations: of(transportCompanyRelations),
-      });
+    transportCompanyService = {
+      getTransportCompany: vi.fn(),
+    };
+    transportCompanyService.getTransportCompany.mockReturnValue(
+      of(transportCompany)
+    );
+
+    transportCompanyRelationInternalService = {
+      getTransportCompanyBoRelations: vi.fn(),
+    };
+    transportCompanyRelationInternalService.getTransportCompanyBoRelations.mockReturnValue(
+      of(transportCompanyRelations)
+    );
 
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
         TransportCompanyDetailResolver,
-        {
-          provide: TransportCompanyService,
-          useValue: transportCompanyServiceSpy,
-        },
+        { provide: TransportCompanyService, useValue: transportCompanyService },
         {
           provide: TransportCompanyRelationInternalService,
-          useValue: transportCompanyRelationInternalServiceSpy,
+          useValue: transportCompanyRelationInternalService,
         },
       ],
     });
+
     resolver = TestBed.inject(TransportCompanyDetailResolver);
   });
 
@@ -69,7 +75,6 @@ describe('TransportCompanyDetailResolver', () => {
         expect(transportCompanyRelations.length).toBe(2);
         expect(transportCompanyRelations[0].id).toBe(1);
         expect(transportCompanyRelations[1].id).toBe(2);
-        done();
       }
     );
   });

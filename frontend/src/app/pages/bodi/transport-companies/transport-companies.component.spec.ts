@@ -10,7 +10,7 @@ import { MockTableComponent } from '../../../app.testing.mocks';
 import { TableComponent } from '../../../core/components/table/table.component';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { TransportCompanyService } from '../../../api/service/bodi/transport-company.service';
-import SpyObj = jasmine.SpyObj;
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const transportCompany: ContainerTransportCompany = {
   objects: [
@@ -25,23 +25,24 @@ const transportCompany: ContainerTransportCompany = {
 describe('TransportCompaniesComponent', () => {
   let component: TransportCompaniesComponent;
   let fixture: ComponentFixture<TransportCompaniesComponent>;
-
-  let transportCompanyServiceSpy: SpyObj<TransportCompanyService>;
+  let transportCompanyService: Mocked<
+    Pick<TransportCompanyService, 'getTransportCompanies'>
+  >;
 
   beforeEach(() => {
-    transportCompanyServiceSpy = jasmine.createSpyObj({
-      getTransportCompanies: of(transportCompany),
-    });
+    transportCompanyService = {
+      getTransportCompanies: vi.fn(),
+    };
+    transportCompanyService.getTransportCompanies.mockReturnValue(
+      of(transportCompany)
+    );
 
     TestBed.configureTestingModule({
       imports: [TransportCompaniesComponent, TranslateModule.forRoot()],
       providers: [
         TranslatePipe,
         RouterOutlet,
-        {
-          provide: TransportCompanyService,
-          useValue: transportCompanyServiceSpy,
-        },
+        { provide: TransportCompanyService, useValue: transportCompanyService },
         { provide: ActivatedRoute, useValue: { paramMap: new Subject() } },
       ],
     })
@@ -63,8 +64,8 @@ describe('TransportCompaniesComponent', () => {
     });
 
     expect(
-      transportCompanyServiceSpy.getTransportCompanies
-    ).toHaveBeenCalledOnceWith(
+      transportCompanyService.getTransportCompanies
+    ).toHaveBeenCalledExactlyOnceWith(
       [],
       [
         TransportCompanyStatus.Current,

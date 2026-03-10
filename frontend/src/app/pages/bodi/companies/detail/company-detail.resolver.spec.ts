@@ -5,7 +5,7 @@ import { Company } from '../../../../api';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { CompanyDetailResolver } from './company-detail-resolver.service';
 import { CompanyService } from '../../../../api/service/bodi/company.service';
-import SpyObj = jasmine.SpyObj;
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const company: Company = {
   uicCode: '1234',
@@ -14,24 +14,22 @@ const company: Company = {
 
 describe('CompanyDetailResolver', () => {
   let resolver: CompanyDetailResolver;
-
-  let companyInternalServiceSpy: SpyObj<CompanyService>;
+  let companyService: Mocked<Pick<CompanyService, 'getCompany'>>;
 
   beforeEach(() => {
-    companyInternalServiceSpy = jasmine.createSpyObj({
-      getCompany: of(company),
-    });
+    companyService = {
+      getCompany: vi.fn(),
+    };
+    companyService.getCompany.mockReturnValue(of(company));
 
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
         CompanyDetailResolver,
-        {
-          provide: CompanyService,
-          useValue: companyInternalServiceSpy,
-        },
+        { provide: CompanyService, useValue: companyService },
       ],
     });
+
     resolver = TestBed.inject(CompanyDetailResolver);
   });
 
@@ -46,9 +44,9 @@ describe('CompanyDetailResolver', () => {
 
     const resolvedVersion = resolver.resolve(mockRoute);
 
-    resolvedVersion.subscribe((tranyportCompany) => {
-      expect(tranyportCompany.uicCode).toBe('1234');
-      expect(tranyportCompany.name).toBe('SBB');
+    resolvedVersion.subscribe((transportCompany) => {
+      expect(transportCompany.uicCode).toBe('1234');
+      expect(transportCompany.name).toBe('SBB');
     });
   });
 });

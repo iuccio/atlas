@@ -16,14 +16,12 @@ import { DetailPageContainerComponent } from '../../../../core/components/detail
 import { DetailFooterComponent } from '../../../../core/components/detail-footer/detail-footer.component';
 import { MockAtlasButtonComponent } from '../../../../app.testing.mocks';
 import { DetailPageContentComponent } from '../../../../core/components/detail-page-content/detail-page-content.component';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 const company: Company = {
   uicCode: '1234',
   name: 'SBB',
 };
-
-let component: CompanyDetailComponent;
-let fixture: ComponentFixture<CompanyDetailComponent>;
 
 @Component({
   selector: 'atlas-text-field',
@@ -49,12 +47,36 @@ class MockAtlasTextFieldComponent {
 }
 
 describe('CompanyDetailComponent', () => {
+  let component: CompanyDetailComponent;
+  let fixture: ComponentFixture<CompanyDetailComponent>;
+
   const mockData = {
     companyDetail: company,
   };
 
   beforeEach(() => {
-    setupTestBed(mockData);
+    TestBed.configureTestingModule({
+      imports: [
+        AppTestingModule,
+        CompanyDetailComponent,
+        ErrorNotificationComponent,
+        InfoIconComponent,
+        LinkIconComponent,
+        AtlasLabelFieldComponent,
+        AtlasFieldErrorComponent,
+        MockAtlasTextFieldComponent,
+        DetailPageContainerComponent,
+        DetailPageContentComponent,
+        DetailFooterComponent,
+        MockAtlasButtonComponent,
+      ],
+      providers: [
+        { provide: ActivatedRoute, useValue: { snapshot: { data: mockData } } },
+        { provide: TranslatePipe },
+      ],
+    })
+      .compileComponents()
+      .then();
 
     fixture = TestBed.createComponent(CompanyDetailComponent);
     component = fixture.componentInstance;
@@ -84,28 +106,3 @@ describe('CompanyDetailComponent', () => {
     );
   });
 });
-
-function setupTestBed(data: { companyDetail: string | Company }) {
-  TestBed.configureTestingModule({
-    imports: [
-      AppTestingModule,
-      CompanyDetailComponent,
-      ErrorNotificationComponent,
-      InfoIconComponent,
-      LinkIconComponent,
-      AtlasLabelFieldComponent,
-      AtlasFieldErrorComponent,
-      MockAtlasTextFieldComponent,
-      DetailPageContainerComponent,
-      DetailPageContentComponent,
-      DetailFooterComponent,
-      MockAtlasButtonComponent,
-    ],
-    providers: [
-      { provide: ActivatedRoute, useValue: { snapshot: { data: data } } },
-      { provide: TranslatePipe },
-    ],
-  })
-    .compileComponents()
-    .then();
-}
