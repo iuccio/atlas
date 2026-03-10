@@ -9,7 +9,15 @@ import { MockMatPaginatorComponent } from '../../../app.testing.mocks';
 import { By } from '@angular/platform-browser';
 import { UserDisplayNamePipe } from '../../../core/pipe/user-display-name.pipe';
 import { BulkImportService } from '../../../api/service/bulk/bulk-import.service';
-import Spy = jasmine.Spy;
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mocked,
+  MockInstance,
+  vi,
+} from 'vitest';
 
 @Pipe({
   name: 'userDisplayName',
@@ -24,25 +32,23 @@ class UserDisplayNamePipeMock implements PipeTransform {
 describe('BulkImportLogComponent', () => {
   let component: BulkImportLogComponent;
   let fixture: ComponentFixture<BulkImportLogComponent>;
+  let bulkImportService: Mocked<
+    Pick<BulkImportService, 'getBulkImportResults'>
+  >;
+  let pageChangedFnSpy: MockInstance<
+    typeof BulkImportLogComponent.prototype.pageChanged
+  >;
 
-  let pageChangedFnSpy: Spy;
+  beforeEach(() => {
+    bulkImportService = {
+      getBulkImportResults: vi.fn(),
+    };
+    bulkImportService.getBulkImportResults.mockReturnValue(of(importResult));
 
-  beforeEach(async () => {
-    const bulkImportServiceSpy = jasmine.createSpyObj<BulkImportService>([
-      'getBulkImportResults',
-    ]);
-    (
-      bulkImportServiceSpy.getBulkImportResults as Spy<
-        (id: number) => Observable<BulkImportResult>
-      >
-    )
-      .withArgs(10)
-      .and.returnValue(of(importResult));
-
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [BulkImportLogComponent, TranslateModule.forRoot()],
       providers: [
-        { provide: BulkImportService, useValue: bulkImportServiceSpy },
+        { provide: BulkImportService, useValue: bulkImportService },
         { provide: ActivatedRoute, useValue: { params: of({ id: 10 }) } },
       ],
     })
@@ -54,10 +60,10 @@ describe('BulkImportLogComponent', () => {
 
     fixture = TestBed.createComponent(BulkImportLogComponent);
     component = fixture.componentInstance;
-    pageChangedFnSpy = spyOn(component, 'pageChanged');
+    pageChangedFnSpy = vi.spyOn(component, 'pageChanged');
   });
 
-  it('should create and init', (done) => {
+  it('should create and init', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(pageChangedFnSpy).toHaveBeenCalledTimes(1);
@@ -82,12 +88,7 @@ describe('BulkImportLogComponent', () => {
                 errorMessage: 'error',
                 displayInfo: {
                   code: 'TRANSLATIONS.TEST',
-                  parameters: [
-                    {
-                      key: 'field',
-                      value: 'test',
-                    },
-                  ],
+                  parameters: [{ key: 'field', value: 'test' }],
                 },
               },
             ],
@@ -106,12 +107,12 @@ describe('BulkImportLogComponent', () => {
           },
         ],
       });
-      done();
     });
   });
 
   it('should change page', () => {
-    pageChangedFnSpy.and.callThrough();
+    pageChangedFnSpy.mockRestore();
+    pageChangedFnSpy = vi.spyOn(component, 'pageChanged');
     fixture.detectChanges();
     const paginator: MockMatPaginatorComponent = fixture.debugElement.query(
       By.css('mat-paginator')
@@ -146,25 +147,12 @@ const importResult: BulkImportResult = {
           errorMessage: 'error',
           displayInfo: {
             code: 'TRANSLATIONS.TEST',
-            parameters: [
-              {
-                key: 'field',
-                value: 'test',
-              },
-            ],
+            parameters: [{ key: 'field', value: 'test' }],
           },
         },
       ],
     },
-    {
-      lineNumber: 3,
-      status: 'DATA_EXECUTION_ERROR',
-      errors: [],
-    },
-    {
-      lineNumber: 4,
-      status: 'DATA_VALIDATION_ERROR',
-      errors: [],
-    },
+    { lineNumber: 3, status: 'DATA_EXECUTION_ERROR', errors: [] },
+    { lineNumber: 4, status: 'DATA_VALIDATION_ERROR', errors: [] },
   ],
 };

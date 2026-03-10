@@ -61,7 +61,7 @@ describe('TransportCompanyDetailResolver', () => {
     resolver = TestBed.inject(TransportCompanyDetailResolver);
   });
 
-  it('should get transportCompany and transportCompanyRelations from service to display', (done) => {
+  it('should get transportCompany and transportCompanyRelations from service to display', () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
