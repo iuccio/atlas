@@ -68,6 +68,7 @@ public class TthDossierMapper {
     if (newStatus.forbidsUpdatesOnStatements()) {
       batchUpdate.setDossierId(dossier.getId());
       batchUpdate.setDossierContactMail(dossier.getBoContactMail());
+      batchUpdate.setDossierContactSbbuid(dossier.getBoContactSbbuid());
     }
     return batchUpdate;
   }

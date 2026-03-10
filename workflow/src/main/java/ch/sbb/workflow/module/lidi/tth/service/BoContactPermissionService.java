@@ -9,6 +9,7 @@ import ch.sbb.atlas.kafka.model.user.admin.PermissionRestrictionType;
 import ch.sbb.atlas.model.exception.SimpleAtlasException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class BoContactPermissionService {
 
   private final UserAdministrationClient userAdministrationClient;
 
-  public void checkPermissionForBoContactMail(String mail) {
+  public Optional<String> checkPermissionForBoContactMail(String mail) {
     if (mail != null) {
       UserModel user = userAdministrationClient.getUserByMail(mail);
 
@@ -38,6 +39,9 @@ public class BoContactPermissionService {
             .displayCode("TTH.ERROR.NOT_ALLOWED_BO_CONTACT", List.of(new Parameter("mail", mail)))
             .build();
       }
+
+      return Optional.of(user.getSbbUserId());
     }
+    return Optional.empty();
   }
 }

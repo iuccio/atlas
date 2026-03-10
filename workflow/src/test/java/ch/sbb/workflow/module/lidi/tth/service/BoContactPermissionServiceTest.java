@@ -35,6 +35,7 @@ class BoContactPermissionServiceTest {
   @Test
   void shouldNotThrowExceptionWhenPermissionIsValid() {
     when(userAdministrationClient.getUserByMail(any())).thenReturn(UserModel.builder()
+        .sbbUserId("u123456")
         .permissions(Set.of(PermissionModel.builder()
             .application(ApplicationType.TIMETABLE_HEARING)
             .permissionRestrictions(List.of(new TransportCompanyDossierAnswerPermissionRestrictionModel(true)))

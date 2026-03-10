@@ -338,6 +338,7 @@ public class TimetableHearingStatementService {
     statement.setStatementStatus(updateModel.getStatementStatus());
     statement.setDossierId(updateModel.getDossierId());
     statement.setDossierContactMail(updateModel.getDossierContactMail());
+    statement.setDossierContactSbbuid(updateModel.getDossierContactSbbuid());
     statement.setPublicComment(updateModel.getPublicComment());
     statement.setInternalComment(updateModel.getInternalComment());
     statement.setTopic(updateModel.getTopic());

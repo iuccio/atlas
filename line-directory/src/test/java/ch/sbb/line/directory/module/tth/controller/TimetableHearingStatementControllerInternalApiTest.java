@@ -1041,6 +1041,7 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
             .dossierCanton(SwissCanton.BERN)
             .dossierId(1L)
             .dossierContactMail("uerli@bernmobil.ch")
+            .dossierContactSbbuid("u123456")
             .statementStatus(StatementStatus.IN_REVIEW)
             .build();
 
@@ -1054,6 +1055,7 @@ class TimetableHearingStatementControllerInternalApiTest extends BaseControllerA
         .orElseThrow();
     assertThat(statementAfterUpdate.getDossierId()).isEqualTo(1L);
     assertThat(statementAfterUpdate.getDossierContactMail()).isEqualTo("uerli@bernmobil.ch");
+    assertThat(statementAfterUpdate.getDossierContactSbbuid()).isEqualTo("u123456");
     assertThat(statementAfterUpdate.getStatementStatus()).isEqualTo(StatementStatus.IN_REVIEW);
   }
 }
