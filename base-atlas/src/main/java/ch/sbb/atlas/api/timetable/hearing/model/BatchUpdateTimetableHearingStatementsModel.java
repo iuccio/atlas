@@ -27,6 +27,8 @@ public class BatchUpdateTimetableHearingStatementsModel extends BaseUpdateHearin
 
   private String dossierContactMail;
 
+  private String dossierContactSbbuid;
+
   private String publicComment;
 
   private String internalComment;
