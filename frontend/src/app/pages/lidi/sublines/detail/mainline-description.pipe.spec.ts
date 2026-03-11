@@ -1,12 +1,16 @@
 import { MainlineDescriptionPipe } from './mainline-description.pipe';
 import { Line } from '../../../../api';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('MainlineDescriptionPipe', () => {
   it('create an instance', () => {
-    const translatePipeMock = jasmine.createSpyObj('TranslatePipe', {
-      transform: 'LIDI.SUBLINE.NO_LINE_DESIGNATION_AVAILABLE',
-    });
-    const pipe = new MainlineDescriptionPipe(translatePipeMock);
+    const translatePipeMock = {
+      transform: vi
+        .fn()
+        .mockReturnValue('LIDI.SUBLINE.NO_LINE_DESIGNATION_AVAILABLE'),
+    };
+
+    const pipe = new MainlineDescriptionPipe(translatePipeMock as any);
     expect(pipe).toBeTruthy();
 
     const lineWithDescription = {

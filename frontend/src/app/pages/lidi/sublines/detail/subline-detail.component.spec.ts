@@ -5,11 +5,12 @@ import { of, throwError } from 'rxjs';
 import {
   LidiElementType,
   Line,
+  ReadSublineVersionV2,
   SublineType,
-  SublineVersionV2,
 } from '../../../../api';
 import { SublineDetailComponent } from './subline-detail.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AppTestingModule } from '../../../../app.testing.module';
 import {
   adminPermissionServiceMock,
@@ -41,8 +42,10 @@ import { DialogService } from '../../../../core/components/dialog/dialog.service
 import { SublineInternalService } from '../../../../api/service/lidi/subline-internal.service';
 import { SublineService } from '../../../../api/service/lidi/subline.service';
 import { LineService } from '../../../../api/service/lidi/line.service';
+import { LineInternalService } from '../../../../api/service/lidi/line-internal.service';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
-const sublineVersion: SublineVersionV2 = {
+const readSublineVersion: ReadSublineVersionV2 = {
   id: 1234,
   slnid: 'slnid',
   description: 'asdf',
@@ -52,6 +55,9 @@ const sublineVersion: SublineVersionV2 = {
   businessOrganisation: 'SBB',
   swissSublineNumber: 'L1:2',
   mainlineSlnid: 'ch:1:slnid:1000',
+  sublineType: SublineType.Technical,
+  mainSwissLineNumber: 'L1',
+  mainLineNumber: '1',
 };
 
 const error = new HttpErrorResponse({
@@ -66,22 +72,10 @@ const error = new HttpErrorResponse({
         displayInfo: {
           code: 'TTFN.CONFLICT.NUMBER',
           parameters: [
-            {
-              key: 'number',
-              value: '111',
-            },
-            {
-              key: 'validFrom',
-              value: '2020-12-12',
-            },
-            {
-              key: 'validTo',
-              value: '2026-12-12',
-            },
-            {
-              key: 'ttfnid',
-              value: 'ch:1:ttfnid:1001720',
-            },
+            { key: 'number', value: '111' },
+            { key: 'validFrom', value: '2020-12-12' },
+            { key: 'validTo', value: '2026-12-12' },
+            { key: 'ttfnid', value: 'ch:1:ttfnid:1001720' },
           ],
         },
       },
@@ -92,125 +86,159 @@ const error = new HttpErrorResponse({
 let component: SublineDetailComponent;
 let fixture: ComponentFixture<SublineDetailComponent>;
 let router: Router;
+let validityService: Mocked<
+  Pick<ValidityService, 'initValidity' | 'updateValidity' | 'validate'>
+>;
+let lineService: Mocked<Pick<LineService, 'getLineVersionsV2'>>;
+let lineInternalService: Mocked<
+  Pick<LineInternalService, 'getLine' | 'getLines'>
+>;
+let dialogService: Mocked<Pick<DialogService, 'confirm'>>;
 
-const validityService = jasmine.createSpyObj<ValidityService>([
-  'initValidity',
-  'updateValidity',
-  'validate',
-]);
-validityService.validate.and.returnValue(of(true));
+function createSharedMocks(): void {
+  validityService = {
+    initValidity: vi.fn(),
+    updateValidity: vi.fn(),
+    validate: vi.fn(),
+  };
+  validityService.validate.mockReturnValue(of(true));
 
-const lineService = jasmine.createSpyObj('LineService', [
-  'getLineVersionsV2',
-  'getLines',
-  'getLine',
-]);
-lineService.getLineVersionsV2.and.returnValue(of([]));
-lineService.getLine.and.returnValue(of());
+  lineService = {
+    getLineVersionsV2: vi.fn(),
+  };
+  lineService.getLineVersionsV2.mockReturnValue(of([]));
 
-const dialogService = jasmine.createSpyObj<DialogService>('DialogService', {
-  confirm: of(true),
-});
+  lineInternalService = {
+    getLine: vi.fn(),
+    getLines: vi.fn(),
+  };
+  lineInternalService.getLine.mockReturnValue(of({} as Line));
+
+  dialogService = {
+    confirm: vi.fn(),
+  };
+  dialogService.confirm.mockReturnValue(of(true));
+}
 
 describe('SublineDetailComponent for existing sublineVersion', () => {
-  const sublineService = jasmine.createSpyObj('sublineService', [
-    'updateSublineVersionV2',
-  ]);
-  const sublineInternalService = jasmine.createSpyObj(
-    'sublineInternalService',
-    ['deleteSublines', 'revokeSubline']
-  );
-  const mockData = {
-    sublineDetail: [sublineVersion],
-  };
+  let sublineService: Mocked<Pick<SublineService, 'updateSublineVersionV2'>>;
+  let sublineInternalService: Mocked<
+    Pick<SublineInternalService, 'deleteSublines' | 'revokeSubline'>
+  >;
+
+  const mockData = { sublineDetail: [readSublineVersion] };
 
   beforeEach(() => {
+    Element.prototype.scrollIntoView = vi.fn();
+    createSharedMocks();
+
+    sublineService = { updateSublineVersionV2: vi.fn() };
+    sublineInternalService = {
+      deleteSublines: vi.fn(),
+      revokeSubline: vi.fn(),
+    };
+
     setupTestBed(sublineService, sublineInternalService, mockData);
+
     fixture = TestBed.createComponent(SublineDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     router = TestBed.inject(Router);
   });
 
-  it('should update SublineVersion successfully', () => {
-    sublineService.updateSublineVersionV2.and.returnValue(of(sublineVersion));
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+  it('should update SublineVersion successfully', async () => {
+    sublineService.updateSublineVersionV2.mockReturnValue(
+      of([readSublineVersion])
+    );
+    const navigateSpy = vi
+      .spyOn(router, 'navigate')
+      .mockReturnValue(Promise.resolve(true));
 
     component.toggleEdit();
+    await fixture.whenStable();
     component.form.controls.description.setValue('NewDescription');
     component.save();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     expect(sublineService.updateSublineVersionV2).toHaveBeenCalled();
-
-    const snackBarContainer = fixture.nativeElement.offsetParent.querySelector(
+    const snackBarContainer = document.body.querySelector(
       'mat-snack-bar-container'
     );
-    expect(snackBarContainer).toBeDefined();
-    expect(snackBarContainer.textContent.trim()).toBe(
+    expect(snackBarContainer).not.toBeNull();
+    expect(snackBarContainer!.textContent!.trim()).toBe(
       'LIDI.SUBLINE.NOTIFICATION.EDIT_SUCCESS'
     );
-    expect(snackBarContainer.classList).toContain('success');
-    expect(router.navigate).toHaveBeenCalled();
+    expect(snackBarContainer!.classList).toContain('success');
+    expect(navigateSpy).toHaveBeenCalled();
   });
 
   it('should not update Version', () => {
-    sublineService.updateSublineVersionV2.and.returnValue(
+    sublineService.updateSublineVersionV2.mockReturnValue(
       throwError(() => error)
     );
+
     component.toggleEdit();
     component.form.controls.description.setValue('NewDescription');
     component.save();
 
-    expect(component.form.enabled).toBeTrue();
+    expect(component.form.enabled).toBe(true);
   });
 
-  it('should delete SublineVersion successfully', () => {
-    sublineInternalService.deleteSublines.and.returnValue(of({}));
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+  it('should delete SublineVersion successfully', async () => {
+    sublineInternalService.deleteSublines.mockReturnValue(of(undefined));
+    const navigateSpy = vi
+      .spyOn(router, 'navigate')
+      .mockReturnValue(Promise.resolve(true));
 
     component.delete();
+    await fixture.whenStable();
     fixture.detectChanges();
 
-    const snackBarContainer = fixture.nativeElement.offsetParent.querySelector(
+    const snackBarContainer = document.body.querySelector(
       'mat-snack-bar-container'
     );
-    expect(snackBarContainer).toBeDefined();
-    expect(snackBarContainer.textContent.trim()).toBe(
+    expect(snackBarContainer).not.toBeNull();
+    expect(snackBarContainer!.textContent!.trim()).toBe(
       'LIDI.SUBLINE.NOTIFICATION.DELETE_SUCCESS'
     );
-    expect(snackBarContainer.classList).toContain('success');
-    expect(router.navigate).toHaveBeenCalled();
+    expect(snackBarContainer!.classList).toContain('success');
+    expect(navigateSpy).toHaveBeenCalled();
   });
 
-  it('should revoke SublineVersion successfully', () => {
-    sublineInternalService.revokeSubline.and.returnValue(of({}));
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+  it('should revoke SublineVersion successfully', async () => {
+    sublineInternalService.revokeSubline.mockReturnValue(of(undefined));
+    const navigateSpy = vi
+      .spyOn(router, 'navigate')
+      .mockReturnValue(Promise.resolve(true));
 
     component.revoke();
+    await fixture.whenStable();
     fixture.detectChanges();
 
-    const snackBarContainer = fixture.nativeElement.offsetParent.querySelector(
+    const snackBarContainer = document.body.querySelector(
       'mat-snack-bar-container'
     );
-    expect(snackBarContainer).toBeDefined();
-    expect(snackBarContainer.textContent.trim()).toBe(
+    expect(snackBarContainer).not.toBeNull();
+    expect(snackBarContainer!.textContent!.trim()).toBe(
       'LIDI.SUBLINE.NOTIFICATION.REVOKE_SUCCESS'
     );
-    expect(snackBarContainer.classList).toContain('success');
-    expect(router.navigate).toHaveBeenCalled();
+    expect(snackBarContainer!.classList).toContain('success');
+    expect(navigateSpy).toHaveBeenCalled();
   });
 });
 
 describe('SublineDetailComponent for new sublineVersion', () => {
-  const sublineService = jasmine.createSpyObj('sublineService', [
-    'createSublineVersionV2',
-  ]);
-  const mockData = {
-    sublineDetail: [],
-  };
+  let sublineService: Mocked<Pick<SublineService, 'createSublineVersionV2'>>;
+
+  const mockData = { sublineDetail: [] };
 
   beforeEach(() => {
+    Element.prototype.scrollIntoView = vi.fn();
+    createSharedMocks();
+
+    sublineService = { createSublineVersionV2: vi.fn() };
+
     setupTestBed(sublineService, {} as SublineInternalService, mockData);
 
     fixture = TestBed.createComponent(SublineDetailComponent);
@@ -224,9 +252,13 @@ describe('SublineDetailComponent for new sublineVersion', () => {
   });
 
   describe('create new Version', () => {
-    it('successfully', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-      sublineService.createSublineVersionV2.and.returnValue(of(sublineVersion));
+    it('successfully', async () => {
+      const navigateSpy = vi
+        .spyOn(router, 'navigate')
+        .mockReturnValue(Promise.resolve(true));
+      sublineService.createSublineVersionV2.mockReturnValue(
+        of(readSublineVersion)
+      );
 
       component.form.patchValue({
         mainlineSlnid: 'mainlineSlnid',
@@ -239,20 +271,19 @@ describe('SublineDetailComponent for new sublineVersion', () => {
       });
 
       component.save();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       expect(sublineService.createSublineVersionV2).toHaveBeenCalled();
-
-      const snackBarContainer =
-        fixture.nativeElement.offsetParent.querySelector(
-          'mat-snack-bar-container'
-        );
-      expect(snackBarContainer).toBeDefined();
-      expect(snackBarContainer.textContent.trim()).toBe(
+      const snackBarContainer = document.body.querySelector(
+        'mat-snack-bar-container'
+      );
+      expect(snackBarContainer).not.toBeNull();
+      expect(snackBarContainer!.textContent!.trim()).toBe(
         'LIDI.SUBLINE.NOTIFICATION.ADD_SUCCESS'
       );
-      expect(snackBarContainer.classList).toContain('success');
-      expect(router.navigate).toHaveBeenCalled();
+      expect(snackBarContainer!.classList).toContain('success');
+      expect(navigateSpy).toHaveBeenCalled();
     });
   });
 
@@ -269,7 +300,6 @@ describe('SublineDetailComponent for new sublineVersion', () => {
     ]);
     expect(component.form.controls.sublineType.value).toBeNull();
 
-    // Remove mainline selection
     component.mainLineChanged(undefined);
     expect(component.TYPE_OPTIONS).toEqual([]);
     expect(component.currentMainlineSelection).toBeUndefined();
@@ -316,9 +346,9 @@ describe('SublineDetailComponent for new sublineVersion', () => {
 });
 
 function setupTestBed(
-  sublinesService: SublineService,
-  sublineInternalService: SublineInternalService,
-  data: { sublineDetail: string | SublineVersionV2[] }
+  sublinesService: Partial<SublineService>,
+  sublineInternalService: Partial<SublineInternalService>,
+  data: { sublineDetail: ReadSublineVersionV2[] }
 ) {
   TestBed.configureTestingModule({
     imports: [
@@ -350,10 +380,12 @@ function setupTestBed(
       { provide: SublineService, useValue: sublinesService },
       { provide: SublineInternalService, useValue: sublineInternalService },
       { provide: LineService, useValue: lineService },
+      { provide: LineInternalService, useValue: lineInternalService },
       { provide: DialogService, useValue: dialogService },
       { provide: PermissionService, useValue: adminPermissionServiceMock },
       { provide: ActivatedRoute, useValue: { snapshot: { data: data } } },
       TranslatePipe,
+      provideHttpClientTesting(),
     ],
   })
     .overrideComponent(SublineDetailComponent, {
