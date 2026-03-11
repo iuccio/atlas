@@ -51,6 +51,8 @@ public class LineVersionSnapshot extends BaseVersionSnapshot {
   @Size(max = AtlasFieldLengths.LENGTH_50)
   private String swissLineNumber;
 
+  private String linienId;
+
   private String slnid;
 
   @NotNull

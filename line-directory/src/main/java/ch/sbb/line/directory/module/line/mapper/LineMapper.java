@@ -13,6 +13,7 @@ public class LineMapper {
     return LineVersion.builder()
         .id(lineVersionModel.getId())
         .slnid(lineVersionModel.getSlnid())
+        .linienId(lineVersionModel.getLinienId())
         .lineType(versionToUpdate.getLineType())
         .number(lineVersionModel.getNumber())
         .longName(lineVersionModel.getLongName())

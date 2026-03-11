@@ -22,6 +22,7 @@ import lombok.experimental.FieldNameConstants;
 public class SublineCsvModel {
 
   private String slnid;
+  private String linienId;
   private String mainlineSlnid;
   private String validFrom;
   private String validTo;

@@ -15,6 +15,7 @@ public class SublineRowMapper implements RowMapper<Subline> {
   public Subline mapRow(ResultSet rs, int rowNum) throws SQLException {
     return Subline.builder()
         .slnid(rs.getString("slnid"))
+        .linienId(rs.getString("linien_id"))
         .mainlineSlnid(rs.getString("mainline_slnid"))
         .validFrom(rs.getDate("valid_from").toLocalDate())
         .validTo(rs.getDate("valid_to").toLocalDate())

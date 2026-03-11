@@ -9,6 +9,7 @@ import ch.sbb.business.organisation.directory.service.crd.ObjectFactory;
 import ch.sbb.business.organisation.directory.service.crd.ReplicationVolume;
 import jakarta.xml.bind.JAXBElement;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
@@ -46,7 +47,7 @@ public class CrdClientImpl implements CrdClient {
 
   @SuppressWarnings("unchecked")
   CompanyDataResponse getCompanyData(JAXBElement<CompanyRequest> getCompanyRequest) {
-    return ((JAXBElement<CompanyDataResponse>) webServiceTemplate.marshalSendAndReceive(
-        getCompanyRequest, crdHeaders)).getValue();
+    return ((JAXBElement<CompanyDataResponse>) Objects.requireNonNull(
+        webServiceTemplate.marshalSendAndReceive(getCompanyRequest, crdHeaders))).getValue();
   }
 }

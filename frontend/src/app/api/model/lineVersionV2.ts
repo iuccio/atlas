@@ -41,6 +41,10 @@ export interface LineVersionV2 {
      */
     readonly slnid?: string;
     /**
+     * LinienID / LineRef - Only available temporarily until SLNID Migration is complete
+     */
+    linienId?: string;
+    /**
      * LongName
      */
     longName?: string;

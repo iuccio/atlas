@@ -12,6 +12,7 @@ public class LineTemplateGenerator {
   public static LineUpdateCsvModel getUpdateExample() {
     return LineUpdateCsvModel.builder()
         .slnid("ch:1:slnid:1024320")
+        .linienId("320")
         .validFrom(LocalDate.of(2021, 4, 1))
         .validTo(LocalDate.of(2099, 12, 31))
         .description("Chur - Thusis - St. Moritz - Pontresina - Tirano")

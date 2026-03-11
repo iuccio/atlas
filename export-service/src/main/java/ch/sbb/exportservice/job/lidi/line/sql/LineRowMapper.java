@@ -17,6 +17,7 @@ public class LineRowMapper implements RowMapper<Line> {
     return Line.builder()
         .id(rs.getLong("id"))
         .slnid(rs.getString("slnid"))
+        .linienId(rs.getString("linien_id"))
         .validFrom(rs.getDate("valid_from").toLocalDate())
         .validTo(rs.getDate("valid_to").toLocalDate())
         .status(Status.valueOf(rs.getString("status")))

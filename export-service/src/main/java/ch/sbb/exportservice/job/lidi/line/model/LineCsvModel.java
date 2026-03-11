@@ -22,6 +22,7 @@ import lombok.experimental.FieldNameConstants;
 public class LineCsvModel {
 
   private String slnid;
+  private String linienId;
   private String validFrom;
   private String validTo;
   private Status status;
