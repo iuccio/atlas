@@ -1,3 +1,4 @@
+import { describe, expect, it, vi } from 'vitest';
 import { Record } from '../model/record';
 import moment from 'moment';
 import { VersionsHandlingService } from './versions-handling.service';
@@ -23,7 +24,7 @@ describe('VersionsHandlingService', () => {
     //given
     const records: Array<Record> = [firstRecord, secondRecord, thirdRecord];
     const today = moment('1.2.2000', 'DD.MM.YYYY').toDate();
-    jasmine.clock().mockDate(today);
+    vi.setSystemTime(today);
 
     //when
     const record: Record =
@@ -37,7 +38,7 @@ describe('VersionsHandlingService', () => {
     //given
     const records: Array<Record> = [firstRecord, secondRecord, thirdRecord];
     const today = moment('1.2.2001', 'DD.MM.YYYY').toDate();
-    jasmine.clock().mockDate(today);
+    vi.setSystemTime(today);
 
     //when
     const record: Record =
@@ -51,7 +52,7 @@ describe('VersionsHandlingService', () => {
     //given
     const records: Array<Record> = [firstRecord, secondRecord, thirdRecord];
     const today = moment('1.2.2002', 'DD.MM.YYYY').toDate();
-    jasmine.clock().mockDate(today);
+    vi.setSystemTime(today);
 
     //when
     const record: Record =
@@ -65,7 +66,7 @@ describe('VersionsHandlingService', () => {
     //given
     const records: Array<Record> = [firstRecord, secondRecord, thirdRecord];
     const today = moment('1.2.1999', 'DD.MM.YYYY').toDate();
-    jasmine.clock().mockDate(today);
+    vi.setSystemTime(today);
 
     //when
     const record: Record =
@@ -79,7 +80,7 @@ describe('VersionsHandlingService', () => {
     //given
     const records: Array<Record> = [firstRecord, secondRecord, thirdRecord];
     const today = moment('1.2.2099', 'DD.MM.YYYY').toDate();
-    jasmine.clock().mockDate(today);
+    vi.setSystemTime(today);
 
     //when
     const record: Record =
@@ -99,7 +100,7 @@ describe('VersionsHandlingService', () => {
     records.push(fourthRecord);
     //given
     const today = moment('1.2.2003', 'DD.MM.YYYY').toDate();
-    jasmine.clock().mockDate(today);
+    vi.setSystemTime(today);
 
     //when
     const record: Record =
@@ -123,7 +124,7 @@ describe('VersionsHandlingService', () => {
     const records: Array<Record> = [todayRecord, tomorrowRecord];
     //given
     const today = moment('1.1.2004', 'DD.MM.YYYY').toDate();
-    jasmine.clock().mockDate(today);
+    vi.setSystemTime(today);
 
     //when
     const record: Record =

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { FormControl } from '@angular/forms';
 import { WhitespaceValidator } from './whitespace-validator';
 

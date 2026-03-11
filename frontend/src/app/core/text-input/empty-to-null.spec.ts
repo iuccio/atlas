@@ -1,12 +1,12 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement } from '@angular/core';
 import { EmptyToNullDirective } from './empty-to-null';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { AppTestingModule } from '../../app.testing.module';
 
 @Component({
-  template: ` <input [formControl]="form" atlasEmptyToNull /> `,
+  template: `<input [formControl]="form" atlasEmptyToNull />`,
   imports: [EmptyToNullDirective, ReactiveFormsModule],
 })
 class TestComponent {
@@ -18,13 +18,11 @@ const keyUpEvent = new KeyboardEvent('keyup');
 describe('EmptyToNullDirective', () => {
   let component: TestComponent;
   let fixture: ComponentFixture<TestComponent>;
+
   let inputField: DebugElement;
 
   beforeEach(() => {
-    fixture = TestBed.configureTestingModule({
-      imports: [AppTestingModule, EmptyToNullDirective, TestComponent],
-    }).createComponent(TestComponent);
-
+    fixture = TestBed.createComponent(TestComponent);
     component = fixture.componentInstance;
 
     inputField = fixture.debugElement.query(By.css('input'));
