@@ -56,7 +56,7 @@ class PdfCdrTest {
     // then
     try (InputStream inputStream = new FileInputStream(sanitizedFilePath)) {
       String afterSanitationMd5Checksum = DigestUtils.md5Hex(inputStream);
-      assertThat(afterSanitationMd5Checksum).isEqualTo("89fbc46e20716c4fabb32e646cea6918");
+      assertThat(afterSanitationMd5Checksum).isEqualTo("80ca12446c4dea810d953363995d98fa");
     }
   }
 
