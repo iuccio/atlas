@@ -47,6 +47,11 @@ public class BaseSublineVersionModel extends BaseVersionModel implements DatesVa
   @Schema(description = "SLNID", accessMode = AccessMode.READ_ONLY, example = "ch:1:slnid:10001235:1")
   private String slnid;
 
+  @Schema(description = "LinienID / LineRef - Only available temporarily until SLNID Migration is complete", example = "1012")
+  @Size(max = AtlasFieldLengths.LENGTH_20)
+  @Pattern(regexp = AtlasCharacterSetsRegex.ALPHA_NUMERIC)
+  private String linienId;
+
   @NotBlank
   @Schema(description = "Description", example = "Meiringen - Innertkirchen")
   @Size(max = AtlasFieldLengths.LENGTH_255)

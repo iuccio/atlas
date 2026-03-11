@@ -67,8 +67,8 @@ import {
     DetailFooterComponent,
     AtlasButtonComponent,
     TranslatePipe,
-    RevokeButton
-],
+    RevokeButton,
+  ],
 })
 export class LineDetailComponent implements Revokable, OnInit, OnDestroy {
   readonly eventSubject = new Subject<boolean>();
@@ -397,6 +397,7 @@ export class LineDetailComponent implements Revokable, OnInit, OnDestroy {
 
   initializeForm(form: FormGroup<LineDetailFormGroup>) {
     this.initForm = new FormGroup<LineDetailFormGroup>({
+      linienId: new FormControl(form.value.linienId),
       swissLineNumber: new FormControl(form.value.swissLineNumber),
       lineType: new FormControl(form.value.lineType),
       offerCategory: new FormControl(form.value.offerCategory),

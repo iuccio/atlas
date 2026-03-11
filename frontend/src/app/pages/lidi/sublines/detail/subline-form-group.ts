@@ -15,6 +15,7 @@ export interface SublineFormGroup extends BaseDetailFormGroup {
   swissSublineNumber: FormControl<string | null | undefined>;
   mainlineSlnid: FormControl<string | null | undefined>;
   slnid: FormControl<string | null | undefined>;
+  linienId: FormControl<string | null | undefined>;
   status: FormControl<string | null | undefined>;
   sublineType: FormControl<SublineType | null | undefined>;
   sublineConcessionType: FormControl<SublineConcessionType | null | undefined>;
@@ -28,6 +29,10 @@ export class SublineFormGroupBuilder {
   static buildFormGroup(version?: ReadSublineVersionV2): FormGroup {
     const formGroup = new FormGroup<SublineFormGroup>(
       {
+        linienId: new FormControl(version?.linienId, [
+          Validators.maxLength(20),
+          AtlasCharsetsValidator.alphaNumeric,
+        ]),
         swissSublineNumber: new FormControl(version?.swissSublineNumber, [
           AtlasFieldLengthValidator.length_50,
           AtlasCharsetsValidator.sid4pt,

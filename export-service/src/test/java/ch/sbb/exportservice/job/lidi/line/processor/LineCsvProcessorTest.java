@@ -20,6 +20,7 @@ class LineCsvProcessorTest {
     Line line = Line.builder()
         .id(1L)
         .slnid("ch:1:slnid:100000")
+        .linienId("100")
         .validFrom(LocalDate.of(2000, 1, 1))
         .validTo(LocalDate.of(2000, 12, 31))
         .status(Status.VALIDATED)
@@ -39,6 +40,7 @@ class LineCsvProcessorTest {
 
     LineCsvModel expected = LineCsvModel.builder()
         .slnid("ch:1:slnid:100000")
+        .linienId("100")
         .validFrom("2000-01-01")
         .validTo("2000-12-31")
         .status(Status.VALIDATED)

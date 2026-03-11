@@ -487,7 +487,9 @@
         "EDIT_ERROR": "Beim Editieren der Linie ist ein Fehler aufgetreten.",
         "REVOKE_SUCCESS": "Die Linie wurde erfolgreich als Fehlerfassung gekennzeichnet.",
         "DELETE_SUCCESS": "Die Linie wurde erfolgreich gelöscht."
-      }
+      },
+      "LINE_ID": "LinienID / LineRef",
+      "LINE_ID_INFO": "Wird für die Abbildung des neuen Linienmodells mit der alten ID (VDV: LinienID; SIRI: LineRef) - als Grundlage für die SLNID-Migration benötigt."
     },
     "SUBLINE": {
       "NO_LINE_DESIGNATION_AVAILABLE": "keine Linienbezeichnung vorhanden",

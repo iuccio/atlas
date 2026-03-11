@@ -13,6 +13,7 @@ import moment from 'moment/moment';
 import { DateRangeValidator } from '../../../../core/validation/date-range/date-range-validator';
 
 export interface LineDetailFormGroup extends BaseDetailFormGroup {
+  linienId: FormControl<string | null | undefined>;
   swissLineNumber: FormControl<string | null | undefined>;
   lineType: FormControl<LineType | null | undefined>;
   offerCategory: FormControl<OfferCategory | null | undefined>;
@@ -31,6 +32,10 @@ export class LineFormGroupBuilder {
   ): FormGroup<LineDetailFormGroup> {
     return new FormGroup<LineDetailFormGroup>(
       {
+        linienId: new FormControl(version?.linienId, [
+          Validators.maxLength(20),
+          AtlasCharsetsValidator.alphaNumeric,
+        ]),
         swissLineNumber: new FormControl(version?.swissLineNumber, [
           Validators.required,
           Validators.maxLength(50),

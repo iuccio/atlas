@@ -120,8 +120,8 @@
       </div>
 
       <div class="col-12 d-flex mb-3">
-        <div class="d-flex flex-column col-3 pe-3">
-          @if (TYPE_OPTIONS.length > 0) {
+        @if (TYPE_OPTIONS.length > 0) {
+          <div class="d-flex flex-column col-3 pe-3">
             <atlas-select
               [formGroup]="form"
               controlName="sublineType"
@@ -133,46 +133,66 @@
               [additionalLabelspace]="24"
             >
             </atlas-select>
-          }
-        </div>
+          </div>
 
-        <div class="d-flex flex-column col-3 pe-3">
           @if (form.controls.sublineType.value === 'CONCESSION') {
-            <atlas-select
-              [formGroup]="form"
-              controlName="sublineConcessionType"
-              dataCy="sublineConcessionType"
-              label="LIDI.LINE_CONCESSION.TYPE"
-              optionTranslateLabelPrefix="LIDI.LINE_CONCESSION."
-              [options]="CONCESSION_TYPE_OPTIONS"
-              [required]="true"
-              [additionalLabelspace]="24"
-            >
-            </atlas-select>
+            <div class="d-flex flex-column col-3 pe-3">
+              <atlas-select
+                [formGroup]="form"
+                controlName="sublineConcessionType"
+                dataCy="sublineConcessionType"
+                label="LIDI.LINE_CONCESSION.TYPE"
+                optionTranslateLabelPrefix="LIDI.LINE_CONCESSION."
+                [options]="CONCESSION_TYPE_OPTIONS"
+                [required]="true"
+                [additionalLabelspace]="24"
+              >
+              </atlas-select>
+            </div>
           }
-        </div>
 
-        <div class="d-flex flex-column col-3">
           @if (form.controls.sublineType.value === 'CONCESSION') {
+            <div class="d-flex flex-column col-3">
+              <atlas-text-field
+                [fieldExamples]="[
+                  { label: 'FORM.FOR_EXAMPLE', translate: true },
+                  { label: ' r.31.001:a', translate: false },
+                  { label: ' | ', translate: false },
+                  {
+                    label: 'FORM.MAX_CHARS',
+                    translate: true,
+                    arg: { key: 'numberOfChars', value: '50' },
+                  },
+                ]"
+                [formGroup]="form"
+                [required]="true"
+                controlName="swissSublineNumber"
+                fieldLabel="LIDI.SWISS_SUBLINE_NUMBER"
+              >
+              </atlas-text-field>
+            </div>
+          }
+
+          <div class="d-flex flex-column col-3 ps-3">
             <atlas-text-field
               [fieldExamples]="[
                 { label: 'FORM.FOR_EXAMPLE', translate: true },
-                { label: ' r.31.001:a', translate: false },
+                { label: ' 100', translate: false },
                 { label: ' | ', translate: false },
                 {
                   label: 'FORM.MAX_CHARS',
                   translate: true,
-                  arg: { key: 'numberOfChars', value: '50' },
+                  arg: { key: 'numberOfChars', value: '20' },
                 },
               ]"
               [formGroup]="form"
-              [required]="true"
-              controlName="swissSublineNumber"
-              fieldLabel="LIDI.SWISS_SUBLINE_NUMBER"
-            >
-            </atlas-text-field>
-          }
-        </div>
+              [required]="false"
+              controlName="linienId"
+              fieldLabel="LIDI.LINE.LINE_ID"
+              infoIconTitle="LIDI.LINE.LINE_ID_INFO"
+            ></atlas-text-field>
+          </div>
+        }
       </div>
 
       <div class="col-12 d-flex">

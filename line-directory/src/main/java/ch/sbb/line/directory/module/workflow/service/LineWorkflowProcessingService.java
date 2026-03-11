@@ -84,6 +84,7 @@ public class LineWorkflowProcessingService extends
         .validTo(lineVersion.getValidTo())
         .status(lineVersion.getStatus())
         .swissLineNumber(lineVersion.getSwissLineNumber())
+        .linienId(lineVersion.getLinienId())
         .slnid(lineVersion.getSlnid())
         .lineType(lineVersion.getLineType())
         .number(lineVersion.getNumber())

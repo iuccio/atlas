@@ -28,6 +28,7 @@ public class Line extends BaseEntity implements Versionable {
 
   private Long id;
   private String slnid;
+  private String linienId;
 
   private LocalDate validFrom;
   private LocalDate validTo;

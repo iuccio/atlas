@@ -89,9 +89,6 @@ public class SloidRepository {
     String sqlQuery = "select count(*) from allocated_sloid where sloid = :sloid;";
     Byte nbOfFoundSloids = locationJdbcTemplate.queryForObject(sqlQuery, mapSqlParameterSource,
         (rs, row) -> rs.getByte(1));
-    if (nbOfFoundSloids == null) {
-      throw new IllegalStateException("select count query should not return null!");
-    }
     return nbOfFoundSloids == 1;
   }
 
