@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { AppTestingModule } from '../../../app.testing.module';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
@@ -15,10 +16,11 @@ import { DateIconComponent } from '../../../core/form-components/date-icon/date-
 import { TranslatePipe } from '@ngx-translate/core';
 import { TimetableHearingYearInternalService } from '../../../api/service/lidi/timetable-hearing-year-internal.service';
 
-const mockTimetableHearingYearsService = jasmine.createSpyObj(
-  'timetableHearingService',
-  ['getHearingYears']
-);
+const mockTimetableHearingYearsService: Mocked<
+  Pick<TimetableHearingYearInternalService, 'getHearingYears'>
+> = {
+  getHearingYears: vi.fn(),
+};
 
 describe('NewTimetableHearingYearDialogComponent', () => {
   let newTimetableHearingYearDialogComponent: NewTimetableHearingYearDialogComponent;
@@ -59,7 +61,7 @@ describe('NewTimetableHearingYearDialogComponent', () => {
   }
 
   beforeEach(async () => {
-    mockTimetableHearingYearsService.getHearingYears.and.returnValue(
+    mockTimetableHearingYearsService.getHearingYears.mockReturnValue(
       of(getTimetableHearingYears())
     );
     await TestBed.configureTestingModule({
@@ -97,7 +99,7 @@ describe('NewTimetableHearingYearDialogComponent', () => {
     expect(newTimetableHearingYearDialogComponent).toBeTruthy();
 
     const title = fixture.debugElement.query(By.css('h1'));
-    expect(title.nativeElement.innerText).toBe(
+    expect(title.nativeElement.textContent).to.contain(
       'TTH.NEW_YEAR.DIALOG.NEW_PLAN_TIMETABLE'
     );
 
@@ -166,7 +168,7 @@ describe('NewTimetableHearingYearDialogComponent', () => {
         currentYear + 1,
         timetableHearingYears
       )
-    ).toBeTrue();
+    ).toBe(true);
   });
 
   it('should validate that the year is neither planned nor archived', () => {
@@ -177,7 +179,7 @@ describe('NewTimetableHearingYearDialogComponent', () => {
         currentYear + 4,
         timetableHearingYears
       )
-    ).toBeFalse();
+    ).toBe(false);
   });
 
   it('should calculate proposed years', () => {

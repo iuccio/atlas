@@ -129,3 +129,9 @@ This documents the contract more accurately and guards against duplicate invocat
 
 ### Rule: avoid command questions while editing
 Do not ask command-related questions while editing files. All necessary commands should be determined from the AGENT rules or project context, not prompted for mid-edit. If you need clarification, ask after finishing the edit instead of embedding questions in the code review or change itself. Additionally, avoid requesting or suggesting terminal operations—any required commands should already be implicit in the AGENT guidance or the project structure. This applies to the chat as well: the AGENT interaction should not contain requests for terminal runs or instructions to execute commands while you are editing the code.
+
+### Rule: avoid using explicit any
+Please do not `as any` as it violates the linting rule `@typescript-eslint/no-explicit-any`. Try to use proper typing instead.
+
+### Rule: do not make any unnecessary changes
+Do not delete comments or tests, that were in place.

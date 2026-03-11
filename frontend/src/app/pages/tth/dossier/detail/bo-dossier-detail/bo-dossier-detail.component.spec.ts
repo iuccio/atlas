@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { BoDossierDetailComponent } from './bo-dossier-detail.component';
 import { AppTestingModule } from '../../../../../app.testing.module';
 import { TthDossier } from '../../../../../api/model/tthDossier';
@@ -10,7 +11,6 @@ import { TimetableHearingStatementInternalService } from '../../../../../api/ser
 import { FormatPipe } from '../../../../../core/components/table/pipe/format.pipe';
 import { DossierInternalService } from '../../../../../api/service/workflow/dossier-internal.service';
 import { NotificationService } from '../../../../../core/notification/notification.service';
-import SpyObj = jasmine.SpyObj;
 
 const dossier: TthDossier = {
   swissCanton: SwissCanton.Bern,
@@ -38,25 +38,26 @@ describe('BoDossierDetail', () => {
   let component: BoDossierDetailComponent;
   let fixture: ComponentFixture<BoDossierDetailComponent>;
 
-  let timetableHearingStatementInternalService: SpyObj<TimetableHearingStatementInternalService>;
-  let dossierInternalService: SpyObj<DossierInternalService>;
-  let notificationService: SpyObj<NotificationService>;
+  let timetableHearingStatementInternalService: Mocked<
+    Pick<TimetableHearingStatementInternalService, 'getStatement'>
+  >;
+  let dossierInternalService: Mocked<
+    Pick<DossierInternalService, 'answerQuestion'>
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
 
   beforeEach(async () => {
-    timetableHearingStatementInternalService = jasmine.createSpyObj(
-      'TimetableHearingStatementInternalService',
-      {
-        getStatement: of(statement),
-      }
-    );
+    timetableHearingStatementInternalService = {
+      getStatement: vi.fn().mockReturnValue(of(statement)),
+    };
 
-    dossierInternalService = jasmine.createSpyObj('DossierInternalService', {
-      answerQuestion: of<void>(undefined),
-    });
+    dossierInternalService = {
+      answerQuestion: vi.fn().mockReturnValue(of(undefined)),
+    };
 
-    notificationService = jasmine.createSpyObj('NotificationService', [
-      'success',
-    ]);
+    notificationService = {
+      success: vi.fn(),
+    };
 
     const activatedRoute = {
       snapshot: {
@@ -104,24 +105,28 @@ describe('BoDossierDetail', () => {
     //when
     component.sendAnswer();
     //then
-    expect(dossierInternalService.answerQuestion).toHaveBeenCalledOnceWith(
-      123,
-      { answerToCanton: 'Ich bin einverstanden!' }
-    );
-    expect(notificationService.success).toHaveBeenCalledOnceWith(
+    expect(dossierInternalService.answerQuestion).toHaveBeenCalledTimes(1);
+    expect(dossierInternalService.answerQuestion).toHaveBeenCalledWith(123, {
+      answerToCanton: 'Ich bin einverstanden!',
+    });
+    expect(notificationService.success).toHaveBeenCalledTimes(1);
+    expect(notificationService.success).toHaveBeenCalledWith(
       'TTH.DOSSIER.NOTIFICATION.SENT_TO_CANTON'
     );
-    expect(component.form.disabled).toBeTrue();
-    expect(component.isDossierStatusBoCheck).toBeFalse();
+    expect(component.form.disabled).toBe(true);
+    expect(component.isDossierStatusBoCheck).toBe(false);
   });
 
   it('should open mailto on openInMail()', () => {
     //given
-    spyOn(window, 'open');
+    const windowOpenSpy = vi
+      .spyOn(window, 'open')
+      .mockImplementation(() => null);
     //when
     component.openInMail();
     //then
-    expect(window.open).toHaveBeenCalledOnceWith(
+    expect(windowOpenSpy).toHaveBeenCalledTimes(1);
+    expect(windowOpenSpy).toHaveBeenCalledWith(
       'mailto:?subject=Dossier%20%22Mehr%20Busse%20bitte%22&body=TTH.DOSSIER.INQUIRY_FROM_THE_CANTON%20%5BTTH.CANTON.BE%5D%0AHabt%20ihr%20mehr%20Busse%3F',
       '_self'
     );

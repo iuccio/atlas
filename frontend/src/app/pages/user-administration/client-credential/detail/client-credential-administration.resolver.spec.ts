@@ -1,5 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  convertToParamMap,
+  RouterStateSnapshot,
+} from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { ClientCredential } from '../../../../api';
 import { AppTestingModule } from '../../../../app.testing.module';
@@ -14,7 +18,7 @@ const clientCredential: ClientCredential = {
   clientCredentialId: '23456789',
 };
 
-const routerStateSnapshot = {} as any;
+const routerStateSnapshot = {} as RouterStateSnapshot;
 
 describe('ClientCredentialAdministrationResolver', () => {
   let clientCredentialAdministrationService: Mocked<

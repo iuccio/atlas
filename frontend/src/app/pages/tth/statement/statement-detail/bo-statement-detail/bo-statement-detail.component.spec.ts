@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach } from 'vitest';
 
 import { BoStatementDetailComponent } from './bo-statement-detail.component';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
-import { statement } from '../../statement-test-util.spec';
+import { statement } from '../../statement-test-util';
 import { ActivatedRoute } from '@angular/router';
 
 describe('BoStatementDetail', () => {
@@ -43,7 +44,7 @@ describe('BoStatementDetail', () => {
   });
 
   it('should get anonymus document', () => {
-    expect(component.anonymDocuments).toHaveSize(1);
+    expect(component.anonymDocuments).toHaveLength(1);
     expect(component.anonymDocuments[0].getRawValue()).toEqual({
       id: 1,
       anonymous: true,

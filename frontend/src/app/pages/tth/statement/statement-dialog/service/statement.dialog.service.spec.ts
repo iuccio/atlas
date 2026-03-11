@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { SwissCanton } from '../../../../../api';
 import { StatementDialogService } from './statement.dialog.service';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
@@ -55,9 +56,11 @@ const form = new FormGroup<StatementDetailFormGroup>({
 describe('StatementDialogService', () => {
   let service: StatementDialogService;
 
-  const dialogSpy = jasmine.createSpyObj('statementDialog', ['open']);
+  let dialogSpy: Mocked<Pick<MatDialog, 'open'>>;
 
   beforeEach(() => {
+    dialogSpy = { open: vi.fn() };
+
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
       providers: [{ provide: MatDialog, useValue: dialogSpy }],
@@ -66,18 +69,22 @@ describe('StatementDialogService', () => {
   });
 
   it('should open statement comment dialog and pass cancel value - true', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
+    dialogSpy.open.mockReturnValue({
+      afterClosed: () => of(true),
+    } as ReturnType<MatDialog['open']>);
 
-    service.openDialog(form).subscribe((result) => expect(result).toBeTrue());
+    service.openDialog(form).subscribe((result) => expect(result).toBe(true));
 
-    expect(dialogSpy.open).toHaveBeenCalled();
+    expect(dialogSpy.open).toHaveBeenCalledTimes(1);
   });
 
   it('should open statement comment dialog and pass cancel value - false', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(false) });
+    dialogSpy.open.mockReturnValue({
+      afterClosed: () => of(false),
+    } as ReturnType<MatDialog['open']>);
 
-    service.openDialog(form).subscribe((result) => expect(result).toBeFalse());
+    service.openDialog(form).subscribe((result) => expect(result).toBe(false));
 
-    expect(dialogSpy.open).toHaveBeenCalled();
+    expect(dialogSpy.open).toHaveBeenCalledTimes(1);
   });
 });

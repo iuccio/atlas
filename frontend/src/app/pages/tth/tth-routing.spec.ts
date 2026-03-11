@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { provideRouter, Router, Routes } from '@angular/router';
 import {
   loadDossierDetailRoute,
@@ -20,17 +21,19 @@ const testRoutes: Routes = [
 ];
 
 describe('TTH Routing', () => {
-  let permissionServiceSpy: jasmine.SpyObj<PermissionService>;
-  let userServiceSpy: jasmine.SpyObj<UserService>;
+  let permissionServiceSpy: Mocked<
+    Pick<PermissionService, 'getTthApplicationUserType'>
+  >;
+  let userServiceSpy: Mocked<Pick<UserService, 'onPermissionsLoaded'>>;
 
   beforeEach(() => {
-    permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
-    userServiceSpy = jasmine.createSpyObj('UserService', [
-      'onPermissionsLoaded',
-    ]);
-    userServiceSpy.onPermissionsLoaded.and.returnValue(of(void 0));
+    permissionServiceSpy = {
+      getTthApplicationUserType: vi.fn(),
+    };
+    userServiceSpy = {
+      onPermissionsLoaded: vi.fn(),
+    };
+    userServiceSpy.onPermissionsLoaded.mockReturnValue(of(void 0));
   });
 
   it('should construct router with tth routes', () => {
@@ -44,7 +47,7 @@ describe('TTH Routing', () => {
   });
 
   it('should load CantonStatementDetailComponent', () => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue(
       'CANTON_TTH'
     );
 
@@ -66,7 +69,7 @@ describe('TTH Routing', () => {
   });
 
   it('should load BoStatementDetailComponent', () => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
@@ -86,7 +89,7 @@ describe('TTH Routing', () => {
   });
 
   it('should load BoDossierDetailComponent', () => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
@@ -106,7 +109,7 @@ describe('TTH Routing', () => {
   });
 
   it('should load CantonDossierDetailComponent', () => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue(
       'CANTON_TTH'
     );
 
@@ -127,8 +130,8 @@ describe('TTH Routing', () => {
     });
   });
 
-  it('should redirect active to statements', (done) => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+  it('should redirect active to statements', async () => {
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue(
       'CANTON_TTH'
     );
 
@@ -144,14 +147,12 @@ describe('TTH Routing', () => {
     const router = TestBed.inject(Router);
     const location = TestBed.inject(Location);
 
-    router.navigateByUrl('/timetable-hearing/zh/active').then(() => {
-      expect(location.path()).toBe('/timetable-hearing/zh/active/statements');
-      done();
-    });
-  });
+    await router.navigateByUrl('/timetable-hearing/zh/active');
+    expect(location.path()).toBe('/timetable-hearing/zh/active/statements');
+  }, 10000);
 
-  it('should redirect archived to statements', (done) => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+  it('should redirect archived to statements', async () => {
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue(
       'CANTON_TTH'
     );
 
@@ -167,14 +168,12 @@ describe('TTH Routing', () => {
     const router = TestBed.inject(Router);
     const location = TestBed.inject(Location);
 
-    router.navigateByUrl('/timetable-hearing/zh/archived').then(() => {
-      expect(location.path()).toBe('/timetable-hearing/zh/archived/statements');
-      done();
-    });
+    await router.navigateByUrl('/timetable-hearing/zh/archived');
+    expect(location.path()).toBe('/timetable-hearing/zh/archived/statements');
   });
 
-  it('should resolve archived dossier route', (done) => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+  it('should resolve archived dossier route', async () => {
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue(
       'CANTON_TTH'
     );
 
@@ -190,14 +189,12 @@ describe('TTH Routing', () => {
     const router = TestBed.inject(Router);
     const location = TestBed.inject(Location);
 
-    router.navigateByUrl('/timetable-hearing/zh/archived/dossiers').then(() => {
-      expect(location.path()).toBe('/timetable-hearing/zh/archived/dossiers');
-      done();
-    });
+    await router.navigateByUrl('/timetable-hearing/zh/archived/dossiers');
+    expect(location.path()).toBe('/timetable-hearing/zh/archived/dossiers');
   });
 
-  it('should resolve active dossier route', (done) => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+  it('should resolve active dossier route', async () => {
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue(
       'CANTON_TTH'
     );
 
@@ -213,14 +210,12 @@ describe('TTH Routing', () => {
     const router = TestBed.inject(Router);
     const location = TestBed.inject(Location);
 
-    router.navigateByUrl('/timetable-hearing/zh/active/dossiers').then(() => {
-      expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
-      done();
-    });
+    await router.navigateByUrl('/timetable-hearing/zh/active/dossiers');
+    expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
   });
 
-  it('should redirect BO active to dossiers', (done) => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+  it('should redirect BO active to dossiers', async () => {
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
@@ -234,14 +229,12 @@ describe('TTH Routing', () => {
     const router = TestBed.inject(Router);
     const location = TestBed.inject(Location);
 
-    router.navigateByUrl('/timetable-hearing/zh/active').then(() => {
-      expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
-      done();
-    });
+    await router.navigateByUrl('/timetable-hearing/zh/active');
+    expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
   });
 
-  it('should redirect BO archived dossiers to active dossiers', (done) => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+  it('should redirect BO archived dossiers to active dossiers', async () => {
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
@@ -255,16 +248,12 @@ describe('TTH Routing', () => {
     const router = TestBed.inject(Router);
     const location = TestBed.inject(Location);
 
-    router
-      .navigateByUrl('/timetable-hearing/zh/archived/dossiers/1000')
-      .then(() => {
-        expect(location.path()).toBe('/timetable-hearing/ch/active/dossiers');
-        done();
-      });
+    await router.navigateByUrl('/timetable-hearing/zh/archived/dossiers/1000');
+    expect(location.path()).toBe('/timetable-hearing/ch/active/dossiers');
   });
 
-  it('should not redirect Canton archived dossiers', (done) => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue(
+  it('should not redirect Canton archived dossiers', async () => {
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue(
       'CANTON_TTH'
     );
 
@@ -284,18 +273,14 @@ describe('TTH Routing', () => {
     const router = TestBed.inject(Router);
     const location = TestBed.inject(Location);
 
-    router
-      .navigateByUrl('/timetable-hearing/zh/archived/dossiers/1000')
-      .then(() => {
-        expect(location.path()).toBe(
-          '/timetable-hearing/zh/archived/dossiers/1000'
-        );
-        done();
-      });
+    await router.navigateByUrl('/timetable-hearing/zh/archived/dossiers/1000');
+    expect(location.path()).toBe(
+      '/timetable-hearing/zh/archived/dossiers/1000'
+    );
   });
 
-  it('should resolve BO active dossier route', (done) => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+  it('should resolve BO active dossier route', async () => {
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
@@ -309,14 +294,12 @@ describe('TTH Routing', () => {
     const router = TestBed.inject(Router);
     const location = TestBed.inject(Location);
 
-    router.navigateByUrl('/timetable-hearing/zh/active/dossiers').then(() => {
-      expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
-      done();
-    });
+    await router.navigateByUrl('/timetable-hearing/zh/active/dossiers');
+    expect(location.path()).toBe('/timetable-hearing/zh/active/dossiers');
   });
 
-  it('should redirect unknown BO route to active', (done) => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+  it('should redirect unknown BO route to active', async () => {
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue('BO_TTH');
 
     TestBed.configureTestingModule({
       providers: [
@@ -330,9 +313,7 @@ describe('TTH Routing', () => {
     const router = TestBed.inject(Router);
     const location = TestBed.inject(Location);
 
-    router.navigateByUrl('/timetable-hearing/zh/unknown-path').then(() => {
-      expect(location.path()).toContain('/timetable-hearing/zh/active');
-      done();
-    });
+    await router.navigateByUrl('/timetable-hearing/zh/unknown-path');
+    expect(location.path()).toContain('/timetable-hearing/zh/active');
   });
 });

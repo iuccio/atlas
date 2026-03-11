@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { TthChangeCantonDialogComponent } from './tth-change-canton-dialog.component';
 import {
   MAT_SNACK_BAR_DATA,
@@ -24,22 +25,27 @@ const statement: TimetableHearingStatementV2 = {
     emails: new Set('fan@yb.ch'),
   },
 };
-const dialogRefSpy = jasmine.createSpyObj(['close']);
-const dialogServiceSpy = jasmine.createSpyObj(DialogService, {
-  confirmLeave: of({}),
-});
-const notificationServiceSpy = jasmine.createSpyObj(['success']);
-const mockTimetableHearingStatementsService = jasmine.createSpyObj(
-  'timetableHearingStatementsService',
-  ['updateHearingCanton']
-);
+const dialogRefSpy: Mocked<
+  Pick<MatDialogRef<TthChangeCantonDialogComponent>, 'close'>
+> = { close: vi.fn() };
+const dialogServiceSpy: Mocked<Pick<DialogService, 'confirmLeave'>> = {
+  confirmLeave: vi.fn().mockReturnValue(of({})),
+};
+const notificationServiceSpy: Mocked<Pick<NotificationService, 'success'>> = {
+  success: vi.fn(),
+};
+const mockTimetableHearingStatementsService: Mocked<
+  Pick<TimetableHearingStatementInternalService, 'updateHearingCanton'>
+> = { updateHearingCanton: vi.fn() };
 
 describe('TthChangeCantonDialogComponent', () => {
   let component: TthChangeCantonDialogComponent;
   let fixture: ComponentFixture<TthChangeCantonDialogComponent>;
 
-  mockTimetableHearingStatementsService.updateHearingCanton.and.returnValue(
-    of(statement)
+  mockTimetableHearingStatementsService.updateHearingCanton.mockReturnValue(
+    of(undefined) as ReturnType<
+      TimetableHearingStatementInternalService['updateHearingCanton']
+    >
   );
 
   beforeEach(async () => {
@@ -88,7 +94,7 @@ describe('TthChangeCantonDialogComponent', () => {
     //when
     component.onClick();
     //then
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+    expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
     expect(notificationServiceSpy.success).toHaveBeenCalledWith(
       'TTH.NOTIFICATION.CANTON_CHANGE.SUCCESS'
     );

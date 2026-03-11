@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 
 import { DossierSelectComponent } from './dossier-select.component';
 import { of } from 'rxjs';
@@ -13,10 +14,11 @@ describe('DossierSelectComponent', () => {
   let component: DossierSelectComponent;
   let fixture: ComponentFixture<DossierSelectComponent>;
 
-  const dossierInternalService = jasmine.createSpyObj(
-    'DossierInternalService',
-    ['getOverview']
-  );
+  const dossierInternalService: Mocked<
+    Pick<DossierInternalService, 'getOverview'>
+  > = {
+    getOverview: vi.fn(),
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -43,7 +45,7 @@ describe('DossierSelectComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should search for dossier', (done) => {
+  it('should search for dossier', () => {
     const searchResult: ContainerTthDossier = {
       objects: [
         {
@@ -55,21 +57,24 @@ describe('DossierSelectComponent', () => {
         },
       ],
     };
-    dossierInternalService.getOverview.and.returnValue(of(searchResult));
+    dossierInternalService.getOverview.mockReturnValue(of(searchResult));
     fixture.componentRef.setInput('year', 2026);
     fixture.detectChanges();
     component.search('testQuery');
     fixture.detectChanges();
-    expect(dossierInternalService.getOverview).toHaveBeenCalledOnceWith(
+    expect(dossierInternalService.getOverview).toHaveBeenCalledTimes(1);
+    expect(dossierInternalService.getOverview).toHaveBeenCalledWith(
       2026,
       SwissCanton.Bern,
       undefined,
       ['testQuery'],
       [DossierStatus.Added]
     );
-    component.searchResults$.subscribe((val) => {
-      expect(val).toEqual(searchResult.objects!);
-      done();
+    return new Promise<void>((resolve) => {
+      component.searchResults$.subscribe((val) => {
+        expect(val).toEqual(searchResult.objects!);
+        resolve();
+      });
     });
   });
 });

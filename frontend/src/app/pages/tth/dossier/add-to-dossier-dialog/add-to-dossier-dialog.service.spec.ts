@@ -2,13 +2,16 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { AddToDossierDialogService } from './add-to-dossier-dialog.service';
 import { TimetableHearingStatementV2 } from '../../../../api';
 
 describe('AddToDossierDialogService', () => {
   let service: AddToDossierDialogService;
 
-  const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+  const dialogSpy: Mocked<Pick<MatDialog, 'open'>> = {
+    open: vi.fn(),
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -19,12 +22,14 @@ describe('AddToDossierDialogService', () => {
   });
 
   it('should open confirmation dialog', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of([1000]) });
+    dialogSpy.open.mockReturnValue({
+      afterClosed: () => of([1000]),
+    } as ReturnType<MatDialog['open']>);
 
     service
       .openDialog({} as TimetableHearingStatementV2)
       .subscribe((result) => expect(result).toEqual([1000]));
 
-    expect(dialogSpy.open).toHaveBeenCalled();
+    expect(dialogSpy.open).toHaveBeenCalledTimes(1);
   });
 });
