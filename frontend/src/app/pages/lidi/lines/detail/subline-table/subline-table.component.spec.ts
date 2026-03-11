@@ -5,6 +5,7 @@ import { of, Subject } from 'rxjs';
 import { MockTableComponent } from '../../../../../app.testing.mocks';
 import { AppTestingModule } from '../../../../../app.testing.module';
 import { LineInternalService } from '../../../../../api/service/lidi/line-internal.service';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const subline: Line = {
   swissLineNumber: 'IC6',
@@ -18,17 +19,18 @@ const subline: Line = {
   validTo: new Date('2099-12-31'),
 };
 
-const lineInternalService = jasmine.createSpyObj('LineInternalService', [
-  'getLines',
-]);
-lineInternalService.getLines.and.returnValue(of({ objects: subline }));
-
 describe('SublineTableComponent', () => {
   let component: SublineTableComponent;
   let fixture: ComponentFixture<SublineTableComponent>;
   let eventSubject: Subject<boolean>;
+  let lineInternalService: Mocked<Pick<LineInternalService, 'getLines'>>;
 
   beforeEach(async () => {
+    lineInternalService = {
+      getLines: vi.fn(),
+    };
+    lineInternalService.getLines.mockReturnValue(of({ objects: [subline] }));
+
     await TestBed.configureTestingModule({
       imports: [AppTestingModule, SublineTableComponent, MockTableComponent],
       providers: [
@@ -53,10 +55,11 @@ describe('SublineTableComponent', () => {
   });
 
   it('should navigate to subline in new tab', () => {
-    spyOn(window, 'open');
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
     component.rowClicked(subline);
-    expect(window.open).toHaveBeenCalledWith(
+
+    expect(openSpy).toHaveBeenCalledExactlyOnceWith(
       '/line-directory/sublines/ch:1:slnid:8000:1',
       '_blank'
     );

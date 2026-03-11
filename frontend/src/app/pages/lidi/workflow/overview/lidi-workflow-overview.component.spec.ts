@@ -2,14 +2,13 @@ import { ContainerLineVersionSnapshot } from 'src/app/api/model/containerLineVer
 import { LineType, WorkflowStatus } from '../../../../api';
 import { LidiWorkflowOverviewComponent } from './lidi-workflow-overview.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { MockTableComponent } from '../../../../app.testing.mocks';
 import { LineInternalService } from '../../../../api/service/lidi/line-internal.service';
 import { ActivatedRoute } from '@angular/router';
 import { TableComponent } from '../../../../core/components/table/table.component';
-import SpyObj = jasmine.SpyObj;
-import Spy = jasmine.Spy;
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const versionContainer: ContainerLineVersionSnapshot = {
   objects: [
@@ -35,25 +34,23 @@ const versionContainer: ContainerLineVersionSnapshot = {
 describe('LidiWorkflowOverviewComponent', () => {
   let component: LidiWorkflowOverviewComponent;
   let fixture: ComponentFixture<LidiWorkflowOverviewComponent>;
-
-  let lineInternalServiceSpy: SpyObj<LineInternalService>;
+  let lineInternalService: Mocked<
+    Pick<LineInternalService, 'getLineVersionSnapshot'>
+  >;
 
   beforeEach(() => {
-    lineInternalServiceSpy = jasmine.createSpyObj<LineInternalService>(
-      'LineInternalServiceSpy',
-      ['getLineVersionSnapshot']
+    lineInternalService = {
+      getLineVersionSnapshot: vi.fn(),
+    };
+    lineInternalService.getLineVersionSnapshot.mockReturnValue(
+      of(versionContainer)
     );
-    (
-      lineInternalServiceSpy.getLineVersionSnapshot as Spy<
-        () => Observable<ContainerLineVersionSnapshot>
-      >
-    ).and.returnValue(of(versionContainer));
 
     TestBed.configureTestingModule({
       imports: [LidiWorkflowOverviewComponent, TranslateModule.forRoot()],
       providers: [
         TranslatePipe,
-        { provide: LineInternalService, useValue: lineInternalServiceSpy },
+        { provide: LineInternalService, useValue: lineInternalService },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { queryParams: {} } },
@@ -81,9 +78,8 @@ describe('LidiWorkflowOverviewComponent', () => {
       size: 10,
     });
 
-    expect(
-      lineInternalServiceSpy.getLineVersionSnapshot
-    ).toHaveBeenCalledOnceWith(
+    expect(lineInternalService.getLineVersionSnapshot).toHaveBeenCalledOnce();
+    expect(lineInternalService.getLineVersionSnapshot).toHaveBeenCalledWith(
       [],
       undefined,
       [WorkflowStatus.Added, WorkflowStatus.Approved, WorkflowStatus.Rejected],

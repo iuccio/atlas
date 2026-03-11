@@ -5,6 +5,7 @@ import { LineType, LineVersionV2, Status } from '../../../../api';
 import { LineDetailResolver } from './line-detail.resolver';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { LineService } from '../../../../api/service/lidi/line.service';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const version: LineVersionV2 = {
   lineConcessionType: 'CANTONALLY_APPROVED_LINE',
@@ -22,21 +23,23 @@ const version: LineVersionV2 = {
 };
 
 describe('LineDetailResolver', () => {
-  const lineServiceSpy = jasmine.createSpyObj('lineService', [
-    'getLineVersionsV2',
-  ]);
-  lineServiceSpy.getLineVersionsV2.and.returnValue(of([version]));
-
   let resolver: LineDetailResolver;
+  let lineService: Mocked<Pick<LineService, 'getLineVersionsV2'>>;
 
   beforeEach(() => {
+    lineService = {
+      getLineVersionsV2: vi.fn(),
+    };
+    lineService.getLineVersionsV2.mockReturnValue(of([version]));
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
         LineDetailResolver,
-        { provide: LineService, useValue: lineServiceSpy },
+        { provide: LineService, useValue: lineService },
       ],
     });
+
     resolver = TestBed.inject(LineDetailResolver);
   });
 
