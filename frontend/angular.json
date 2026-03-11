@@ -155,7 +155,7 @@
               "frontend/src/**/*.ts"
             ],
             "include": [
-              "src/app/pages/tth/**/*.spec.ts"
+              "src/app/pages/ttfn/**/*.spec.ts"
             ]
           }
         },

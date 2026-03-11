@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { TimetableFieldNumberDetailComponent } from './timetable-field-number-detail.component';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -74,20 +75,25 @@ const mockData = {
   timetableFieldNumberDetail: [version],
 };
 
-let component: TimetableFieldNumberDetailComponent;
-let fixture: ComponentFixture<TimetableFieldNumberDetailComponent>;
-
 describe('TimetableFieldNumberDetailComponent detail page read version', () => {
+  let component: TimetableFieldNumberDetailComponent;
+  let fixture: ComponentFixture<TimetableFieldNumberDetailComponent>;
   let router: Router;
-  const mockTimetableFieldNumberService = jasmine.createSpyObj(
-    'timetableFieldNumberService',
-    ['updateVersionWithVersioning']
-  );
-  const mockTimetableFieldNumberInternalService = jasmine.createSpyObj(
-    'timetableFieldNumberInternalService',
-    ['deleteVersions']
-  );
+  let mockTimetableFieldNumberService: Mocked<
+    Pick<TimetableFieldNumberService, 'updateVersionWithVersioning'>
+  >;
+  let mockTimetableFieldNumberInternalService: Mocked<
+    Pick<TimetableFieldNumberInternalService, 'deleteVersions'>
+  >;
+
   beforeEach(async () => {
+    mockTimetableFieldNumberService = {
+      updateVersionWithVersioning: vi.fn(),
+    };
+    mockTimetableFieldNumberInternalService = {
+      deleteVersions: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -110,10 +116,6 @@ describe('TimetableFieldNumberDetailComponent detail page read version', () => {
           provide: TimetableFieldNumberService,
           useValue: mockTimetableFieldNumberService,
         },
-        {
-          provide: TimetableFieldNumberInternalService,
-          useValue: mockTimetableFieldNumberInternalService,
-        },
         { provide: PermissionService, useValue: adminPermissionServiceMock },
         {
           provide: ActivatedRoute,
@@ -127,6 +129,7 @@ describe('TimetableFieldNumberDetailComponent detail page read version', () => {
   });
 
   beforeEach(() => {
+    Element.prototype.scrollIntoView = vi.fn();
     fixture = TestBed.createComponent(TimetableFieldNumberDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -138,14 +141,14 @@ describe('TimetableFieldNumberDetailComponent detail page read version', () => {
   });
 
   it('should update Version successfully', () => {
-    mockTimetableFieldNumberService.updateVersionWithVersioning.and.returnValue(
-      of(version)
+    mockTimetableFieldNumberService.updateVersionWithVersioning.mockReturnValue(
+      of([version])
     );
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
     fixture.componentInstance.updateRecord();
     fixture.detectChanges();
 
-    const snackBarContainer = fixture.nativeElement.offsetParent.querySelector(
+    const snackBarContainer = fixture.nativeElement.parentElement.querySelector(
       'mat-snack-bar-container'
     );
     expect(snackBarContainer).toBeDefined();
@@ -157,24 +160,24 @@ describe('TimetableFieldNumberDetailComponent detail page read version', () => {
   });
 
   it('should not update Version', () => {
-    mockTimetableFieldNumberService.updateVersionWithVersioning.and.returnValue(
+    mockTimetableFieldNumberService.updateVersionWithVersioning.mockReturnValue(
       throwError(() => error)
     );
     fixture.componentInstance.updateRecord();
     fixture.detectChanges();
 
-    expect(component.form.enabled).toBeTrue();
+    expect(component.form.enabled).toBe(true);
   });
 
   it('should delete Version successfully', () => {
-    mockTimetableFieldNumberInternalService.deleteVersions.and.returnValue(
-      of({})
+    mockTimetableFieldNumberInternalService.deleteVersions.mockReturnValue(
+      of(undefined)
     );
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
     fixture.componentInstance.deleteRecord();
     fixture.detectChanges();
 
-    const snackBarContainer = fixture.nativeElement.offsetParent.querySelector(
+    const snackBarContainer = fixture.nativeElement.parentElement.querySelector(
       'mat-snack-bar-container'
     );
     expect(snackBarContainer).toBeDefined();
@@ -190,13 +193,18 @@ describe('TimetableFieldNumberDetailComponent Detail page add new version', () =
   const loremIpsum256Chars =
     'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,s';
 
-  const mockTimetableFieldNumbersService = jasmine.createSpyObj(
-    'timetableFieldNumbersService',
-    ['createVersion']
-  );
+  let component: TimetableFieldNumberDetailComponent;
+  let fixture: ComponentFixture<TimetableFieldNumberDetailComponent>;
+  let mockTimetableFieldNumbersService: Mocked<
+    Pick<TimetableFieldNumberService, 'createVersion'>
+  >;
   let router: Router;
 
   beforeEach(async () => {
+    mockTimetableFieldNumbersService = {
+      createVersion: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [
         RouterModule.forRoot([{ path: '', component: HomeComponent }]),
@@ -374,15 +382,15 @@ describe('TimetableFieldNumberDetailComponent Detail page add new version', () =
 
   describe('Create new Version', () => {
     it('should create successfully a new record', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-      mockTimetableFieldNumbersService.createVersion.and.returnValue(
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
+      mockTimetableFieldNumbersService.createVersion.mockReturnValue(
         of(version)
       );
       fixture.componentInstance.createRecord();
       fixture.detectChanges();
 
       const snackBarContainer =
-        fixture.nativeElement.offsetParent.querySelector(
+        fixture.nativeElement.parentElement.querySelector(
           'mat-snack-bar-container'
         );
       expect(snackBarContainer).toBeDefined();
@@ -394,13 +402,13 @@ describe('TimetableFieldNumberDetailComponent Detail page add new version', () =
     });
 
     it('should not create a new record', () => {
-      mockTimetableFieldNumbersService.createVersion.and.returnValue(
+      mockTimetableFieldNumbersService.createVersion.mockReturnValue(
         throwError(() => error)
       );
       fixture.componentInstance.createRecord();
       fixture.detectChanges();
 
-      expect(component.form.enabled).toBeTrue();
+      expect(component.form.enabled).toBe(true);
     });
   });
 });
