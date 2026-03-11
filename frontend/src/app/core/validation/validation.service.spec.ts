@@ -1,5 +1,5 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-
 import { ValidationService } from './validation.service';
 import moment from 'moment';
 import { FormControl } from '@angular/forms';
@@ -8,7 +8,6 @@ describe('ValidationService', () => {
   let service: ValidationService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
     service = TestBed.inject(ValidationService);
   });
 
