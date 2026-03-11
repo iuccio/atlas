@@ -9,6 +9,7 @@ import { StatementDetailResolver } from './statement-detail.resolver';
 import { AppTestingModule } from '../../../app.testing.module';
 import { of } from 'rxjs';
 import { TimetableHearingStatementInternalService } from '../../../api/service/lidi/timetable-hearing-statement-internal.service';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 
 const statement: TimetableHearingStatementV2 = {
   id: 1234,
@@ -20,13 +21,11 @@ const statement: TimetableHearingStatementV2 = {
 };
 
 describe('StatementDetailResolver', () => {
-  const timetableHearingStatementsServiceSpy = jasmine.createSpyObj(
-    'TimetableHearingStatementInternalService',
-    ['getStatement']
-  );
-  timetableHearingStatementsServiceSpy.getStatement.and.returnValue(
-    of(statement)
-  );
+  const timetableHearingStatementsServiceSpy: Mocked<
+    Pick<TimetableHearingStatementInternalService, 'getStatement'>
+  > = {
+    getStatement: vi.fn().mockReturnValue(of(statement)),
+  };
 
   let resolver: StatementDetailResolver;
 

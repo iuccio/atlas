@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach } from 'vitest';
 import { OverviewTabHeadingComponent } from './overview-tab-heading.component';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { HearingStatus } from '../../../../api';

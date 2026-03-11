@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { TthOverviewBaseComponent } from './tth-overview-base.component';
 import { HearingStatus, TimetableHearingYear } from '../../../api';
 import moment from 'moment';
@@ -12,10 +13,11 @@ import { translateServiceProvider } from '../../../app.testing.mocks';
 import { MatSelectChange } from '@angular/material/select';
 import { TthUtils } from '../util/tth-utils';
 
-const mockTimetableHearingYearsService = jasmine.createSpyObj(
-  'TimetableHearingYearInternalService',
-  ['getHearingYears']
-);
+const mockTimetableHearingYearsService: Mocked<
+  Pick<TimetableHearingYearInternalService, 'getHearingYears'>
+> = {
+  getHearingYears: vi.fn(),
+};
 
 const hearingYear2024: TimetableHearingYear = {
   timetableYear: 2024,
@@ -33,19 +35,22 @@ describe('TthOverviewBaseComponent', () => {
   let component: TthOverviewBaseComponent;
   let fixture: ComponentFixture<TthOverviewBaseComponent>;
   let route: ActivatedRoute;
-  let tableService: jasmine.SpyObj<TableService>;
+  let tableService: Mocked<Pick<TableService, 'resetTableSettings'>>;
   let overviewToTabService: OverviewToTabShareDataService;
   let routerEventsSubject: Subject<Event>;
 
   beforeEach(async () => {
     routerEventsSubject = new Subject();
 
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate'], {
+    const routerSpy = {
+      navigate: vi.fn(),
       events: routerEventsSubject.asObservable(),
       url: '/tth/ch/active/statements',
-    });
+    };
 
-    tableService = jasmine.createSpyObj('TableService', ['resetTableSettings']);
+    tableService = {
+      resetTableSettings: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [TthOverviewBaseComponent],
@@ -77,7 +82,7 @@ describe('TthOverviewBaseComponent', () => {
     route = TestBed.inject(ActivatedRoute);
     overviewToTabService = TestBed.inject(OverviewToTabShareDataService);
 
-    mockTimetableHearingYearsService.getHearingYears.and.returnValue(
+    mockTimetableHearingYearsService.getHearingYears.mockReturnValue(
       of([hearingYear2024, hearingYear2025])
     );
 
@@ -105,11 +110,11 @@ describe('TthOverviewBaseComponent', () => {
     });
 
     it('should set noTimetableHearingYearFound when no years exist', () => {
-      mockTimetableHearingYearsService.getHearingYears.and.returnValue(of([]));
+      mockTimetableHearingYearsService.getHearingYears.mockReturnValue(of([]));
 
       fixture.detectChanges();
 
-      expect(component.isTimetableHearingYearFound()).toBeFalse();
+      expect(component.isTimetableHearingYearFound()).toBe(false);
     });
   });
 
@@ -128,8 +133,10 @@ describe('TthOverviewBaseComponent', () => {
 
     it('should handle Archived hearing status', () => {
       route.snapshot.data = { hearingStatus: HearingStatus.Archived };
-      spyOn(TthUtils, 'isHearingStatusArchived').and.returnValue(true);
-      spyOn(component, 'initOverviewArchivedTable');
+      vi.spyOn(TthUtils, 'isHearingStatusArchived').mockReturnValue(true);
+      vi.spyOn(component, 'initOverviewArchivedTable').mockImplementation(
+        () => {}
+      );
 
       fixture.detectChanges();
 
@@ -140,11 +147,13 @@ describe('TthOverviewBaseComponent', () => {
   describe('Archived Table Initialization', () => {
     it('should initialize archived table when hearing status is archived', () => {
       route.snapshot.data = { hearingStatus: HearingStatus.Archived };
-      spyOn(component, 'initOverviewArchivedTable');
+      vi.spyOn(component, 'initOverviewArchivedTable').mockImplementation(
+        () => {}
+      );
 
       fixture.detectChanges();
 
-      expect(component.initOverviewArchivedTable).toHaveBeenCalled();
+      expect(component.initOverviewArchivedTable).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -163,14 +172,14 @@ describe('TthOverviewBaseComponent', () => {
         value: 'ZH',
       } as MatSelectChange;
 
-      spyOn(overviewToTabService, 'setCantonShort');
-      spyOn(component, 'navigateTo');
+      vi.spyOn(overviewToTabService, 'setCantonShort');
+      vi.spyOn(component, 'navigateTo').mockImplementation(() => {});
 
       component.changeSelectedCantonFromDropdown(mockSelectChange);
 
       expect(overviewToTabService.setCantonShort).toHaveBeenCalledWith('zh');
       expect(component.navigateTo).toHaveBeenCalledWith('zh', 2024);
-      expect(tableService.resetTableSettings).toHaveBeenCalled();
+      expect(tableService.resetTableSettings).toHaveBeenCalledTimes(1);
     });
 
     it('should convert canton to lowercase', () => {
@@ -178,8 +187,8 @@ describe('TthOverviewBaseComponent', () => {
         value: 'BE',
       } as MatSelectChange;
 
-      spyOn(overviewToTabService, 'setCantonShort');
-      spyOn(component, 'navigateTo');
+      vi.spyOn(overviewToTabService, 'setCantonShort');
+      vi.spyOn(component, 'navigateTo').mockImplementation(() => {});
 
       component.changeSelectedCantonFromDropdown(mockSelectChange);
 
@@ -204,8 +213,8 @@ describe('TthOverviewBaseComponent', () => {
         value: 2025,
       } as MatSelectChange;
 
-      spyOn(overviewToTabService, 'setYearSelection').and.callThrough();
-      spyOn(component, 'navigateTo');
+      vi.spyOn(overviewToTabService, 'setYearSelection');
+      vi.spyOn(component, 'navigateTo').mockImplementation(() => {});
 
       component.changeSelectedYearFromDropdown(mockSelectChange);
 
@@ -214,7 +223,7 @@ describe('TthOverviewBaseComponent', () => {
       );
       expect(component.yearSelection()).toBe(2025);
       expect(component.navigateTo).toHaveBeenCalledWith('zh', 2025);
-      expect(tableService.resetTableSettings).toHaveBeenCalled();
+      expect(tableService.resetTableSettings).toHaveBeenCalledTimes(1);
     });
 
     it('should update timetable hearing year object', () => {
@@ -223,8 +232,8 @@ describe('TthOverviewBaseComponent', () => {
         value: 2026,
       } as MatSelectChange;
 
-      spyOn(overviewToTabService, 'setTimetableHearingYear');
-      spyOn(component, 'navigateTo');
+      vi.spyOn(overviewToTabService, 'setTimetableHearingYear');
+      vi.spyOn(component, 'navigateTo').mockImplementation(() => {});
 
       component.changeSelectedYearFromDropdown(mockSelectChange);
 

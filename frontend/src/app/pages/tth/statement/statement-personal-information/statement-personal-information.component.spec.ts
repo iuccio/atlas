@@ -3,7 +3,7 @@ import { StatementPersonalInformationComponent } from './statement-personal-info
 import { translateServiceProvider } from '../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
 import { StringListComponent } from '../../../../core/form-components/string-list/string-list.component';
-import { statement, statementFormGroup } from '../statement-test-util.spec';
+import { statement, statementFormGroup } from '../statement-test-util';
 
 describe('StatementPersonalInformation', () => {
   let component: StatementPersonalInformationComponent;

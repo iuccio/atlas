@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 
 import { StatementDataComponent } from './statement-data.component';
 import {
@@ -7,7 +8,7 @@ import {
   translateServiceProvider,
 } from '../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
-import { statement, statementFormGroup } from '../statement-test-util.spec';
+import { statement, statementFormGroup } from '../statement-test-util';
 import { TransportCompanySelectComponent } from '../../../../core/form-components/tu-select/transport-company-select.component';
 import { TimetableFieldNumberSelectComponent } from '../../../../core/form-components/ttfn-select/timetable-field-number-select.component';
 import {
@@ -24,17 +25,19 @@ const transportCompany: TransportCompany = {
   description: 'SBB',
 };
 
-const mockTimetableHearingStatementsService = jasmine.createSpyObj(
-  'TimetableHearingStatementInternalService',
-  ['getResponsibleTransportCompanies']
-);
-
-mockTimetableHearingStatementsService.getResponsibleTransportCompanies.and.returnValue(
-  of([transportCompany])
-);
-const router = jasmine.createSpyObj('Router', {
-  navigate: Promise.resolve(true),
-});
+const mockTimetableHearingStatementsService: Mocked<
+  Pick<
+    TimetableHearingStatementInternalService,
+    'getResponsibleTransportCompanies'
+  >
+> = {
+  getResponsibleTransportCompanies: vi
+    .fn()
+    .mockReturnValue(of([transportCompany])),
+};
+const router: Mocked<Pick<Router, 'navigate'>> = {
+  navigate: vi.fn().mockResolvedValue(true),
+};
 
 describe('StatementData', () => {
   let component: StatementDataComponent;

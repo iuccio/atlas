@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { StatementSelectDialogComponent } from './statement-select-dialog.component';
 import { AppTestingModule } from '../../../../../app.testing.module';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -22,10 +23,14 @@ const dialogData: StatementSelectData = {
   timetableHearingYear: 2020,
 };
 
-const dialogServiceSpy = jasmine.createSpyObj(DialogService, {
-  confirmLeave: of(true),
-});
-const dialogRefSpy = jasmine.createSpyObj('dialogRef', ['close']);
+const dialogServiceSpy: Mocked<Pick<DialogService, 'confirmLeave'>> = {
+  confirmLeave: vi.fn().mockReturnValue(of(true)),
+};
+const dialogRefSpy: Mocked<
+  Pick<MatDialogRef<StatementSelectDialogComponent>, 'close'>
+> = {
+  close: vi.fn(),
+};
 
 const statement: TimetableHearingStatementV2 = {
   id: 456,
@@ -36,16 +41,15 @@ const statement: TimetableHearingStatementV2 = {
   },
   documents: [],
 };
-const timetableHearingStatementInternalService = jasmine.createSpyObj(
-  'TimetableHearingStatementInternalService',
-  {
-    getStatements: of({
-      objects: [],
-      totalCount: 0,
-    }),
-    getStatement: of(statement),
-  }
-);
+const timetableHearingStatementInternalService: Mocked<
+  Pick<
+    TimetableHearingStatementInternalService,
+    'getStatements' | 'getStatement'
+  >
+> = {
+  getStatements: vi.fn().mockReturnValue(of({ objects: [], totalCount: 0 })),
+  getStatement: vi.fn().mockReturnValue(of(statement)),
+};
 
 @Component({
   selector: 'atlas-statement-select',
@@ -90,34 +94,26 @@ describe('StatementSelectDialogComponent', () => {
   });
 
   it('should close dialog', () => {
-    //when
     component.cancel();
-    //then
     expect(dialogRefSpy.close).toHaveBeenCalledWith();
   });
 
   it('should confirm dialog', () => {
     expect(component.selectedStatements).toEqual([1000]);
-    //when
     component.confirm();
-    //then
     expect(dialogRefSpy.close).toHaveBeenCalledWith([1000]);
   });
 
   it('should add statement to selection dialog', () => {
     component.addStatement(statement);
-    //when
     component.confirm();
-    //then
     expect(dialogRefSpy.close).toHaveBeenCalledWith([1000, 456]);
   });
 
   it('should add statement unique to selection dialog', () => {
     component.addStatement(statement);
     component.addStatement(statement);
-    //when
     component.confirm();
-    //then
     expect(dialogRefSpy.close).toHaveBeenCalledWith([1000, 456]);
   });
 });

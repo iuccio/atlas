@@ -155,7 +155,7 @@
               "frontend/src/**/*.ts"
             ],
             "include": [
-              "src/app/core/notification/**/*.spec.ts"
+              "src/app/pages/tth/**/*.spec.ts"
             ]
           }
         },

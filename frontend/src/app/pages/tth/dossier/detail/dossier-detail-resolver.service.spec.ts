@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
@@ -25,13 +26,14 @@ const dossier: TthDossier = {
 };
 
 describe('DossierDetailResolver', () => {
-  const dossierInternalService = jasmine.createSpyObj(
-    'DossierInternalService',
-    ['getDossier']
-  );
-  const router = jasmine.createSpyObj('Router', {
-    navigate: Promise.resolve(true),
-  });
+  const dossierInternalService: Mocked<
+    Pick<DossierInternalService, 'getDossier'>
+  > = {
+    getDossier: vi.fn(),
+  };
+  const router: Mocked<Pick<Router, 'navigate'>> = {
+    navigate: vi.fn().mockResolvedValue(true),
+  };
 
   let resolver: DossierDetailResolver;
 
@@ -51,7 +53,7 @@ describe('DossierDetailResolver', () => {
     });
     resolver = TestBed.inject(DossierDetailResolver);
 
-    dossierInternalService.getDossier.and.returnValue(of(dossier));
+    dossierInternalService.getDossier.mockReturnValue(of(dossier));
   });
 
   it('should create', () => {
@@ -89,7 +91,7 @@ describe('DossierDetailResolver', () => {
   });
 
   it('should route on error', () => {
-    dossierInternalService.getDossier.and.returnValue(
+    dossierInternalService.getDossier.mockReturnValue(
       throwError(() => 'Dossier not found')
     );
 
@@ -104,6 +106,6 @@ describe('DossierDetailResolver', () => {
     result.subscribe((statement) => {
       expect(statement).toBeUndefined();
     });
-    expect(router.navigate).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledTimes(1);
   });
 });

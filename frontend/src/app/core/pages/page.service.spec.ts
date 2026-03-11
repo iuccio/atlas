@@ -41,29 +41,25 @@ describe('PageService', () => {
     expect(enabledPages).toHaveLength(9);
   });
 
-  it('should remove TTH subpages for BO_TTH user', (done) => {
+  it('should remove TTH subpages for BO_TTH user', async () => {
     permissionServiceMock.getTthApplicationUserType = () =>
       'BO_TTH' as TthApplicationUserType;
     pageService.addPagesBasedOnPermissions();
 
-    pageService.enabledPages.subscribe((enabledPages) => {
-      const tthPage = enabledPages.find((p) => p.path === Pages.TTH.path);
-      expect(tthPage).toBeDefined();
-      expect(tthPage?.subpages).toBeUndefined();
-      done();
-    });
+    const enabledPages = await firstValueFrom(pageService.enabledPages);
+    const tthPage = enabledPages.find((p) => p.path === Pages.TTH.path);
+    expect(tthPage).toBeDefined();
+    expect(tthPage?.subpages).toBeUndefined();
   });
 
-  it('should keep TTH subpages for CANTON_TTH user', (done) => {
+  it('should keep TTH subpages for CANTON_TTH user', async () => {
     permissionServiceMock.getTthApplicationUserType = () =>
       'CANTON_TTH' as TthApplicationUserType;
     pageService.addPagesBasedOnPermissions();
 
-    pageService.enabledPages.subscribe((enabledPages) => {
-      const tthPage = enabledPages.find((p) => p.path === Pages.TTH.path);
-      expect(tthPage).toBeDefined();
-      expect(tthPage?.subpages).toBeDefined();
-      done();
-    });
+    const enabledPages = await firstValueFrom(pageService.enabledPages);
+    const tthPage = enabledPages.find((p) => p.path === Pages.TTH.path);
+    expect(tthPage).toBeDefined();
+    expect(tthPage?.subpages).toBeDefined();
   });
 });
