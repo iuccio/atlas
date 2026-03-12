@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { SectorGroupDetailResolver } from './sector-group-detail-resolver.service';
 import { of } from 'rxjs';
@@ -6,13 +7,25 @@ import { SectorGroupService } from '../../../../api/service/sepodi/sector-group.
 import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
 
 describe('SectorDetailResolver', () => {
-  const sectorGroupService = jasmine.createSpyObj('sectorGroupService', [
-    'getSectorGroup',
-  ]);
-
+  let sectorGroupService: Mocked<Pick<SectorGroupService, 'getSectorGroup'>>;
   let resolver: SectorGroupDetailResolver;
 
   beforeEach(() => {
+    sectorGroupService = {
+      getSectorGroup: vi.fn(),
+    };
+    sectorGroupService.getSectorGroup.mockReturnValue(
+      of([
+        {
+          trafficPointSloid: 'ch:1:sloid:7000::1',
+          validFrom: new Date('2014-12-14'),
+          validTo: new Date('2014-12-14'),
+          designation: 'A',
+          sloid: 'ch:1:sloid:7000::1:1',
+        },
+      ])
+    );
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
@@ -24,18 +37,6 @@ describe('SectorDetailResolver', () => {
       ],
     });
     resolver = TestBed.inject(SectorGroupDetailResolver);
-
-    sectorGroupService.getSectorGroup.and.returnValue(
-      of([
-        {
-          trafficPointSloid: 'ch:1:sloid:7000::1',
-          validFrom: new Date('2014-12-14'),
-          validTo: new Date('2014-12-14'),
-          designation: 'A',
-          sloid: 'ch:1:sloid:7000::1:1',
-        },
-      ])
-    );
   });
 
   it('should create', () => {

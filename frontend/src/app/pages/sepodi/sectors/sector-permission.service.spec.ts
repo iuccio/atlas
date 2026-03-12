@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { SectorPermissionService } from './sector-permission.service';
 import { PermissionService } from '../../../core/auth/permission/permission.service';
 import { adminPermissionServiceMock } from '../../../app.testing.mocks';
@@ -39,7 +40,7 @@ describe('SectorPermissionService', () => {
         meansOfTransport: [MeanOfTransport.Train],
       },
     ]);
-    expect(showCreateButton).toBeTrue();
+    expect(showCreateButton).toBe(true);
   });
 
   it('should not show create buttons if service point has no version with mot train', () => {
@@ -60,6 +61,6 @@ describe('SectorPermissionService', () => {
         meansOfTransport: [MeanOfTransport.Bus],
       },
     ]);
-    expect(showCreateButton).toBeFalse();
+    expect(showCreateButton).toBe(false);
   });
 });
