@@ -1,30 +1,48 @@
 import { TestBed } from '@angular/core/testing';
-import { Map, MapGeoJSONFeature } from 'maplibre-gl';
+import { beforeEach, describe, expect, it, Mocked, vi } from 'vitest';
+import { GeoJSONSource, Map, MapGeoJSONFeature } from 'maplibre-gl';
 import { MapService } from './map.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { MAP_SECTOR_LAYER_NAME } from './map-style';
 import { SectorMapService } from './sector-map.service';
 import { SectorInternalService } from '../../../api/service/sepodi/sector-internal.service';
 import { SpatialReference } from '../../../api';
-
-const mapService = jasmine.createSpyObj<MapService>(['centerOn']);
-mapService.mapInitialized = new BehaviorSubject<boolean>(true);
-const mapSpy = jasmine.createSpyObj<Map>(['getSource']);
-const sourceSpy = jasmine.createSpyObj('source', ['setData']);
-mapSpy.getSource.and.returnValue(sourceSpy);
-mapService.map = mapSpy;
-
-const sectorInternalService = jasmine.createSpyObj(['getSectorsValidToday']);
+import { Point } from 'geojson';
 
 describe('SectorMapService', () => {
   let service: SectorMapService;
 
+  let mapServiceSpy: Mocked<
+    Pick<MapService, 'centerOn' | 'mapInitialized' | 'map'>
+  >;
+  let sourceSpy: Mocked<Pick<GeoJSONSource, 'setData'>>;
+  let mapSpy: Mocked<Pick<Map, 'getSource'>>;
+  let sectorInternalService: Mocked<
+    Pick<SectorInternalService, 'getSectorsValidToday'>
+  >;
+
   beforeEach(() => {
+    sourceSpy = {
+      setData: vi.fn().mockImplementation(() => {}),
+    };
+    mapSpy = {
+      getSource: vi.fn().mockReturnValue(sourceSpy),
+    };
+    mapServiceSpy = {
+      centerOn: vi.fn(),
+      mapInitialized: new BehaviorSubject<boolean>(true),
+      map: mapSpy as unknown as Map,
+    };
+
+    sectorInternalService = {
+      getSectorsValidToday: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
       providers: [
         {
           provide: MapService,
-          useValue: mapService,
+          useValue: mapServiceSpy,
         },
         {
           provide: SectorInternalService,
@@ -59,7 +77,7 @@ describe('SectorMapService', () => {
   });
 
   it('should display Sectors on map', () => {
-    sectorInternalService.getSectorsValidToday.and.returnValue(
+    sectorInternalService.getSectorsValidToday.mockReturnValue(
       of([
         {
           trafficPointSloid: 'ch:1:sloid:7000:1',
@@ -91,18 +109,24 @@ describe('SectorMapService', () => {
 
     service.displaySectorsOnMap(8507000, 'ch:1:sloid:7000:0:1');
 
-    expect(mapSpy.getSource).toHaveBeenCalledWith(MAP_SECTOR_LAYER_NAME);
+    expect(mapServiceSpy.map.getSource).toHaveBeenCalledWith(
+      MAP_SECTOR_LAYER_NAME
+    );
     expect(sourceSpy.setData).toHaveBeenCalled();
-    const data = sourceSpy.setData.calls.mostRecent().args[0];
-    expect(data.features).toHaveSize(1);
+    const data = sourceSpy.setData.mock.calls.at(
+      -1
+    )?.[0] as GeoJSON.FeatureCollection;
+    expect(data.features).toHaveLength(1);
   });
 
   it('should clear Sectors on map', () => {
     service.clearDisplayedSectors();
 
     expect(sourceSpy.setData).toHaveBeenCalled();
-    const data = sourceSpy.setData.calls.mostRecent().args[0];
-    expect(data.features).toHaveSize(0);
+    const data = sourceSpy.setData.mock.calls.at(
+      -1
+    )?.[0] as GeoJSON.FeatureCollection;
+    expect(data.features).toHaveLength(0);
   });
 
   it('should display current SectorVersion on map', () => {
@@ -112,18 +136,22 @@ describe('SectorMapService', () => {
       spatialReference: 'WGS84',
     });
 
-    expect(mapSpy.getSource).toHaveBeenCalledWith('current_sector');
+    expect(mapServiceSpy.map.getSource).toHaveBeenCalledWith('current_sector');
     expect(sourceSpy.setData).toHaveBeenCalled();
-    const data = sourceSpy.setData.calls.mostRecent().args[0];
+    const data = sourceSpy.setData.mock.calls.at(
+      -1
+    )?.[0] as GeoJSON.Feature<Point>;
     expect(data.geometry.coordinates).toEqual([7.44908190053, 46.96102079646]);
   });
 
   it('should clear current SectorVersion on map', () => {
     service.clearCurrentSector();
 
-    expect(mapSpy.getSource).toHaveBeenCalledWith('current_sector');
+    expect(mapServiceSpy.map.getSource).toHaveBeenCalledWith('current_sector');
     expect(sourceSpy.setData).toHaveBeenCalled();
-    const data = sourceSpy.setData.calls.mostRecent().args[0];
+    const data = sourceSpy.setData.mock.calls.at(
+      -1
+    )?.[0] as GeoJSON.Feature<Point>;
     expect(data.geometry.coordinates).toEqual([0, 0]);
   });
 });

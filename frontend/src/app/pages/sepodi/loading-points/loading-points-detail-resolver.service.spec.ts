@@ -1,4 +1,5 @@
 import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { AppTestingModule } from '../../../app.testing.module';
@@ -7,14 +8,17 @@ import { LOADING_POINT } from '../../../../test/data/loading-point';
 import { LoadingPointService } from '../../../api/service/sepodi/loading-point.service';
 
 describe('LoadingPointsDetailResolver', () => {
-  const loadingPointsService = jasmine.createSpyObj('loadingPointsService', [
-    'getLoadingPoint',
-  ]);
-  loadingPointsService.getLoadingPoint.and.returnValue(of(LOADING_POINT));
-
+  let loadingPointsService: Mocked<
+    Pick<LoadingPointService, 'getLoadingPoint'>
+  >;
   let resolver: LoadingPointsDetailResolver;
 
   beforeEach(() => {
+    loadingPointsService = {
+      getLoadingPoint: vi.fn(),
+    };
+    loadingPointsService.getLoadingPoint.mockReturnValue(of(LOADING_POINT));
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
