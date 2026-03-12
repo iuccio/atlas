@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { LoadingPointsTableComponent } from './loading-points-table.component';
 import {
@@ -17,26 +18,30 @@ describe('LoadingPointsTableComponent', () => {
   let component: LoadingPointsTableComponent;
   let fixture: ComponentFixture<LoadingPointsTableComponent>;
 
-  const loadingPointInternalService = jasmine.createSpyObj(
-    'LoadingPointInternalService',
-    ['getLoadingPointOverview']
-  );
-  loadingPointInternalService.getLoadingPointOverview.and.returnValue(
-    of(LOADING_POINT)
-  );
+  let loadingPointInternalServiceSpy: Mocked<
+    Pick<LoadingPointInternalService, 'getLoadingPointOverview'>
+  >;
+
   const route = {
     parent: { snapshot: { params: { servicePointNumber: 8504414 } } },
   };
   let router: Router;
 
   beforeEach(async () => {
+    loadingPointInternalServiceSpy = {
+      getLoadingPointOverview: vi.fn(),
+    };
+    loadingPointInternalServiceSpy.getLoadingPointOverview.mockReturnValue(
+      of({ objects: LOADING_POINT })
+    );
+
     await TestBed.configureTestingModule({
       imports: [LoadingPointsTableComponent, TranslateModule.forRoot()],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         {
           provide: LoadingPointInternalService,
-          useValue: loadingPointInternalService,
+          useValue: loadingPointInternalServiceSpy,
         },
       ],
     })
@@ -63,12 +68,12 @@ describe('LoadingPointsTableComponent', () => {
     });
 
     expect(
-      loadingPointInternalService.getLoadingPointOverview
-    ).toHaveBeenCalledOnceWith(8504414, 0, 10, ['designation,asc']);
+      loadingPointInternalServiceSpy.getLoadingPointOverview
+    ).toHaveBeenCalledWith(8504414, 0, 10, ['designation,asc']);
   });
 
   it('should go to new', () => {
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
     component.newLoadingPoint();
     expect(router.navigate).toHaveBeenCalledWith([
@@ -80,7 +85,7 @@ describe('LoadingPointsTableComponent', () => {
   });
 
   it('should go to edit', () => {
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
     component.editVersion(LOADING_POINT[0]);
     expect(router.navigate).toHaveBeenCalledWith([
@@ -92,7 +97,7 @@ describe('LoadingPointsTableComponent', () => {
   });
 
   it('should close side panel', () => {
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
     component.closeSidePanel();
     expect(router.navigate).toHaveBeenCalledWith(['service-point-directory']);

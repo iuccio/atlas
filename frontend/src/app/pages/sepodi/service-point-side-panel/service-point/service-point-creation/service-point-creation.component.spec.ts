@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { ServicePointCreationComponent } from './service-point-creation.component';
 import {
   ApplicationRole,
@@ -16,33 +17,29 @@ import { Countries } from '../../../../../core/country/Countries';
 import { TestBed } from '@angular/core/testing';
 import { MapService } from '../../../map/map.service';
 import { PermissionService } from '../../../../../core/auth/permission/permission.service';
-import SpyObj = jasmine.SpyObj;
-import anything = jasmine.anything;
-import Spy = jasmine.Spy;
 import { ServicePointService } from '../../../../../api/service/sepodi/service-point.service';
 
 class PermissionServiceMock implements Partial<PermissionService> {
-  getApplicationUserPermission = jasmine.createSpy();
+  getApplicationUserPermission = vi.fn();
   isAdmin = false;
 }
 
-const mapServiceSpy = jasmine.createSpyObj('MapService', ['refreshMap']);
-
 describe('ServicePointCreationComponent', () => {
   let component: ServicePointCreationComponent;
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  let spy: SpyObj<any>;
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  let servicePointServiceSpy: SpyObj<any>;
-  let notificationServiceSpy: SpyObj<NotificationService>;
-  let routerSpy: SpyObj<Router>;
+  let servicePointServiceSpy: Mocked<
+    Pick<ServicePointService, 'createServicePoint'>
+  >;
+  let notificationServiceSpy: Mocked<Pick<NotificationService, 'success'>>;
+  let routerSpy: Mocked<Pick<Router, 'navigate'>>;
+  let mapServiceSpy: Mocked<Pick<MapService, 'refreshMap'>>;
   let permissionServiceMock: PermissionServiceMock;
 
   beforeEach(() => {
-    servicePointServiceSpy = jasmine.createSpyObj(['createServicePoint']);
-    notificationServiceSpy = jasmine.createSpyObj(['success']);
-    routerSpy = jasmine.createSpyObj(['navigate']);
-    routerSpy.navigate.and.returnValue(Promise.resolve(true));
+    servicePointServiceSpy = { createServicePoint: vi.fn() };
+    notificationServiceSpy = { success: vi.fn() };
+    routerSpy = { navigate: vi.fn() };
+    routerSpy.navigate.mockReturnValue(Promise.resolve(true));
+    mapServiceSpy = { refreshMap: vi.fn() };
     permissionServiceMock = new PermissionServiceMock();
 
     TestBed.configureTestingModule({
@@ -54,7 +51,7 @@ describe('ServicePointCreationComponent', () => {
         },
         {
           provide: ActivatedRoute,
-          useValue: spy,
+          useValue: {},
         },
         {
           provide: ServicePointService,
@@ -83,44 +80,43 @@ describe('ServicePointCreationComponent', () => {
     (component.form as FormGroup) = new FormGroup({
       country: new FormControl(),
     });
-    servicePointServiceSpy.createServicePoint.and.returnValue(
+    servicePointServiceSpy.createServicePoint.mockReturnValue(
       of({
         number: {
           number: 8557385,
         },
-      })
+      } as ReturnType<ServicePointService['createServicePoint']> extends import('rxjs').Observable<infer T> ? T : never)
     );
 
-    (
-      spyOn(
-        ServicePointFormGroupBuilder.mapper,
-        'getWritableServicePoint'
-      ) as Spy<() => Partial<CreateServicePointVersion>>
-    ).and.returnValue({
+    vi.spyOn(
+      ServicePointFormGroupBuilder.mapper,
+      'getWritableServicePoint'
+    ).mockReturnValue({
       numberShort: 57385,
-    });
+    } as Partial<CreateServicePointVersion> as CreateServicePointVersion);
 
     component.onSave();
 
-    expect(component.form.touched).toBeTrue();
-    expect(component.form.disabled).toBeTrue();
-    expect(servicePointServiceSpy.createServicePoint).toHaveBeenCalledOnceWith({
+    expect(component.form.touched).toBe(true);
+    expect(component.form.disabled).toBe(true);
+    expect(servicePointServiceSpy.createServicePoint).toHaveBeenCalledWith({
       numberShort: 57385,
     });
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
+    expect(notificationServiceSpy.success).toHaveBeenCalledWith(
       'SEPODI.SERVICE_POINTS.NOTIFICATION.ADD_SUCCESS'
     );
-    expect(routerSpy.navigate).toHaveBeenCalledOnceWith([8557385], anything());
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [8557385],
+      expect.anything()
+    );
   });
 
   it('should get country options role supervisor', () => {
-    permissionServiceMock.getApplicationUserPermission
-      .withArgs(ApplicationType.Sepodi)
-      .and.returnValue({
-        role: ApplicationRole.Supervisor,
-        application: ApplicationType.Sepodi,
-        permissionRestrictions: [],
-      });
+    permissionServiceMock.getApplicationUserPermission.mockReturnValue({
+      role: ApplicationRole.Supervisor,
+      application: ApplicationType.Sepodi,
+      permissionRestrictions: [],
+    });
 
     const countries = component['getCountryOptions']();
 
@@ -135,13 +131,11 @@ describe('ServicePointCreationComponent', () => {
   });
 
   it('should get country options role admin', () => {
-    permissionServiceMock.getApplicationUserPermission
-      .withArgs(ApplicationType.Sepodi)
-      .and.returnValue({
-        role: ApplicationRole.Reader,
-        application: ApplicationType.Sepodi,
-        permissionRestrictions: [],
-      });
+    permissionServiceMock.getApplicationUserPermission.mockReturnValue({
+      role: ApplicationRole.Reader,
+      application: ApplicationType.Sepodi,
+      permissionRestrictions: [],
+    });
     permissionServiceMock.isAdmin = true;
 
     const countries = component['getCountryOptions']();
@@ -157,26 +151,24 @@ describe('ServicePointCreationComponent', () => {
   });
 
   it('should get country options role super user', () => {
-    permissionServiceMock.getApplicationUserPermission
-      .withArgs(ApplicationType.Sepodi)
-      .and.returnValue({
-        role: ApplicationRole.SuperUser,
-        application: ApplicationType.Sepodi,
-        permissionRestrictions: [
-          {
-            type: PermissionRestrictionType.Country,
-            valueAsString: Country.Cuba,
-          },
-          {
-            type: PermissionRestrictionType.Country,
-            valueAsString: Country.FranceBus,
-          },
-          {
-            type: PermissionRestrictionType.Canton,
-            valueAsString: SwissCanton.Uri,
-          },
-        ],
-      });
+    permissionServiceMock.getApplicationUserPermission.mockReturnValue({
+      role: ApplicationRole.SuperUser,
+      application: ApplicationType.Sepodi,
+      permissionRestrictions: [
+        {
+          type: PermissionRestrictionType.Country,
+          valueAsString: Country.Cuba,
+        },
+        {
+          type: PermissionRestrictionType.Country,
+          valueAsString: Country.FranceBus,
+        },
+        {
+          type: PermissionRestrictionType.Canton,
+          valueAsString: SwissCanton.Uri,
+        },
+      ],
+    });
 
     const countries = component['getCountryOptions']();
 
@@ -184,26 +176,24 @@ describe('ServicePointCreationComponent', () => {
   });
 
   it('should get country options role writer', () => {
-    permissionServiceMock.getApplicationUserPermission
-      .withArgs(ApplicationType.Sepodi)
-      .and.returnValue({
-        role: ApplicationRole.Writer,
-        application: ApplicationType.Sepodi,
-        permissionRestrictions: [
-          {
-            type: PermissionRestrictionType.Country,
-            valueAsString: Country.Cuba,
-          },
-          {
-            type: PermissionRestrictionType.Country,
-            valueAsString: Country.FranceBus,
-          },
-          {
-            type: PermissionRestrictionType.Canton,
-            valueAsString: SwissCanton.Uri,
-          },
-        ],
-      });
+    permissionServiceMock.getApplicationUserPermission.mockReturnValue({
+      role: ApplicationRole.Writer,
+      application: ApplicationType.Sepodi,
+      permissionRestrictions: [
+        {
+          type: PermissionRestrictionType.Country,
+          valueAsString: Country.Cuba,
+        },
+        {
+          type: PermissionRestrictionType.Country,
+          valueAsString: Country.FranceBus,
+        },
+        {
+          type: PermissionRestrictionType.Canton,
+          valueAsString: SwissCanton.Uri,
+        },
+      ],
+    });
 
     const countries = component['getCountryOptions']();
 
