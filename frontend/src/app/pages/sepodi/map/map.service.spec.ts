@@ -1,66 +1,32 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, Mocked, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MapService } from './map.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import {
-  DragRotateHandler,
   GeoJSONSource,
   Map,
   MapGeoJSONFeature,
   MapMouseEvent,
   Marker,
-  ScrollZoomHandler,
-  TwoFingersTouchZoomRotateHandler,
 } from 'maplibre-gl';
 import { SpatialReference } from '../../../api';
 import { MAP_STYLES } from './map-options';
 import { Router } from '@angular/router';
+import { mock, mockDeep } from 'vitest-mock-extended';
 
 describe('MapService', () => {
   const authService: Partial<AuthService> = {};
 
-  let markerSpy: Mocked<Pick<Marker, 'addTo' | 'setLngLat' | 'remove'>>;
-  let mapSpy: Mocked<
-    Pick<
-      Map,
-      | 'flyTo'
-      | 'getCanvas'
-      | 'on'
-      | 'fire'
-      | 'getSource'
-      | 'setZoom'
-      | 'getZoom'
-      | 'setCenter'
-      | 'setLayoutProperty'
-      | 'resize'
-    >
-  >;
+  const markerSpy = mock<Marker>();
+
+  const mapMock = mockDeep<Map>();
+  const sourceMock = mock<GeoJSONSource>();
+  mapMock.getSource.mockReturnValue(sourceMock);
 
   let service: MapService;
   let router: Router;
 
   beforeEach(() => {
-    markerSpy = {
-      addTo: vi.fn(),
-      setLngLat: vi.fn(),
-      remove: vi.fn(),
-    };
-
-    mapSpy = {
-      on: vi.fn().mockImplementation(() => {}),
-      flyTo: vi.fn(),
-      getCanvas: vi.fn(),
-      fire: vi.fn(),
-      getSource: vi.fn().mockReturnValue({
-        setData: vi.fn(),
-      }),
-      setZoom: vi.fn(),
-      getZoom: vi.fn(),
-      setCenter: vi.fn(),
-      setLayoutProperty: vi.fn(),
-      resize: vi.fn(),
-    };
-
     TestBed.configureTestingModule({
       providers: [{ provide: AuthService, useValue: authService }],
     });
@@ -73,40 +39,14 @@ describe('MapService', () => {
   });
 
   it('should init map', () => {
-    const localMapSpy = {
-      setMaxZoom: vi.fn(),
-      setMinZoom: vi.fn(),
-      resize: vi.fn(),
-      once: vi.fn(),
-      hasImage: vi.fn(),
-      addImage: vi.fn(),
-      setZoom: vi.fn(),
-      on: vi.fn(),
-      setCenter: vi.fn(),
-      setLayoutProperty: vi.fn(),
-      getSource: vi.fn(),
-      dragRotate: {
-        disable: vi.fn(),
-      } as unknown as DragRotateHandler,
-      touchZoomRotate: {
-        disableRotation: vi.fn(),
-      } as unknown as TwoFingersTouchZoomRotateHandler,
-      scrollZoom: {
-        setWheelZoomRate: vi.fn(),
-        setZoomRate: vi.fn(),
-      } as unknown as ScrollZoomHandler,
-    };
-
-    vi.spyOn(service, 'createMap').mockReturnValue(
-      localMapSpy as unknown as Map
-    );
+    vi.spyOn(service, 'createMap').mockReturnValue(mapMock);
     vi.spyOn(service, 'deselectServicePoint').mockImplementation(() => {});
 
     const htmlDivElement = document.createElement('div');
     const map = service.initMap(htmlDivElement);
 
     // call all listeners for coverage
-    localMapSpy.once.mock.calls.forEach((call: unknown[]) => {
+    mapMock.once.mock.calls.forEach((call: unknown[]) => {
       const listener = call[1] as ((e: unknown) => void) | undefined;
       if (listener) {
         listener(undefined);
@@ -117,14 +57,7 @@ describe('MapService', () => {
   });
 
   it('should fly to coordinates on map', () => {
-    const localMapSpy = {
-      flyTo: vi.fn(),
-      resize: vi.fn(),
-      once: vi.fn(),
-    };
-    localMapSpy.flyTo.mockReturnValue(localMapSpy);
-
-    service.map = localMapSpy as unknown as Map;
+    service.map = mapMock;
 
     service.centerOn({
       north: 46.96096807883433,
@@ -132,19 +65,14 @@ describe('MapService', () => {
       spatialReference: SpatialReference.Wgs84,
     });
 
-    expect(localMapSpy.flyTo).toHaveBeenCalled();
+    expect(mapMock.flyTo).toHaveBeenCalled();
   });
 
   it('should deselect service point', () => {
-    const setDataSpy = vi.fn();
-    const localMapSpy = {
-      ...mapSpy,
-      getSource: vi.fn().mockReturnValue({ setData: setDataSpy }),
-    };
-    service.map = localMapSpy as unknown as Map;
+    service.map = mapMock;
     service.deselectServicePoint();
 
-    expect(localMapSpy.getSource).toHaveBeenCalledWith('current_coordinates');
+    expect(mapMock.getSource).toHaveBeenCalledWith('current_coordinates');
     expect(
       (service.map.getSource('current_coordinates') as GeoJSONSource).setData
     ).toHaveBeenCalledWith({
@@ -158,14 +86,11 @@ describe('MapService', () => {
   });
 
   it('should switch to different map style', () => {
-    const localMapSpy = {
-      setLayoutProperty: vi.fn(),
-    };
-    service.map = localMapSpy as unknown as Map;
+    service.map = mapMock;
 
     service.switchToStyle(MAP_STYLES[3]);
 
-    expect(localMapSpy.setLayoutProperty).toHaveBeenCalledWith(
+    expect(mapMock.setLayoutProperty).toHaveBeenCalledWith(
       'osm',
       'visibility',
       'visible'
@@ -173,14 +98,11 @@ describe('MapService', () => {
   });
 
   it('should remove map', () => {
-    const localMapSpy = {
-      remove: vi.fn(),
-    };
-    service.map = localMapSpy as unknown as Map;
+    service.map = mapMock;
 
     service.removeMap();
 
-    expect(localMapSpy.remove).toHaveBeenCalledWith();
+    expect(mapMock.remove).toHaveBeenCalledWith();
   });
 
   it('should build popup information correctly', () => {
@@ -205,7 +127,7 @@ describe('MapService', () => {
   });
 
   it('should show popup on features coordinates', () => {
-    service.map = mapSpy as unknown as Map;
+    service.map = mapMock;
     const mouseEvent = {
       features: [
         {
@@ -230,10 +152,8 @@ describe('MapService', () => {
   });
 
   it('should select service point on click if only one is on coordinates', () => {
-    const localMapSpy = {
-      getZoom: vi.fn().mockReturnValue(12),
-    };
-    service.map = localMapSpy as unknown as Map;
+    mapMock.getZoom.mockReturnValue(12);
+    service.map = mapMock;
 
     const mouseEvent = {
       features: [
@@ -259,10 +179,8 @@ describe('MapService', () => {
 
   it('should fix popup on click if only multiple service points are on coordinates', () => {
     // Given
-    const localMapSpy = {
-      getZoom: vi.fn().mockReturnValue(12),
-    };
-    service.map = localMapSpy as unknown as Map;
+    mapMock.getZoom.mockReturnValue(12);
+    service.map = mapMock;
 
     const mouseEvent = {
       features: [
@@ -308,19 +226,19 @@ describe('MapService', () => {
     service.coordinateSelectionMode = true;
 
     const latLngCoordinates = { lat: 40, lng: -74 };
-    markerSpy.setLngLat.mockReturnValue(markerSpy as unknown as Marker);
-    service.marker = markerSpy as unknown as Marker;
-    service.map = mapSpy as unknown as Map;
+    markerSpy.setLngLat.mockReturnValue(markerSpy);
+    service.marker = markerSpy;
+    service.map = mapMock;
 
     service.placeMarkerAndFlyTo(latLngCoordinates);
 
     expect(markerSpy.setLngLat).toHaveBeenCalledWith(latLngCoordinates);
     expect(markerSpy.addTo).toHaveBeenCalledWith(service.map);
-    expect(mapSpy.flyTo).toHaveBeenCalled();
+    expect(mapMock.flyTo).toHaveBeenCalled();
   });
 
   it('should show popup on sector features coordinates', () => {
-    service.map = mapSpy as unknown as Map;
+    service.map = mapMock;
     const mouseEvent = {
       features: [
         {
@@ -345,10 +263,8 @@ describe('MapService', () => {
 
   it('should navigate to sector detail on click', () => {
     // Given
-    const localMapSpy = {
-      getZoom: vi.fn().mockReturnValue(12),
-    };
-    service.map = localMapSpy as unknown as Map;
+    mapMock.getZoom.mockReturnValue(12);
+    service.map = mapMock;
 
     const mouseEvent = {
       features: [
