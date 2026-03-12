@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { DateComponent } from './date.component';
 import { AppTestingModule } from '../../../app.testing.module';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -6,18 +7,9 @@ import { DateIconComponent } from '../date-icon/date-icon.component';
 import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
 import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
 import { TranslatePipe } from '@ngx-translate/core';
-import { of } from 'rxjs';
 import { DateRangeValidator } from '../../validation/date-range/date-range-validator';
 import { MatDatepicker } from '@angular/material/datepicker';
 
-const nextTimetableYearChange = new Date('2024-12-15');
-const timetableYearChangeService = jasmine.createSpyObj(
-  'TimetableYearChangeInternalService',
-  ['getNextTimetablesYearChange']
-);
-timetableYearChangeService.getNextTimetablesYearChange.and.returnValue(
-  of([nextTimetableYearChange])
-);
 
 describe('DateComponent', () => {
   let component: DateComponent;

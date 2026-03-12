@@ -227,9 +227,6 @@ describe('StopPointDetailComponent', () => {
     const disableFormSpy = vi
       .spyOn(component, 'disableForm')
       .mockImplementation(() => {});
-    const resetSpy = vi
-      .spyOn(component.form, 'reset')
-      .mockImplementation(() => {});
 
     component.showConfirmationDialog();
 

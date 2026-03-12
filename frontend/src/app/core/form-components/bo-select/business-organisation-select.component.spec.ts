@@ -9,18 +9,19 @@ import { of } from 'rxjs';
 import { BusinessOrganisationService } from '../../../api/service/bodi/business-organisation.service';
 import { translateServiceProvider } from '../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
-import SpyObj = jasmine.SpyObj;
+import { beforeEach, describe, expect, it } from 'vitest';
+import { mock } from 'vitest-mock-extended';
 
 describe('BusinessOrganisationSelectComponent', () => {
   let component: BusinessOrganisationSelectComponent;
   let fixture: ComponentFixture<BusinessOrganisationSelectComponent>;
 
-  let businessOrganisationServiceSpy: SpyObj<BusinessOrganisationService>;
+  const businessOrganisationServiceSpy = mock<BusinessOrganisationService>();
 
   beforeEach(async () => {
-    businessOrganisationServiceSpy = jasmine.createSpyObj({
-      getAllBusinessOrganisations: of([]),
-    });
+    businessOrganisationServiceSpy.getAllBusinessOrganisations.mockReturnValue(
+      of({ objects: [] })
+    );
 
     await TestBed.configureTestingModule({
       imports: [

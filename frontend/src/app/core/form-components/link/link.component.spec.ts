@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach } from 'vitest';
 
 import { LinkComponent } from './link.component';
 import { LinkIconComponent } from '../link-icon/link-icon.component';
