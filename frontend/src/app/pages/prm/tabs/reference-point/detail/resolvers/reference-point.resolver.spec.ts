@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { Observable, of } from 'rxjs';
 import {
@@ -37,15 +38,18 @@ const referencePoint: ReadReferencePointVersion[] = [
 ];
 
 describe('PrmReferencePointResolver', () => {
-  const referencePointServiceSpy = jasmine.createSpyObj(
-    'referencePointService',
-    ['getReferencePointVersions']
-  );
-  referencePointServiceSpy.getReferencePointVersions.and.returnValue(
-    of(referencePoint)
-  );
+  let referencePointServiceSpy: Mocked<
+    Pick<ReferencePointService, 'getReferencePointVersions'>
+  >;
 
   beforeEach(() => {
+    referencePointServiceSpy = {
+      getReferencePointVersions: vi.fn(),
+    };
+    referencePointServiceSpy.getReferencePointVersions.mockReturnValue(
+      of(referencePoint)
+    );
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [

@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { Observable, of } from 'rxjs';
 import {
@@ -13,15 +14,18 @@ import { ReadTrafficPointElementVersion } from '../../../../../../api';
 import { TrafficPointElementService } from '../../../../../../api/service/sepodi/traffic-point-element.service';
 
 describe('TrafficPointElementResolver', () => {
-  const trafficPointElementService = jasmine.createSpyObj(
-    'trafficPointElementsService',
-    ['getTrafficPointElement']
-  );
-  trafficPointElementService.getTrafficPointElement.and.returnValue(
-    of(BERN_WYLEREGG_TRAFFIC_POINTS)
-  );
+  let trafficPointElementService: Mocked<
+    Pick<TrafficPointElementService, 'getTrafficPointElement'>
+  >;
 
   beforeEach(() => {
+    trafficPointElementService = {
+      getTrafficPointElement: vi.fn(),
+    };
+    trafficPointElementService.getTrafficPointElement.mockReturnValue(
+      of(BERN_WYLEREGG_TRAFFIC_POINTS)
+    );
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [

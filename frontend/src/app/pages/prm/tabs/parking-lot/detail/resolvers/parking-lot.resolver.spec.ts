@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { Observable, of } from 'rxjs';
 import {
@@ -40,12 +41,16 @@ const parkingLot: ReadParkingLotVersion[] = [
 ];
 
 describe('PrmParkingLotResolver', () => {
-  const parkingLotServiceSpy = jasmine.createSpyObj('parkingLotService', [
-    'getParkingLotVersions',
-  ]);
-  parkingLotServiceSpy.getParkingLotVersions.and.returnValue(of(parkingLot));
+  let parkingLotServiceSpy: Mocked<
+    Pick<ParkingLotService, 'getParkingLotVersions'>
+  >;
 
   beforeEach(() => {
+    parkingLotServiceSpy = {
+      getParkingLotVersions: vi.fn(),
+    };
+    parkingLotServiceSpy.getParkingLotVersions.mockReturnValue(of(parkingLot));
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [

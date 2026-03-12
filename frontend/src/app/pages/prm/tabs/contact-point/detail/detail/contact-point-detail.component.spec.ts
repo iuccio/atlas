@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ContactPointDetailComponent } from './contact-point-detail.component';
 import {
   ContactPointType,
@@ -39,7 +38,7 @@ import { SplitServicePointNumberPipe } from '../../../../../../core/search-servi
 import moment from 'moment';
 import { PermissionService } from '../../../../../../core/auth/permission/permission.service';
 import { ContactPointService } from '../../../../../../api/service/prm/contact-point/contact-point.service';
-import SpyObj = jasmine.SpyObj;
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const contactPoint: ReadContactPointVersion[] = [
   {
@@ -68,39 +67,45 @@ const contactPoint: ReadContactPointVersion[] = [
   },
 ];
 
+const activatedRouteMock = {
+  snapshot: {
+    parent: {
+      data: {
+        servicePoint: [BERN_WYLEREGG],
+        contactPoint: [],
+      },
+    },
+  },
+};
+
 describe('ContactPointDetailComponent', () => {
   let component: ContactPointDetailComponent;
   let fixture: ComponentFixture<ContactPointDetailComponent>;
-
-  const contactPointService = jasmine.createSpyObj('contactPointService', [
-    'createContactPoint',
-    'updateContactPoint',
-  ]);
-
-  contactPointService.createContactPoint.and.returnValue(of(contactPoint[0]));
-  contactPointService.updateContactPoint.and.returnValue(of(contactPoint));
-
-  const notificationService = jasmine.createSpyObj('notificationService', [
-    'success',
-  ]);
-  const dialogService: SpyObj<DialogService> = jasmine.createSpyObj(
-    'dialogService',
-    ['confirm']
-  );
-  dialogService.confirm.and.returnValue(of(true));
-
-  const activatedRouteMock = {
-    snapshot: {
-      parent: {
-        data: {
-          servicePoint: [BERN_WYLEREGG],
-          contactPoint: [],
-        },
-      },
-    },
-  };
+  let contactPointService: Mocked<
+    Pick<ContactPointService, 'createContactPoint' | 'updateContactPoint'>
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
+  let dialogService: Mocked<Pick<DialogService, 'confirm'>>;
 
   beforeEach(() => {
+    Element.prototype.scrollIntoView = vi.fn();
+
+    contactPointService = {
+      createContactPoint: vi.fn(),
+      updateContactPoint: vi.fn(),
+    };
+    contactPointService.createContactPoint.mockReturnValue(of(contactPoint[0]));
+    contactPointService.updateContactPoint.mockReturnValue(of(contactPoint[0]));
+
+    notificationService = {
+      success: vi.fn(),
+    };
+
+    dialogService = {
+      confirm: vi.fn(),
+    };
+    dialogService.confirm.mockReturnValue(of(true));
+
     TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -136,10 +141,7 @@ describe('ContactPointDetailComponent', () => {
         { provide: PermissionService, useValue: adminPermissionServiceMock },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: NotificationService, useValue: notificationService },
-        {
-          provide: ContactPointService,
-          useValue: contactPointService,
-        },
+        { provide: ContactPointService, useValue: contactPointService },
         { provide: DialogService, useValue: dialogService },
         TranslatePipe,
         SplitServicePointNumberPipe,
@@ -156,11 +158,9 @@ describe('ContactPointDetailComponent', () => {
 
     it('should init', () => {
       expect(component).toBeTruthy();
-
-      expect(component.isNew).toBeTrue();
+      expect(component.isNew).toBeTruthy();
       expect(component.selectedVersion).toBeUndefined();
-
-      expect(component.form.enabled).toBeTrue();
+      expect(component.form.enabled).toBeTruthy();
     });
 
     it('should create on save', () => {
@@ -201,30 +201,27 @@ describe('ContactPointDetailComponent', () => {
 
     it('should init', () => {
       expect(component).toBeTruthy();
-
-      expect(component.isNew).toBeFalse();
+      expect(component.isNew).toBe(false);
       expect(component.selectedVersion).toBeDefined();
-
-      expect(component.form.enabled).toBeFalse();
-      expect(component.showVersionSwitch).toBeTrue();
+      expect(component.form.enabled).toBe(false);
+      expect(component.showVersionSwitch).toBe(true);
 
       component.switchVersion(0);
       expect(component.selectedVersionIndex).toBe(0);
     });
 
     it('should toggle form', () => {
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeTrue();
-      expect(component.form.dirty).toBeFalse();
+      expect(component.form.enabled).toBe(true);
+      expect(component.form.dirty).toBe(false);
 
       component.form.controls.designation.markAsDirty();
-
-      expect(component.form.dirty).toBeTrue();
+      expect(component.form.dirty).toBe(true);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
     });
 
     it('should update', () => {

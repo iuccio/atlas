@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 import { CreateStopPointComponent } from './create-stop-point.component';
 import { MeanOfTransport } from '../../../../../api';
@@ -13,19 +14,21 @@ import { of } from 'rxjs';
 import {
   STOP_POINT,
   STOP_POINT_COMPLETE,
-} from '../../../util/stop-point-test-data.spec';
+} from '../../../util/stop-point-test-data';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
-import SpyObj = jasmine.SpyObj;
 
 describe('CreateStopPointComponent', () => {
   let component: CreateStopPointComponent;
   let fixture: ComponentFixture<CreateStopPointComponent>;
-  let dialogService: SpyObj<DialogService>;
+  let dialogService: Mocked<Pick<DialogService, 'confirm'>>;
 
   beforeEach(() => {
-    dialogService = jasmine.createSpyObj('dialogService', ['confirm']);
-    dialogService.confirm.and.returnValue(of(true));
+    dialogService = {
+      confirm: vi.fn(),
+    };
+    dialogService.confirm.mockReturnValue(of(true));
+
     TestBed.configureTestingModule({
       imports: [MatStepperModule, CreateStopPointComponent],
       providers: [
@@ -34,6 +37,7 @@ describe('CreateStopPointComponent', () => {
         provideHttpClient(),
       ],
     });
+
     fixture = TestBed.createComponent(CreateStopPointComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -47,28 +51,22 @@ describe('CreateStopPointComponent', () => {
   });
 
   it('should backSelection', () => {
-    //given
     component.selectedMeansOfTransport = [MeanOfTransport.Bus];
 
-    //when
     component.backSelection();
 
-    //then
     expect(component.isMeanOfTransportSelected).toBeTruthy();
-    expect(component.isDataEditable).toBeFalse();
+    expect(component.isDataEditable).toBe(false);
   });
 
   it('should checkSelection when no previous meansOfTransport was selected', () => {
-    //given
     component.formMeanOfTransport = new FormGroup<MeanOfTransportFormGroup>({
       meansOfTransport: new FormControl([MeanOfTransport.Bus]),
     });
     component.form = StopPointFormGroupBuilder.buildFormGroup(STOP_POINT);
 
-    //when
     component.checkSelection();
 
-    //then
     expect(component.formMeanOfTransport).toBeTruthy();
     expect(component.isReduced).toBeTruthy();
     expect(component.isDataEditable).toBeTruthy();
@@ -76,7 +74,6 @@ describe('CreateStopPointComponent', () => {
   });
 
   it('should checkSelection when changed meansOfTransport selection from complete to reduced', () => {
-    //given
     component.isPreviousSelectionReduced = true;
     component.isMeanOfTransportSelected = true;
     component.formMeanOfTransport = new FormGroup<MeanOfTransportFormGroup>({
@@ -84,71 +81,79 @@ describe('CreateStopPointComponent', () => {
     });
     component.form =
       StopPointFormGroupBuilder.buildFormGroup(STOP_POINT_COMPLETE);
-    spyOn(component, 'resetDataForm');
-    spyOn(component, 'initForm');
-    const addCompleteRecordingValidationSpy = spyOn(
+
+    const resetDataFormSpy = vi
+      .spyOn(component, 'resetDataForm')
+      .mockImplementation(() => {});
+    const initFormSpy = vi
+      .spyOn(component, 'initForm')
+      .mockImplementation(() => {});
+    const addCompleteRecordingValidationSpy = vi.spyOn(
       StopPointFormGroupBuilder,
       'addCompleteRecordingValidation'
-    ).and.callThrough();
-    const removeCompleteRecordingValidationSpy = spyOn(
+    );
+    const removeCompleteRecordingValidationSpy = vi.spyOn(
       StopPointFormGroupBuilder,
       'removeCompleteRecordingValidation'
-    ).and.callThrough();
-    //when
+    );
+
     component.checkSelection();
 
-    //then
     expect(dialogService.confirm).toHaveBeenCalled();
-    expect(component.resetDataForm).toHaveBeenCalled();
-    expect(component.initForm).toHaveBeenCalled();
+    expect(resetDataFormSpy).toHaveBeenCalled();
+    expect(initFormSpy).toHaveBeenCalled();
     expect(addCompleteRecordingValidationSpy).toHaveBeenCalled();
     expect(removeCompleteRecordingValidationSpy).not.toHaveBeenCalled();
   });
 
   it('should checkSelection when changed meansOfTransport selection from reduced to complete', () => {
-    //given
     component.isPreviousSelectionReduced = false;
     component.isMeanOfTransportSelected = true;
     component.formMeanOfTransport = new FormGroup<MeanOfTransportFormGroup>({
       meansOfTransport: new FormControl([MeanOfTransport.Bus]),
     });
     component.form = StopPointFormGroupBuilder.buildFormGroup(STOP_POINT);
-    spyOn(component, 'resetDataForm');
-    spyOn(component, 'initForm');
-    const addCompleteRecordingValidationSpy = spyOn(
+
+    const resetDataFormSpy = vi
+      .spyOn(component, 'resetDataForm')
+      .mockImplementation(() => {});
+    const initFormSpy = vi
+      .spyOn(component, 'initForm')
+      .mockImplementation(() => {});
+    const addCompleteRecordingValidationSpy = vi.spyOn(
       StopPointFormGroupBuilder,
       'addCompleteRecordingValidation'
-    ).and.callThrough();
-    const removeCompleteRecordingValidationSpy = spyOn(
+    );
+    const removeCompleteRecordingValidationSpy = vi.spyOn(
       StopPointFormGroupBuilder,
       'removeCompleteRecordingValidation'
-    ).and.callThrough();
+    );
 
-    //when
+    addCompleteRecordingValidationSpy.mockClear();
+    removeCompleteRecordingValidationSpy.mockClear();
+
     component.checkSelection();
 
-    //then
     expect(dialogService.confirm).toHaveBeenCalled();
-    expect(component.resetDataForm).toHaveBeenCalled();
-    expect(component.initForm).toHaveBeenCalled();
+    expect(resetDataFormSpy).toHaveBeenCalled();
+    expect(initFormSpy).toHaveBeenCalled();
     expect(addCompleteRecordingValidationSpy).not.toHaveBeenCalled();
     expect(removeCompleteRecordingValidationSpy).toHaveBeenCalled();
   });
 
   it('should resetDataForm', () => {
-    //given
     component.selectedMeansOfTransport = [MeanOfTransport.Metro];
     component.formMeanOfTransport = new FormGroup<MeanOfTransportFormGroup>({
       meansOfTransport: new FormControl([MeanOfTransport.Bus]),
     });
     component.form = StopPointFormGroupBuilder.buildFormGroup(STOP_POINT);
-    spyOn(component.form, 'reset');
+    const resetSpy = vi
+      .spyOn(component.form, 'reset')
+      .mockImplementation(() => {});
 
-    //when
     component.resetDataForm();
 
-    //then
-    expect(component.form.reset).toHaveBeenCalled();
+    expect(resetSpy).toHaveBeenCalled();
     expect(component.form.controls.meansOfTransport.value).toEqual([
       MeanOfTransport.Metro,
     ]);

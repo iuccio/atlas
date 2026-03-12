@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { ParkingLotFormComponent } from './parking-lot-form.component';
 import { TextFieldComponent } from '../../../../../../../core/form-components/text-field/text-field.component';
@@ -30,6 +31,7 @@ describe('ParkingLotFormComponent', () => {
       ],
       providers: [{ provide: TranslatePipe }],
     });
+
     fixture = TestBed.createComponent(ParkingLotFormComponent);
     component = fixture.componentInstance;
     component.form = ParkingLotFormGroupBuilder.buildFormGroup();
