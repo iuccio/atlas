@@ -5,6 +5,7 @@ import {
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import {
   StopPointWorkflowDetailData,
   stopPointWorkflowDetailResolver,
@@ -16,29 +17,32 @@ import { AppTestingModule } from '../../../../app.testing.module';
 import { ServicePointService } from '../../../../api/service/sepodi/service-point.service';
 import { StopPointWorkflowService } from '../../../../api/service/workflow/stop-point-workflow.service';
 
-const workflow: ReadStopPointWorkflow = {
-  versionId: 1,
-  sloid: 'ch:1:sloid:8000',
-  workflowComment: 'No comment',
-};
-
 describe('StopPointWorkflowDetailResolver', () => {
-  const stopPointWorkflowService = jasmine.createSpyObj(
-    'stopPointWorkflowService',
-    ['getStopPointWorkflow']
-  );
-  stopPointWorkflowService.getStopPointWorkflow.and.returnValue(of(workflow));
+  const workflow: ReadStopPointWorkflow = {
+    versionId: 1,
+    sloid: 'ch:1:sloid:8000',
+    workflowComment: 'No comment',
+  };
 
-  const servicePointsService = jasmine.createSpyObj('servicePointsService', [
-    'getServicePointVersionsBySloid',
-  ]);
-  servicePointsService.getServicePointVersionsBySloid.and.returnValue(
-    of([BERN_WYLEREGG])
-  );
+  let stopPointWorkflowService: Mocked<
+    Pick<StopPointWorkflowService, 'getStopPointWorkflow'>
+  >;
+  let servicePointsService: Mocked<
+    Pick<ServicePointService, 'getServicePointVersionsBySloid'>
+  >;
 
   let resolver: StopPointWorkflowDetailResolver;
 
   beforeEach(() => {
+    stopPointWorkflowService = {
+      getStopPointWorkflow: vi.fn().mockReturnValue(of(workflow)),
+    };
+    servicePointsService = {
+      getServicePointVersionsBySloid: vi
+        .fn()
+        .mockReturnValue(of([BERN_WYLEREGG])),
+    };
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [

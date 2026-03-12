@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { StopPointRejectWorkflowDialogComponent } from './stop-point-reject-workflow-dialog.component';
 import { AppTestingModule } from '../../../../app.testing.module';
@@ -17,62 +18,75 @@ import { DialogCloseComponent } from '../../../../core/components/dialog/close/d
 import { UserAdministrationService } from '../../../../api/service/user-administration/user-administration.service';
 import { StopPointWorkflowService } from '../../../../api/service/workflow/stop-point-workflow.service';
 
-const workflow: ReadStopPointWorkflow = {
-  versionId: 1,
-  sloid: 'ch:1:sloid:8000',
-  workflowComment: 'No comment',
-};
-const notificationServiceSpy = jasmine.createSpyObj(['success']);
-const stopPointWorkflowService = jasmine.createSpyObj({
-  rejectStopPointWorkflow: of(workflow),
-  cancelStopPointWorkflow: of(workflow),
-});
-
-const workflowDialogData: StopPointRejectWorkflowDialogData = {
-  title: '',
-  message: '',
-  workflowId: 123,
-  rejectType: 'CANCEL',
-};
-const router = jasmine.createSpyObj({
-  navigate: Promise.resolve(),
-  navigateByUrl: Promise.resolve(),
-});
-
-const detailHelperService = jasmine.createSpyObj({
-  confirmLeaveDirtyForm: of(true),
-});
-
-const user: User = {
-  sbbUserId: 'e123',
-  lastName: 'Marek',
-  firstName: 'Hamsik',
-  mail: 'a@b.cd',
-  permissions: new Set<Permission>(),
-};
-
-const userAdministrationServiceMock = jasmine.createSpyObj(
-  UserAdministrationService,
-  {
-    getCurrentUser: of(user),
-  }
-);
-
-const dialogRefSpy = jasmine.createSpyObj(['close']);
-
-function formGroup(component: StopPointRejectWorkflowDialogComponent) {
-  const formGroup = component.formGroup;
-  formGroup.controls.firstName.setValue('firstName');
-  formGroup.controls.lastName.setValue('lastName');
-  formGroup.controls.organisation.setValue('organisation');
-  formGroup.controls.motivationComment.setValue('juva merda');
-}
-
 describe('StopPointRejectWorkflowDialogComponent', () => {
   let component: StopPointRejectWorkflowDialogComponent;
   let fixture: ComponentFixture<StopPointRejectWorkflowDialogComponent>;
 
+  const workflow: ReadStopPointWorkflow = {
+    versionId: 1,
+    sloid: 'ch:1:sloid:8000',
+    workflowComment: 'No comment',
+  };
+
+  const user: User = {
+    sbbUserId: 'e123',
+    lastName: 'Marek',
+    firstName: 'Hamsik',
+    mail: 'a@b.cd',
+    permissions: new Set<Permission>(),
+  };
+
+  const workflowDialogData: StopPointRejectWorkflowDialogData = {
+    title: '',
+    message: '',
+    workflowId: 123,
+    rejectType: 'CANCEL',
+  };
+
+  let notificationServiceSpy: Mocked<Pick<NotificationService, 'success'>>;
+  let stopPointWorkflowService: Mocked<
+    Pick<
+      StopPointWorkflowService,
+      'rejectStopPointWorkflow' | 'cancelStopPointWorkflow'
+    >
+  >;
+  let router: Mocked<Pick<Router, 'navigate' | 'navigateByUrl'>>;
+  let detailHelperService: Mocked<
+    Pick<DetailDialogHelperService, 'confirmLeaveDirtyForm'>
+  >;
+  let userAdministrationServiceMock: Mocked<
+    Pick<UserAdministrationService, 'getCurrentUser'>
+  >;
+  let dialogRefSpy: Mocked<
+    Pick<MatDialogRef<StopPointRejectWorkflowDialogComponent>, 'close'>
+  >;
+
+  function formGroup(component: StopPointRejectWorkflowDialogComponent) {
+    const formGroup = component.formGroup;
+    formGroup.controls.firstName.setValue('firstName');
+    formGroup.controls.lastName.setValue('lastName');
+    formGroup.controls.organisation.setValue('organisation');
+    formGroup.controls.motivationComment.setValue('juva merda');
+  }
+
   beforeEach(async () => {
+    notificationServiceSpy = { success: vi.fn() };
+    stopPointWorkflowService = {
+      rejectStopPointWorkflow: vi.fn().mockReturnValue(of(workflow)),
+      cancelStopPointWorkflow: vi.fn().mockReturnValue(of(workflow)),
+    };
+    router = {
+      navigate: vi.fn().mockReturnValue(Promise.resolve()),
+      navigateByUrl: vi.fn().mockReturnValue(Promise.resolve()),
+    };
+    detailHelperService = {
+      confirmLeaveDirtyForm: vi.fn().mockReturnValue(of(true)),
+    };
+    userAdministrationServiceMock = {
+      getCurrentUser: vi.fn().mockReturnValue(of(user)),
+    };
+    dialogRefSpy = { close: vi.fn() };
+
     await TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
