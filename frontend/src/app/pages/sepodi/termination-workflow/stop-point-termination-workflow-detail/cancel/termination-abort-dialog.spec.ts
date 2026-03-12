@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { TerminationAbortDialogService } from './termination-abort-dialog.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,11 +9,15 @@ import { TerminationAbortFormGroup } from '../stop-point-termination-workflow-de
 
 describe('TerminationAbortDialog', () => {
   let service: TerminationAbortDialogService;
-  const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+  let dialogMock: Mocked<Pick<MatDialog, 'open'>>;
 
   beforeEach(() => {
+    dialogMock = {
+      open: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
-      providers: [{ provide: MatDialog, useValue: dialogSpy }],
+      providers: [{ provide: MatDialog, useValue: dialogMock }],
     });
     service = TestBed.inject(TerminationAbortDialogService);
   });
@@ -21,8 +26,10 @@ describe('TerminationAbortDialog', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should open dialog', (done) => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
+  it('should open dialog', () => {
+    dialogMock.open.mockReturnValue({
+      afterClosed: () => of(true),
+    } as ReturnType<MatDialog['open']>);
 
     service
       .openDialog(
@@ -32,9 +39,8 @@ describe('TerminationAbortDialog', () => {
         })
       )
       .subscribe((result) => {
-        expect(result).toBeTrue();
-        expect(dialogSpy.open).toHaveBeenCalled();
-        done();
+        expect(result).toBe(true);
+        expect(dialogMock.open).toHaveBeenCalled();
       });
   });
 });

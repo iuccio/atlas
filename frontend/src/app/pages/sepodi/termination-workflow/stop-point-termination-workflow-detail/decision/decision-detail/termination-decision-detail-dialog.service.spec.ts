@@ -1,6 +1,7 @@
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { TerminationDecisionDetailDialogService } from './termination-decision-detail-dialog.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { TerminationDecision } from '../../../../../../api/model/terminationDecision';
@@ -11,18 +12,23 @@ import TerminationDecisionPersonEnum = TerminationDecision.TerminationDecisionPe
 
 describe('TerminationDecisionDetailDialogService', () => {
   let service: TerminationDecisionDetailDialogService;
-
-  const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+  let dialogMock: Mocked<Pick<MatDialog, 'open'>>;
 
   beforeEach(() => {
+    dialogMock = {
+      open: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
-      providers: [{ provide: MatDialog, useValue: dialogSpy }],
+      providers: [{ provide: MatDialog, useValue: dialogMock }],
     });
     service = TestBed.inject(TerminationDecisionDetailDialogService);
   });
 
-  it('should open dialog', (done) => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
+  it('should open dialog', () => {
+    dialogMock.open.mockReturnValue({
+      afterClosed: () => of(true),
+    } as ReturnType<MatDialog['open']>);
 
     service
       .openDialog(
@@ -46,9 +52,8 @@ describe('TerminationDecisionDetailDialogService', () => {
         new Date('9999-12-14')
       )
       .subscribe((result) => {
-        expect(result).toBeTrue();
-        expect(dialogSpy.open).toHaveBeenCalled();
-        done();
+        expect(result).toBe(true);
+        expect(dialogMock.open).toHaveBeenCalled();
       });
   });
 });
