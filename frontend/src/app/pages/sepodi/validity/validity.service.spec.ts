@@ -1,20 +1,20 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { ValidityService } from './validity.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import moment from 'moment';
 import { of } from 'rxjs';
 import { DialogService } from '../../../core/components/dialog/dialog.service';
-import SpyObj = jasmine.SpyObj;
 
 describe('ValidityService', () => {
   let service: ValidityService;
-  const dialogService: SpyObj<DialogService> = jasmine.createSpyObj(
-    'dialogService',
-    ['confirm']
-  );
-  dialogService.confirm.and.returnValue(of(true));
+  let dialogService: Mocked<Pick<DialogService, 'confirm'>>;
 
   beforeEach(() => {
+    dialogService = {
+      confirm: vi.fn().mockReturnValue(of(true)),
+    };
+
     TestBed.configureTestingModule({
       providers: [
         ValidityService,
@@ -72,13 +72,13 @@ describe('ValidityService', () => {
     };
 
     service.confirmValidityDialog().subscribe((result) => {
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
       expect(dialogService.confirm).toHaveBeenCalled();
     });
   });
 
   it('should validate and disable form correctly', async () => {
-    const updateFunctionSpy = jasmine.createSpy();
+    const updateFunctionSpy = vi.fn();
     const form = new FormGroup({});
     service.validity = {
       initValidFrom: moment('2023-01-01'),
@@ -88,14 +88,14 @@ describe('ValidityService', () => {
     };
     service.validateAndDisableCustom(updateFunctionSpy, () => form.disable());
 
-    expect(form.disabled).toBeTrue();
+    expect(form.disabled).toBe(true);
     expect(updateFunctionSpy).toHaveBeenCalled();
     expect(dialogService.confirm).toHaveBeenCalled();
   });
 
   it('should validate and disable function correctly and call update', async () => {
-    const updateFunctionSpy = jasmine.createSpy();
-    const disableFunctionSpy = jasmine.createSpy();
+    const updateFunctionSpy = vi.fn();
+    const disableFunctionSpy = vi.fn();
 
     service.validity = {
       initValidFrom: moment('2023-01-01'),

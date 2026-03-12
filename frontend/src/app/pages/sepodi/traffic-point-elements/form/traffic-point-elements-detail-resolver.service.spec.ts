@@ -5,6 +5,7 @@ import {
 } from '@angular/router';
 import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { TrafficPointElementsDetailResolver } from './traffic-point-elements-detail-resolver.service';
 import { BERN_WYLEREGG_TRAFFIC_POINTS } from '../../../../../test/data/traffic-point-element';
@@ -13,15 +14,20 @@ import { TrafficPointElementType } from '../../../../api';
 import { Pages } from '../../../pages';
 
 describe('TrafficPointElementsDetailResolver', () => {
-  const trafficPointElementService = jasmine.createSpyObj(
-    'trafficPointElementsService',
-    ['getTrafficPointElement']
-  );
+  let trafficPointElementService: Mocked<
+    Pick<TrafficPointElementService, 'getTrafficPointElement'>
+  >;
 
   let resolver: TrafficPointElementsDetailResolver;
   let router: Router;
 
   beforeEach(() => {
+    trafficPointElementService = {
+      getTrafficPointElement: vi.fn().mockReturnValue(
+        of([BERN_WYLEREGG_TRAFFIC_POINTS[0]])
+      ),
+    };
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
@@ -34,10 +40,6 @@ describe('TrafficPointElementsDetailResolver', () => {
     });
     resolver = TestBed.inject(TrafficPointElementsDetailResolver);
     router = TestBed.inject(Router);
-
-    trafficPointElementService.getTrafficPointElement.and.returnValue(
-      of([BERN_WYLEREGG_TRAFFIC_POINTS[0]])
-    );
   });
 
   it('should create', () => {
@@ -64,7 +66,7 @@ describe('TrafficPointElementsDetailResolver', () => {
   });
 
   it('should navigate to area if type is area but route is trafficPointElements', () => {
-    trafficPointElementService.getTrafficPointElement.and.returnValue(
+    trafficPointElementService.getTrafficPointElement.mockReturnValue(
       of([
         {
           id: 9298,
@@ -96,10 +98,10 @@ describe('TrafficPointElementsDetailResolver', () => {
       }),
     } as unknown as ActivatedRouteSnapshot;
 
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
 
     resolver.resolve(mockRoute).subscribe(() => {
-      expect(router.navigate).toHaveBeenCalledOnceWith([
+      expect(router.navigate).toHaveBeenCalledExactlyOnceWith([
         Pages.SEPODI.path,
         Pages.SERVICE_POINTS.path,
         8589008,

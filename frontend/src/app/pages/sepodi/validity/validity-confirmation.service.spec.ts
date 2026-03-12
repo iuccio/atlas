@@ -1,19 +1,20 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { ValidityConfirmationService } from './validity-confirmation.service';
 import { of } from 'rxjs';
 import { DialogService } from '../../../core/components/dialog/dialog.service';
 import moment from 'moment';
-import SpyObj = jasmine.SpyObj;
 import { BERN } from '../../../../test/data/service-point';
 
 describe('ValidityConfirmationService', () => {
   let service: ValidityConfirmationService;
 
-  let dialogService: SpyObj<DialogService>;
+  let dialogService: Mocked<Pick<DialogService, 'confirm'>>;
 
   beforeEach(() => {
-    dialogService = jasmine.createSpyObj('dialogService', ['confirm']);
-    dialogService.confirm.and.returnValue(of(true));
+    dialogService = {
+      confirm: vi.fn().mockReturnValue(of(true)),
+    };
 
     TestBed.configureTestingModule({
       providers: [{ provide: DialogService, useValue: dialogService }],
