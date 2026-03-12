@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { TrafficPointElementsSidePanelComponent } from './traffic-point-elements-side-panel.component';
 import { ActivatedRoute } from '@angular/router';
 import { AppTestingModule } from '../../../app.testing.module';
@@ -15,18 +16,31 @@ describe('TrafficPointElementsSidePanelComponent', () => {
   let component: TrafficPointElementsSidePanelComponent;
   let fixture: ComponentFixture<TrafficPointElementsSidePanelComponent>;
 
-  const sectorMapService = jasmine.createSpyObj<SectorMapService>([
-    'displaySectorsOnMap',
-    'clearDisplayedSectors',
-  ]);
-  const trafficPointMapService = jasmine.createSpyObj<TrafficPointMapService>([
-    'displayTrafficPointsOnMap',
-    'displayCurrentTrafficPoint',
-    'clearDisplayedTrafficPoints',
-    'clearCurrentTrafficPoint',
-  ]);
+  let sectorMapService: Mocked<
+    Pick<SectorMapService, 'displaySectorsOnMap' | 'clearDisplayedSectors'>
+  >;
+  let trafficPointMapService: Mocked<
+    Pick<
+      TrafficPointMapService,
+      | 'displayTrafficPointsOnMap'
+      | 'displayCurrentTrafficPoint'
+      | 'clearDisplayedTrafficPoints'
+      | 'clearCurrentTrafficPoint'
+    >
+  >;
 
   beforeEach(() => {
+    sectorMapService = {
+      displaySectorsOnMap: vi.fn(),
+      clearDisplayedSectors: vi.fn(),
+    };
+    trafficPointMapService = {
+      displayTrafficPointsOnMap: vi.fn(),
+      displayCurrentTrafficPoint: vi.fn(),
+      clearDisplayedTrafficPoints: vi.fn(),
+      clearCurrentTrafficPoint: vi.fn(),
+    };
+
     const activatedRouteMock = {
       snapshot: {
         params: {
