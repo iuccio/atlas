@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { Observable, of } from 'rxjs';
 import {
@@ -51,12 +52,14 @@ const platform: ReadPlatformVersion[] = [
 ];
 
 describe('PrmPlatformResolver', () => {
-  const platformServiceSpy = jasmine.createSpyObj('platformService', [
-    'getPlatformVersions',
-  ]);
-  platformServiceSpy.getPlatformVersions.and.returnValue(of(platform));
+  let platformServiceSpy: Mocked<Pick<PlatformService, 'getPlatformVersions'>>;
 
   beforeEach(() => {
+    platformServiceSpy = {
+      getPlatformVersions: vi.fn(),
+    };
+    platformServiceSpy.getPlatformVersions.mockReturnValue(of(platform));
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [

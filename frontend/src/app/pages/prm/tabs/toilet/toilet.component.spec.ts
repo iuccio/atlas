@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 import { ToiletComponent } from './toilet.component';
 import {
@@ -6,7 +7,7 @@ import {
   MockTableComponent,
 } from '../../../../app.testing.mocks';
 import { ActivatedRoute } from '@angular/router';
-import { STOP_POINT } from '../../util/stop-point-test-data.spec';
+import { STOP_POINT } from '../../util/stop-point-test-data';
 import { BERN_WYLEREGG } from '../../../../../test/data/service-point';
 import { StandardAttributeType, ToiletOverview } from '../../../../api';
 import { of } from 'rxjs';
@@ -37,6 +38,10 @@ const toiletOverview: ToiletOverview[] = [
 describe('Toilet Component', () => {
   let component: ToiletComponent;
   let fixture: ComponentFixture<ToiletComponent>;
+  let toiletInternalService: Mocked<
+    Pick<ToiletInternalService, 'getToiletOverview'>
+  >;
+
   const activatedRouteMock = {
     parent: {
       snapshot: {
@@ -51,13 +56,12 @@ describe('Toilet Component', () => {
     },
   };
 
-  const toiletInternalService = jasmine.createSpyObj('toiletInternalService', [
-    'getToiletOverview',
-  ]);
-
-  toiletInternalService.getToiletOverview.and.returnValue(of(toiletOverview));
-
   beforeEach(() => {
+    toiletInternalService = {
+      getToiletOverview: vi.fn(),
+    };
+    toiletInternalService.getToiletOverview.mockReturnValue(of(toiletOverview));
+
     TestBed.configureTestingModule({
       imports: [ToiletComponent],
       providers: [
@@ -71,6 +75,7 @@ describe('Toilet Component', () => {
       remove: { imports: [AtlasButtonComponent, TableComponent] },
       add: { imports: [MockAtlasButtonComponent, MockTableComponent] },
     });
+
     fixture = TestBed.createComponent(ToiletComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

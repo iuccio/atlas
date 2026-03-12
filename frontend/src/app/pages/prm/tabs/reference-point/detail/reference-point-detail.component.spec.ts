@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 import { ReferencePointDetailComponent } from './reference-point-detail.component';
 import { of } from 'rxjs';
@@ -37,7 +38,6 @@ import { DetailPageContentComponent } from '../../../../../core/components/detai
 import { DetailFooterComponent } from '../../../../../core/components/detail-footer/detail-footer.component';
 import { PermissionService } from '../../../../../core/auth/permission/permission.service';
 import { ReferencePointService } from '../../../../../api/service/prm/reference-point/reference-point.service';
-import SpyObj = jasmine.SpyObj;
 
 const referencePoint: ReadReferencePointVersion[] = [
   {
@@ -64,7 +64,7 @@ const referencePoint: ReadReferencePointVersion[] = [
   },
 ];
 
-const permissionService: Partial<PermissionService> = {
+const permissionService: Pick<PermissionService, 'hasPermissionsToWrite'> = {
   hasPermissionsToWrite(): boolean {
     return true;
   },
@@ -73,27 +73,11 @@ const permissionService: Partial<PermissionService> = {
 describe('ReferencePointDetailComponent', () => {
   let component: ReferencePointDetailComponent;
   let fixture: ComponentFixture<ReferencePointDetailComponent>;
-
-  const referencePointService = jasmine.createSpyObj('referencePointService', [
-    'createReferencePoint',
-    'updateReferencePoint',
-  ]);
-
-  referencePointService.createReferencePoint.and.returnValue(
-    of(referencePoint[0])
-  );
-  referencePointService.updateReferencePoint.and.returnValue(
-    of(referencePoint)
-  );
-
-  const notificationService = jasmine.createSpyObj('notificationService', [
-    'success',
-  ]);
-  const dialogService: SpyObj<DialogService> = jasmine.createSpyObj(
-    'dialogService',
-    ['confirm']
-  );
-  dialogService.confirm.and.returnValue(of(true));
+  let referencePointService: Mocked<
+    Pick<ReferencePointService, 'createReferencePoint' | 'updateReferencePoint'>
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
+  let dialogService: Mocked<Pick<DialogService, 'confirm'>>;
 
   const activatedRouteMock = {
     snapshot: {
@@ -105,6 +89,28 @@ describe('ReferencePointDetailComponent', () => {
   };
 
   beforeEach(() => {
+    Element.prototype.scrollIntoView = vi.fn();
+
+    referencePointService = {
+      createReferencePoint: vi.fn(),
+      updateReferencePoint: vi.fn(),
+    };
+    referencePointService.createReferencePoint.mockReturnValue(
+      of(referencePoint[0])
+    );
+    referencePointService.updateReferencePoint.mockReturnValue(
+      of(referencePoint[0])
+    );
+
+    notificationService = {
+      success: vi.fn(),
+    };
+
+    dialogService = {
+      confirm: vi.fn(),
+    };
+    dialogService.confirm.mockReturnValue(of(true));
+
     TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -155,10 +161,10 @@ describe('ReferencePointDetailComponent', () => {
     it('should init', () => {
       expect(component).toBeTruthy();
 
-      expect(component.isNew).toBeTrue();
+      expect(component.isNew).toBe(true);
       expect(component.selectedVersion).toBeUndefined();
 
-      expect(component.form.enabled).toBeTrue();
+      expect(component.form.enabled).toBe(true);
     });
 
     it('should create on save', () => {
@@ -182,6 +188,7 @@ describe('ReferencePointDetailComponent', () => {
 
   describe('edit reference point', () => {
     let router: Router;
+
     beforeEach(() => {
       TestBed.overrideProvider(ActivatedRoute, {
         useValue: {
@@ -202,39 +209,39 @@ describe('ReferencePointDetailComponent', () => {
     it('should init', () => {
       expect(component).toBeTruthy();
 
-      expect(component.isNew).toBeFalse();
+      expect(component.isNew).toBe(false);
       expect(component.selectedVersion).toBeDefined();
 
-      expect(component.form.enabled).toBeFalse();
-      expect(component.showVersionSwitch).toBeTrue();
+      expect(component.form.enabled).toBe(false);
+      expect(component.showVersionSwitch).toBe(true);
 
       component.switchVersion(0);
       expect(component.selectedVersionIndex).toBe(0);
     });
 
     it('should go back to reference-points', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       component.back();
-      expect(router.navigate).toHaveBeenCalledOnceWith(
+      expect(navigateSpy).toHaveBeenCalledExactlyOnceWith(
         ['..'],
-        jasmine.any(Object)
+        expect.any(Object)
       );
     });
 
     it('should toggle form', () => {
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeTrue();
-      expect(component.form.dirty).toBeFalse();
+      expect(component.form.enabled).toBe(true);
+      expect(component.form.dirty).toBe(false);
 
       component.form.controls.designation.markAsDirty();
 
-      expect(component.form.dirty).toBeTrue();
+      expect(component.form.dirty).toBe(true);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
     });
 
     it('should update', () => {

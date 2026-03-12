@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { Observable, of } from 'rxjs';
 import {
@@ -43,14 +44,18 @@ const contactPoint: ReadContactPointVersion[] = [
 ];
 
 describe('PrmContactPointResolver', () => {
-  const contactPointServiceSpy = jasmine.createSpyObj('contanctPointService', [
-    'getContactPointVersions',
-  ]);
-  contactPointServiceSpy.getContactPointVersions.and.returnValue(
-    of(contactPoint)
-  );
+  let contactPointServiceSpy: Mocked<
+    Pick<ContactPointService, 'getContactPointVersions'>
+  >;
 
   beforeEach(() => {
+    contactPointServiceSpy = {
+      getContactPointVersions: vi.fn(),
+    };
+    contactPointServiceSpy.getContactPointVersions.mockReturnValue(
+      of(contactPoint)
+    );
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [

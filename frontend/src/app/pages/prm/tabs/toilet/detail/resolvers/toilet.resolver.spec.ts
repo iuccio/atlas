@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
@@ -40,12 +41,14 @@ const toiletVersions: ReadToiletVersion[] = [
 ];
 
 describe('toiletResolver', () => {
-  const toiletServiceSpy = jasmine.createSpyObj('toiletService', [
-    'getToiletVersions',
-  ]);
-  toiletServiceSpy.getToiletVersions.and.returnValue(of(toiletVersions));
+  let toiletServiceSpy: Mocked<Pick<ToiletService, 'getToiletVersions'>>;
 
   beforeEach(() => {
+    toiletServiceSpy = {
+      getToiletVersions: vi.fn(),
+    };
+    toiletServiceSpy.getToiletVersions.mockReturnValue(of(toiletVersions));
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [

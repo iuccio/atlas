@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { ReadServicePointVersion, ReadStopPointVersion } from '../../api';
 import { BERN_WYLEREGG } from '../../../test/data/service-point';
 import { of } from 'rxjs';
-import { STOP_POINT } from '../../pages/prm/util/stop-point-test-data.spec';
+import { STOP_POINT } from '../../pages/prm/util/stop-point-test-data';
 import { ServicePointService } from '../../api/service/sepodi/service-point.service';
 import { StopPointService } from '../../api/service/prm/stop-point/stop-point.service';
 

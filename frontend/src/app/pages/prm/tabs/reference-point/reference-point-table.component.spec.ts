@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 import { ReferencePointTableComponent } from './reference-point-table.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,7 +7,7 @@ import {
   MockAtlasButtonComponent,
   MockTableComponent,
 } from '../../../../app.testing.mocks';
-import { STOP_POINT } from '../../util/stop-point-test-data.spec';
+import { STOP_POINT } from '../../util/stop-point-test-data';
 import { BERN_WYLEREGG } from '../../../../../test/data/service-point';
 import { ReadReferencePointVersion } from '../../../../api';
 import { of } from 'rxjs';
@@ -46,14 +47,9 @@ describe('ReferencePointTableComponent', () => {
   let component: ReferencePointTableComponent;
   let fixture: ComponentFixture<ReferencePointTableComponent>;
   let router: Router;
-
-  const referencePointInternalService = jasmine.createSpyObj(
-    'referencePointInternalService',
-    ['getReferencePointsOverview']
-  );
-  referencePointInternalService.getReferencePointsOverview.and.returnValue(
-    of(referencePointOverview)
-  );
+  let referencePointInternalService: Mocked<
+    Pick<ReferencePointInternalService, 'getReferencePointsOverview'>
+  >;
 
   const activatedRouteMock = {
     parent: {
@@ -65,6 +61,13 @@ describe('ReferencePointTableComponent', () => {
   };
 
   beforeEach(() => {
+    referencePointInternalService = {
+      getReferencePointsOverview: vi.fn(),
+    };
+    referencePointInternalService.getReferencePointsOverview.mockReturnValue(
+      of(referencePointOverview)
+    );
+
     TestBed.configureTestingModule({
       imports: [ReferencePointTableComponent, TranslateModule.forRoot()],
       providers: [
@@ -80,6 +83,7 @@ describe('ReferencePointTableComponent', () => {
       remove: { imports: [AtlasButtonComponent, TableComponent] },
       add: { imports: [MockAtlasButtonComponent, MockTableComponent] },
     });
+
     fixture = TestBed.createComponent(ReferencePointTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -97,7 +101,7 @@ describe('ReferencePointTableComponent', () => {
   });
 
   it('should navigate on table click', () => {
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.getOverview({ page: 0, size: 10 });
 

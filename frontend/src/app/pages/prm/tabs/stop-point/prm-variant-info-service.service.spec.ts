@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { PrmVariantInfoService } from './prm-variant-info.service';
 import {
@@ -11,12 +12,18 @@ import { PermissionService } from '../../../../core/auth/permission/permission.s
 describe('PrmVariantInfoService', () => {
   let service: PrmVariantInfoService;
 
-  const isAtLeastSupervisorMock: Partial<PermissionService> = {
+  const isAtLeastSupervisorMock: Pick<
+    PermissionService,
+    'isAtLeastSupervisor'
+  > = {
     isAtLeastSupervisor(): boolean {
       return true;
     },
   };
-  const isNotAtLeastSupervisorMock: Partial<PermissionService> = {
+  const isNotAtLeastSupervisorMock: Pick<
+    PermissionService,
+    'isAtLeastSupervisor'
+  > = {
     isAtLeastSupervisor(): boolean {
       return false;
     },
@@ -37,9 +44,8 @@ describe('PrmVariantInfoService', () => {
     });
 
     it('should return reduced meansOfTransportToShow', () => {
-      //when
       const res = service.getPrmMeansOfTransportToShow(['BUS']);
-      //then
+
       expect(res).toEqual(
         Object.values(MeanOfTransport).filter(
           (value) => value !== MeanOfTransport.Unknown
@@ -48,9 +54,8 @@ describe('PrmVariantInfoService', () => {
     });
 
     it('should return complete meansOfTransportToShow', () => {
-      //when
       const res = service.getPrmMeansOfTransportToShow(['TRAIN']);
-      //then
+
       expect(res).toEqual(
         Object.values(MeanOfTransport).filter(
           (value) => value !== MeanOfTransport.Unknown
@@ -70,16 +75,14 @@ describe('PrmVariantInfoService', () => {
     });
 
     it('should return reduced meansOfTransportToShow', () => {
-      //when
       const res = service.getPrmMeansOfTransportToShow(['BUS']);
-      //then
+
       expect(res).toEqual(reducedMeansOfTransport);
     });
 
     it('should return complete meansOfTransportToShow', () => {
-      //when
       const res = service.getPrmMeansOfTransportToShow(['TRAIN']);
-      //then
+
       expect(res).toEqual(completeMeansOfTransport);
     });
   });

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { PlatformReducedFormComponent } from './platform-reduced-form.component';
 import { TranslatePipe } from '@ngx-translate/core';
