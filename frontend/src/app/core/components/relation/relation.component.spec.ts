@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { RelationComponent } from './relation.component';
 import { By } from '@angular/platform-browser';
 import { translateServiceProvider } from '../../../app.testing.mocks';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('TransportCompanyRelationComponent', () => {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -10,11 +10,10 @@ describe('TransportCompanyRelationComponent', () => {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   let fixture: ComponentFixture<RelationComponent<any>>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RelationComponent],
-      providers: [translateServiceProvider, provideHttpClient()],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [translateServiceProvider],
+    });
 
     fixture = TestBed.createComponent(RelationComponent);
     component = fixture.componentInstance;
@@ -71,8 +70,8 @@ describe('TransportCompanyRelationComponent', () => {
       { id: 2, value: 'test2' },
     ];
     component.selectedIndex = 1;
-    expect(component.isRowSelected(component._records[1])).toBeTrue();
-    expect(component.isRowSelected(component._records[0])).toBeFalse();
+    expect(component.isRowSelected(component._records[1])).toBe(true);
+    expect(component.isRowSelected(component._records[0])).toBe(false);
   });
 
   it('edit mode changed should emit event', () => {
@@ -82,7 +81,7 @@ describe('TransportCompanyRelationComponent', () => {
     component.editModeChanged.subscribe(() => (eventEmitted = true));
     const editBtn = fixture.debugElement.query(By.css('button'));
     editBtn.nativeElement.click();
-    expect(eventEmitted).toBeTrue();
+    expect(eventEmitted).toBe(true);
   });
 
   it('test select record', () => {
@@ -100,7 +99,7 @@ describe('TransportCompanyRelationComponent', () => {
       () => (selectedIndexChangedCalled = true)
     );
     component.selectRecord(component._records[0]);
-    expect(selectedIndexChangedCalled).toBeFalse();
+    expect(selectedIndexChangedCalled).toBe(false);
   });
 
   it('test delete', () => {
@@ -108,9 +107,9 @@ describe('TransportCompanyRelationComponent', () => {
     component.selectedIndex = 0;
     fixture.detectChanges();
     const deleteBtn = fixture.debugElement.queryAll(By.css('button'))[2];
-    spyOn(component.deleteRelation, 'emit');
+    vi.spyOn(component.deleteRelation, 'emit').mockImplementation(() => {});
     deleteBtn.nativeElement.click();
-    expect(component.deleteRelation.emit).toHaveBeenCalledOnceWith();
+    expect(component.deleteRelation.emit).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('test update', () => {
@@ -118,8 +117,8 @@ describe('TransportCompanyRelationComponent', () => {
     component.selectedIndex = 0;
     fixture.detectChanges();
     const deleteBtn = fixture.debugElement.queryAll(By.css('button'))[1];
-    spyOn(component.updateRelation, 'emit');
+    vi.spyOn(component.updateRelation, 'emit').mockImplementation(() => {});
     deleteBtn.nativeElement.click();
-    expect(component.updateRelation.emit).toHaveBeenCalledOnceWith();
+    expect(component.updateRelation.emit).toHaveBeenCalledExactlyOnceWith();
   });
 });

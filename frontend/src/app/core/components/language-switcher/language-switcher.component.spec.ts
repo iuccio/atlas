@@ -1,56 +1,56 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { LanguageSwitcherComponent } from './language-switcher.component';
 import { By } from '@angular/platform-browser';
 import { DateAdapter } from '@angular/material/core';
 import deTranslationFile from 'src/assets/i18n/de.json';
 import frTranslationFile from 'src/assets/i18n/fr.json';
 import itTranslationFile from 'src/assets/i18n/it.json';
-import { AppTestingModule } from '../../../app.testing.module';
-import SpyObj = jasmine.SpyObj;
+import { translateServiceProvider } from '../../../app.testing.mocks';
 
 describe('LanguageSwitcherComponent', () => {
   let component: LanguageSwitcherComponent;
   let fixture: ComponentFixture<LanguageSwitcherComponent>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let dateAdapterSpy: SpyObj<DateAdapter<any>>;
+  let dateAdapterStub: Mocked<Pick<DateAdapter<any>, 'setLocale'>>;
 
-  beforeEach(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dateAdapterSpy = jasmine.createSpyObj<DateAdapter<any>>(['setLocale']);
+  beforeEach(() => {
+    // Mocking
+    dateAdapterStub = { setLocale: vi.fn() };
 
-    await TestBed.configureTestingModule({
-      imports: [AppTestingModule, LanguageSwitcherComponent],
-      providers: [{ provide: DateAdapter, useValue: dateAdapterSpy }],
-    }).compileComponents();
+    // Config
+    TestBed.configureTestingModule({
+      providers: [
+        translateServiceProvider,
+        { provide: DateAdapter, useValue: dateAdapterStub },
+      ],
+    });
 
+    // Arrangement
     fixture = TestBed.createComponent(LanguageSwitcherComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    dateAdapterSpy.setLocale.calls.reset();
   });
 
-  it('should switch to "de"', (done) => {
+  it('should switch to "de"', () => {
     component.setLanguage('de').subscribe(() => {
       expect(component.currentLanguage).toBe('de');
-      expect(dateAdapterSpy.setLocale).toHaveBeenCalledOnceWith('de');
-      done();
+      expect(dateAdapterStub.setLocale).toHaveBeenCalledExactlyOnceWith('de');
     });
   });
 
-  it('should switch to "fr"', (done) => {
+  it('should switch to "fr"', () => {
     component.setLanguage('fr').subscribe(() => {
       expect(component.currentLanguage).toBe('fr');
-      expect(dateAdapterSpy.setLocale).toHaveBeenCalledOnceWith('fr');
-      done();
+      expect(dateAdapterStub.setLocale).toHaveBeenCalledExactlyOnceWith('fr');
     });
   });
 
   it('should switch to "it"', (done) => {
     component.setLanguage('it').subscribe(() => {
       expect(component.currentLanguage).toBe('it');
-      expect(dateAdapterSpy.setLocale).toHaveBeenCalledOnceWith('it');
-      done();
+      expect(dateAdapterStub.setLocale).toHaveBeenCalledExactlyOnceWith('it');
     });
   });
 

@@ -1,7 +1,7 @@
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import {
   LineVersionWorkflow,
   Status,
@@ -12,18 +12,23 @@ import { LineWorkflowDialogService } from './line-workflow-dialog.service';
 describe('LineWorkflowDialogService', () => {
   let service: LineWorkflowDialogService;
 
-  const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+  let dialogStub: Mocked<Pick<MatDialog, 'open'>>;
 
   beforeEach(() => {
+    // Mocking
+    dialogStub = { open: vi.fn() };
+
+    // Config
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
-      providers: [{ provide: MatDialog, useValue: dialogSpy }],
+      providers: [{ provide: MatDialog, useValue: dialogStub }],
     });
+
+    // Arrangement
     service = TestBed.inject(LineWorkflowDialogService);
   });
 
   it('should open new workflow', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
+    dialogStub.open.mockReturnValue({ afterClosed: () => of(true) } as any);
 
     service
       .openNew(
@@ -38,13 +43,13 @@ describe('LineWorkflowDialogService', () => {
         },
         'description'
       )
-      .subscribe((result) => expect(result).toBeTrue());
+      .subscribe((result) => expect(result).toBe(true));
 
-    expect(dialogSpy.open).toHaveBeenCalled();
+    expect(dialogStub.open).toHaveBeenCalled();
   });
 
   it('should open existing workflow', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
+    dialogStub.open.mockReturnValue({ afterClosed: () => of(true) } as any);
 
     service
       .openExisting(
@@ -65,8 +70,8 @@ describe('LineWorkflowDialogService', () => {
         },
         'description'
       )
-      .subscribe((result) => expect(result).toBeTrue());
+      .subscribe((result) => expect(result).toBe(true));
 
-    expect(dialogSpy.open).toHaveBeenCalled();
+    expect(dialogStub.open).toHaveBeenCalled();
   });
 });

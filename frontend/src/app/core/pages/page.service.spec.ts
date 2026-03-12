@@ -44,6 +44,7 @@ describe('PageService', () => {
   it('should remove TTH subpages for BO_TTH user', async () => {
     permissionServiceMock.getTthApplicationUserType = () =>
       'BO_TTH' as TthApplicationUserType;
+
     pageService.addPagesBasedOnPermissions();
 
     const enabledPages = await firstValueFrom(pageService.enabledPages);

@@ -1,37 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { LineWorkflowComponent } from './line-workflow.component';
-import { AppTestingModule } from '../../app.testing.module';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { LineVersionWorkflow, Status } from '../../api';
-import { AtlasButtonComponent } from '../components/button/atlas-button.component';
-import { AtlasFieldErrorComponent } from '../form-components/atlas-field-error/atlas-field-error.component';
-import { AtlasLabelFieldComponent } from '@atlas/form';
-import { TextFieldComponent } from '../form-components/text-field/text-field.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { adminPermissionServiceMock } from '../../app.testing.mocks';
+import {
+  adminPermissionServiceMock,
+  translateServiceProvider,
+} from '../../app.testing.mocks';
 import { PermissionService } from '../auth/permission/permission.service';
 
 describe('LineWorkflowComponent', () => {
   let component: LineWorkflowComponent;
   let fixture: ComponentFixture<LineWorkflowComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        MatExpansionModule,
-        LineWorkflowComponent,
-        AtlasButtonComponent,
-        AtlasFieldErrorComponent,
-        AtlasLabelFieldComponent,
-        TextFieldComponent,
-      ],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       providers: [
         { provide: PermissionService, useValue: adminPermissionServiceMock },
-        { provide: TranslatePipe },
+        translateServiceProvider,
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(LineWorkflowComponent);
     fixture.componentInstance.lineRecord = {
@@ -66,7 +53,7 @@ describe('LineWorkflowComponent', () => {
     component.initWorkflowButtons();
 
     //then
-    expect(component.workflowInProgress).toBeFalse();
+    expect(component.workflowInProgress).toBe(false);
   });
 
   it('should show read Workflow Buttons when workflow in progress', () => {
@@ -76,6 +63,6 @@ describe('LineWorkflowComponent', () => {
     component.initWorkflowButtons();
 
     //then
-    expect(component.workflowInProgress).toBeTrue();
+    expect(component.workflowInProgress).toBe(true);
   });
 });

@@ -2,6 +2,7 @@ import { MouseOverTitleDirective } from './mouse-over-title.directive';
 import { Component } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { By } from '@angular/platform-browser';
 
 @Component({
@@ -12,9 +13,9 @@ import { By } from '@angular/platform-browser';
 })
 class HostComponent {
   value = '';
-  transform: (v: string) => Observable<string> = jasmine
-    .createSpy('transform')
-    .and.returnValue(of('result'));
+  transform: (v: string) => Observable<string> = vi
+    .fn()
+    .mockReturnValue(of('result'));
 }
 
 describe('MouseOverTitleDirective', () => {
@@ -60,16 +61,14 @@ describe('MouseOverTitleDirective', () => {
     fixture.detectChanges();
 
     // then
-    expect(component.transform).toHaveBeenCalledOnceWith('test');
+    expect(component.transform).toHaveBeenCalledExactlyOnceWith('test');
     expect(el.title).toEqual('result');
   });
 
   it('should set title to empty after transform error', () => {
     // given
     component.value = 'test';
-    component.transform = jasmine
-      .createSpy('transform')
-      .and.returnValue(throwError(() => 'error'));
+    component.transform = vi.fn().mockReturnValue(throwError(() => 'error'));
 
     const debugEl = fixture.debugElement.query(
       By.directive(MouseOverTitleDirective)
@@ -85,7 +84,7 @@ describe('MouseOverTitleDirective', () => {
     fixture.detectChanges();
 
     // then
-    expect(component.transform).toHaveBeenCalledOnceWith('test');
+    expect(component.transform).toHaveBeenCalledExactlyOnceWith('test');
     expect(debugEl.nativeElement.title).toEqual('');
   });
 });

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { TableContentPaginationAndSorting } from './table-content-pagination-and-sorting';
 
 const objectsToSort = [

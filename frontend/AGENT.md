@@ -81,13 +81,19 @@ If a plain jasmine `spyOn` exists (without `.and.callThrough()`), it must be rep
 
 `EMPTY` must be imported from `rxjs` when used.
 
-### Rule: toHaveBeenCalledOnceWith → toHaveBeenCalledExactlyOnceWith
+### Rule: toHaveBeenCalledOnceWith / toHaveBeenCalledOnce → toHaveBeenCalledExactlyOnceWith
 Jasmine's `toHaveBeenCalledOnceWith` matcher does not exist in Vitest. Every occurrence must be replaced with Vitest's `toHaveBeenCalledExactlyOnceWith`.
+Jasmine's argument-less `toHaveBeenCalledOnce()` must also be replaced with `toHaveBeenCalledExactlyOnceWith()` (no arguments) so the assertion still verifies exactly one invocation.
 ```
-// jasmine variant
+// jasmine variant (with arguments)
 expect(apiService.get).toHaveBeenCalledOnceWith('/some/path');
 // vitest variant
 expect(apiService.get).toHaveBeenCalledExactlyOnceWith('/some/path');
+
+// jasmine variant (without arguments)
+expect(apiService.get).toHaveBeenCalledOnce();
+// vitest variant
+expect(apiService.get).toHaveBeenCalledExactlyOnceWith();
 ```
 
 ### Rule: Vitest `beforeEach` structure
@@ -119,12 +125,48 @@ describe('<Something>', () => {
 ```
 Only move declarations out of `describe` when they must be reused across multiple suites in the same file, never just for convenience.
 
-### Rule: prefer `toHaveBeenCalledExactlyOnceWith`
-Vitest matcher `toHaveBeenCalledExactlyOnceWith` should be used whenever a call is expected exactly once with specific arguments. Replace plain `toHaveBeenCalled` assertions with the more precise matcher when the test already verifies the arguments:
+### Rule: use `translateServiceProvider` instead of `TranslatePipe` provider
+When a test needs translation support, do not register `TranslatePipe` as a provider (e.g. `{ provide: TranslatePipe }`). Instead, add the pre-configured `translateServiceProvider` from `app.testing.mocks` to the `providers` array:
 ```
-expect(dependency.confirm).toHaveBeenCalledExactlyOnceWith('/foo');
+import { translateServiceProvider } from '../../app.testing.mocks'; // adjust relative path
+
+TestBed.configureTestingModule({
+  providers: [translateServiceProvider],
+});
 ```
-This documents the contract more accurately and guards against duplicate invocations; keep `toHaveBeenCalled` only for cases where arguments are irrelevant or multiple calls are acceptable.
+This ensures consistent translation setup across all tests and avoids incomplete pipe registrations.
+
+### Rule: remove `compileComponents()` and drop `async` from `beforeEach`
+`compileComponents()` is not needed in Vitest-based tests because the build pipeline already compiles templates ahead of time. Remove every `.compileComponents()` call (and any `.then()` chained to it). Once `compileComponents()` is gone the `beforeEach` callback no longer needs to be `async`, so drop the `async` keyword and any `await` that only existed to await `compileComponents()`:
+```
+// before (jasmine)
+beforeEach(async () => {
+  await TestBed.configureTestingModule({ ... }).compileComponents();
+  fixture = TestBed.createComponent(MyComponent);
+});
+
+// after (vitest)
+beforeEach(() => {
+  TestBed.configureTestingModule({ ... });
+  fixture = TestBed.createComponent(MyComponent);
+});
+```
+
+### Rule: remove `imports` from `TestBed.configureTestingModule`
+The `imports` array in `TestBed.configureTestingModule({ imports: [...] })` must be removed entirely. Vitest-based tests do not need to import component, directive, pipe, or module dependencies into the testing module — Angular's compiler resolves them automatically. Delete the whole `imports` property together with its array; do not move its entries elsewhere:
+```
+// before (jasmine)
+TestBed.configureTestingModule({
+  imports: [AppTestingModule, SomeComponent, SomePipe],
+  providers: [{ provide: SomeService, useValue: stub }],
+});
+
+// after (vitest)
+TestBed.configureTestingModule({
+  providers: [{ provide: SomeService, useValue: stub }],
+});
+```
+If `imports` was the only property, keep an empty configuration object or drop it altogether when no providers are needed either.
 
 ### Rule: avoid command questions while editing
 Do not ask command-related questions while editing files. All necessary commands should be determined from the AGENT rules or project context, not prompted for mid-edit. If you need clarification, ask after finishing the edit instead of embedding questions in the code review or change itself. Additionally, avoid requesting or suggesting terminal operations—any required commands should already be implicit in the AGENT guidance or the project structure. This applies to the chat as well: the AGENT interaction should not contain requests for terminal runs or instructions to execute commands while you are editing the code.

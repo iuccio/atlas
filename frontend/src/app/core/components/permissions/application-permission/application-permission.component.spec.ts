@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { ApplicationPermissionComponent } from './application-permission.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserPermissionProviderService } from './user-permission-provider-service';
-import { provideHttpClient } from '@angular/common/http';
 import { ApplicationType, BusinessOrganisation } from '../../../../api';
 import { FormGroup } from '@angular/forms';
 import {
@@ -14,7 +12,6 @@ import { of } from 'rxjs';
 import { BusinessOrganisationService } from '../../../../api/service/bodi/business-organisation.service';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
 import { tickAsync } from '../../../../../test/tick-async';
-import SpyObj = jasmine.SpyObj;
 
 export class MockUserPermissionProviderService extends UserPermissionProviderService {
   applicationPermissionFormGroup?: FormGroup<ApplicationPermission>;
@@ -38,33 +35,35 @@ describe('ApplicationPermissionComponent', () => {
   let component: ApplicationPermissionComponent;
   let fixture: ComponentFixture<ApplicationPermissionComponent>;
 
-  let businessOrganisationServiceSpy: SpyObj<BusinessOrganisationService>;
+  let businessOrganisationServiceStub: Mocked<
+    Pick<BusinessOrganisationService, 'getAllBusinessOrganisations'>
+  >;
 
   beforeEach(() => {
-    businessOrganisationServiceSpy = jasmine.createSpyObj({
-      getAllBusinessOrganisations: of({ objects: [] }),
-    });
+    // Mocking
+    businessOrganisationServiceStub = {
+      getAllBusinessOrganisations: vi.fn().mockReturnValue(of({ objects: [] })),
+    };
 
+    // Config
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ApplicationPermissionComponent],
       providers: [
-        TranslatePipe,
         {
           provide: UserPermissionProviderService,
           useClass: MockUserPermissionProviderService,
         },
         {
           provide: BusinessOrganisationService,
-          useValue: businessOrganisationServiceSpy,
+          useValue: businessOrganisationServiceStub,
         },
         translateServiceProvider,
-        provideHttpClient(),
       ],
     });
+
+    // Arrangement
     fixture = TestBed.createComponent(ApplicationPermissionComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('application', ApplicationType.Ttfn);
-
     fixture.detectChanges();
   });
 
@@ -86,7 +85,7 @@ describe('ApplicationPermissionComponent', () => {
       validFrom: new Date(),
       validTo: new Date(),
     };
-    businessOrganisationServiceSpy.getAllBusinessOrganisations.and.returnValue(
+    businessOrganisationServiceStub.getAllBusinessOrganisations.mockReturnValue(
       of({ objects: [businessOrganisation] })
     );
     component.businessOrganisationForm.controls.businessOrganisation.setValue(
@@ -105,10 +104,8 @@ describe('ApplicationPermissionComponent', () => {
   });
 
   it('should set transportCompanyDossierAnswer to true', () => {
-    // when
     component.onTransportCompanyDossierToggle(true);
 
-    // then
     const control =
       component.form.controls.permissions.controls
         .transportCompanyDossierAnswer;
@@ -116,10 +113,8 @@ describe('ApplicationPermissionComponent', () => {
   });
 
   it('should set transportCompanyDossierAnswer to false', () => {
-    // when
     component.onTransportCompanyDossierToggle(false);
 
-    // then
     const control =
       component.form.controls.permissions.controls
         .transportCompanyDossierAnswer;

@@ -1,23 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SwitchVersionComponent } from './switch-version.component';
-import { TranslatePipe } from '@ngx-translate/core';
 import { Record } from '../../model/record';
 import moment from 'moment';
-import { AppTestingModule } from '../../../app.testing.module';
+import { translateServiceProvider } from '../../../app.testing.mocks';
 
 describe('SwitchVersionComponent', () => {
   let component: SwitchVersionComponent;
   let fixture: ComponentFixture<SwitchVersionComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppTestingModule, SwitchVersionComponent],
-      providers: [TranslatePipe],
-    }).compileComponents();
-  });
-
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [translateServiceProvider],
+    });
+
     fixture = TestBed.createComponent(SwitchVersionComponent);
     component = fixture.componentInstance;
     const firstRecord: Record = {
@@ -61,9 +57,9 @@ describe('SwitchVersionComponent', () => {
 
   it('should switch to second version', () => {
     //given
-    expect(component.isCurrentRecord(component.records[0])).toBeTrue();
+    expect(component.isCurrentRecord(component.records[0])).toBe(true);
     expect(component.getIndexOfRecord(component.records[0])).toBe(0);
-    spyOn(component.switchVersion, 'emit');
+    vi.spyOn(component.switchVersion, 'emit').mockImplementation(() => {});
     //when
     component.setCurrentRecord(component.records[1]);
     //then
@@ -74,7 +70,7 @@ describe('SwitchVersionComponent', () => {
   it('should switch to first version', () => {
     //given
     component.setCurrentRecord(component.records[1]);
-    spyOn(component.switchVersion, 'emit');
+    vi.spyOn(component.switchVersion, 'emit').mockImplementation(() => {});
     //when
     component.setCurrentRecord(component.records[0]);
     //then
@@ -83,8 +79,8 @@ describe('SwitchVersionComponent', () => {
   });
 
   it('should evaluate gaps', () => {
-    expect(component.hasGapToNextRecord(component.records[0])).toBeFalse();
-    expect(component.hasGapToNextRecord(component.records[1])).toBeTrue();
-    expect(component.hasGapToNextRecord(component.records[2])).toBeFalse();
+    expect(component.hasGapToNextRecord(component.records[0])).toBe(false);
+    expect(component.hasGapToNextRecord(component.records[1])).toBe(true);
+    expect(component.hasGapToNextRecord(component.records[2])).toBe(false);
   });
 });
