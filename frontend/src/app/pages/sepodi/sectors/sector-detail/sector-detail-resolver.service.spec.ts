@@ -1,4 +1,5 @@
 import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { AppTestingModule } from '../../../../app.testing.module';
@@ -7,24 +8,14 @@ import { SpatialReference } from '../../../../api';
 import { SectorService } from '../../../../api/service/sepodi/sector.service';
 
 describe('SectorDetailResolver', () => {
-  const sectorService = jasmine.createSpyObj('sectorService', ['getSector']);
-
+  let sectorService: Mocked<Pick<SectorService, 'getSector'>>;
   let resolver: SectorDetailResolver;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [AppTestingModule],
-      providers: [
-        SectorDetailResolver,
-        {
-          provide: SectorService,
-          useValue: sectorService,
-        },
-      ],
-    });
-    resolver = TestBed.inject(SectorDetailResolver);
-
-    sectorService.getSector.and.returnValue(
+    sectorService = {
+      getSector: vi.fn(),
+    };
+    sectorService.getSector.mockReturnValue(
       of([
         {
           trafficPointSloid: 'ch:1:sloid:7000::1',
@@ -53,6 +44,18 @@ describe('SectorDetailResolver', () => {
         },
       ])
     );
+
+    TestBed.configureTestingModule({
+      imports: [AppTestingModule],
+      providers: [
+        SectorDetailResolver,
+        {
+          provide: SectorService,
+          useValue: sectorService,
+        },
+      ],
+    });
+    resolver = TestBed.inject(SectorDetailResolver);
   });
 
   it('should get versions from service to display', () => {
