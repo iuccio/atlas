@@ -17,6 +17,7 @@ import { TthChangeStatusFormGroup } from '../tth-change-status-dialog/model/tth-
 import { AtlasFieldLengthValidator } from '../../../../core/validation/field-lengths/atlas-field-length-validator';
 import { WhitespaceValidator } from '../../../../core/validation/whitespace/whitespace-validator';
 import { By } from '@angular/platform-browser';
+import { mock, mockClear } from 'vitest-mock-extended';
 
 const statement: TimetableHearingStatementV2 = {
   id: 1,
@@ -31,16 +32,14 @@ const statement: TimetableHearingStatementV2 = {
 const dialogServiceSpy: Mocked<Pick<DialogService, 'confirmLeave'>> = {
   confirmLeave: vi.fn().mockReturnValue(of(true)),
 };
-let dialogRefSpy: Mocked<
-  Pick<MatDialogRef<BaseChangeDialogComponent>, 'close'>
->;
+const dialogRefSpy = mock<MatDialogRef<BaseChangeDialogComponent>>();
 
 describe('BaseChangeDialogComponent', () => {
   let component: BaseChangeDialogComponent;
   let fixture: ComponentFixture<BaseChangeDialogComponent>;
 
   beforeEach(async () => {
-    dialogRefSpy = { close: vi.fn() };
+    mockClear(dialogRefSpy);
     await TestBed.configureTestingModule({
       imports: [AppTestingModule, FormModule, BaseChangeDialogComponent],
       providers: [
@@ -66,8 +65,7 @@ describe('BaseChangeDialogComponent', () => {
     fixture = TestBed.createComponent(BaseChangeDialogComponent);
     component = fixture.componentInstance;
     component.controlName = 'publicComment';
-    component.dialogRef =
-      dialogRefSpy as unknown as MatDialogRef<BaseChangeDialogComponent>;
+    component.dialogRef = dialogRefSpy;
     component.formGroup = new FormGroup<TthChangeStatusFormGroup>({
       publicComment: new FormControl('', [
         AtlasFieldLengthValidator.statement,
