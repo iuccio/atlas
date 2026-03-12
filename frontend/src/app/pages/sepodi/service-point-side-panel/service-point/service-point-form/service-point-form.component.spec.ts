@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { ServicePointFormComponent } from './service-point-form.component';
 import {
   ApplicationRole,
@@ -37,16 +38,20 @@ import { ServicePointGeoDataInternalService } from '../../../../../api/service/s
 import { ServicePointFormGroupBuilder } from './form-group/service-point-detail-form-group';
 import { BERN_WYLEREGG } from '../../../../../../test/data/service-point';
 import { StationGroup } from './form-group/station-form-group';
-import SpyObj = jasmine.SpyObj;
-import Spy = jasmine.Spy;
 
 describe('ServicePointFormComponent', () => {
   let component: ServicePointFormComponent;
   let fixture: ComponentFixture<ServicePointFormComponent>;
 
-  let translationSortingServiceSpy: SpyObj<TranslationSortingService>;
-  let dialogServiceSpy: SpyObj<DialogService>;
-  let geoDataServiceSpy: SpyObj<ServicePointGeoDataInternalService>;
+  let translationSortingServiceSpy: Mocked<
+    Pick<TranslationSortingService, 'sort'> & {
+      translateService: { onLangChange: { subscribe: ReturnType<typeof vi.fn> } };
+    }
+  >;
+  let dialogServiceSpy: Mocked<Pick<DialogService, 'confirm'>>;
+  let geoDataServiceSpy: Mocked<
+    Pick<ServicePointGeoDataInternalService, 'getLocationInformation'>
+  >;
 
   let isAdmin = true;
   let permission = {} as Permission;
@@ -58,13 +63,17 @@ describe('ServicePointFormComponent', () => {
   };
 
   beforeEach(async () => {
-    translationSortingServiceSpy = jasmine.createSpyObj(['sort'], {
-      translateService: { onLangChange: jasmine.createSpyObj(['subscribe']) },
-    });
-    dialogServiceSpy = jasmine.createSpyObj('DialogService', {
-      confirm: of(true),
-    });
-    geoDataServiceSpy = jasmine.createSpyObj(['getLocationInformation']);
+    translationSortingServiceSpy = {
+      sort: vi.fn(),
+      translateService: { onLangChange: { subscribe: vi.fn() } },
+    };
+    dialogServiceSpy = {
+      confirm: vi.fn(),
+    };
+    dialogServiceSpy.confirm.mockReturnValue(of(true));
+    geoDataServiceSpy = {
+      getLocationInformation: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -103,7 +112,8 @@ describe('ServicePointFormComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should update locationInformation when coordinates changed', (done) => {
+  it('should update locationInformation when coordinates changed', () =>
+    new Promise<void>((done) => {
     component['_currentVersion'] = { id: 5 } as ReadServicePointVersion;
     component.geographyComponent = {
       coordinatesChanged: new EventEmitter<CoordinatePair>(),
@@ -115,16 +125,14 @@ describe('ServicePointFormComponent', () => {
       east: 6,
     };
 
-    (geoDataServiceSpy.getLocationInformation as Spy)
-      .withArgs(coordinatePair)
-      .and.returnValue(
-        of({
-          country: Country.Cuba,
-          swissCanton: SwissCanton.Aargau,
-          swissMunicipalityName: 'Gemeinde',
-          swissLocalityName: 'Ort',
-        })
-      );
+    geoDataServiceSpy.getLocationInformation.mockReturnValue(
+      of({
+        country: Country.Cuba,
+        swissCanton: SwissCanton.Aargau,
+        swissMunicipalityName: 'Gemeinde',
+        swissLocalityName: 'Ort',
+      })
+    );
 
     component.ngOnInit();
 
@@ -137,22 +145,22 @@ describe('ServicePointFormComponent', () => {
       expect(locationInformation.localityName).toEqual('Ort');
       done();
     });
-  });
+  }));
 
   it('should show all bos on edit', () => {
     component['_currentVersion'] = { id: 5 } as ReadServicePointVersion;
     component.ngOnInit();
 
-    expect(component.isNew).toBeFalse();
-    expect(component.boSboidRestriction).toHaveSize(0);
+    expect(component.isNew).toBe(false);
+    expect(component.boSboidRestriction).toHaveLength(0);
   });
 
   it('should show all bos new for admin', () => {
     isAdmin = true;
     component.ngOnInit();
 
-    expect(component.isNew).toBeTrue();
-    expect(component.boSboidRestriction).toHaveSize(0);
+    expect(component.isNew).toBe(true);
+    expect(component.boSboidRestriction).toHaveLength(0);
   });
 
   it('should show only allowed bos on new for writer', () => {
@@ -170,8 +178,8 @@ describe('ServicePointFormComponent', () => {
 
     component.ngOnInit();
 
-    expect(component.isNew).toBeTrue();
-    expect(component.boSboidRestriction).toHaveSize(1);
+    expect(component.isNew).toBe(true);
+    expect(component.boSboidRestriction).toHaveLength(1);
   });
 
   it('should select is StopPoint OnDemand', () => {
@@ -186,8 +194,8 @@ describe('ServicePointFormComponent', () => {
     const meansOfTransportForm = (
       component.form?.controls?.spTypeGroup as FormGroup<StationGroup>
     ).controls.stopPointGroup?.controls.meansOfTransport;
-    expect(component.isMeanOfTransportOnDemandSelected).toBeTrue();
-    expect(meansOfTransportForm?.value).toHaveSize(1);
+    expect(component.isMeanOfTransportOnDemandSelected).toBe(true);
+    expect(meansOfTransportForm?.value).toHaveLength(1);
     expect(meansOfTransportForm?.value).toEqual([MeanOfTransport.OnDemand]);
   });
 
@@ -203,7 +211,7 @@ describe('ServicePointFormComponent', () => {
     const meansOfTransportForm = (
       component.form?.controls?.spTypeGroup as FormGroup<StationGroup>
     ).controls.stopPointGroup?.controls.meansOfTransport;
-    expect(component.isMeanOfTransportOnDemandSelected).toBeFalse();
+    expect(component.isMeanOfTransportOnDemandSelected).toBe(false);
     expect(meansOfTransportForm?.value).not.toEqual([MeanOfTransport.OnDemand]);
   });
 });

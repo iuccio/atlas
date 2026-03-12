@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { FormGroup } from '@angular/forms';
 import {
   ServicePointDetailFormGroup,
@@ -45,7 +46,7 @@ describe('ServicePointFormGroup', () => {
       servicePointFormGroup.controls.selectedType.setValue(
         ServicePointType.StopPoint
       );
-      expect(servicePointFormGroup.valid).toBeFalse();
+      expect(servicePointFormGroup.valid).toBe(false);
 
       if (
         !('stopPoint' in servicePointFormGroup.controls.spTypeGroup!.controls)
@@ -61,7 +62,7 @@ describe('ServicePointFormGroup', () => {
       servicePointFormGroup.controls.spTypeGroup?.controls.stopPointGroup?.controls.stopPointType.setValue(
         'ON_REQUEST'
       );
-      expect(servicePointFormGroup.valid).toBeTrue();
+      expect(servicePointFormGroup.valid).toBe(true);
     }
   );
 
@@ -70,7 +71,7 @@ describe('ServicePointFormGroup', () => {
     servicePointFormGroup.controls.selectedType.setValue(
       ServicePointType.StopPoint
     );
-    expect(servicePointFormGroup.valid).toBeFalse();
+    expect(servicePointFormGroup.valid).toBe(false);
 
     if (
       !('stopPoint' in servicePointFormGroup.controls.spTypeGroup!.controls)
@@ -80,7 +81,7 @@ describe('ServicePointFormGroup', () => {
     servicePointFormGroup.controls.spTypeGroup?.controls.freightServicePoint.setValue(
       true
     );
-    expect(servicePointFormGroup.valid).toBeTrue();
+    expect(servicePointFormGroup.valid).toBe(true);
   });
 
   it('should remove oneOf Validator on change to FareStop', () => {
@@ -91,7 +92,7 @@ describe('ServicePointFormGroup', () => {
       ServicePointType.FareStop
     );
 
-    expect(servicePointFormGroup.valid).toBeTrue();
+    expect(servicePointFormGroup.valid).toBe(true);
   });
 
   it('should require operatingPointType for OperatingPoint', () => {
@@ -99,7 +100,7 @@ describe('ServicePointFormGroup', () => {
     servicePointFormGroup.controls.selectedType.setValue(
       ServicePointType.OperatingPoint
     );
-    expect(servicePointFormGroup.valid).toBeFalse();
+    expect(servicePointFormGroup.valid).toBe(false);
 
     if (
       !(
@@ -112,7 +113,7 @@ describe('ServicePointFormGroup', () => {
     servicePointFormGroup.controls.spTypeGroup?.controls.operatingPointType.setValue(
       OperatingPointType.InventoryPoint
     );
-    expect(servicePointFormGroup.valid).toBeTrue();
+    expect(servicePointFormGroup.valid).toBe(true);
   });
 
   it('should set RouteNetwork and KilometerMaster undefined when ServicePoint', () => {
