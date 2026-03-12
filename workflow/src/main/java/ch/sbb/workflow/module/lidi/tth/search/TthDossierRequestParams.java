@@ -26,7 +26,7 @@ public class TthDossierRequestParams {
 
   private SwissCanton canton;
 
-  private String boContactMail;
+  private String boContactSbbuid;
 
   @Singular(ignoreNullCollections = true)
   private List<String> searchCriterias = new ArrayList<>();
@@ -34,4 +34,5 @@ public class TthDossierRequestParams {
   @Parameter(description = "Filter on the Status of a dossier.")
   @Singular(ignoreNullCollections = true)
   private List<DossierStatus> statusRestrictions = new ArrayList<>();
+
 }

@@ -12,6 +12,7 @@ const permissionServiceMock: Partial<PermissionService> = {
   mayAccessTtfn: () => true,
   isAdmin: true,
   getTthApplicationUserType: () => 'CANTON_TTH' as TthApplicationUserType,
+  isTthBoUser: () => false,
 };
 
 describe('PageService', () => {
@@ -43,8 +44,7 @@ describe('PageService', () => {
   });
 
   it('should remove TTH subpages for BO_TTH user', (done) => {
-    permissionServiceMock.getTthApplicationUserType = () =>
-      'BO_TTH' as TthApplicationUserType;
+    permissionServiceMock.isTthBoUser = () => true;
     pageService.addPagesBasedOnPermissions();
 
     pageService.enabledPages.subscribe((enabledPages) => {

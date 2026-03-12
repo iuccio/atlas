@@ -70,7 +70,7 @@ describe('TthDossierOverviewComponent', () => {
     userService = jasmine.createSpyObj(
       'UserService',
       ['setCurrentUserAndLoadPermissions'],
-      { currentUser: { email: 'test@example.com' } }
+      { currentUser: { email: 'test@example.com', sbbuid: 'u123456' } }
     );
 
     tableService = jasmine.createSpyObj(
@@ -193,7 +193,7 @@ describe('TthDossierOverviewComponent', () => {
       expect(dossierService.getOverview).toHaveBeenCalledWith(
         2024,
         jasmine.any(String),
-        'test@example.com',
+        'u123456',
         jasmine.anything(),
         [DossierStatus.DossierBoCheck],
         0,
