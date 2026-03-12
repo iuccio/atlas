@@ -55,7 +55,7 @@ describe('PermissionsLoadedGuard', () => {
             mockRoute,
             {} as RouterStateSnapshot
           ) as Observable<boolean>
-        ).pipe(delay(5000)) // todo: check if done() needed
+        ).pipe(delay(5000)) // todo: check if test can finish successfully before expects inside subscribe are called
     );
 
     expect(result).toBeDefined();

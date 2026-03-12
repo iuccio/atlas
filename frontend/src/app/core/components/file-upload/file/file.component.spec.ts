@@ -1,19 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FileComponent } from './file.component';
-import { AppTestingModule } from '../../../../app.testing.module';
-import { FileSizePipe } from '../file-size/file-size.pipe';
 import { By } from '@angular/platform-browser';
 
 describe('FileComponent', () => {
   let component: FileComponent;
   let fixture: ComponentFixture<FileComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppTestingModule, FileComponent, FileSizePipe],
-    }).compileComponents();
-  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FileComponent);
@@ -36,7 +28,7 @@ describe('FileComponent', () => {
     const trashIcon = fixture.debugElement.query(By.css('.bi-trash'));
     expect(trashIcon).toBeTruthy();
 
-    spyOn(component.fileDeleted, 'emit');
+    vi.spyOn(component.fileDeleted, 'emit').mockImplementation(() => {});
 
     trashIcon.nativeElement.click();
     expect(component.fileDeleted.emit).toHaveBeenCalled();
@@ -46,7 +38,7 @@ describe('FileComponent', () => {
     const downloadIcon = fixture.debugElement.query(By.css('.bi-download'));
     expect(downloadIcon).toBeTruthy();
 
-    spyOn(component.downloadFile, 'emit');
+    vi.spyOn(component.downloadFile, 'emit').mockImplementation(() => {});
 
     downloadIcon.nativeElement.click();
     expect(component.downloadFile.emit).toHaveBeenCalled();

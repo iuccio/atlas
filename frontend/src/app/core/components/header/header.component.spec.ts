@@ -1,33 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { HeaderComponent } from './header.component';
-import { UserComponent } from '../user/user.component';
-import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
-import { AppTestingModule } from '../../../app.testing.module';
-import { MaintenanceIconComponent } from './maintenance-icon/maintenance-icon.component';
-import { InfoIconComponent } from '@atlas/form';
 import { AuthService } from '../../auth/auth.service';
-import { authServiceMock } from '../../../app.testing.mocks';
+import {
+  authServiceMock,
+  translateServiceProvider,
+} from '../../../app.testing.mocks';
+import { RouterModule } from '@angular/router';
+import { DateModule } from '../../module/date.module';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        HeaderComponent,
-        UserComponent,
-        LanguageSwitcherComponent,
-        MaintenanceIconComponent,
-        InfoIconComponent,
-      ],
-      providers: [{ provide: AuthService, useValue: authServiceMock }],
-    }).compileComponents();
-  });
-
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [DateModule.forRoot(), RouterModule.forRoot([])],
+      providers: [
+        { provide: AuthService, useValue: authServiceMock },
+        translateServiceProvider,
+      ],
+    });
+
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

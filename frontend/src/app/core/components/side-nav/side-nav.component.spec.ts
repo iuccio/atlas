@@ -1,53 +1,36 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { SideNavComponent } from './side-nav.component';
 import { By } from '@angular/platform-browser';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { Pages } from '../../../pages/pages';
-import { LidiOverviewComponent } from '../../../pages/lidi/overview/lidi-overview.component';
-import { TimetableFieldNumberOverviewComponent } from '../../../pages/ttfn/overview/timetable-field-number-overview.component';
 import {
   pageServiceMock,
   translateServiceProvider,
 } from '../../../app.testing.mocks';
 import { PageService } from '../../pages/page.service';
-import { provideHttpClient } from '@angular/common/http';
 import { Page } from '../../model/page';
 import { OverviewToTabShareDataService } from '../../../pages/tth/overview-tab/service/overview-to-tab-share-data.service';
 
 describe('SideNavComponent', () => {
   let component: SideNavComponent;
   let fixture: ComponentFixture<SideNavComponent>;
+
   let router: Router;
   let overviewTabService: OverviewToTabShareDataService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([
-          {
-            path: Pages.LIDI.path,
-            component: LidiOverviewComponent,
-          },
-          {
-            path: Pages.TTFN.path,
-            component: TimetableFieldNumberOverviewComponent,
-          },
-        ]),
-        SideNavComponent,
-      ],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       providers: [
         translateServiceProvider,
-        provideHttpClient(),
         {
           provide: PageService,
           useValue: pageServiceMock,
         },
         OverviewToTabShareDataService,
       ],
-    }).compileComponents();
-  });
+    });
 
-  beforeEach(() => {
     overviewTabService = TestBed.inject(OverviewToTabShareDataService);
     fixture = TestBed.createComponent(SideNavComponent);
     component = fixture.componentInstance;
