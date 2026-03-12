@@ -16,11 +16,11 @@ export class DossierInternalService {
 
   private readonly atlasApiService = inject(AtlasApiService);
 
-  public getOverview(timetableHearingYear?: number, canton?: SwissCanton, boContactMail?: string, searchCriterias?: Array<string>, statusRestrictions?: Array<DossierStatus>, page?: number, size?: number, sort?: Array<string>): Observable<ContainerTthDossier> {
+  public getOverview(timetableHearingYear?: number, canton?: SwissCanton, boContactSbbuid?: string, searchCriterias?: Array<string>, statusRestrictions?: Array<DossierStatus>, page?: number, size?: number, sort?: Array<string>): Observable<ContainerTthDossier> {
     const httpParams = this.atlasApiService.paramsOf({
       timetableHearingYear,
       canton,
-      boContactMail,
+      boContactSbbuid,
       searchCriterias,
       statusRestrictions,
       page,

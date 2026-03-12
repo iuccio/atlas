@@ -12,10 +12,8 @@ public class BoUserMailCheckService {
 
   public boolean isCurrentUserMailAssignedTo(BoContactAssociated boContactAssociated) {
     boolean isMailAssigned = isCurrentUserMailAssignedTo(boContactAssociated.getBoContactMail());
+    boolean isSbbuidAssigned = isCurrentUserSbbUidAssignedTo(boContactAssociated.getBoContactSbbuid());
 
-    String userIdentifier = UserService.getUserIdentifier();
-    boolean isSbbuidAssigned = Objects.equals(userIdentifier, boContactAssociated.getBoContactSbbuid());
-    log.info("{} is assigned to boContactAssociated object: {}", userIdentifier, isSbbuidAssigned);
     return isMailAssigned || isSbbuidAssigned;
   }
 
@@ -23,6 +21,12 @@ public class BoUserMailCheckService {
     String preferredUsername = UserService.getPreferredUsername();
     log.info("{} is equal to boMail: {}", preferredUsername, boMail);
     return Objects.equals(boMail, preferredUsername);
+  }
+
+  public boolean isCurrentUserSbbUidAssignedTo(String boSbbuid) {
+    String userIdentifier = UserService.getUserIdentifier();
+    log.info("{} is equal to boSbbuid: {}", userIdentifier, boSbbuid);
+    return Objects.equals(userIdentifier, boSbbuid);
   }
 
 }

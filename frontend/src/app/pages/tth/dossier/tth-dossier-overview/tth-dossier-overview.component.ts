@@ -98,7 +98,7 @@ export class TthDossierOverviewComponent {
   getOverview(pagination: TablePagination) {
     if (this.userType === 'BO_TTH') {
       this.fetchOverview(
-        this.userService.currentUser!.email,
+        this.userService.currentUser!.sbbuid,
         [DossierStatus.DossierBoCheck],
         pagination
       );
@@ -112,7 +112,7 @@ export class TthDossierOverviewComponent {
   }
 
   private fetchOverview(
-    email: string | undefined,
+    sbbuid: string | undefined,
     dossierStatus: DossierStatus[],
     pagination: TablePagination
   ) {
@@ -120,7 +120,7 @@ export class TthDossierOverviewComponent {
       .getOverview(
         this.timetableYear().timetableYear,
         Cantons.getSwissCantonFromShort(this.cantonShort()),
-        email,
+        sbbuid,
         this.tableService.filter.chipSearch.getActiveSearch(),
         dossierStatus,
         pagination.page,
