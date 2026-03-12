@@ -155,7 +155,7 @@
               "frontend/src/**/*.ts"
             ],
             "include": [
-              "src/app/pages/prm/**/*.spec.ts"
+              "src/app/core/form-components/**/*.spec.ts"
             ]
           }
         },

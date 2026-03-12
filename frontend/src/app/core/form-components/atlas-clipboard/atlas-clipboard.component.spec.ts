@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach } from 'vitest';
 
 import { AtlasClipboardComponent } from './atlas-clipboard.component';
 import { FormModule } from '../../module/form.module';

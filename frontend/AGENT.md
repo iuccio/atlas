@@ -30,18 +30,16 @@ import {TestBed} from '@angular/core/testing';
 import {beforeEach, describe, expect, it, vi, type Mocked} from 'vitest';
 import {OrderTotal} from './order-total';
 import {TaxCalculator} from './tax-calculator';
+import { mock } from 'vitest-mock-extended';
 
 describe('OrderTotal', () => {
   let service: OrderTotal;
   
   // Vitest's `Mocked` utility type ensures the stub is type-safe,
   // while `vi.fn()` creates a mock function for each method
-  let taxCalculatorStub: Mocked<TaxCalculator>;
+  const taxCalculatorStub = mock<TaxCalculator>();
   
   beforeEach(() => {
-    taxCalculatorStub = {
-      calculate: vi.fn(),
-    };
     // `mockReturnValue` sets a controlled return value for the stub
     taxCalculatorStub.calculate.mockReturnValue(5);
     TestBed.configureTestingModule({
@@ -103,10 +101,11 @@ This structure keeps setup predictable and makes it obvious where to adjust depe
 ### Rule: Instantiate services/components through `TestBed` in Arrangement
 Within a Vitest `beforeEach` that follows the recommended Mocking/Config/Arrangement split, services and components must be created or injected through `TestBed` in the Arrangement section. Replace any `new Service()` or `new Component()` calls with `TestBed.inject(Service)` or `TestBed.createComponent(Component)` so Angular's dependency injection is honored and lifecycle hooks behave as in production.
 
-### Rule: Mocked<> with Pick to the narrow surface
-When you wrap a dependency in Vitest's `Mocked<...>` to satisfy the Mocking phase, restrict the mocked surface to the properties the test actually consumes via `Pick<DependencyType, 'foo' | 'bar'>`. This avoids having to stub every method on a dependency and keeps the mock declaration focused:
+### Rule: mocking dependencies with `vitest-mock-extended`
+Use `vitest-mock-extended` to declare mocked dependencies. This avoids having to stub every method on a dependency and keeps the mock declaration focused:
 ```
-let dependency: Mocked<Pick<DependencyType, 'methodA' | 'propertyB'>>;
+import { mock, mockDeep } from 'vitest-mock-extended';
+const dependency = mock<DependencyType>();
 ```
 Only expand the Pick arguments when a test genuinely needs additional members; never mock the full type unless production code under test touches nearly every member.
 
