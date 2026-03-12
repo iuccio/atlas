@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormModule } from '../../../core/module/form.module';
 import { GeographyComponent } from './geography.component';
@@ -13,31 +14,42 @@ import { CoordinateTransformationService } from './coordinate-transformation.ser
 import { AppTestingModule } from '../../../app.testing.module';
 import { BehaviorSubject, Subject } from 'rxjs';
 
-const mapService = jasmine.createSpyObj<MapService>(
-  [
-    'placeMarkerAndFlyTo',
-    'enterCoordinateSelectionMode',
-    'exitCoordinateSelectionMode',
-  ],
-  {
-    mapInitialized: new BehaviorSubject(false),
-  }
-);
-mapService.clickedGeographyCoordinates = new Subject<CoordinatePairWGS84>();
-
-const coordinateTransformationServiceSpy =
-  jasmine.createSpyObj<CoordinateTransformationService>(['transform']);
-coordinateTransformationServiceSpy.transform.and.returnValue({
-  north: 12,
-  east: 12,
-  spatialReference: SpatialReference.Wgs84,
-});
-
 describe('GeographyComponent', () => {
   let component: GeographyComponent;
   let fixture: ComponentFixture<GeographyComponent>;
+  let mapServiceSpy: Mocked<
+    Pick<
+      MapService,
+      | 'placeMarkerAndFlyTo'
+      | 'enterCoordinateSelectionMode'
+      | 'exitCoordinateSelectionMode'
+    >
+  > & {
+    mapInitialized: BehaviorSubject<boolean>;
+    clickedGeographyCoordinates: Subject<CoordinatePairWGS84>;
+  };
+  let coordinateTransformationServiceSpy: Mocked<
+    Pick<CoordinateTransformationService, 'transform'>
+  >;
 
   beforeEach(async () => {
+    mapServiceSpy = {
+      placeMarkerAndFlyTo: vi.fn(),
+      enterCoordinateSelectionMode: vi.fn(),
+      exitCoordinateSelectionMode: vi.fn(),
+      mapInitialized: new BehaviorSubject(false),
+      clickedGeographyCoordinates: new Subject<CoordinatePairWGS84>(),
+    };
+
+    coordinateTransformationServiceSpy = {
+      transform: vi.fn(),
+    };
+    coordinateTransformationServiceSpy.transform.mockReturnValue({
+      north: 12,
+      east: 12,
+      spatialReference: SpatialReference.Wgs84,
+    });
+
     await TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -49,7 +61,7 @@ describe('GeographyComponent', () => {
       ],
       providers: [
         { provide: TranslatePipe },
-        { provide: MapService, useValue: mapService },
+        { provide: MapService, useValue: mapServiceSpy },
         {
           provide: CoordinateTransformationService,
           useValue: coordinateTransformationServiceSpy,
@@ -85,7 +97,7 @@ describe('GeographyComponent', () => {
       { north: 20000, east: 10000, spatialReference: SpatialReference.Lv95 },
       SpatialReference.Wgs84
     );
-    expect(mapService.placeMarkerAndFlyTo).toHaveBeenCalledWith({
+    expect(mapServiceSpy.placeMarkerAndFlyTo).toHaveBeenCalledWith({
       lng: 12,
       lat: 12,
     });
@@ -97,7 +109,7 @@ describe('GeographyComponent', () => {
       east: 2600464,
       spatialReference: SpatialReference.Lv95,
     };
-    spyOn(component, 'setHeightFromGeoData');
+    vi.spyOn(component, 'setHeightFromGeoData').mockImplementation(() => {});
 
     component.setHeightFromGeoData(coordinates, true);
 
@@ -113,7 +125,7 @@ describe('GeographyComponent', () => {
       east: 2600464,
       spatialReference: SpatialReference.Lv95,
     };
-    spyOn(component, 'setHeightFromGeoData');
+    vi.spyOn(component, 'setHeightFromGeoData').mockImplementation(() => {});
 
     component.onChangeCoordinatesManually(coordinates, true);
 

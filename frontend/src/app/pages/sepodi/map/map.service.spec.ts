@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, Mocked, vi } from 'vitest';
 import { MapService } from './map.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import {
@@ -7,6 +8,7 @@ import {
   Map,
   MapGeoJSONFeature,
   MapMouseEvent,
+  Marker,
   ScrollZoomHandler,
   TwoFingersTouchZoomRotateHandler,
 } from 'maplibre-gl';
@@ -14,36 +16,51 @@ import { SpatialReference } from '../../../api';
 import { MAP_STYLES } from './map-options';
 import { Router } from '@angular/router';
 
-const authService: Partial<AuthService> = {};
-
-const markerSpy = jasmine.createSpyObj('Marker', [
-  'addTo',
-  'setLngLat',
-  'remove',
-]);
-const mapSpy = jasmine.createSpyObj<Map>([
-  'once',
-  'flyTo',
-  'getCanvas',
-  'on',
-  'off',
-  'fire',
-  'getSource',
-  'setZoom',
-  'getZoom',
-  'setCenter',
-  'setLayoutProperty',
-  'resize',
-]);
-mapSpy.getSource = jasmine.createSpy('getSource').and.returnValue({
-  setData: jasmine.createSpy('setData'),
-});
-
 describe('MapService', () => {
+  const authService: Partial<AuthService> = {};
+
+  let markerSpy: Mocked<Pick<Marker, 'addTo' | 'setLngLat' | 'remove'>>;
+  let mapSpy: Mocked<
+    Pick<
+      Map,
+      | 'flyTo'
+      | 'getCanvas'
+      | 'on'
+      | 'fire'
+      | 'getSource'
+      | 'setZoom'
+      | 'getZoom'
+      | 'setCenter'
+      | 'setLayoutProperty'
+      | 'resize'
+    >
+  >;
+
   let service: MapService;
   let router: Router;
 
   beforeEach(() => {
+    markerSpy = {
+      addTo: vi.fn(),
+      setLngLat: vi.fn(),
+      remove: vi.fn(),
+    };
+
+    mapSpy = {
+      on: vi.fn().mockImplementation(() => {}),
+      flyTo: vi.fn(),
+      getCanvas: vi.fn(),
+      fire: vi.fn(),
+      getSource: vi.fn().mockReturnValue({
+        setData: vi.fn(),
+      }),
+      setZoom: vi.fn(),
+      getZoom: vi.fn(),
+      setCenter: vi.fn(),
+      setLayoutProperty: vi.fn(),
+      resize: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
       providers: [{ provide: AuthService, useValue: authService }],
     });
@@ -56,38 +73,41 @@ describe('MapService', () => {
   });
 
   it('should init map', () => {
-    const mapSpy = jasmine.createSpyObj<Map>([
-      'setMaxZoom',
-      'setMinZoom',
-      'resize',
-      'once',
-      'hasImage',
-      'addImage',
-      'setZoom',
-      'on',
-      'setCenter',
-      'setLayoutProperty',
-      'getSource',
-    ]);
-    mapSpy.dragRotate = jasmine.createSpyObj<DragRotateHandler>(['disable']);
-    mapSpy.touchZoomRotate =
-      jasmine.createSpyObj<TwoFingersTouchZoomRotateHandler>([
-        'disableRotation',
-      ]);
-    mapSpy.scrollZoom = jasmine.createSpyObj<ScrollZoomHandler>([
-      'setWheelZoomRate',
-      'setZoomRate',
-    ]);
+    const localMapSpy = {
+      setMaxZoom: vi.fn(),
+      setMinZoom: vi.fn(),
+      resize: vi.fn(),
+      once: vi.fn(),
+      hasImage: vi.fn(),
+      addImage: vi.fn(),
+      setZoom: vi.fn(),
+      on: vi.fn(),
+      setCenter: vi.fn(),
+      setLayoutProperty: vi.fn(),
+      getSource: vi.fn(),
+      dragRotate: {
+        disable: vi.fn(),
+      } as unknown as DragRotateHandler,
+      touchZoomRotate: {
+        disableRotation: vi.fn(),
+      } as unknown as TwoFingersTouchZoomRotateHandler,
+      scrollZoom: {
+        setWheelZoomRate: vi.fn(),
+        setZoomRate: vi.fn(),
+      } as unknown as ScrollZoomHandler,
+    };
 
-    spyOn(service, 'createMap').and.returnValue(mapSpy);
-    spyOn(service, 'deselectServicePoint').and.stub();
+    vi.spyOn(service, 'createMap').mockReturnValue(
+      localMapSpy as unknown as Map
+    );
+    vi.spyOn(service, 'deselectServicePoint').mockImplementation(() => {});
 
     const htmlDivElement = document.createElement('div');
     const map = service.initMap(htmlDivElement);
 
     // call all listeners for coverage
-    mapSpy.once.calls.all().forEach((call) => {
-      const listener = call.args[1];
+    localMapSpy.once.mock.calls.forEach((call: unknown[]) => {
+      const listener = call[1] as ((e: unknown) => void) | undefined;
       if (listener) {
         listener(undefined);
       }
@@ -97,10 +117,14 @@ describe('MapService', () => {
   });
 
   it('should fly to coordinates on map', () => {
-    const mapSpy = jasmine.createSpyObj<Map>(['flyTo', 'resize', 'once']);
-    mapSpy.flyTo.and.returnValue(mapSpy);
+    const localMapSpy = {
+      flyTo: vi.fn(),
+      resize: vi.fn(),
+      once: vi.fn(),
+    };
+    localMapSpy.flyTo.mockReturnValue(localMapSpy);
 
-    service.map = mapSpy;
+    service.map = localMapSpy as unknown as Map;
 
     service.centerOn({
       north: 46.96096807883433,
@@ -108,17 +132,19 @@ describe('MapService', () => {
       spatialReference: SpatialReference.Wgs84,
     });
 
-    expect(mapSpy.flyTo).toHaveBeenCalled();
+    expect(localMapSpy.flyTo).toHaveBeenCalled();
   });
 
   it('should deselect service point', () => {
-    service.map = mapSpy;
-    service.map.getSource = jasmine.createSpy('getSource').and.returnValue({
-      setData: jasmine.createSpy('setData'),
-    });
+    const setDataSpy = vi.fn();
+    const localMapSpy = {
+      ...mapSpy,
+      getSource: vi.fn().mockReturnValue({ setData: setDataSpy }),
+    };
+    service.map = localMapSpy as unknown as Map;
     service.deselectServicePoint();
 
-    expect(service.map.getSource).toHaveBeenCalledWith('current_coordinates');
+    expect(localMapSpy.getSource).toHaveBeenCalledWith('current_coordinates');
     expect(
       (service.map.getSource('current_coordinates') as GeoJSONSource).setData
     ).toHaveBeenCalledWith({
@@ -132,12 +158,14 @@ describe('MapService', () => {
   });
 
   it('should switch to different map style', () => {
-    const mapSpy = jasmine.createSpyObj<Map>(['setLayoutProperty']);
-    service.map = mapSpy;
+    const localMapSpy = {
+      setLayoutProperty: vi.fn(),
+    };
+    service.map = localMapSpy as unknown as Map;
 
     service.switchToStyle(MAP_STYLES[3]);
 
-    expect(mapSpy.setLayoutProperty).toHaveBeenCalledWith(
+    expect(localMapSpy.setLayoutProperty).toHaveBeenCalledWith(
       'osm',
       'visibility',
       'visible'
@@ -145,12 +173,14 @@ describe('MapService', () => {
   });
 
   it('should remove map', () => {
-    const mapSpy = jasmine.createSpyObj<Map>(['remove']);
-    service.map = mapSpy;
+    const localMapSpy = {
+      remove: vi.fn(),
+    };
+    service.map = localMapSpy as unknown as Map;
 
     service.removeMap();
 
-    expect(mapSpy.remove).toHaveBeenCalledWith();
+    expect(localMapSpy.remove).toHaveBeenCalledWith();
   });
 
   it('should build popup information correctly', () => {
@@ -175,6 +205,7 @@ describe('MapService', () => {
   });
 
   it('should show popup on features coordinates', () => {
+    service.map = mapSpy as unknown as Map;
     const mouseEvent = {
       features: [
         {
@@ -191,7 +222,7 @@ describe('MapService', () => {
       ],
     } as unknown as MapMouseEvent & { features?: MapGeoJSONFeature[] };
 
-    spyOn(service.popup, 'addTo');
+    vi.spyOn(service.popup, 'addTo').mockImplementation(() => service.popup);
     service.showServicePointPopup(mouseEvent);
 
     expect(service.popup.getLngLat().lat).toEqual(46.94883407094761);
@@ -199,9 +230,10 @@ describe('MapService', () => {
   });
 
   it('should select service point on click if only one is on coordinates', () => {
-    const mapSpy = jasmine.createSpyObj<Map>(['getZoom']);
-    mapSpy.getZoom.and.returnValue(12);
-    service.map = mapSpy;
+    const localMapSpy = {
+      getZoom: vi.fn().mockReturnValue(12),
+    };
+    service.map = localMapSpy as unknown as Map;
 
     const mouseEvent = {
       features: [
@@ -219,7 +251,7 @@ describe('MapService', () => {
       ],
     } as unknown as MapMouseEvent & { features?: MapGeoJSONFeature[] };
 
-    spyOn(service.selectedElement, 'next');
+    vi.spyOn(service.selectedElement, 'next').mockImplementation(() => {});
     service.onClick(mouseEvent);
 
     expect(service.selectedElement.next).toHaveBeenCalled();
@@ -227,9 +259,10 @@ describe('MapService', () => {
 
   it('should fix popup on click if only multiple service points are on coordinates', () => {
     // Given
-    const mapSpy = jasmine.createSpyObj<Map>(['getZoom']);
-    mapSpy.getZoom.and.returnValue(12);
-    service.map = mapSpy;
+    const localMapSpy = {
+      getZoom: vi.fn().mockReturnValue(12),
+    };
+    service.map = localMapSpy as unknown as Map;
 
     const mouseEvent = {
       features: [
@@ -257,17 +290,17 @@ describe('MapService', () => {
         },
       ],
     } as unknown as MapMouseEvent & { features?: MapGeoJSONFeature[] };
-    expect(service.keepPopup).toBeFalse();
+    expect(service.keepPopup).toBe(false);
 
-    spyOn(service.selectedElement, 'next');
-    spyOn(service, 'setPopupToFixed');
+    vi.spyOn(service.selectedElement, 'next').mockImplementation(() => {});
+    vi.spyOn(service, 'setPopupToFixed').mockImplementation(() => {});
 
     // when
     service.onClick(mouseEvent);
 
     // then
     expect(service.selectedElement.next).not.toHaveBeenCalled();
-    expect(service.keepPopup).toBeTrue();
+    expect(service.keepPopup).toBe(true);
     expect(service.setPopupToFixed).toHaveBeenCalled();
   });
 
@@ -275,9 +308,9 @@ describe('MapService', () => {
     service.coordinateSelectionMode = true;
 
     const latLngCoordinates = { lat: 40, lng: -74 };
-    markerSpy.setLngLat.and.returnValue(markerSpy);
-    service.marker = markerSpy;
-    service.map = mapSpy;
+    markerSpy.setLngLat.mockReturnValue(markerSpy as unknown as Marker);
+    service.marker = markerSpy as unknown as Marker;
+    service.map = mapSpy as unknown as Map;
 
     service.placeMarkerAndFlyTo(latLngCoordinates);
 
@@ -287,6 +320,7 @@ describe('MapService', () => {
   });
 
   it('should show popup on sector features coordinates', () => {
+    service.map = mapSpy as unknown as Map;
     const mouseEvent = {
       features: [
         {
@@ -302,7 +336,7 @@ describe('MapService', () => {
       ],
     } as unknown as MapMouseEvent & { features?: MapGeoJSONFeature[] };
 
-    spyOn(service.popup, 'addTo');
+    vi.spyOn(service.popup, 'addTo').mockImplementation(() => service.popup);
     service.showSectorPopup(mouseEvent);
 
     expect(service.popup.getLngLat().lat).toEqual(46.94883407094761);
@@ -311,9 +345,10 @@ describe('MapService', () => {
 
   it('should navigate to sector detail on click', () => {
     // Given
-    const mapSpy = jasmine.createSpyObj<Map>(['getZoom']);
-    mapSpy.getZoom.and.returnValue(12);
-    service.map = mapSpy;
+    const localMapSpy = {
+      getZoom: vi.fn().mockReturnValue(12),
+    };
+    service.map = localMapSpy as unknown as Map;
 
     const mouseEvent = {
       features: [
@@ -331,7 +366,7 @@ describe('MapService', () => {
       ],
     } as unknown as MapMouseEvent & { features?: MapGeoJSONFeature[] };
 
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
     service.onSectorClicked(mouseEvent);
 
     expect(router.navigate).toHaveBeenCalledWith([
