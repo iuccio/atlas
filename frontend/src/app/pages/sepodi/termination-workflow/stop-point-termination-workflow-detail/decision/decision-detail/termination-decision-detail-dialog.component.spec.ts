@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { TerminationDecisionDetailDialogComponent } from './termination-decision-detail-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TerminationDecisionDetailDialogData } from './termination-decision-detail-dialog.service';
 import { AppTestingModule } from '../../../../../../app.testing.module';
-import { of } from 'rxjs';
+import { EMPTY } from 'rxjs';
 import { CommentComponent } from '../../../../../../core/form-components/comment/comment.component';
 import { AtlasFieldErrorComponent } from '../../../../../../core/form-components/atlas-field-error/atlas-field-error.component';
 import { TextFieldComponent } from '../../../../../../core/form-components/text-field/text-field.component';
@@ -22,62 +23,46 @@ import { StopPointTerminationWorkflowService } from '../../../../../../api/servi
 import { TerminationWorkflowStatus } from '../../../../../../api/model/terminationWorkflowStatus';
 import TerminationDecisionPersonEnum = TerminationDecision.TerminationDecisionPersonEnum;
 
-const dialogRefSpy = jasmine.createSpyObj(['close']);
-const terminationWorkflowService = jasmine.createSpyObj('WorkflowService', {
-  decisionInfoPlus: of(),
-  decisionNova: of(),
-});
-const decisionDialogData: TerminationDecisionDetailDialogData = {
-  versionValidTo: new Date('9999-12-14'),
-  title: '',
-  message: '',
-  workflowId: 123,
-  readOnly: false,
-  workflowStatus: TerminationWorkflowStatus.Started,
-  examinant: TerminationDecisionPersonEnum.InfoPlus,
-  decision: new FormGroup<TerminationDecisionFormGroup>({
-    examinantMail: new FormControl(''),
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
-    judgementIcon: new FormControl(''),
-    organisation: new FormControl(''),
-    judgement: new FormControl('YES'),
-    motivation: new FormControl(),
-    terminationDate: new FormControl(moment()),
-    terminationDecisionPerson: new FormControl(
-      TerminationDecisionPersonEnum.InfoPlus
-    ),
-  }),
-};
-
-const dialogDataReadOnly: TerminationDecisionDetailDialogData = {
-  versionValidTo: new Date('9999-12-14'),
-  title: '',
-  message: '',
-  workflowId: 123,
-  readOnly: true,
-  workflowStatus: TerminationWorkflowStatus.Started,
-  examinant: TerminationDecisionPersonEnum.InfoPlus,
-  decision: new FormGroup<TerminationDecisionFormGroup>({
-    examinantMail: new FormControl(''),
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
-    judgementIcon: new FormControl(''),
-    organisation: new FormControl(''),
-    judgement: new FormControl('YES'),
-    motivation: new FormControl(),
-    terminationDate: new FormControl(moment()),
-    terminationDecisionPerson: new FormControl(
-      TerminationDecisionPersonEnum.InfoPlus
-    ),
-  }),
-};
-
 describe('TerminationDecisionDetailDialogComponent', () => {
   let component: TerminationDecisionDetailDialogComponent;
   let fixture: ComponentFixture<TerminationDecisionDetailDialogComponent>;
 
+  let dialogRefMock: Mocked<Pick<MatDialogRef<TerminationDecisionDetailDialogComponent>, 'close'>>;
+  let terminationWorkflowServiceMock: Mocked<Pick<StopPointTerminationWorkflowService, 'decisionInfoPlus' | 'decisionNova'>>;
+
+  const buildDecisionDialogData = (readOnly: boolean): TerminationDecisionDetailDialogData => ({
+    versionValidTo: new Date('9999-12-14'),
+    title: '',
+    message: '',
+    workflowId: 123,
+    readOnly,
+    workflowStatus: TerminationWorkflowStatus.Started,
+    examinant: TerminationDecisionPersonEnum.InfoPlus,
+    decision: new FormGroup<TerminationDecisionFormGroup>({
+      examinantMail: new FormControl(''),
+      firstName: new FormControl(''),
+      lastName: new FormControl(''),
+      judgementIcon: new FormControl(''),
+      organisation: new FormControl(''),
+      judgement: new FormControl('YES'),
+      motivation: new FormControl(),
+      terminationDate: new FormControl(moment()),
+      terminationDecisionPerson: new FormControl(
+        TerminationDecisionPersonEnum.InfoPlus
+      ),
+    }),
+  });
+
   beforeEach(() => {
+    dialogRefMock = {
+      close: vi.fn(),
+    };
+
+    terminationWorkflowServiceMock = {
+      decisionInfoPlus: vi.fn().mockReturnValue(EMPTY),
+      decisionNova: vi.fn().mockReturnValue(EMPTY),
+    };
+
     TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -93,11 +78,11 @@ describe('TerminationDecisionDetailDialogComponent', () => {
         MockAtlasButtonComponent,
       ],
       providers: [
-        { provide: MatDialogRef, useValue: dialogRefSpy },
-        { provide: MAT_DIALOG_DATA, useValue: decisionDialogData },
+        { provide: MatDialogRef, useValue: dialogRefMock },
+        { provide: MAT_DIALOG_DATA, useValue: buildDecisionDialogData(false) },
         {
           provide: StopPointTerminationWorkflowService,
-          useValue: terminationWorkflowService,
+          useValue: terminationWorkflowServiceMock,
         },
       ],
     });
@@ -115,26 +100,26 @@ describe('TerminationDecisionDetailDialogComponent', () => {
     it('should create', () => {
       expect(component).toBeTruthy();
 
-      expect(component.readOnly).toBeFalse();
+      expect(component.readOnly).toBe(false);
     });
 
     it('should close dialog', () => {
       component.close();
 
-      expect(dialogRefSpy.close).toHaveBeenCalled();
+      expect(dialogRefMock.close).toHaveBeenCalled();
     });
 
     it('should decide', () => {
       component.decide();
 
-      expect(terminationWorkflowService.decisionInfoPlus).toHaveBeenCalled();
+      expect(terminationWorkflowServiceMock.decisionInfoPlus).toHaveBeenCalled();
     });
   });
 
   describe('while reading', () => {
     beforeEach(() => {
       TestBed.overrideProvider(MAT_DIALOG_DATA, {
-        useValue: dialogDataReadOnly,
+        useValue: buildDecisionDialogData(true),
       });
       fixture = TestBed.createComponent(
         TerminationDecisionDetailDialogComponent
@@ -146,8 +131,8 @@ describe('TerminationDecisionDetailDialogComponent', () => {
     it('should init', () => {
       expect(component).toBeTruthy();
 
-      expect(component.readOnly).toBeTrue();
-      expect(component.form.disabled).toBeTrue();
+      expect(component.readOnly).toBe(true);
+      expect(component.form.disabled).toBe(true);
     });
   });
 });
