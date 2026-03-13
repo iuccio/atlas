@@ -8,12 +8,21 @@ function getMockFileList(
   properties: FilePropertyBag,
   fileBits = '',
   filecount = 1
-) {
-  const dt = new DataTransfer();
+): FileList {
+  const items: Array<File> = [];
   for (let i = 0; i < filecount; i++) {
-    dt.items.add(new File([fileBits], fileName, properties));
+    items.push(new File([fileBits], fileName, properties));
   }
-  return dt.files;
+
+  return {
+    [Symbol.iterator](): ArrayIterator<File> {
+      return items[Symbol.iterator]();
+    },
+    item(index: number): File | null {
+      return items[index];
+    },
+    length: items.length,
+  };
 }
 
 describe('FileUploadComponent', () => {

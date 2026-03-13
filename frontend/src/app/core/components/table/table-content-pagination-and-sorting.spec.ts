@@ -78,10 +78,10 @@ describe('TableContentPaginationAndSorting', () => {
       },
       'designation'
     );
-    expect(sortedObjects.map((i) => i.date.toISOString())).toEqual([
-      '2022-06-01',
-      '2022-06-02',
-      '2022-06-03',
+    expect(sortedObjects.map((i) => i.date)).toEqual([
+      new Date('2022-06-01'),
+      new Date('2022-06-02'),
+      new Date('2022-06-03'),
     ]);
   });
 

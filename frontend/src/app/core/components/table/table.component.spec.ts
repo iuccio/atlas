@@ -94,9 +94,9 @@ describe('TableComponent', () => {
     fixture.detectChanges();
     const tableCells = fixture.debugElement.queryAll(By.css('td'));
     expect(tableCells).toBeDefined();
-    expect(tableCells[3].nativeElement.innerText).toEqual('a, b, c');
-    expect(tableCells[8].nativeElement.innerText).toEqual('d, f, g');
-    expect(tableCells[13].nativeElement.innerText).toEqual('');
+    expect(tableCells[3].nativeElement.textContent.trim()).toEqual('a, b, c');
+    expect(tableCells[8].nativeElement.textContent.trim()).toEqual('d, f, g');
+    expect(tableCells[13].nativeElement.textContent.trim()).toEqual('');
   });
 
   it('should get dropdown', () => {
@@ -107,7 +107,7 @@ describe('TableComponent', () => {
     expect(tableCells).toBeDefined();
     expect(tableCells.length).toEqual(3);
     tableCells.forEach((value) => {
-      expect(value.nativeElement.innerText).toEqual(
+      expect(value.nativeElement.textContent.trim()).toEqual(
         'FORM.DROPDOWN_PLACEHOLDER'
       );
     });

@@ -10,6 +10,8 @@ describe('SwitchVersionComponent', () => {
   let fixture: ComponentFixture<SwitchVersionComponent>;
 
   beforeEach(() => {
+    Element.prototype.scrollIntoView = vi.fn();
+
     TestBed.configureTestingModule({
       providers: [translateServiceProvider],
     });

@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { FileDropDirective } from './file-drop.directive';
+import { mock } from 'vitest-mock-extended';
 
 @Component({
   imports: [FileDropDirective],
@@ -24,17 +25,14 @@ describe('FileDropDirective', () => {
     );
     expect(elementWithDirective).toBeTruthy();
 
-    elementWithDirective.triggerEventHandler(
-      'dragover',
-      new DragEvent('dragover')
-    );
+    const dragoverEvent = mock<DragEvent>();
+    elementWithDirective.triggerEventHandler('dragover', dragoverEvent);
+
     fixture.detectChanges();
     expect(elementWithDirective.classes['fileover']).toBe(true);
 
-    elementWithDirective.triggerEventHandler(
-      'dragleave',
-      new DragEvent('dragleave')
-    );
+    const dragleaveEvent = mock<DragEvent>();
+    elementWithDirective.triggerEventHandler('dragleave', dragleaveEvent);
     fixture.detectChanges();
     expect(elementWithDirective.classes['fileover']).toBeFalsy();
   });

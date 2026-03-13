@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { SideNavComponent } from './side-nav.component';
 import { By } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Pages } from '../../../pages/pages';
 import {
   pageServiceMock,
@@ -11,6 +11,8 @@ import {
 import { PageService } from '../../pages/page.service';
 import { Page } from '../../model/page';
 import { OverviewToTabShareDataService } from '../../../pages/tth/overview-tab/service/overview-to-tab-share-data.service';
+import { LidiOverviewComponent } from '../../../pages/lidi/overview/lidi-overview.component';
+import { TimetableFieldNumberOverviewComponent } from '../../../pages/ttfn/overview/timetable-field-number-overview.component';
 
 describe('SideNavComponent', () => {
   let component: SideNavComponent;
@@ -21,6 +23,18 @@ describe('SideNavComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RouterModule.forRoot([
+          {
+            path: Pages.LIDI.path,
+            component: LidiOverviewComponent,
+          },
+          {
+            path: Pages.TTFN.path,
+            component: TimetableFieldNumberOverviewComponent,
+          },
+        ]),
+      ],
       providers: [
         translateServiceProvider,
         {
