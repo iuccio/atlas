@@ -149,7 +149,7 @@ describe('AuthService', () => {
     });
   });
 
-  it.only('should login', () => {
+  it('should login', () => {
     // Arrange
     authService = TestBed.inject(AuthService);
     // Act

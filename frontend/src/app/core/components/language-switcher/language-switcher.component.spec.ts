@@ -7,6 +7,8 @@ import deTranslationFile from 'src/assets/i18n/de.json';
 import frTranslationFile from 'src/assets/i18n/fr.json';
 import itTranslationFile from 'src/assets/i18n/it.json';
 import { translateServiceProvider } from '../../../app.testing.mocks';
+import { DateModule } from '../../module/date.module';
+import { RouterModule } from '@angular/router';
 
 describe('LanguageSwitcherComponent', () => {
   let component: LanguageSwitcherComponent;
@@ -21,6 +23,7 @@ describe('LanguageSwitcherComponent', () => {
 
     // Config
     TestBed.configureTestingModule({
+      imports: [DateModule.forRoot(), RouterModule.forRoot([])],
       providers: [
         translateServiceProvider,
         { provide: DateAdapter, useValue: dateAdapterStub },
