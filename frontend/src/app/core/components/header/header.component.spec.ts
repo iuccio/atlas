@@ -2,24 +2,48 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { HeaderComponent } from './header.component';
 import { AuthService } from '../../auth/auth.service';
-import {
-  authServiceMock,
-  translateServiceProvider,
-} from '../../../app.testing.mocks';
+import { authServiceMock } from '../../../app.testing.mocks';
 import { RouterModule } from '@angular/router';
 import { DateModule } from '../../module/date.module';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { mock } from 'vitest-mock-extended';
+import { of } from 'rxjs';
+import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
+import { UserComponent } from '../user/user.component';
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'atlas-language-switcher',
+  template: '<h1>LanguageSwitcherComponent</h1>',
+})
+export class MockLanguageSwitcherComponent {}
+
+@Component({
+  selector: 'atlas-user',
+  template: '<h1>UserComponent</h1>',
+})
+export class MockUserComponent {}
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
+
+  const translateService = mock<TranslateService>();
+  translateService.use.mockReturnValue(of());
+
+  const translatePipe = mock<TranslatePipe>();
+  translatePipe.transform.mockImplementation((arg) => arg);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [DateModule.forRoot(), RouterModule.forRoot([])],
       providers: [
         { provide: AuthService, useValue: authServiceMock },
-        translateServiceProvider,
+        { provide: TranslateService, useValue: translateService },
       ],
+    }).overrideComponent(HeaderComponent, {
+      remove: { imports: [LanguageSwitcherComponent, UserComponent] },
+      add: { imports: [MockLanguageSwitcherComponent, MockUserComponent] },
     });
 
     fixture = TestBed.createComponent(HeaderComponent);

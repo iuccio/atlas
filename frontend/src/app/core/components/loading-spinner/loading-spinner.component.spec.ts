@@ -14,7 +14,7 @@ describe('LoadingSpinnerComponent', () => {
   });
 
   it('should create spinning logo', () => {
-    component.isLoading = true;
+    fixture.componentRef.setInput('isLoading', true);
     fixture.detectChanges();
 
     const loadingSpinnerDiv = fixture.debugElement.query(
