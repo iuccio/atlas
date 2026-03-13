@@ -62,8 +62,8 @@ public class TthDossierService {
 
   @TthRedacted
   @PreAuthorize("@cantonBasedUserAdministrationService.isAtLeastExplicitReader(T(ch.sbb.atlas.kafka.model.user.admin"
-      + ".ApplicationType).TIMETABLE_HEARING) || @boUserMailCheckService.isCurrentUserMailAssignedTo(#searchRestrictions"
-      + ".getRequestParams().getBoContactMail())")
+      + ".ApplicationType).TIMETABLE_HEARING) || @boUserMailCheckService.isCurrentUserSbbUidAssignedTo(#searchRestrictions"
+      + ".getRequestParams().getBoContactSbbuid())")
   public Page<TthDossier> getDossiers(TthDossierSearchRestrictions searchRestrictions) {
     return dossierRepository.findAll(searchRestrictions.getSpecification(),
         searchRestrictions.getPageable());

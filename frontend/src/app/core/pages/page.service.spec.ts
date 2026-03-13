@@ -12,6 +12,7 @@ const permissionServiceMock: Partial<PermissionService> = {
   mayAccessTtfn: () => true,
   isAdmin: true,
   getTthApplicationUserType: () => 'CANTON_TTH' as TthApplicationUserType,
+  isTthBoUser: () => false,
 };
 
 describe('PageService', () => {
