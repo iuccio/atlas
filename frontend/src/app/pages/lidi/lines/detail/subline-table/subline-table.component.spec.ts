@@ -6,6 +6,7 @@ import { MockTableComponent } from '../../../../../app.testing.mocks';
 import { AppTestingModule } from '../../../../../app.testing.module';
 import { LineInternalService } from '../../../../../api/service/lidi/line-internal.service';
 import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { FormatPipe } from '../../../../../core/components/table/pipe/format.pipe';
 
 const subline: Line = {
   swissLineNumber: 'IC6',
@@ -35,6 +36,7 @@ describe('SublineTableComponent', () => {
       imports: [AppTestingModule, SublineTableComponent, MockTableComponent],
       providers: [
         { provide: LineInternalService, useValue: lineInternalService },
+        FormatPipe,
       ],
     }).compileComponents();
 

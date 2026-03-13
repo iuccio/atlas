@@ -1,34 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { AppComponent } from './app.component';
 import { AuthService } from './core/auth/auth.service';
-import { HeaderComponent } from './core/components/header/header.component';
-import { UserComponent } from './core/components/user/user.component';
-import { LanguageSwitcherComponent } from './core/components/language-switcher/language-switcher.component';
-import { SideNavComponent } from './core/components/side-nav/side-nav.component';
-import { LoadingSpinnerComponent } from './core/components/loading-spinner/loading-spinner.component';
-import { AppTestingModule } from './app.testing.module';
 import { SwUpdate } from '@angular/service-worker';
-import { MaintenanceIconComponent } from './core/components/header/maintenance-icon/maintenance-icon.component';
-import { InfoIconComponent } from '@atlas/form';
 import { authServiceMock } from './app.testing.mocks';
 
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        HeaderComponent,
-        MaintenanceIconComponent,
-        UserComponent,
-        LanguageSwitcherComponent,
-        SideNavComponent,
-        LoadingSpinnerComponent,
-        InfoIconComponent,
-        AppComponent,
-      ],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         {
@@ -36,10 +18,8 @@ describe('AppComponent', () => {
           useValue: {},
         },
       ],
-    }).compileComponents();
-  });
+    });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

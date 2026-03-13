@@ -1,19 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { StatementPersonalInformationComponent } from './statement-personal-information.component';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
-import { StringListComponent } from '../../../../core/form-components/string-list/string-list.component';
 import { statement, statementFormGroup } from '../statement-test-util';
 
 describe('StatementPersonalInformation', () => {
   let component: StatementPersonalInformationComponent;
   let fixture: ComponentFixture<StatementPersonalInformationComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [StatementPersonalInformationComponent, StringListComponent],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       providers: [translateServiceProvider, provideHttpClient()],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(StatementPersonalInformationComponent);
     component = fixture.componentInstance;

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { CantonCardComponent } from './canton-card.component';
 import { By } from '@angular/platform-browser';
@@ -12,11 +13,10 @@ describe('CantonCardComponent', () => {
   let component: CantonCardComponent;
   let fixture: ComponentFixture<CantonCardComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CantonCardComponent],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       providers: [translateServiceProvider, provideHttpClient()],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(CantonCardComponent);
     component = fixture.componentInstance;
