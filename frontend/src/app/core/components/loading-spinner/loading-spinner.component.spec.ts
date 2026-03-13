@@ -4,12 +4,10 @@ import { LoadingSpinnerComponent } from './loading-spinner.component';
 import { By } from '@angular/platform-browser';
 
 describe('LoadingSpinnerComponent', () => {
-  let component: LoadingSpinnerComponent;
   let fixture: ComponentFixture<LoadingSpinnerComponent>;
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoadingSpinnerComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
