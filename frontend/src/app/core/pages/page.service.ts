@@ -18,12 +18,14 @@ export class PageService {
   constructor(private readonly permissionService: PermissionService) {}
 
   addPagesBasedOnPermissions() {
+    const userType = this.permissionService.getTthApplicationUserType();
     const pagesToAdd: Page[] = [];
 
     if (this.permissionService.mayAccessTimetableHearing()) {
-      const tthPage = this.permissionService.isTthBoUser()
-        ? { ...Pages.TTH, subpages: undefined }
-        : Pages.TTH;
+      const tthPage =
+        userType === 'BO_TTH'
+          ? { ...Pages.TTH, subpages: undefined }
+          : Pages.TTH;
       pagesToAdd.push(tthPage);
     }
 

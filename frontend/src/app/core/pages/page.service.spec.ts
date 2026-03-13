@@ -44,7 +44,8 @@ describe('PageService', () => {
   });
 
   it('should remove TTH subpages for BO_TTH user', (done) => {
-    permissionServiceMock.isTthBoUser = () => true;
+    permissionServiceMock.getTthApplicationUserType = () =>
+      'BO_TTH' as TthApplicationUserType;
     pageService.addPagesBasedOnPermissions();
 
     pageService.enabledPages.subscribe((enabledPages) => {
