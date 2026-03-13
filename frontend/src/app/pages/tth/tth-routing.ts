@@ -102,6 +102,9 @@ export const routes: Routes = [
     resolve: {
       dossier: dossierResolver,
     },
+    data: {
+      hearingStatus: HearingStatus.Active,
+    },
     runGuardsAndResolvers: 'always',
   },
 
@@ -112,6 +115,9 @@ export const routes: Routes = [
     canDeactivate: [canLeaveDirtyForm],
     resolve: {
       dossier: dossierResolver,
+    },
+    data: {
+      hearingStatus: HearingStatus.Archived,
     },
     runGuardsAndResolvers: 'always',
   },
