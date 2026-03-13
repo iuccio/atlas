@@ -42,7 +42,7 @@ export class BusinessOrganisationSelectComponent
   @Output() boSelectionChanged = new EventEmitter<BusinessOrganisation>();
 
   businessOrganisations: Observable<BusinessOrganisation[]> = of([]);
-  private formSubscription: Subscription = new Subscription();
+  private formSubscription!: Subscription;
 
   private readonly businessOrganisationService = inject(
     BusinessOrganisationService
