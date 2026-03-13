@@ -6,27 +6,30 @@ import { DateAdapter } from '@angular/material/core';
 import deTranslationFile from 'src/assets/i18n/de.json';
 import frTranslationFile from 'src/assets/i18n/fr.json';
 import itTranslationFile from 'src/assets/i18n/it.json';
-import { translateServiceProvider } from '../../../app.testing.mocks';
-import { DateModule } from '../../module/date.module';
+import { TranslateService } from '@ngx-translate/core';
+import { mock } from 'vitest-mock-extended';
 import { RouterModule } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('LanguageSwitcherComponent', () => {
   let component: LanguageSwitcherComponent;
   let fixture: ComponentFixture<LanguageSwitcherComponent>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let dateAdapterStub: Mocked<Pick<DateAdapter<any>, 'setLocale'>>;
+  let dateAdapter: Mocked<Pick<DateAdapter<any>, 'setLocale'>>;
+  const translateService = mock<TranslateService>();
+  translateService.use.mockReturnValue(of());
 
   beforeEach(() => {
     // Mocking
-    dateAdapterStub = { setLocale: vi.fn() };
+    dateAdapter = { setLocale: vi.fn() };
 
     // Config
     TestBed.configureTestingModule({
-      imports: [DateModule.forRoot(), RouterModule.forRoot([])],
+      imports: [RouterModule.forRoot([])],
       providers: [
-        translateServiceProvider,
-        { provide: DateAdapter, useValue: dateAdapterStub },
+        { provide: DateAdapter, useValue: dateAdapter },
+        { provide: TranslateService, useValue: translateService },
       ],
     });
 
@@ -39,21 +42,21 @@ describe('LanguageSwitcherComponent', () => {
   it('should switch to "de"', () => {
     component.setLanguage('de').subscribe(() => {
       expect(component.currentLanguage).toBe('de');
-      expect(dateAdapterStub.setLocale).toHaveBeenCalledExactlyOnceWith('de');
+      expect(dateAdapter.setLocale).toHaveBeenCalledExactlyOnceWith('de');
     });
   });
 
   it('should switch to "fr"', () => {
     component.setLanguage('fr').subscribe(() => {
       expect(component.currentLanguage).toBe('fr');
-      expect(dateAdapterStub.setLocale).toHaveBeenCalledExactlyOnceWith('fr');
+      expect(dateAdapter.setLocale).toHaveBeenCalledExactlyOnceWith('fr');
     });
   });
 
   it('should switch to "it"', () => {
     component.setLanguage('it').subscribe(() => {
       expect(component.currentLanguage).toBe('it');
-      expect(dateAdapterStub.setLocale).toHaveBeenCalledExactlyOnceWith('it');
+      expect(dateAdapter.setLocale).toHaveBeenCalledExactlyOnceWith('it');
     });
   });
 
