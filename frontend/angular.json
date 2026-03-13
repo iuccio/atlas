@@ -153,9 +153,6 @@
             "coverageReporters": ["text", "lcov"],
             "coverageInclude": [
               "frontend/src/**/*.ts"
-            ],
-            "include": [
-              "src/app/core/form-components/**/*.spec.ts"
             ]
           }
         },

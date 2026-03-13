@@ -1,19 +1,18 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ServiceWorkerService } from './service-worker.service';
 import { SwUpdate } from '@angular/service-worker';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogComponent } from './core/components/dialog/dialog.component';
 import { of, Subject } from 'rxjs';
+import { mock } from 'vitest-mock-extended';
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('ServiceWorkerService', () => {
   let service: ServiceWorkerService;
 
-  const matDialogSpy = jasmine.createSpyObj<MatDialog>(['open']);
-  const matDialogRefSpy = jasmine.createSpyObj<MatDialogRef<DialogComponent>>([
-    'afterClosed',
-  ]);
-  matDialogSpy.open.and.returnValue(matDialogRefSpy);
+  const matDialogSpy = mock<MatDialog>();
+  const matDialogRefSpy = mock<MatDialogRef<DialogComponent>>();
+  matDialogSpy.open.mockReturnValue(matDialogRefSpy);
 
   class SwUpdateMock {
     versionUpdates = new Subject<{ type: string }>();
@@ -37,9 +36,9 @@ describe('ServiceWorkerService', () => {
 
     service = TestBed.inject(ServiceWorkerService);
 
-    spyOn<any>(service, 'openSWDialog').and.callThrough();
-    spyOn<any>(ServiceWorkerService, 'reloadPage');
-    matDialogSpy.open.calls.reset();
+    vi.spyOn(service, 'openSWDialog');
+    vi.spyOn(service, 'reloadPage').mockImplementation(() => {});
+    matDialogSpy.open.mockClear();
   });
 
   it('should be created', () => {
@@ -47,15 +46,15 @@ describe('ServiceWorkerService', () => {
   });
 
   it('should open dialog on versionUpdate event and reload page', () => {
-    matDialogRefSpy.afterClosed.and.returnValue(of(true));
+    matDialogRefSpy.afterClosed.mockReturnValue(of(true));
     swUpdateMock.versionUpdates.next({
       type: 'VERSION_READY',
     });
-    expect(service['openSWDialog']).toHaveBeenCalledOnceWith(
+    expect(service['openSWDialog']).toHaveBeenCalledExactlyOnceWith(
       'SW_DIALOG.UPDATE_TITLE',
       'SW_DIALOG.UPDATE_MESSAGE'
     );
-    expect(matDialogSpy.open).toHaveBeenCalledOnceWith(DialogComponent, {
+    expect(matDialogSpy.open).toHaveBeenCalledExactlyOnceWith(DialogComponent, {
       data: {
         confirmText: 'DIALOG.RELOAD',
         title: 'SW_DIALOG.UPDATE_TITLE',
@@ -69,7 +68,7 @@ describe('ServiceWorkerService', () => {
       panelClass: 'atlas-dialog-panel',
       backdropClass: 'atlas-dialog-backdrop',
     });
-    expect(ServiceWorkerService['reloadPage']).toHaveBeenCalledOnceWith();
+    expect(service.reloadPage).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('should not open dialog on versionUpdate event', () => {
@@ -80,13 +79,13 @@ describe('ServiceWorkerService', () => {
   });
 
   it('should open dialog on unrecoverable event', () => {
-    matDialogRefSpy.afterClosed.and.returnValue(of(false));
+    matDialogRefSpy.afterClosed.mockReturnValue(of(false));
     swUpdateMock.unrecoverable.next();
-    expect(service['openSWDialog']).toHaveBeenCalledOnceWith(
+    expect(service['openSWDialog']).toHaveBeenCalledExactlyOnceWith(
       'SW_DIALOG.UNRECOVERABLE_TITLE',
       'SW_DIALOG.UNRECOVERABLE_MESSAGE'
     );
-    expect(matDialogSpy.open).toHaveBeenCalledOnceWith(DialogComponent, {
+    expect(matDialogSpy.open).toHaveBeenCalledExactlyOnceWith(DialogComponent, {
       data: {
         confirmText: 'DIALOG.RELOAD',
         title: 'SW_DIALOG.UNRECOVERABLE_TITLE',
@@ -100,6 +99,6 @@ describe('ServiceWorkerService', () => {
       panelClass: 'atlas-dialog-panel',
       backdropClass: 'atlas-dialog-backdrop',
     });
-    expect(ServiceWorkerService['reloadPage']).not.toHaveBeenCalled();
+    expect(service.reloadPage).not.toHaveBeenCalled();
   });
 });

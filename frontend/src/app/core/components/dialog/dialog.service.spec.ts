@@ -1,10 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
-import { MatDialog } from '@angular/material/dialog';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { translateServiceProvider } from '../../../app.testing.mocks';
 import { DialogService } from './dialog.service';
 import { of } from 'rxjs';
 import { DialogData } from './dialog.data';
+import { mock } from 'vitest-mock-extended';
+import { DialogComponent } from './dialog.component';
 
 describe('DialogService', () => {
   let service: DialogService;
@@ -14,17 +16,17 @@ describe('DialogService', () => {
     message: 'Do you want to be a rockstar?',
   };
 
-  let dialogStub: Mocked<Pick<MatDialog, 'open'>>;
+  const matDialog = mock<MatDialog>();
+  const matDialogRef = mock<MatDialogRef<DialogComponent>>();
 
   beforeEach(() => {
-    // Mocking
-    dialogStub = { open: vi.fn() };
-
+    matDialogRef.afterClosed.mockReturnValue(of(true));
+    matDialog.open.mockReturnValue(matDialogRef);
     // Config
     TestBed.configureTestingModule({
       providers: [
         translateServiceProvider,
-        { provide: MatDialog, useValue: dialogStub },
+        { provide: MatDialog, useValue: matDialog },
       ],
     });
 
@@ -33,33 +35,31 @@ describe('DialogService', () => {
   });
 
   it('should open confirmation dialog and pass success value - true', () => {
-    dialogStub.open.mockReturnValue({ afterClosed: () => of(true) } as any);
-
     service
       .confirm(dialogData)
       .subscribe((result) => expect(result).toBe(true));
 
-    expect(dialogStub.open).toHaveBeenCalled();
+    expect(matDialog.open).toHaveBeenCalled();
   });
 
   it('should open confirmation dialog and pass cancel value - false', () => {
-    dialogStub.open.mockReturnValue({ afterClosed: () => of(false) } as any);
+    matDialogRef.afterClosed.mockReturnValue(of(false));
 
     service
       .confirm(dialogData)
       .subscribe((result) => expect(result).toBe(false));
 
-    expect(dialogStub.open).toHaveBeenCalled();
+    expect(matDialog.open).toHaveBeenCalled();
   });
 
   it('should open info dialog and pass cancel value - false', () => {
     dialogData.isInfo = true;
-    dialogStub.open.mockReturnValue({ afterClosed: () => of(false) } as any);
+    matDialogRef.afterClosed.mockReturnValue(of(false));
 
     service
       .showInfo(dialogData)
       .subscribe((result) => expect(result).toBe(false));
 
-    expect(dialogStub.open).toHaveBeenCalled();
+    expect(matDialog.open).toHaveBeenCalled();
   });
 });

@@ -1,26 +1,28 @@
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
   LineVersionWorkflow,
   Status,
   WorkflowProcessingStatus,
 } from '../../../api';
 import { LineWorkflowDialogService } from './line-workflow-dialog.service';
+import { mock } from 'vitest-mock-extended';
+import { DialogComponent } from '../../components/dialog/dialog.component';
 
 describe('LineWorkflowDialogService', () => {
   let service: LineWorkflowDialogService;
 
-  let dialogStub: Mocked<Pick<MatDialog, 'open'>>;
+  const matDialog = mock<MatDialog>();
+  const matDialogRef = mock<MatDialogRef<DialogComponent>>();
+  matDialogRef.afterClosed.mockReturnValue(of(true));
+  matDialog.open.mockReturnValue(matDialogRef);
 
   beforeEach(() => {
-    // Mocking
-    dialogStub = { open: vi.fn() };
-
     // Config
     TestBed.configureTestingModule({
-      providers: [{ provide: MatDialog, useValue: dialogStub }],
+      providers: [{ provide: MatDialog, useValue: matDialog }],
     });
 
     // Arrangement
@@ -28,8 +30,6 @@ describe('LineWorkflowDialogService', () => {
   });
 
   it('should open new workflow', () => {
-    dialogStub.open.mockReturnValue({ afterClosed: () => of(true) } as any);
-
     service
       .openNew(
         {
@@ -45,12 +45,10 @@ describe('LineWorkflowDialogService', () => {
       )
       .subscribe((result) => expect(result).toBe(true));
 
-    expect(dialogStub.open).toHaveBeenCalled();
+    expect(matDialog.open).toHaveBeenCalled();
   });
 
   it('should open existing workflow', () => {
-    dialogStub.open.mockReturnValue({ afterClosed: () => of(true) } as any);
-
     service
       .openExisting(
         {
@@ -72,6 +70,6 @@ describe('LineWorkflowDialogService', () => {
       )
       .subscribe((result) => expect(result).toBe(true));
 
-    expect(dialogStub.open).toHaveBeenCalled();
+    expect(matDialog.open).toHaveBeenCalled();
   });
 });

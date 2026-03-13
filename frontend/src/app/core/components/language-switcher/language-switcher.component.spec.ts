@@ -47,7 +47,7 @@ describe('LanguageSwitcherComponent', () => {
     });
   });
 
-  it('should switch to "it"', (done) => {
+  it('should switch to "it"', () => {
     component.setLanguage('it').subscribe(() => {
       expect(component.currentLanguage).toBe('it');
       expect(dateAdapterStub.setLocale).toHaveBeenCalledExactlyOnceWith('it');
