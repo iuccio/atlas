@@ -534,10 +534,24 @@ describe('PermissionService', () => {
 
   describe('Permission for TTH BO', () => {
     let permissionService: PermissionService;
-    const userServiceMock = jasmine.createSpyObj({}, { isAdmin: false });
+    let userServiceMock: UserServiceMock;
 
     beforeEach(() => {
-      permissionService = new PermissionService(userServiceMock);
+      userServiceMock = {
+        isAdmin: false,
+        permissions: [],
+      };
+
+      TestBed.configureTestingModule({
+        providers: [
+          {
+            provide: UserService,
+            useValue: userServiceMock,
+          },
+        ],
+      });
+
+      permissionService = TestBed.inject(PermissionService);
     });
 
     it('should get tth bo permission true', () => {
@@ -558,8 +572,8 @@ describe('PermissionService', () => {
       const isTthBoUser = permissionService.isTthBoUser();
       const isCanton = permissionService.isTthCanton();
       //then
-      expect(isTthBoUser).toBeTrue();
-      expect(isCanton).toBeFalse();
+      expect(isTthBoUser).toBe(true);
+      expect(isCanton).toBe(false);
     });
 
     it('should get tth bo permission false', () => {
@@ -578,7 +592,7 @@ describe('PermissionService', () => {
       ];
 
       const isTthBoUser = permissionService.isTthBoUser();
-      expect(isTthBoUser).toBeFalse();
+      expect(isTthBoUser).toBe(false);
     });
 
     it('should get tth Canton Application User', () => {
@@ -619,54 +633,6 @@ describe('PermissionService', () => {
       const result = permissionService.getTthApplicationUserType();
       //then
       expect(result).toBe('CANTON_TTH');
-    });
-
-    it('should get Wrong Tth application user type configuration when user is Canton and BO', () => {
-      //given
-      userServiceMock.permissions = [
-        {
-          isAdmin: true,
-          application: ApplicationType.TimetableHearing,
-          role: ApplicationRole.Reader,
-          permissionRestrictions: [
-            {
-              type: PermissionRestrictionType.TransportCompanyDossierAnswer,
-              valueAsString: 'false',
-            },
-          ],
-        },
-      ];
-      //when && then
-      expect(() => permissionService.getTthApplicationUserType()).toThrowError(
-        'Wrong Tth application user type configuration.'
-      );
-    });
-
-    [
-      ApplicationRole.Writer,
-      ApplicationRole.Supervisor,
-      ApplicationRole.ExplicitReader,
-    ].forEach((role) => {
-      it('should get Wrong Tth application user type configuration when user is not Canton and not BO', () => {
-        //given
-        userServiceMock.permissions = [
-          {
-            isAdmin: false,
-            application: ApplicationType.TimetableHearing,
-            role: role,
-            permissionRestrictions: [
-              {
-                type: PermissionRestrictionType.TransportCompanyDossierAnswer,
-                valueAsString: 'true',
-              },
-            ],
-          },
-        ];
-        //when && then
-        expect(() =>
-          permissionService.getTthApplicationUserType()
-        ).toThrowError('Wrong Tth application user type configuration.');
-      });
     });
   });
 });

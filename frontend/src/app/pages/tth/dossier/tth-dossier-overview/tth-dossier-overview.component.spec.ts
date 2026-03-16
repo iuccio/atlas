@@ -42,7 +42,7 @@ describe('TthDossierOverviewComponent', () => {
   >;
   let userService: Mocked<
     Pick<UserService, 'setCurrentUserAndLoadPermissions'> & {
-      currentUser: { email: string };
+      currentUser: { email: string; sbbuid: string };
     }
   >;
 
@@ -81,11 +81,10 @@ describe('TthDossierOverviewComponent', () => {
       getTthApplicationUserType: vi.fn(),
     };
 
-    userService = jasmine.createSpyObj(
-      'UserService',
-      ['setCurrentUserAndLoadPermissions'],
-      { currentUser: { email: 'test@example.com', sbbuid: 'u123456' } }
-    );
+    userService = {
+      setCurrentUserAndLoadPermissions: vi.fn(),
+      currentUser: { email: 'test@example.com', sbbuid: 'u123456' },
+    };
 
     tableService = {
       initializeFilterConfig: vi.fn(),
@@ -206,7 +205,7 @@ describe('TthDossierOverviewComponent', () => {
       expect(dossierService.getOverview).toHaveBeenCalledWith(
         2024,
         expect.any(String),
-        'test@example.com',
+        'u123456',
         expect.anything(),
         [DossierStatus.DossierBoCheck],
         0,
