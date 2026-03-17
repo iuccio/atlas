@@ -1,28 +1,17 @@
 import { BulkImportOverviewComponent } from './bulk-import-overview.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApplicationType, BusinessObjectType, ImportType } from '../../../api';
-import { AppTestingModule } from '../../../app.testing.module';
 import { BulkImportFormGroupBuilder } from '../detail/bulk-import-form-group';
 import { BehaviorSubject, EMPTY, of, throwError } from 'rxjs';
 import { NotificationService } from '../../../core/notification/notification.service';
 import { Router } from '@angular/router';
 import { FileDownloadService } from '../../../core/components/file-upload/file/file-download.service';
-import { AtlasButtonComponent } from '../../../core/components/button/atlas-button.component';
-import { DetailFooterComponent } from '../../../core/components/detail-footer/detail-footer.component';
-import { FileUploadComponent } from '../../../core/components/file-upload/file-upload.component';
-import { UploadIconComponent } from '../../../core/form-components/upload-icon/upload-icon.component';
-import { DownloadIconComponent } from '../../../core/form-components/download-icon/download-icon.component';
-import { StringListComponent } from '../../../core/form-components/string-list/string-list.component';
-import { SelectComponent } from '../../../core/form-components/select/select.component';
-import { TextFieldComponent } from '../../../core/form-components/text-field/text-field.component';
-import { AtlasFieldErrorComponent } from '../../../core/form-components/atlas-field-error/atlas-field-error.component';
-import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
-import { AtlasLabelFieldComponent } from '@atlas/form';
 import { DialogService } from '../../../core/components/dialog/dialog.service';
 import { LoadingSpinnerService } from '../../../core/components/loading-spinner/loading-spinner.service';
 import { BulkImportService } from '../../../api/service/bulk/bulk-import.service';
 import { UserAdministrationService } from '../../../api/service/user-administration/user-administration.service';
 import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { translateServiceProvider } from '../../../app.testing.mocks';
 
 describe('BulkImportOverviewComponent', () => {
   let component: BulkImportOverviewComponent;
@@ -51,7 +40,7 @@ describe('BulkImportOverviewComponent', () => {
     router = {
       navigate: vi.fn(),
     };
-    router.navigate.mockReturnValue(Promise.resolve(true));
+    router.navigate.mockResolvedValue(true);
 
     dialogService = {
       showInfo: vi.fn(),
@@ -63,22 +52,8 @@ describe('BulkImportOverviewComponent', () => {
     userAdminService.getCurrentUser.mockReturnValue(EMPTY);
 
     TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        BulkImportOverviewComponent,
-        AtlasButtonComponent,
-        DetailFooterComponent,
-        UploadIconComponent,
-        DownloadIconComponent,
-        AtlasFieldErrorComponent,
-        AtlasLabelFieldComponent,
-        StringListComponent,
-        SelectComponent,
-        AtlasSpacerComponent,
-        TextFieldComponent,
-        FileUploadComponent,
-      ],
       providers: [
+        translateServiceProvider,
         {
           provide: LoadingSpinnerService,
           useValue: { loading: new BehaviorSubject(false) },
@@ -248,17 +223,22 @@ describe('BulkImportOverviewComponent', () => {
 
     const blob = new Blob(['test'], { type: 'text/csv' });
     bulkImportService.downloadTemplate.mockReturnValue(of(blob));
-    const fileDownloadSpy = vi.spyOn(FileDownloadService, 'downloadFile');
+    const fileDownloadSpy = vi
+      .spyOn(FileDownloadService, 'downloadFile')
+      .mockImplementation(() => {});
 
     component.downloadExcel();
 
-    expect(bulkImportService.downloadTemplate).toHaveBeenCalledWith(
+    expect(bulkImportService.downloadTemplate).toHaveBeenCalledExactlyOnceWith(
       ApplicationType.Sepodi,
       BusinessObjectType.ServicePoint,
       ImportType.Create
     );
-    expect(dialogService.showInfo).toHaveBeenCalled();
-    expect(fileDownloadSpy).toHaveBeenCalledWith(
+    expect(dialogService.showInfo).toHaveBeenCalledExactlyOnceWith({
+      title: 'PAGES.BULK_IMPORT.DIALOG_TEMPLATE_TO_EXCEL',
+      message: 'PAGES.BULK_IMPORT.TEMPLATE_TO_EXCEL',
+    });
+    expect(fileDownloadSpy).toHaveBeenCalledExactlyOnceWith(
       'create_service_point.csv',
       blob
     );

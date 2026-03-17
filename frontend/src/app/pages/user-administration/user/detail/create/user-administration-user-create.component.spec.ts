@@ -9,7 +9,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserAdministrationService } from '../../../../../api/service/user-administration/user-administration.service';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
-import { tickAsync } from '../../../../../../test/tick-async';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('UserAdministrationUserCreateComponent', () => {
@@ -105,12 +104,14 @@ describe('UserAdministrationUserCreateComponent', () => {
       })
     );
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
     component.createUser();
+
     expect(
       userAdministrationService.createUserPermission
     ).toHaveBeenCalledTimes(1);
     expect(router.navigate).toHaveBeenCalledTimes(1);
-    await tickAsync(1000);
+    await fixture.whenStable();
     expect(notificationService.success).toHaveBeenCalledExactlyOnceWith(
       'USER_ADMIN.NOTIFICATIONS.ADD_SUCCESS'
     );

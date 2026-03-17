@@ -1,24 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
 import { of, Subject } from 'rxjs';
 import { ApplicationRole, ApplicationType, Permission } from '../../../../api';
 import { UserAdministrationUserOverviewComponent } from './user-administration-user-overview.component';
-import { adminPermissionServiceMock } from '../../../../app.testing.mocks';
+import {
+  adminPermissionServiceMock,
+  translateServiceProvider,
+} from '../../../../app.testing.mocks';
 import { TableService } from '../../../../core/components/table/table.service';
 import { PermissionService } from '../../../../core/auth/permission/permission.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserAdministrationService } from '../../../../api/service/user-administration/user-administration.service';
-import { tickAsync } from '../../../../../test/tick-async';
 import { FormatPipe } from '../../../../core/components/table/pipe/format.pipe';
-import {
-  beforeEach,
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-  type Mocked,
-} from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 describe('UserAdministrationUserOverviewComponent', () => {
   let component: UserAdministrationUserOverviewComponent;
@@ -29,20 +22,12 @@ describe('UserAdministrationUserOverviewComponent', () => {
   >;
   let tableService: TableService;
 
-  afterEach(async () => {
-    userAdministrationService.getUsers.mockClear();
-  });
-
-  beforeEach(async () => {
+  beforeEach(() => {
     userAdministrationService = {
       getUsers: vi.fn().mockReturnValue(of({ objects: [], totalCount: 0 })),
       getUser: vi.fn(),
     };
-    await TestBed.configureTestingModule({
-      imports: [
-        UserAdministrationUserOverviewComponent,
-        TranslateModule.forRoot(),
-      ],
+    TestBed.configureTestingModule({
       providers: [
         {
           provide: UserAdministrationService,
@@ -57,8 +42,9 @@ describe('UserAdministrationUserOverviewComponent', () => {
           useValue: { paramMap: new Subject() },
         },
         FormatPipe,
+        translateServiceProvider,
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(UserAdministrationUserOverviewComponent);
     component = fixture.componentInstance;
@@ -97,7 +83,7 @@ describe('UserAdministrationUserOverviewComponent', () => {
     tableService.pageIndex = 10;
 
     component.loadUsers({ page: 5, size: 5 });
-    await tickAsync(1000);
+
     expect(userAdministrationService.getUsers).toHaveBeenCalledExactlyOnceWith(
       5,
       5

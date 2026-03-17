@@ -11,7 +11,6 @@ import {
 import { of } from 'rxjs';
 import { BusinessOrganisationService } from '../../../../api/service/bodi/business-organisation.service';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
-import { tickAsync } from '../../../../../test/tick-async';
 
 export class MockUserPermissionProviderService extends UserPermissionProviderService {
   applicationPermissionFormGroup?: FormGroup<ApplicationPermission>;
@@ -91,15 +90,15 @@ describe('ApplicationPermissionComponent', () => {
     component.businessOrganisationForm.controls.businessOrganisation.setValue(
       businessOrganisation
     );
+
     // Add BusinessOrganisation
     component.addBusinessOrganisation();
-    await tickAsync(1000);
+    await fixture.whenStable();
     expect(component.currentBusinessOrganisations.length).toBe(1);
 
     // Remove BusinessOrganisation via index
     component.selectedBusinessOrganisationIndex = 0;
     component.removeBusinessOrganisation();
-    await tickAsync(1000);
     expect(component.currentBusinessOrganisations.length).toBe(0);
   });
 
