@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import {
   lineVersionSnapshotResolver,
   LineVersionSnapshotResolver,
@@ -54,7 +54,7 @@ describe('LineVersionSnapshotResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get snapshot from service to display', () => {
+  it('should get snapshot from service to display', async () => {
     const mockRoute = new ActivatedRouteSnapshot();
     mockRoute.params = { id: '1234' };
 
@@ -64,9 +64,8 @@ describe('LineVersionSnapshotResolver', () => {
       lineVersionSnapshotResolver(mockRoute, mockRouterState)
     ) as Observable<LineVersionSnapshot>;
 
-    result.subscribe((snapshot) => {
-      expect(snapshot.id).toBe(1234);
-    });
+    const snapshot = await firstValueFrom(result);
+    expect(snapshot.id).toBe(1234);
     expect(lineInternalService.getLineVersionSnapshotById).toHaveBeenCalled();
   });
 });

@@ -13,7 +13,7 @@ import {
 } from '@angular/router';
 import { PermissionService } from '../permission/permission.service';
 import { UserService } from '../user/user.service';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 
 describe('TimetableHearingGuard', () => {
   let guard: TimetableHearingGuard;
@@ -76,10 +76,9 @@ describe('TimetableHearingGuard', () => {
     );
 
     expect(result).toBeDefined();
-    result.subscribe((guardResult) => {
-      expect(permissionsLoadedCalled).toBe(true);
-      expect(guardResult).toBe(true);
-    });
+    const guardResult = await firstValueFrom(result);
+    expect(permissionsLoadedCalled).toBe(true);
+    expect(guardResult).toBe(true);
   });
 
   it('should not be allowed and wait for permissions to be loaded', async () => {
@@ -97,9 +96,8 @@ describe('TimetableHearingGuard', () => {
     );
 
     expect(result).toBeDefined();
-    result.subscribe((guardResult) => {
-      expect(permissionsLoadedCalled).toBe(true);
-      expect(guardResult.toString()).toEqual('/');
-    });
+    const guardResult = await firstValueFrom(result);
+    expect(permissionsLoadedCalled).toBe(true);
+    expect(guardResult.toString()).toEqual('/');
   });
 });

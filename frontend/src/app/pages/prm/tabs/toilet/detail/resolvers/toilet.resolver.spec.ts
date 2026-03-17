@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
@@ -12,7 +12,7 @@ import {
   StandardAttributeType,
   ToiletVersion,
 } from '../../../../../../api';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { AppTestingModule } from '../../../../../../app.testing.module';
 import { ToiletService } from '../../../../../../api/service/prm/toilet/toilet.service';
 
@@ -60,7 +60,7 @@ describe('toiletResolver', () => {
     });
   });
 
-  it('should get toiletVersion from prm-directory', () => {
+  it('should get toiletVersion from prm-directory', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ sloid: 'ch:1:sloid:12345:1' }),
     } as ActivatedRouteSnapshot;
@@ -69,9 +69,8 @@ describe('toiletResolver', () => {
       toiletResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<ToiletVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].sloid).toBe('ch:1:sloid:12345:1');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(1);
+    expect(versions[0].sloid).toBe('ch:1:sloid:12345:1');
   });
 });

@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
-
-import { Observable, of } from 'rxjs';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
@@ -62,7 +61,7 @@ describe('PrmParkingLotResolver', () => {
     });
   });
 
-  it('should get parkingLot from prm-directory', () => {
+  it('should get parkingLot from prm-directory', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ sloid: 'ch:1:sloid:12345:1' }),
     } as ActivatedRouteSnapshot;
@@ -71,9 +70,8 @@ describe('PrmParkingLotResolver', () => {
       parkingLotResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<ReadParkingLotVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].sloid).toBe('ch:1:sloid:12345:1');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(1);
+    expect(versions[0].sloid).toBe('ch:1:sloid:12345:1');
   });
 });

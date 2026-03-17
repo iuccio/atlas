@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { LineType, LineVersionV2, Status } from '../../../../api';
 import { LineDetailResolver } from './line-detail.resolver';
 import { AppTestingModule } from '../../../../app.testing.module';
@@ -47,18 +47,17 @@ describe('LineDetailResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get version from service to display', () => {
+  it('should get version from service to display', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
 
     const resolvedVersion = resolver.resolve(mockRoute);
 
-    resolvedVersion.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].id).toBe(1234);
-      expect(versions[0].status).toBe(Status.Validated);
-      expect(versions[0].slnid).toBe('slnid');
-    });
+    const versions = await firstValueFrom(resolvedVersion);
+    expect(versions.length).toBe(1);
+    expect(versions[0].id).toBe(1234);
+    expect(versions[0].status).toBe(Status.Validated);
+    expect(versions[0].slnid).toBe('slnid');
   });
 });

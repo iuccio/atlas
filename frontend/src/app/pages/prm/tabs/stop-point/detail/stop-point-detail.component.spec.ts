@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { StopPointDetailComponent } from './stop-point-detail.component';
-import { EMPTY, of } from 'rxjs';
+import { EMPTY, firstValueFrom, of } from 'rxjs';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { DialogService } from '../../../../../core/components/dialog/dialog.service';
@@ -199,19 +199,15 @@ describe('StopPointDetailComponent', () => {
     expect(component.updateStopPoint).toHaveBeenCalled();
   });
 
-  it('should update stopPoint', () => {
+  it('should update stopPoint', async () => {
     //given
     routerMock.navigate.mockResolvedValue(true);
     component.form = StopPointFormGroupBuilder.buildFormGroup(STOP_POINT);
     component.isNew = false;
     //when
-    return new Promise<void>((resolve) => {
-      component.doUpdateStopPoint(STOP_POINT).subscribe(() => {
-        expect(stopPointServiceMock.updateStopPoint).toHaveBeenCalled();
-        expect(notificationServiceMock.success).toHaveBeenCalled();
-        resolve();
-      });
-    });
+    await firstValueFrom(component.doUpdateStopPoint(STOP_POINT));
+    expect(stopPointServiceMock.updateStopPoint).toHaveBeenCalled();
+    expect(notificationServiceMock.success).toHaveBeenCalled();
   });
 
   it('should update without prm variant change', () => {

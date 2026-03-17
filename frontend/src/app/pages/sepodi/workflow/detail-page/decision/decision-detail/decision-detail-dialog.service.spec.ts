@@ -1,5 +1,5 @@
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { DecisionDetailDialogService } from './decision-detail-dialog.service';
@@ -23,11 +23,11 @@ describe('DecisionDetailDialogService', () => {
     service = TestBed.inject(DecisionDetailDialogService);
   });
 
-  it('should open dialog', () => {
+  it('should open dialog', async () => {
     dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) } as never);
 
-    service
-      .openDialog(
+    const result = await firstValueFrom(
+      service.openDialog(
         1,
         WorkflowStatus.Hearing,
         new FormGroup<ExaminantFormGroup>({
@@ -43,9 +43,8 @@ describe('DecisionDetailDialogService', () => {
           defaultExaminant: new FormControl(false),
         })
       )
-      .subscribe((result) => {
-        expect(result).toBe(true);
-        expect(dialogSpy.open).toHaveBeenCalled();
-      });
+    );
+    expect(result).toBe(true);
+    expect(dialogSpy.open).toHaveBeenCalled();
   });
 });

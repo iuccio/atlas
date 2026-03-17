@@ -1,5 +1,5 @@
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
@@ -29,9 +29,9 @@ describe('LineWorkflowDialogService', () => {
     service = TestBed.inject(LineWorkflowDialogService);
   });
 
-  it('should open new workflow', () => {
-    service
-      .openNew(
+  it('should open new workflow', async () => {
+    const result = await firstValueFrom(
+      service.openNew(
         {
           id: 123,
           validFrom: new Date(),
@@ -43,14 +43,15 @@ describe('LineWorkflowDialogService', () => {
         },
         'description'
       )
-      .subscribe((result) => expect(result).toBe(true));
+    );
+    expect(result).toBe(true);
 
     expect(matDialog.open).toHaveBeenCalled();
   });
 
-  it('should open existing workflow', () => {
-    service
-      .openExisting(
+  it('should open existing workflow', async () => {
+    const result = await firstValueFrom(
+      service.openExisting(
         {
           id: 123,
           validFrom: new Date(),
@@ -68,8 +69,8 @@ describe('LineWorkflowDialogService', () => {
         },
         'description'
       )
-      .subscribe((result) => expect(result).toBe(true));
-
+    );
+    expect(result).toBe(true);
     expect(matDialog.open).toHaveBeenCalled();
   });
 });

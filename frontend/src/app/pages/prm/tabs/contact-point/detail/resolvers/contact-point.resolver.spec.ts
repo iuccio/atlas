@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
-
-import { Observable, of } from 'rxjs';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
@@ -67,7 +66,7 @@ describe('PrmContactPointResolver', () => {
     });
   });
 
-  it('should get contactPoint from prm-directory', () => {
+  it('should get contactPoint from prm-directory', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ sloid: 'ch:1:sloid:12345:1' }),
     } as ActivatedRouteSnapshot;
@@ -76,9 +75,8 @@ describe('PrmContactPointResolver', () => {
       contactPointResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<ReadContactPointVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].sloid).toBe('ch:1:sloid:12345:1');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(1);
+    expect(versions[0].sloid).toBe('ch:1:sloid:12345:1');
   });
 });

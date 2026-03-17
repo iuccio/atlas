@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { stopPointResolver, StopPointResolver } from './stop-point.resolver';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { ReadStopPointVersion } from '../../../../api';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { ServicePointDetailResolver } from '../../../sepodi/service-point-side-panel/service-point-detail.resolver';
@@ -38,7 +38,7 @@ describe('stopPointResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get version from service to display', () => {
+  it('should get version from service to display', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ stopPointSloid: 'ch:1:sloid:89008' }),
     };
@@ -50,13 +50,12 @@ describe('stopPointResolver', () => {
       )
     ) as Observable<ReadStopPointVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].sloid).toBe('ch:1:sloid:89008');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(1);
+    expect(versions[0].sloid).toBe('ch:1:sloid:89008');
   });
 
-  it('should empty array on add', () => {
+  it('should empty array on add', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ stopPointSloid: 'add' }),
     };
@@ -68,8 +67,7 @@ describe('stopPointResolver', () => {
       )
     ) as Observable<ReadStopPointVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(0);
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(0);
   });
 });

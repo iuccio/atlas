@@ -3,7 +3,7 @@ import {
   convertToParamMap,
   RouterStateSnapshot,
 } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import {
@@ -61,7 +61,7 @@ describe('StopPointWorkflowDetailResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get workflow with service point', () => {
+  it('should get workflow with service point', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1000' }),
     } as ActivatedRouteSnapshot;
@@ -70,11 +70,10 @@ describe('StopPointWorkflowDetailResolver', () => {
       stopPointWorkflowDetailResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<StopPointWorkflowDetailData>;
 
-    resolvedVersion.subscribe((workflowData) => {
-      expect(workflowData?.workflow.versionId).toBe(1);
-      expect(workflowData?.servicePoint[0].designationOfficial).toBe(
-        'Bern, Wyleregg'
-      );
-    });
+    const workflowData = await firstValueFrom(resolvedVersion);
+    expect(workflowData?.workflow.versionId).toBe(1);
+    expect(workflowData?.servicePoint[0].designationOfficial).toBe(
+      'Bern, Wyleregg'
+    );
   });
 });

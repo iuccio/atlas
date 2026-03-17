@@ -10,7 +10,7 @@ import {
   TimetableFieldNumberDetailResolver,
   timetableFieldNumberResolver,
 } from './timetable-field-number-detail.resolver';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { AppTestingModule } from '../../../app.testing.module';
 import { TimetableFieldNumberService } from '../../../api/service/lidi/timetable-field-number.service';
 
@@ -57,7 +57,7 @@ describe('TimetableFieldNumberDetailResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get version from service to display', () => {
+  it('should get version from service to display', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
@@ -66,11 +66,10 @@ describe('TimetableFieldNumberDetailResolver', () => {
       timetableFieldNumberResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<TimetableFieldNumberVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].id).toBe(1234);
-      expect(versions[0].status).toBe(Status.Validated);
-      expect(versions[0].ttfnid).toBe('ttfnid');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(1);
+    expect(versions[0].id).toBe(1234);
+    expect(versions[0].status).toBe(Status.Validated);
+    expect(versions[0].ttfnid).toBe('ttfnid');
   });
 });

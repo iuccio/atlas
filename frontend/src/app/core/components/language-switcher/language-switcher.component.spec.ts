@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LanguageSwitcherComponent } from './language-switcher.component';
 import { By } from '@angular/platform-browser';
 import { DateAdapter } from '@angular/material/core';
@@ -7,29 +7,25 @@ import deTranslationFile from 'src/assets/i18n/de.json';
 import frTranslationFile from 'src/assets/i18n/fr.json';
 import itTranslationFile from 'src/assets/i18n/it.json';
 import { TranslateService } from '@ngx-translate/core';
-import { mock } from 'vitest-mock-extended';
-import { RouterModule } from '@angular/router';
-import { of } from 'rxjs';
+import { mock, mockClear } from 'vitest-mock-extended';
+import { firstValueFrom, of } from 'rxjs';
+import { provideRouter } from '@angular/router';
 
 describe('LanguageSwitcherComponent', () => {
   let component: LanguageSwitcherComponent;
   let fixture: ComponentFixture<LanguageSwitcherComponent>;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let dateAdapter: Mocked<Pick<DateAdapter<any>, 'setLocale'>>;
+  const dateAdapter = { setLocale: vi.fn() } as const;
   const translateService = mock<TranslateService>();
-  translateService.use.mockReturnValue(of());
+  translateService.use.mockReturnValue(of({}));
 
   beforeEach(() => {
-    // Mocking
-    dateAdapter = { setLocale: vi.fn() };
-
     // Config
     TestBed.configureTestingModule({
-      imports: [RouterModule.forRoot([])],
       providers: [
         { provide: DateAdapter, useValue: dateAdapter },
         { provide: TranslateService, useValue: translateService },
+        provideRouter([]),
       ],
     });
 
@@ -37,27 +33,26 @@ describe('LanguageSwitcherComponent', () => {
     fixture = TestBed.createComponent(LanguageSwitcherComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    mockClear(translateService);
+    dateAdapter.setLocale.mockClear();
   });
 
-  it('should switch to "de"', () => {
-    component.setLanguage('de').subscribe(() => {
-      expect(component.currentLanguage).toBe('de');
-      expect(dateAdapter.setLocale).toHaveBeenCalledExactlyOnceWith('de');
-    });
+  it('should switch to "de"', async () => {
+    await firstValueFrom(component.setLanguage('de'));
+    expect(translateService.use).toHaveBeenCalledExactlyOnceWith('de');
+    expect(dateAdapter.setLocale).toHaveBeenCalledExactlyOnceWith('de');
   });
 
-  it('should switch to "fr"', () => {
-    component.setLanguage('fr').subscribe(() => {
-      expect(component.currentLanguage).toBe('fr');
-      expect(dateAdapter.setLocale).toHaveBeenCalledExactlyOnceWith('fr');
-    });
+  it('should switch to "fr"', async () => {
+    await firstValueFrom(component.setLanguage('fr'));
+    expect(translateService.use).toHaveBeenCalledExactlyOnceWith('fr');
+    expect(dateAdapter.setLocale).toHaveBeenCalledExactlyOnceWith('fr');
   });
 
-  it('should switch to "it"', () => {
-    component.setLanguage('it').subscribe(() => {
-      expect(component.currentLanguage).toBe('it');
-      expect(dateAdapter.setLocale).toHaveBeenCalledExactlyOnceWith('it');
-    });
+  it('should switch to "it"', async () => {
+    await firstValueFrom(component.setLanguage('it'));
+    expect(translateService.use).toHaveBeenCalledExactlyOnceWith('it');
+    expect(dateAdapter.setLocale).toHaveBeenCalledExactlyOnceWith('it');
   });
 
   it('should have translation for all defined keys', () => {

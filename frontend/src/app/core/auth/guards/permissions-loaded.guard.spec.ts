@@ -10,7 +10,7 @@ import {
   permissionsLoaded,
   PermissionsLoadedGuard,
 } from './permissions-loaded.guard';
-import { delay, Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 
 describe('PermissionsLoadedGuard', () => {
   let guard: PermissionsLoadedGuard;
@@ -48,20 +48,18 @@ describe('PermissionsLoadedGuard', () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
+
     const result = TestBed.runInInjectionContext(
       () =>
-        (
-          permissionsLoaded(
-            mockRoute,
-            {} as RouterStateSnapshot
-          ) as Observable<boolean>
-        ).pipe(delay(5000)) // todo: check if test can finish successfully before expects inside subscribe are called
+        permissionsLoaded(
+          mockRoute,
+          {} as RouterStateSnapshot
+        ) as Observable<boolean>
     );
 
     expect(result).toBeDefined();
-    result.subscribe((guardResult) => {
-      expect(permissionsLoadedCalled).toBe(true);
-      expect(guardResult).toBe(true);
-    });
+    const guardResult = await firstValueFrom(result);
+    expect(permissionsLoadedCalled).toBe(true);
+    expect(guardResult).toBe(true);
   });
 });

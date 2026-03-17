@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { NewTimetableHearingYearDialogService } from './new-timetable-hearing-year-dialog.service';
 
 describe('NewTimetableHearingYearDialogService', () => {
@@ -21,27 +21,27 @@ describe('NewTimetableHearingYearDialogService', () => {
     );
   });
 
-  it('should open confirmation new timetable hearing year dialog and pass success value - true', () => {
+  it('should open confirmation new timetable hearing year dialog and pass success value - true', async () => {
     timetableHearingDialogSpy.open.mockReturnValue({
       afterClosed: () => of(true),
     } as ReturnType<MatDialog['open']>);
 
-    newTimetableHearingYearDialogService
-      .openDialog()
-      .subscribe((result) => expect(result).toBe(true));
-
+    const result = await firstValueFrom(
+      newTimetableHearingYearDialogService.openDialog()
+    );
+    expect(result).toBe(true);
     expect(timetableHearingDialogSpy.open).toHaveBeenCalledTimes(1);
   });
 
-  it('should open confirmation new timetable hearing year dialog and pass cancel value - false', () => {
+  it('should open confirmation new timetable hearing year dialog and pass cancel value - false', async () => {
     timetableHearingDialogSpy.open.mockReturnValue({
       afterClosed: () => of(false),
     } as ReturnType<MatDialog['open']>);
 
-    newTimetableHearingYearDialogService
-      .openDialog()
-      .subscribe((result) => expect(result).toBe(false));
-
+    const result = await firstValueFrom(
+      newTimetableHearingYearDialogService.openDialog()
+    );
+    expect(result).toBe(false);
     expect(timetableHearingDialogSpy.open).toHaveBeenCalledTimes(1);
   });
 });

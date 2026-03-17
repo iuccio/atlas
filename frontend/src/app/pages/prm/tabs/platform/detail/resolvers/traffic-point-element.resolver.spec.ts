@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
@@ -37,7 +37,7 @@ describe('TrafficPointElementResolver', () => {
     });
   });
 
-  it('should get traffic point from sepodi', () => {
+  it('should get traffic point from sepodi', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ platformSloid: 'ch:1:sloid:89008:0:1' }),
     } as ActivatedRouteSnapshot;
@@ -46,9 +46,8 @@ describe('TrafficPointElementResolver', () => {
       trafficPointElementResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<ReadTrafficPointElementVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(2);
-      expect(versions[0].sloid).toBe('ch:1:sloid:89008:0:1');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(2);
+    expect(versions[0].sloid).toBe('ch:1:sloid:89008:0:1');
   });
 });

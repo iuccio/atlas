@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
-import { of } from 'rxjs';
-import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
+import { firstValueFrom, of } from 'rxjs';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { TthChangeStatusDialogService } from './tth-change-status-dialog.service';
 import { StatementStatus } from '../../../../../api';
 
@@ -21,15 +21,15 @@ describe('TthChangeStatusDialogService', () => {
     service = TestBed.inject(TthChangeStatusDialogService);
   });
 
-  it('should open confirmation dialog', () => {
+  it('should open confirmation dialog', async () => {
     dialogSpy.open.mockReturnValue({
       afterClosed: () => of(true),
     } as ReturnType<MatDialog['open']>);
 
-    service
-      .onClick(StatementStatus.Accepted, [], undefined, 'SINGLE')
-      .subscribe((result) => expect(result).toBe(true));
-
+    const result = await firstValueFrom(
+      service.onClick(StatementStatus.Accepted, [], undefined, 'SINGLE')
+    );
+    expect(result).toBe(true);
     expect(dialogSpy.open).toHaveBeenCalledTimes(1);
   });
 });

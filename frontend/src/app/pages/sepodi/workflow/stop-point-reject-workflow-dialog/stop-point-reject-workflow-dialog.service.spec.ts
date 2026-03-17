@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
-
 import { StopPointRejectWorkflowDialogService } from './stop-point-reject-workflow-dialog.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 
 describe('StopPointRejectWorkflowDialogService', () => {
   let service: StopPointRejectWorkflowDialogService;
@@ -27,23 +26,20 @@ describe('StopPointRejectWorkflowDialogService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should open new Cancel workflow', () => {
+  it('should open new Cancel workflow', async () => {
     dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) } as never);
 
-    service
-      .openDialog(123, 'CANCEL')
-      .subscribe((result) => expect(result).toBe(true));
+    const result = await firstValueFrom(service.openDialog(123, 'CANCEL'));
+    expect(result).toBe(true);
 
     expect(dialogSpy.open).toHaveBeenCalled();
   });
 
-  it('should open new Reject workflow', () => {
+  it('should open new Reject workflow', async () => {
     dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) } as never);
 
-    service
-      .openDialog(123, 'REJECT')
-      .subscribe((result) => expect(result).toBe(true));
-
+    const result = await firstValueFrom(service.openDialog(123, 'REJECT'));
+    expect(result).toBe(true);
     expect(dialogSpy.open).toHaveBeenCalled();
   });
 

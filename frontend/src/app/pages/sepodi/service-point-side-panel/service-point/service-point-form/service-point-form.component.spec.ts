@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { ServicePointFormComponent } from './service-point-form.component';
 import {
   ApplicationRole,
@@ -15,7 +15,7 @@ import {
 } from '../../../../../api';
 import { EventEmitter } from '@angular/core';
 import { GeographyComponent } from '../../../geography/geography.component';
-import { EMPTY, of } from 'rxjs';
+import { EMPTY, firstValueFrom, of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TextFieldComponent } from '../../../../../core/form-components/text-field/text-field.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -45,7 +45,9 @@ describe('ServicePointFormComponent', () => {
 
   let translationSortingServiceSpy: Mocked<
     Pick<TranslationSortingService, 'sort'> & {
-      translateService: { onLangChange: { subscribe: ReturnType<typeof vi.fn> } };
+      translateService: {
+        onLangChange: { subscribe: ReturnType<typeof vi.fn> };
+      };
     }
   >;
   let dialogServiceSpy: Mocked<Pick<DialogService, 'confirm'>>;
@@ -112,8 +114,7 @@ describe('ServicePointFormComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should update locationInformation when coordinates changed', () =>
-    new Promise<void>((done) => {
+  it('should update locationInformation when coordinates changed', async () => {
     component['_currentVersion'] = { id: 5 } as ReadServicePointVersion;
     component.geographyComponent = {
       coordinatesChanged: new EventEmitter<CoordinatePair>(),
@@ -138,14 +139,14 @@ describe('ServicePointFormComponent', () => {
 
     component.geographyComponent.coordinatesChanged.emit(coordinatePair);
 
-    component.locationInformation$?.subscribe((locationInformation) => {
-      expect(locationInformation.canton).toEqual(SwissCanton.Aargau);
-      expect(locationInformation.isoCountryCode).toEqual('CU');
-      expect(locationInformation.municipalityName).toEqual('Gemeinde');
-      expect(locationInformation.localityName).toEqual('Ort');
-      done();
-    });
-  }));
+    const locationInformation = await firstValueFrom(
+      component.locationInformation$!
+    );
+    expect(locationInformation.canton).toEqual(SwissCanton.Aargau);
+    expect(locationInformation.isoCountryCode).toEqual('CU');
+    expect(locationInformation.municipalityName).toEqual('Gemeinde');
+    expect(locationInformation.localityName).toEqual('Ort');
+  });
 
   it('should show all bos on edit', () => {
     component['_currentVersion'] = { id: 5 } as ReadServicePointVersion;
