@@ -7,7 +7,7 @@ import {
   MockAtlasButtonComponent,
   MockTableComponent,
 } from '../../../../app.testing.mocks';
-import { STOP_POINT } from '../../util/stop-point-test-data';
+import { STOP_POINT_COMPLETE } from '../../util/stop-point-test-data';
 import { BERN_WYLEREGG } from '../../../../../test/data/service-point';
 import { ReadReferencePointVersion } from '../../../../api';
 import { of } from 'rxjs';
@@ -54,8 +54,11 @@ describe('ReferencePointTableComponent', () => {
   const activatedRouteMock = {
     parent: {
       snapshot: {
-        params: { stopPointSloid: STOP_POINT.sloid },
-        data: { stopPoints: [STOP_POINT], servicePoints: [BERN_WYLEREGG] },
+        params: { stopPointSloid: STOP_POINT_COMPLETE.sloid },
+        data: {
+          stopPoints: [STOP_POINT_COMPLETE],
+          servicePoints: [BERN_WYLEREGG],
+        },
       },
     },
   };

@@ -53,7 +53,7 @@ describe('StopPointTerminationDialogService', () => {
     } as ReturnType<MatDialog['open']>);
 
     const result = await firstValueFrom(
-      service.openDialog(stopPoint, moment('2020-1-1'))
+      service.openDialog(stopPoint, moment('2020-01-01', 'YYYY-MM-DD'))
     );
     expect(result).toBe(true);
     expect(dialogSpy.open).toHaveBeenCalled();

@@ -263,6 +263,8 @@ describe('AuthService', () => {
   });
 
   it('should catchError in initAuth', async () => {
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
+
     // Arrange
     const loginResponse: LoginResponse = {
       accessToken: fakeToken,

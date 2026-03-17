@@ -67,6 +67,7 @@ describe('MouseOverTitleDirective', () => {
 
   it('should set title to empty after transform error', () => {
     // given
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
     component.value = 'test';
     component.transform = vi.fn().mockReturnValue(throwError(() => 'error'));
 
