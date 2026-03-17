@@ -1,10 +1,10 @@
 import {TestBed} from '@angular/core/testing';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
-
 import {RelationService} from './relation.service';
 import {AtlasApiService} from '../../atlas-api.service';
 import {StopPointService} from '../stop-point/stop-point.service';
 import {provideHttpClient} from '@angular/common/http';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {UserService} from '../../../../core/auth/user/user.service';
 import {EMPTY} from 'rxjs';
 
@@ -16,6 +16,7 @@ describe('RelationService', () => {
     TestBed.configureTestingModule({
       providers: [StopPointService, AtlasApiService,
         provideHttpClient(),
+        provideHttpClientTesting(),
         {provide: UserService, useValue: {}},
       ]
     });

@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { StatementDataComponent } from './statement-data.component';
 import {
   MockTimetableFieldNumberSelectComponent,
@@ -8,6 +7,7 @@ import {
   translateServiceProvider,
 } from '../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { statement, statementFormGroup } from '../statement-test-util';
 import { TransportCompanySelectComponent } from '../../../../core/form-components/tu-select/transport-company-select.component';
 import { TimetableFieldNumberSelectComponent } from '../../../../core/form-components/ttfn-select/timetable-field-number-select.component';
@@ -49,6 +49,7 @@ describe('StatementData', () => {
       providers: [
         translateServiceProvider,
         provideHttpClient(),
+        provideHttpClientTesting(),
         {
           provide: TimetableHearingStatementInternalService,
           useValue: mockTimetableHearingStatementsService,

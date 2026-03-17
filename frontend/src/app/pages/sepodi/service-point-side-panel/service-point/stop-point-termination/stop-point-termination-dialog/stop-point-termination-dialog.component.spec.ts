@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { StopPointTerminationDialogComponent } from './stop-point-termination-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogCloseComponent } from 'src/app/core/components/dialog/close/dialog-close.component';
@@ -15,6 +14,7 @@ import { NotificationService } from '../../../../../../core/notification/notific
 import { Permission, User } from '../../../../../../api';
 import { UserAdministrationService } from '../../../../../../api/service/user-administration/user-administration.service';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TerminationStopPointWorkflowModel } from '../../../../../../api/model/terminationStopPointWorkflowModel';
 
 const workflowDialogData: StopPointTerminationDialogData = {
@@ -87,6 +87,7 @@ describe('StopPointTerminationDialogComponent', () => {
         },
         { provide: TranslatePipe },
         provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 

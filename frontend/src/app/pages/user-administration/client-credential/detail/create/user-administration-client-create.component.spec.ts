@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { UserAdministrationClientCreateComponent } from './user-administration-client-create.component';
 import { NotificationService } from '../../../../../core/notification/notification.service';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -12,6 +12,7 @@ import { DetailPageContentComponent } from '../../../../../core/components/detai
 import { ClientCredentialAdministrationService } from '../../../../../api/service/user-administration/client-credential-administration.service';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { tickAsync } from '../../../../../../test/tick-async';
 
 describe('UserAdministrationClientCreateComponent', () => {
@@ -41,6 +42,7 @@ describe('UserAdministrationClientCreateComponent', () => {
       ],
       providers: [
         provideHttpClient(),
+        provideHttpClientTesting(),
         translateServiceProvider,
         {
           provide: ClientCredentialAdministrationService,

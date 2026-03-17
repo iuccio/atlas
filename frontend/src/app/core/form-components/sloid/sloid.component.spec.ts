@@ -1,22 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, expect, it, beforeEach } from 'vitest';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { SloidComponent } from './sloid.component';
-import { FormModule } from '../../module/form.module';
-import { TranslatePipe } from '@ngx-translate/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { translateServiceProvider } from '../../../app.testing.mocks';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('SloidComponent', () => {
   let component: SloidComponent;
   let fixture: ComponentFixture<SloidComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [FormModule, SloidComponent],
-      providers: [TranslatePipe, translateServiceProvider, provideHttpClient()],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [translateServiceProvider],
+    });
 
     fixture = TestBed.createComponent(SloidComponent);
     component = fixture.componentInstance;

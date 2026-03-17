@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { TrafficPointElementsDetailComponent } from './traffic-point-elements-detail.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DisplayDatePipe } from '../../../../core/pipe/display-date.pipe';
@@ -43,6 +43,7 @@ import { TrafficPointElementInternalService } from '../../../../api/service/sepo
 import { TrafficPointElementService } from '../../../../api/service/sepodi/traffic-point-element.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { DateModule } from '../../../../core/module/date.module';
 import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
 
@@ -313,6 +314,7 @@ describe('TrafficPointElementsDetailComponent', () => {
         SplitServicePointNumberPipe,
         TranslatePipe,
         provideHttpClient(),
+        provideHttpClientTesting(),
         translateServiceProvider,
       ],
     }).compileComponents();

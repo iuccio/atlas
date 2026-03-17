@@ -1,25 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, expect, it, beforeEach } from 'vitest';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { AtlasClipboardComponent } from './atlas-clipboard.component';
-import { FormModule } from '../../module/form.module';
-import { TranslatePipe } from '@ngx-translate/core';
 import { translateServiceProvider } from '../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('AtlasClipboardComponent', () => {
   let component: AtlasClipboardComponent;
   let fixture: ComponentFixture<AtlasClipboardComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [FormModule, AtlasClipboardComponent],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       providers: [
-        { provide: TranslatePipe },
         translateServiceProvider,
         provideHttpClient(),
+        provideHttpClientTesting(),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(AtlasClipboardComponent);
     component = fixture.componentInstance;
