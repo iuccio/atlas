@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, Mocked, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { GeoJSONSource, Map, MapGeoJSONFeature } from 'maplibre-gl';
 import { TrafficPointMapService } from './traffic-point-map.service';
 import { MapService } from './map.service';
@@ -8,36 +8,22 @@ import { MAP_TRAFFIC_POINT_LAYER_NAME } from './map-style';
 import { BERN_WYLEREGG_TRAFFIC_POINTS } from '../../../../test/data/traffic-point-element';
 import { TrafficPointElementInternalService } from '../../../api/service/sepodi/traffic-point-element-internal.service';
 import { Point } from 'geojson';
+import { mock, mockDeep } from 'vitest-mock-extended';
 
 describe('TrafficPointMapService', () => {
   let service: TrafficPointMapService;
 
-  let mapServiceSpy: Mocked<
-    Pick<MapService, 'centerOn' | 'mapInitialized' | 'map'>
-  >;
-  let sourceSpy: Mocked<Pick<GeoJSONSource, 'setData'>>;
-  let mapSpy: Mocked<Pick<Map, 'getSource'>>;
-  let trafficPointElementInternalService: {
-    getTrafficPointsOfServicePointValidToday: ReturnType<typeof vi.fn>;
-  };
+  const sourceMock = mock<GeoJSONSource>();
+  const mapMock = mockDeep<Map>();
+  mapMock.getSource.mockReturnValue(sourceMock);
+  const mapServiceSpy = mock<MapService>();
+  mapServiceSpy.mapInitialized = new BehaviorSubject(true);
+  mapServiceSpy.map = mapMock;
+
+  const trafficPointElementInternalService =
+    mock<TrafficPointElementInternalService>();
 
   beforeEach(() => {
-    sourceSpy = {
-      setData: vi.fn().mockImplementation(() => {}),
-    };
-    mapSpy = {
-      getSource: vi.fn().mockReturnValue(sourceSpy),
-    };
-    mapServiceSpy = {
-      centerOn: vi.fn(),
-      mapInitialized: new BehaviorSubject<boolean>(true),
-      map: mapSpy as unknown as Map,
-    };
-
-    trafficPointElementInternalService = {
-      getTrafficPointsOfServicePointValidToday: vi.fn(),
-    };
-
     TestBed.configureTestingModule({
       providers: [
         {
@@ -85,8 +71,8 @@ describe('TrafficPointMapService', () => {
     expect(mapServiceSpy.map.getSource).toHaveBeenCalledWith(
       MAP_TRAFFIC_POINT_LAYER_NAME
     );
-    expect(sourceSpy.setData).toHaveBeenCalled();
-    const data = sourceSpy.setData.mock.calls.at(
+    expect(sourceMock.setData).toHaveBeenCalled();
+    const data = sourceMock.setData.mock.calls.at(
       -1
     )?.[0] as GeoJSON.FeatureCollection;
     expect(data.features).toHaveLength(2);
@@ -95,8 +81,8 @@ describe('TrafficPointMapService', () => {
   it('should clear TrafficPoints on map', () => {
     service.clearDisplayedTrafficPoints();
 
-    expect(sourceSpy.setData).toHaveBeenCalled();
-    const data = sourceSpy.setData.mock.calls.at(
+    expect(sourceMock.setData).toHaveBeenCalled();
+    const data = sourceMock.setData.mock.calls.at(
       -1
     )?.[0] as GeoJSON.FeatureCollection;
     expect(data.features).toHaveLength(0);
@@ -112,8 +98,8 @@ describe('TrafficPointMapService', () => {
     expect(mapServiceSpy.map.getSource).toHaveBeenCalledWith(
       'current_traffic_point'
     );
-    expect(sourceSpy.setData).toHaveBeenCalled();
-    const data = sourceSpy.setData.mock.calls.at(
+    expect(sourceMock.setData).toHaveBeenCalled();
+    const data = sourceMock.setData.mock.calls.at(
       -1
     )?.[0] as GeoJSON.Feature<Point>;
     expect(data.geometry.coordinates).toEqual([7.44908190053, 46.96102079646]);
