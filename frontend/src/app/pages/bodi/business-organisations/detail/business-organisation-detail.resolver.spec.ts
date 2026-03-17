@@ -4,7 +4,7 @@ import {
   convertToParamMap,
   RouterStateSnapshot,
 } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { BusinessOrganisationVersion, Status } from '../../../../api';
 import {
   BusinessOrganisationDetailResolver,
@@ -61,7 +61,7 @@ describe('BusinessOrganisationDetailResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get version from service to display', () => {
+  it('should get version from service to display', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
@@ -70,11 +70,10 @@ describe('BusinessOrganisationDetailResolver', () => {
       businessOrganisationResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<BusinessOrganisationVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].id).toBe(1234);
-      expect(versions[0].status).toBe(Status.Validated);
-      expect(versions[0].sboid).toBe('sboid');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(1);
+    expect(versions[0].id).toBe(1234);
+    expect(versions[0].status).toBe(Status.Validated);
+    expect(versions[0].sboid).toBe('sboid');
   });
 });

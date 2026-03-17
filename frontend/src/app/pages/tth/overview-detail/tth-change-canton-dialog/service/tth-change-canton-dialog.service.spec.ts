@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { TthChangeCantonDialogService } from './tth-change-canton-dialog.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { SwissCanton } from '../../../../../api';
 
 describe('TthChangeCantonDialogService', () => {
@@ -22,15 +22,13 @@ describe('TthChangeCantonDialogService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should open confirmation dialog', () => {
+  it('should open confirmation dialog', async () => {
     dialogSpy.open.mockReturnValue({
       afterClosed: () => of(true),
     } as ReturnType<MatDialog['open']>);
 
-    service
-      .onClick(SwissCanton.Bern, [])
-      .subscribe((result) => expect(result).toBe(true));
-
+    const result = await firstValueFrom(service.onClick(SwissCanton.Bern, []));
+    expect(result).toBe(true);
     expect(dialogSpy.open).toHaveBeenCalledTimes(1);
   });
 });

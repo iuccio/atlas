@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
-
 import { TerminationAbortDialogService } from './termination-abort-dialog.service';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
 import { TerminationAbortFormGroup } from '../stop-point-termination-workflow-detail-form-group';
 
@@ -26,21 +25,20 @@ describe('TerminationAbortDialog', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should open dialog', () => {
+  it('should open dialog', async () => {
     dialogMock.open.mockReturnValue({
       afterClosed: () => of(true),
     } as ReturnType<MatDialog['open']>);
 
-    service
-      .openDialog(
+    const result = await firstValueFrom(
+      service.openDialog(
         1,
         new FormGroup<TerminationAbortFormGroup>({
           abortComment: new FormControl(''),
         })
       )
-      .subscribe((result) => {
-        expect(result).toBe(true);
-        expect(dialogMock.open).toHaveBeenCalled();
-      });
+    );
+    expect(result).toBe(true);
+    expect(dialogMock.open).toHaveBeenCalled();
   });
 });

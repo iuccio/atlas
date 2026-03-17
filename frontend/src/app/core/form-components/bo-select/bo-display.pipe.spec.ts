@@ -1,6 +1,6 @@
 import { BusinessOrganisationVersion } from '../../../api';
 import { BoDisplayPipe } from './bo-display.pipe';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { BoSelectionDisplayPipe } from './bo-selection-display.pipe';
 import { mock } from 'vitest-mock-extended';
@@ -43,12 +43,11 @@ describe('BoDisplayPipe', () => {
     expect(boDisplayPipe).toBeTruthy();
   });
 
-  it('should transform given sboid', () => {
-    boDisplayPipe.transform('sboid').subscribe((result) => {
-      expect(result).toBe('123 - 123 - 123 - sboid');
+  it('should transform given sboid', async () => {
+    const result = await firstValueFrom(boDisplayPipe.transform('sboid'));
+    expect(result).toBe('123 - 123 - 123 - sboid');
 
-      expect(boSelectionDisplayPipe.transform).toHaveBeenCalled();
-      expect(businessOrganisationsService.getVersions).toHaveBeenCalled();
-    });
+    expect(boSelectionDisplayPipe.transform).toHaveBeenCalled();
+    expect(businessOrganisationsService.getVersions).toHaveBeenCalled();
   });
 });

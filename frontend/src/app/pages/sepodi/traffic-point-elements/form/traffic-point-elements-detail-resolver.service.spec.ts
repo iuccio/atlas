@@ -3,7 +3,7 @@ import {
   convertToParamMap,
   Router,
 } from '@angular/router';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppTestingModule } from '../../../../app.testing.module';
@@ -43,7 +43,7 @@ describe('TrafficPointElementsDetailResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get versions from service to display', () => {
+  it('should get versions from service to display', async () => {
     const mockRoute = mockDeep<ActivatedRouteSnapshot>({
       data: {
         isTrafficPointArea: false,
@@ -55,14 +55,13 @@ describe('TrafficPointElementsDetailResolver', () => {
 
     const resolvedVersion = resolver.resolve(mockRoute);
 
-    resolvedVersion.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].id).toBe(9298);
-      expect(versions[0].sloid).toBe('ch:1:sloid:89008:0:1');
-    });
+    const versions = await firstValueFrom(resolvedVersion);
+    expect(versions.length).toBe(1);
+    expect(versions[0].id).toBe(9298);
+    expect(versions[0].sloid).toBe('ch:1:sloid:89008:0:1');
   });
 
-  it('should navigate to area if type is area but route is trafficPointElements', () => {
+  it('should navigate to area if type is area but route is trafficPointElements', async () => {
     trafficPointElementService.getTrafficPointElement.mockReturnValue(
       of([
         {
@@ -99,14 +98,13 @@ describe('TrafficPointElementsDetailResolver', () => {
       Promise.resolve(true)
     );
 
-    resolver.resolve(mockRoute).subscribe(() => {
-      expect(router.navigate).toHaveBeenCalledExactlyOnceWith([
-        Pages.SEPODI.path,
-        Pages.SERVICE_POINTS.path,
-        8589008,
-        Pages.TRAFFIC_POINT_ELEMENTS_AREA.path,
-        'ch:1:sloid:89008:0:1',
-      ]);
-    });
+    await firstValueFrom(resolver.resolve(mockRoute));
+    expect(router.navigate).toHaveBeenCalledExactlyOnceWith([
+      Pages.SEPODI.path,
+      Pages.SERVICE_POINTS.path,
+      8589008,
+      Pages.TRAFFIC_POINT_ELEMENTS_AREA.path,
+      'ch:1:sloid:89008:0:1',
+    ]);
   });
 });

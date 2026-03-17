@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { DossierSelectComponent } from './dossier-select.component';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DossierInternalService } from '../../../../../api/service/workflow/dossier-internal.service';
 import { ContainerTthDossier } from '../../../../../api/model/containerTthDossier';
@@ -45,7 +44,7 @@ describe('DossierSelectComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should search for dossier', () => {
+  it('should search for dossier', async () => {
     const searchResult: ContainerTthDossier = {
       objects: [
         {
@@ -70,11 +69,7 @@ describe('DossierSelectComponent', () => {
       ['testQuery'],
       [DossierStatus.Added]
     );
-    return new Promise<void>((resolve) => {
-      component.searchResults$.subscribe((val) => {
-        expect(val).toEqual(searchResult.objects!);
-        resolve();
-      });
-    });
+    const val = await firstValueFrom(component.searchResults$);
+    expect(val).toEqual(searchResult.objects!);
   });
 });

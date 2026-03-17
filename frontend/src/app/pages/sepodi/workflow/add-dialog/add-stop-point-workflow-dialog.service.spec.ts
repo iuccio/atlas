@@ -1,5 +1,5 @@
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
@@ -23,13 +23,11 @@ describe('AddStopPointWorkflowDialogService', () => {
     service = TestBed.inject(AddStopPointWorkflowDialogService);
   });
 
-  it('should open new workflow', () => {
+  it('should open new workflow', async () => {
     dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) } as never);
 
-    service
-      .openDialog(BERN_WYLEREGG)
-      .subscribe((result) => expect(result).toBe(true));
-
+    const result = await firstValueFrom(service.openDialog(BERN_WYLEREGG));
+    expect(result).toBe(true);
     expect(dialogSpy.open).toHaveBeenCalled();
   });
 });

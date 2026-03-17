@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { SectorGroupDetailResolver } from './sector-group-detail-resolver.service';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { SectorGroupService } from '../../../../api/service/sepodi/sector-group.service';
 import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
 import { mock, mockDeep } from 'vitest-mock-extended';
@@ -41,7 +41,7 @@ describe('SectorDetailResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get versions from service to display', () => {
+  it('should get versions from service to display', async () => {
     const mockRoute = mockDeep<ActivatedRouteSnapshot>({
       paramMap: convertToParamMap({
         sectorSloid: 'ch:1:sloid:7000::1:1',
@@ -50,9 +50,8 @@ describe('SectorDetailResolver', () => {
 
     const resolvedVersion = resolver.resolve(mockRoute);
 
-    resolvedVersion.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].sloid).toBe('ch:1:sloid:7000::1:1');
-    });
+    const versions = await firstValueFrom(resolvedVersion);
+    expect(versions.length).toBe(1);
+    expect(versions[0].sloid).toBe('ch:1:sloid:7000::1:1');
   });
 });

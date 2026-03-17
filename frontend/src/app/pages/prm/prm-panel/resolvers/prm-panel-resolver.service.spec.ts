@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { AppTestingModule } from '../../../../app.testing.module';
 import {
   ActivatedRouteSnapshot,
@@ -44,7 +44,7 @@ describe('PrmOverviewResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get version from service to display', () => {
+  it('should get version from service to display', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ stopPointSloid: 'ch:1:sloid:89008' }),
     };
@@ -56,9 +56,8 @@ describe('PrmOverviewResolver', () => {
       )
     ) as Observable<ReadServicePointVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].sloid).toBe('ch:1:sloid:89008');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(1);
+    expect(versions[0].sloid).toBe('ch:1:sloid:89008');
   });
 });

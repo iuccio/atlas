@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { UserSelectComponent } from './user-select.component';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { Component, Input } from '@angular/core';
 import { ApplicationType, Permission } from '../../../../api';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -74,9 +74,7 @@ describe('UserSelectComponent', () => {
     expect(
       userAdministrationService.searchUsers
     ).toHaveBeenCalledExactlyOnceWith('testQuery');
-    const val = await new Promise((resolve) =>
-      component.userSearchResults$.subscribe(resolve)
-    );
+    const val = await firstValueFrom(component.userSearchResults$);
     expect(val).toEqual([
       {
         sbbUserId: 'user1',
@@ -101,9 +99,7 @@ describe('UserSelectComponent', () => {
     expect(
       userAdministrationService.searchUsersInAtlas
     ).toHaveBeenCalledExactlyOnceWith('testQuery', ApplicationType.Sepodi);
-    const val = await new Promise((resolve) =>
-      component.userSearchResults$.subscribe(resolve)
-    );
+    const val = await firstValueFrom(component.userSearchResults$);
     expect(val).toEqual([
       {
         sbbUserId: 'user1',

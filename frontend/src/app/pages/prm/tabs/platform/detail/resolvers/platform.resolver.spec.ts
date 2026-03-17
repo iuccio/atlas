@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
@@ -71,7 +71,7 @@ describe('PrmPlatformResolver', () => {
     });
   });
 
-  it('should get platform from prm-directory', () => {
+  it('should get platform from prm-directory', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({
         platformSloid: 'ch:1:sloid:7000:0:100000',
@@ -82,9 +82,8 @@ describe('PrmPlatformResolver', () => {
       platformResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<ReadPlatformVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].sloid).toBe('ch:1:sloid:7000:0:100000');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(1);
+    expect(versions[0].sloid).toBe('ch:1:sloid:7000:0:100000');
   });
 });

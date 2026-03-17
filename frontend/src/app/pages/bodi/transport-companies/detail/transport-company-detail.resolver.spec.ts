@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { TransportCompany, TransportCompanyBoRelation } from '../../../../api';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { TransportCompanyDetailResolver } from './transport-company-detail-resolver.service';
@@ -61,21 +61,19 @@ describe('TransportCompanyDetailResolver', () => {
     resolver = TestBed.inject(TransportCompanyDetailResolver);
   });
 
-  it('should get transportCompany and transportCompanyRelations from service to display', () => {
+  it('should get transportCompany and transportCompanyRelations from service to display', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
 
     const resolvedVersion = resolver.resolve(mockRoute);
 
-    resolvedVersion.subscribe(
-      ([transportCompany, transportCompanyRelations]) => {
-        expect(transportCompany.id).toBe(1234);
-        expect(transportCompany.description).toBe('SBB');
-        expect(transportCompanyRelations.length).toBe(2);
-        expect(transportCompanyRelations[0].id).toBe(1);
-        expect(transportCompanyRelations[1].id).toBe(2);
-      }
-    );
+    const [transportCompany, transportCompanyRelations] =
+      await firstValueFrom(resolvedVersion);
+    expect(transportCompany.id).toBe(1234);
+    expect(transportCompany.description).toBe('SBB');
+    expect(transportCompanyRelations.length).toBe(2);
+    expect(transportCompanyRelations[0].id).toBe(1);
+    expect(transportCompanyRelations[1].id).toBe(2);
   });
 });

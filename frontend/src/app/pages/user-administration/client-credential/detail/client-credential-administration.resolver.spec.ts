@@ -4,7 +4,7 @@ import {
   convertToParamMap,
   RouterStateSnapshot,
 } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { ClientCredential } from '../../../../api';
 import { AppTestingModule } from '../../../../app.testing.module';
 import {
@@ -47,7 +47,7 @@ describe('ClientCredentialAdministrationResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get client credential from service to display', () => {
+  it('should get client credential from service to display', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ clientId: '23456789' }),
     } as ActivatedRouteSnapshot;
@@ -56,9 +56,8 @@ describe('ClientCredentialAdministrationResolver', () => {
       clientCredentialResolver(mockRoute, routerStateSnapshot)
     ) as Observable<ClientCredential>;
 
-    result.subscribe((snapshot) => {
-      expect(snapshot.clientCredentialId).toBe('23456789');
-    });
+    const snapshot = await firstValueFrom(result);
+    expect(snapshot.clientCredentialId).toBe('23456789');
     expect(
       clientCredentialAdministrationService.getClientCredential
     ).toHaveBeenCalledExactlyOnceWith('23456789');

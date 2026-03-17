@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { ValidityService } from './validity.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import moment from 'moment';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { DialogService } from '../../../core/components/dialog/dialog.service';
 
 describe('ValidityService', () => {
@@ -71,10 +71,9 @@ describe('ValidityService', () => {
       formValidTo: moment('2023-12-31'),
     };
 
-    service.confirmValidityDialog().subscribe((result) => {
-      expect(result).toBe(true);
-      expect(dialogService.confirm).toHaveBeenCalled();
-    });
+    const result = await firstValueFrom(service.confirmValidityDialog());
+    expect(result).toBe(true);
+    expect(dialogService.confirm).toHaveBeenCalled();
   });
 
   it('should validate and disable form correctly', async () => {

@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { RelationComponent } from './relation.component';
 import { By } from '@angular/platform-browser';
 import { translateServiceProvider } from '../../../app.testing.mocks';
+import { firstValueFrom } from 'rxjs';
 
 describe('TransportCompanyRelationComponent', () => {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -77,29 +78,27 @@ describe('TransportCompanyRelationComponent', () => {
   it('edit mode changed should emit event', () => {
     component.editable = true;
     fixture.detectChanges();
-    let eventEmitted = false;
-    component.editModeChanged.subscribe(() => (eventEmitted = true));
     const editBtn = fixture.debugElement.query(By.css('button'));
+    vi.spyOn(component.editModeChanged, 'emit').mockImplementation(() => {});
     editBtn.nativeElement.click();
-    expect(eventEmitted).toBe(true);
+    expect(component.editModeChanged.emit).toHaveBeenCalledExactlyOnceWith();
   });
 
-  it('test select record', () => {
+  it('test select record', async () => {
     component.records = [
       { id: 1, value: 'test1' },
       { id: 2, value: 'test2' },
     ];
     component.editable = true;
-    component.selectedIndexChanged.subscribe((index) => expect(index).toBe(1));
+    const indexPromise = firstValueFrom(component.selectedIndexChanged);
     component.selectRecord(component._records[1]);
+    const index = await indexPromise;
+    expect(index).toBe(1);
 
     component.editable = false;
-    let selectedIndexChangedCalled = false;
-    component.selectedIndexChanged.subscribe(
-      () => (selectedIndexChangedCalled = true)
-    );
+    vi.spyOn(component.selectedIndexChanged, 'emit');
     component.selectRecord(component._records[0]);
-    expect(selectedIndexChangedCalled).toBe(false);
+    expect(component.selectedIndexChanged.emit).not.toHaveBeenCalled();
   });
 
   it('test delete', () => {

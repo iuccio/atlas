@@ -5,7 +5,7 @@ import {
   stopPointTerminationWorkflowResolver,
   StopPointTerminationWorkflowResolver,
 } from './stop-point-termination-workflow-resolver';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { BERN_WYLEREGG } from 'src/test/data/service-point';
 import { AppTestingModule } from '../../../../app.testing.module';
 import {
@@ -20,8 +20,12 @@ import { TerminationStopPointWorkflowModel } from '../../../../api/model/termina
 describe('stopPointTerminationWorkflowResolverResolver', () => {
   let resolver: StopPointTerminationWorkflowResolver;
 
-  let workflowServiceMock: Mocked<Pick<StopPointTerminationWorkflowService, 'getTerminationById'>>;
-  let servicePointsServiceMock: Mocked<Pick<ServicePointService, 'getServicePointVersionsBySloid'>>;
+  let workflowServiceMock: Mocked<
+    Pick<StopPointTerminationWorkflowService, 'getTerminationById'>
+  >;
+  let servicePointsServiceMock: Mocked<
+    Pick<ServicePointService, 'getServicePointVersionsBySloid'>
+  >;
 
   beforeEach(() => {
     const workflow: TerminationStopPointWorkflowModel = {
@@ -41,7 +45,9 @@ describe('stopPointTerminationWorkflowResolverResolver', () => {
     };
 
     servicePointsServiceMock = {
-      getServicePointVersionsBySloid: vi.fn().mockReturnValue(of([BERN_WYLEREGG])),
+      getServicePointVersionsBySloid: vi
+        .fn()
+        .mockReturnValue(of([BERN_WYLEREGG])),
     };
 
     TestBed.configureTestingModule({
@@ -62,7 +68,7 @@ describe('stopPointTerminationWorkflowResolverResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get workflow with service point', () => {
+  it('should get workflow with service point', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1000' }),
     } as ActivatedRouteSnapshot;
@@ -71,11 +77,10 @@ describe('stopPointTerminationWorkflowResolverResolver', () => {
       stopPointTerminationWorkflowResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<StopPointTerminationWorkflowDetailData>;
 
-    resolvedVersion.subscribe((workflowData) => {
-      expect(workflowData?.workflow.versionId).toBe(1);
-      expect(workflowData?.servicePoint[0].designationOfficial).toBe(
-        'Bern, Wyleregg'
-      );
-    });
+    const workflowData = await firstValueFrom(resolvedVersion);
+    expect(workflowData?.workflow.versionId).toBe(1);
+    expect(workflowData?.servicePoint[0].designationOfficial).toBe(
+      'Bern, Wyleregg'
+    );
   });
 });

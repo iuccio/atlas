@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BulkImportLogComponent } from './bulk-import-log.component';
 import { ActivatedRoute } from '@angular/router';
 import { BulkImportResult } from '../../../api';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { Pipe, PipeTransform } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { MockMatPaginatorComponent } from '../../../app.testing.mocks';
@@ -63,50 +63,49 @@ describe('BulkImportLogComponent', () => {
     pageChangedFnSpy = vi.spyOn(component, 'pageChanged');
   });
 
-  it('should create and init', () => {
+  it('should create and init', async () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(pageChangedFnSpy).toHaveBeenCalledTimes(1);
-    component.data$?.subscribe((data) => {
-      expect(data.id).toEqual(10);
-      expect(data.importResult).toEqual({
-        importType: 'UPDATE',
-        businessObjectType: 'SERVICE_POINT',
-        creator: 'atlas',
-        creationDate: '2024-09-24T12:31:01.87023',
-        inNameOf: 'atlas2',
-        nbOfSuccess: 1,
-        nbOfInfo: 1,
-        nbOfError: 1,
-        logEntries: [
-          {
-            expanded: false,
-            lineNumber: 2,
-            status: 'INFO',
-            errors: [
-              {
-                errorMessage: 'error',
-                displayInfo: {
-                  code: 'TRANSLATIONS.TEST',
-                  parameters: [{ key: 'field', value: 'test' }],
-                },
+    const data = await firstValueFrom(component.data$!);
+    expect(data.id).toEqual(10);
+    expect(data.importResult).toEqual({
+      importType: 'UPDATE',
+      businessObjectType: 'SERVICE_POINT',
+      creator: 'atlas',
+      creationDate: '2024-09-24T12:31:01.87023',
+      inNameOf: 'atlas2',
+      nbOfSuccess: 1,
+      nbOfInfo: 1,
+      nbOfError: 1,
+      logEntries: [
+        {
+          expanded: false,
+          lineNumber: 2,
+          status: 'INFO',
+          errors: [
+            {
+              errorMessage: 'error',
+              displayInfo: {
+                code: 'TRANSLATIONS.TEST',
+                parameters: [{ key: 'field', value: 'test' }],
               },
-            ],
-          },
-          {
-            expanded: false,
-            lineNumber: 3,
-            status: 'DATA_EXECUTION_ERROR',
-            errors: [],
-          },
-          {
-            expanded: false,
-            lineNumber: 4,
-            status: 'DATA_VALIDATION_ERROR',
-            errors: [],
-          },
-        ],
-      });
+            },
+          ],
+        },
+        {
+          expanded: false,
+          lineNumber: 3,
+          status: 'DATA_EXECUTION_ERROR',
+          errors: [],
+        },
+        {
+          expanded: false,
+          lineNumber: 4,
+          status: 'DATA_VALIDATION_ERROR',
+          errors: [],
+        },
+      ],
     });
   });
 

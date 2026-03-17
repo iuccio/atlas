@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { Company } from '../../../../api';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { CompanyDetailResolver } from './company-detail-resolver.service';
@@ -37,16 +37,15 @@ describe('CompanyDetailResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get company from service to display', () => {
+  it('should get company from service to display', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
 
     const resolvedVersion = resolver.resolve(mockRoute);
 
-    resolvedVersion.subscribe((transportCompany) => {
-      expect(transportCompany.uicCode).toBe('1234');
-      expect(transportCompany.name).toBe('SBB');
-    });
+    const transportCompany = await firstValueFrom(resolvedVersion);
+    expect(transportCompany.uicCode).toBe('1234');
+    expect(transportCompany.name).toBe('SBB');
   });
 });
