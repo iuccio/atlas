@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
-
 import { CreateStopPointComponent } from './create-stop-point.component';
 import { MeanOfTransport } from '../../../../../api';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
@@ -17,6 +16,7 @@ import {
 } from '../../../util/stop-point-test-data';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('CreateStopPointComponent', () => {
   let component: CreateStopPointComponent;
@@ -35,6 +35,7 @@ describe('CreateStopPointComponent', () => {
         { provide: DialogService, useValue: dialogService },
         translateServiceProvider,
         provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     });
 

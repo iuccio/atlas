@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, expect, it, beforeEach } from 'vitest';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { BoStatementDetailComponent } from './bo-statement-detail.component';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
 import { statement } from '../../statement-test-util';
 import { ActivatedRoute } from '@angular/router';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('BoStatementDetail', () => {
   let component: BoStatementDetailComponent;
@@ -27,6 +27,7 @@ describe('BoStatementDetail', () => {
       providers: [
         translateServiceProvider,
         provideHttpClient(),
+        provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
           useValue: activatedRoute,

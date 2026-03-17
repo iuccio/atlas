@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { provideRouter, Router, Routes } from '@angular/router';
 import {
   loadDossierDetailRoute,
@@ -12,6 +12,7 @@ import { Location } from '@angular/common';
 import { DossierDetailResolver } from './dossier/detail/dossier-detail-resolver.service';
 import { of } from 'rxjs';
 import { UserService } from '../../core/auth/user/user.service';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 const testRoutes: Routes = [
   {
@@ -55,6 +56,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(routes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
@@ -75,6 +77,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(routes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
@@ -95,6 +98,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(routes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
@@ -117,6 +121,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(routes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
       ],
     }).runInInjectionContext(async () => {
@@ -139,6 +144,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
       ],
@@ -160,6 +166,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
       ],
@@ -181,6 +188,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
       ],
@@ -202,6 +210,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
       ],
@@ -221,6 +230,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
       ],
@@ -240,6 +250,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
       ],
@@ -261,6 +272,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
         {
@@ -286,6 +298,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
       ],
@@ -305,6 +318,7 @@ describe('TTH Routing', () => {
       providers: [
         provideRouter(testRoutes),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionService, useValue: permissionServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
       ],

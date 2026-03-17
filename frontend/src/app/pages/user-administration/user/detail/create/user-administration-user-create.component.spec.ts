@@ -1,29 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { UserAdministrationUserCreateComponent } from './user-administration-user-create.component';
 import { Permission } from '../../../../../api';
 import { NotificationService } from '../../../../../core/notification/notification.service';
-import { TranslatePipe } from '@ngx-translate/core';
 import { of } from 'rxjs';
-import { Router, RouterModule } from '@angular/router';
-import { Component, Input } from '@angular/core';
+import { provideRouter, Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup } from '@angular/forms';
-import { DetailPageContainerComponent } from '../../../../../core/components/detail-page-container/detail-page-container.component';
-import { DetailFooterComponent } from '../../../../../core/components/detail-footer/detail-footer.component';
-import { DetailPageContentComponent } from '../../../../../core/components/detail-page-content/detail-page-content.component';
 import { UserAdministrationService } from '../../../../../api/service/user-administration/user-administration.service';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
 import { tickAsync } from '../../../../../../test/tick-async';
-
-@Component({
-  selector: 'atlas-user-select',
-  template: '',
-})
-class MockUserSelectComponent {
-  @Input() form?: FormGroup;
-}
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('UserAdministrationUserCreateComponent', () => {
   let component: UserAdministrationUserCreateComponent;
@@ -34,7 +21,7 @@ describe('UserAdministrationUserCreateComponent', () => {
   >;
   let notificationService: Mocked<Pick<NotificationService, 'success'>>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     userAdministrationService = {
       getUser: vi.fn(),
       createUserPermission: vi.fn(),
@@ -42,18 +29,12 @@ describe('UserAdministrationUserCreateComponent', () => {
     notificationService = {
       success: vi.fn(),
     };
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        UserAdministrationUserCreateComponent,
-        MockUserSelectComponent,
-        DetailPageContainerComponent,
-        DetailPageContentComponent,
-        DetailFooterComponent,
-      ],
+    TestBed.configureTestingModule({
       providers: [
         translateServiceProvider,
         provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
         {
           provide: UserAdministrationService,
           useValue: userAdministrationService,
@@ -62,7 +43,6 @@ describe('UserAdministrationUserCreateComponent', () => {
           provide: NotificationService,
           useValue: notificationService,
         },
-        TranslatePipe,
         {
           provide: MAT_DIALOG_DATA,
           useValue: { user: undefined },
@@ -76,7 +56,7 @@ describe('UserAdministrationUserCreateComponent', () => {
           },
         },
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(UserAdministrationUserCreateComponent);
     component = fixture.componentInstance;

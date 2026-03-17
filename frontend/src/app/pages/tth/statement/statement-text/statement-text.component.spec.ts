@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
   HIDE_ORIGINAL_TEXT_LABEL,
   LOCK_ICON,
@@ -9,6 +9,7 @@ import {
 } from './statement-text.component';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 
 const formGroup = new FormGroup({
@@ -24,7 +25,11 @@ describe('StatementText', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [StatementTextComponent],
-      providers: [translateServiceProvider, provideHttpClient()],
+      providers: [
+        translateServiceProvider,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StatementTextComponent);

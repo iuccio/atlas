@@ -3,7 +3,7 @@ import { FieldExample } from '../../../../../src/app/core/form-components/text-f
 import { By } from '@angular/platform-browser';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { AtlasLabelFieldComponent } from '@atlas/form';
 
 describe('AtlasLabelFieldComponent', () => {

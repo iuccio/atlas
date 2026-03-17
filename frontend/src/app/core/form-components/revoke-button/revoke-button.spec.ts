@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { RevokeButton } from './revoke-button';
 import { translateServiceProvider } from '../../../app.testing.mocks';
-import { provideHttpClient } from '@angular/common/http';
 import { DialogService } from '../../components/dialog/dialog.service';
 import { of } from 'rxjs';
 import { ApplicationType } from '../../../api';
@@ -13,19 +11,17 @@ describe('RevokeButton', () => {
   let fixture: ComponentFixture<RevokeButton>;
   let dialogServiceMock: Mocked<Pick<DialogService, 'confirm'>>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     dialogServiceMock = {
       confirm: vi.fn().mockReturnValue(of(true)),
     };
 
-    await TestBed.configureTestingModule({
-      imports: [RevokeButton],
+    TestBed.configureTestingModule({
       providers: [
         translateServiceProvider,
-        provideHttpClient(),
         { provide: DialogService, useValue: dialogServiceMock },
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(RevokeButton);
     component = fixture.componentInstance;

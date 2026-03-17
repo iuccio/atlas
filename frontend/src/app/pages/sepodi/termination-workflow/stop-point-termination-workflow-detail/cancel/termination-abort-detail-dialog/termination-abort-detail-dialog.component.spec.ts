@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { TerminationAbortDetailDialogComponent } from './termination-abort-detail-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -11,13 +10,18 @@ import { EMPTY } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { translateServiceProvider } from '../../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('TerminationCancelDetailDialog', () => {
   let component: TerminationAbortDetailDialogComponent;
   let fixture: ComponentFixture<TerminationAbortDetailDialogComponent>;
 
-  let dialogRefMock: Mocked<Pick<MatDialogRef<TerminationAbortDetailDialogComponent>, 'close'>>;
-  let terminationWorkflowServiceMock: Mocked<Pick<StopPointTerminationWorkflowService, 'abortTermination'>>;
+  let dialogRefMock: Mocked<
+    Pick<MatDialogRef<TerminationAbortDetailDialogComponent>, 'close'>
+  >;
+  let terminationWorkflowServiceMock: Mocked<
+    Pick<StopPointTerminationWorkflowService, 'abortTermination'>
+  >;
 
   beforeEach(async () => {
     dialogRefMock = {
@@ -49,6 +53,7 @@ describe('TerminationCancelDetailDialog', () => {
         TranslatePipe,
         translateServiceProvider,
         provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 

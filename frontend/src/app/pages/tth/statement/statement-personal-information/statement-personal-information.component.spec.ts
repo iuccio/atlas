@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { StatementPersonalInformationComponent } from './statement-personal-information.component';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { statement, statementFormGroup } from '../statement-test-util';
 
 describe('StatementPersonalInformation', () => {
@@ -11,7 +12,11 @@ describe('StatementPersonalInformation', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [translateServiceProvider, provideHttpClient()],
+      providers: [
+        translateServiceProvider,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     });
 
     fixture = TestBed.createComponent(StatementPersonalInformationComponent);
