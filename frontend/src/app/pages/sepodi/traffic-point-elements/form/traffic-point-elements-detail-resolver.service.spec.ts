@@ -5,28 +5,25 @@ import {
 } from '@angular/router';
 import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { TrafficPointElementsDetailResolver } from './traffic-point-elements-detail-resolver.service';
 import { BERN_WYLEREGG_TRAFFIC_POINTS } from '../../../../../test/data/traffic-point-element';
 import { TrafficPointElementService } from '../../../../api/service/sepodi/traffic-point-element.service';
 import { TrafficPointElementType } from '../../../../api';
 import { Pages } from '../../../pages';
+import { mock, mockDeep } from 'vitest-mock-extended';
 
 describe('TrafficPointElementsDetailResolver', () => {
-  let trafficPointElementService: Mocked<
-    Pick<TrafficPointElementService, 'getTrafficPointElement'>
-  >;
+  const trafficPointElementService = mock<TrafficPointElementService>();
 
   let resolver: TrafficPointElementsDetailResolver;
   let router: Router;
 
   beforeEach(() => {
-    trafficPointElementService = {
-      getTrafficPointElement: vi.fn().mockReturnValue(
-        of([BERN_WYLEREGG_TRAFFIC_POINTS[0]])
-      ),
-    };
+    trafficPointElementService.getTrafficPointElement.mockReturnValue(
+      of([BERN_WYLEREGG_TRAFFIC_POINTS[0]])
+    );
 
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
@@ -47,14 +44,14 @@ describe('TrafficPointElementsDetailResolver', () => {
   });
 
   it('should get versions from service to display', () => {
-    const mockRoute = {
+    const mockRoute = mockDeep<ActivatedRouteSnapshot>({
       data: {
         isTrafficPointArea: false,
       },
       paramMap: convertToParamMap({
         trafficPointSloid: 'ch:1:sloid:89008:0:1',
       }),
-    } as unknown as ActivatedRouteSnapshot;
+    });
 
     const resolvedVersion = resolver.resolve(mockRoute);
 
@@ -88,7 +85,7 @@ describe('TrafficPointElementsDetailResolver', () => {
       ])
     );
 
-    const mockRoute = {
+    const mockRoute = mockDeep<ActivatedRouteSnapshot>({
       data: {
         isTrafficPointArea: false,
       },
@@ -96,9 +93,11 @@ describe('TrafficPointElementsDetailResolver', () => {
         servicePointNumber: 8589008,
         trafficPointSloid: 'ch:1:sloid:89008:1',
       }),
-    } as unknown as ActivatedRouteSnapshot;
+    });
 
-    vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockImplementation(() =>
+      Promise.resolve(true)
+    );
 
     resolver.resolve(mockRoute).subscribe(() => {
       expect(router.navigate).toHaveBeenCalledExactlyOnceWith([

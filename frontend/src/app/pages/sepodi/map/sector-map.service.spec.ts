@@ -8,32 +8,23 @@ import { SectorMapService } from './sector-map.service';
 import { SectorInternalService } from '../../../api/service/sepodi/sector-internal.service';
 import { SpatialReference } from '../../../api';
 import { Point } from 'geojson';
+import { mock, mockDeep } from 'vitest-mock-extended';
 
 describe('SectorMapService', () => {
   let service: SectorMapService;
 
-  let mapServiceSpy: Mocked<
-    Pick<MapService, 'centerOn' | 'mapInitialized' | 'map'>
-  >;
-  let sourceSpy: Mocked<Pick<GeoJSONSource, 'setData'>>;
-  let mapSpy: Mocked<Pick<Map, 'getSource'>>;
+  const sourceMock = mock<GeoJSONSource>();
+  const mapMock = mockDeep<Map>();
+  mapMock.getSource.mockReturnValue(sourceMock);
+  const mapServiceSpy = mock<MapService>();
+  mapServiceSpy.mapInitialized = new BehaviorSubject(true);
+  mapServiceSpy.map = mapMock;
+
   let sectorInternalService: Mocked<
     Pick<SectorInternalService, 'getSectorsValidToday'>
   >;
 
   beforeEach(() => {
-    sourceSpy = {
-      setData: vi.fn().mockImplementation(() => {}),
-    };
-    mapSpy = {
-      getSource: vi.fn().mockReturnValue(sourceSpy),
-    };
-    mapServiceSpy = {
-      centerOn: vi.fn(),
-      mapInitialized: new BehaviorSubject<boolean>(true),
-      map: mapSpy as unknown as Map,
-    };
-
     sectorInternalService = {
       getSectorsValidToday: vi.fn(),
     };
@@ -112,8 +103,8 @@ describe('SectorMapService', () => {
     expect(mapServiceSpy.map.getSource).toHaveBeenCalledWith(
       MAP_SECTOR_LAYER_NAME
     );
-    expect(sourceSpy.setData).toHaveBeenCalled();
-    const data = sourceSpy.setData.mock.calls.at(
+    expect(sourceMock.setData).toHaveBeenCalled();
+    const data = sourceMock.setData.mock.calls.at(
       -1
     )?.[0] as GeoJSON.FeatureCollection;
     expect(data.features).toHaveLength(1);
@@ -122,8 +113,8 @@ describe('SectorMapService', () => {
   it('should clear Sectors on map', () => {
     service.clearDisplayedSectors();
 
-    expect(sourceSpy.setData).toHaveBeenCalled();
-    const data = sourceSpy.setData.mock.calls.at(
+    expect(sourceMock.setData).toHaveBeenCalled();
+    const data = sourceMock.setData.mock.calls.at(
       -1
     )?.[0] as GeoJSON.FeatureCollection;
     expect(data.features).toHaveLength(0);
@@ -137,8 +128,8 @@ describe('SectorMapService', () => {
     });
 
     expect(mapServiceSpy.map.getSource).toHaveBeenCalledWith('current_sector');
-    expect(sourceSpy.setData).toHaveBeenCalled();
-    const data = sourceSpy.setData.mock.calls.at(
+    expect(sourceMock.setData).toHaveBeenCalled();
+    const data = sourceMock.setData.mock.calls.at(
       -1
     )?.[0] as GeoJSON.Feature<Point>;
     expect(data.geometry.coordinates).toEqual([7.44908190053, 46.96102079646]);
@@ -148,8 +139,8 @@ describe('SectorMapService', () => {
     service.clearCurrentSector();
 
     expect(mapServiceSpy.map.getSource).toHaveBeenCalledWith('current_sector');
-    expect(sourceSpy.setData).toHaveBeenCalled();
-    const data = sourceSpy.setData.mock.calls.at(
+    expect(sourceMock.setData).toHaveBeenCalled();
+    const data = sourceMock.setData.mock.calls.at(
       -1
     )?.[0] as GeoJSON.Feature<Point>;
     expect(data.geometry.coordinates).toEqual([0, 0]);

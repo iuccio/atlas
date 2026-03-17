@@ -1,14 +1,14 @@
 import { MainlineDescriptionPipe } from './mainline-description.pipe';
 import { Line } from '../../../../api';
 import { TranslatePipe } from '@ngx-translate/core';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { mock } from 'vitest-mock-extended';
 
 describe('MainlineDescriptionPipe', () => {
-  const translatePipe = {
-    transform: vi
-      .fn()
-      .mockReturnValue('LIDI.SUBLINE.NO_LINE_DESIGNATION_AVAILABLE'),
-  } as unknown as TranslatePipe;
+  const translatePipe = mock<TranslatePipe>();
+  translatePipe.transform.mockReturnValue(
+    'LIDI.SUBLINE.NO_LINE_DESIGNATION_AVAILABLE'
+  );
 
   const pipe = new MainlineDescriptionPipe(translatePipe);
 

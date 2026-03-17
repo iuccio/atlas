@@ -1,19 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { SectorGroupDetailResolver } from './sector-group-detail-resolver.service';
 import { of } from 'rxjs';
 import { SectorGroupService } from '../../../../api/service/sepodi/sector-group.service';
 import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
+import { mock, mockDeep } from 'vitest-mock-extended';
 
 describe('SectorDetailResolver', () => {
-  let sectorGroupService: Mocked<Pick<SectorGroupService, 'getSectorGroup'>>;
+  const sectorGroupService = mock<SectorGroupService>();
   let resolver: SectorGroupDetailResolver;
 
   beforeEach(() => {
-    sectorGroupService = {
-      getSectorGroup: vi.fn(),
-    };
     sectorGroupService.getSectorGroup.mockReturnValue(
       of([
         {
@@ -44,11 +42,11 @@ describe('SectorDetailResolver', () => {
   });
 
   it('should get versions from service to display', () => {
-    const mockRoute = {
+    const mockRoute = mockDeep<ActivatedRouteSnapshot>({
       paramMap: convertToParamMap({
         sectorSloid: 'ch:1:sloid:7000::1:1',
       }),
-    } as unknown as ActivatedRouteSnapshot;
+    });
 
     const resolvedVersion = resolver.resolve(mockRoute);
 
