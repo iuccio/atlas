@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import {
@@ -9,34 +8,14 @@ import {
   SublineType,
 } from '../../../../api';
 import { SublineDetailComponent } from './subline-detail.component';
-import { HttpErrorResponse } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { AppTestingModule } from '../../../../app.testing.module';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import {
   adminPermissionServiceMock,
-  MockBoSelectComponent,
+  translateServiceProvider,
 } from '../../../../app.testing.mocks';
-import { MainlineDescriptionPipe } from './mainline-description.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LinkIconComponent } from '../../../../core/form-components/link-icon/link-icon.component';
-import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
-import { AtlasFieldErrorComponent } from '../../../../core/form-components/atlas-field-error/atlas-field-error.component';
-import { TextFieldComponent } from '../../../../core/form-components/text-field/text-field.component';
-import { SearchSelectComponent } from '../../../../core/form-components/search-select/search-select.component';
-import { SelectComponent } from '../../../../core/form-components/select/select.component';
-import { AtlasSpacerComponent } from '../../../../core/components/spacer/atlas-spacer.component';
-import { DetailPageContainerComponent } from '../../../../core/components/detail-page-container/detail-page-container.component';
-import { DetailFooterComponent } from '../../../../core/components/detail-footer/detail-footer.component';
 import { ValidityService } from '../../../sepodi/validity/validity.service';
 import { PermissionService } from '../../../../core/auth/permission/permission.service';
-import { DetailPageContentComponent } from '../../../../core/components/detail-page-content/detail-page-content.component';
-import { AtlasButtonComponent } from '../../../../core/components/button/atlas-button.component';
-import { UserDetailInfoComponent } from '../../../../core/components/user-edit-info/user-detail-info.component';
-import { SwitchVersionComponent } from '../../../../core/components/switch-version/switch-version.component';
-import { DateRangeComponent } from '../../../../core/form-components/date-range/date-range.component';
-import { DateRangeTextComponent } from '../../../../core/versioning/date-range-text/date-range-text.component';
-import { DateIconComponent } from '../../../../core/form-components/date-icon/date-icon.component';
-import { DisplayDatePipe } from '../../../../core/pipe/display-date.pipe';
 import moment from 'moment';
 import { DialogService } from '../../../../core/components/dialog/dialog.service';
 import { SublineInternalService } from '../../../../api/service/lidi/subline-internal.service';
@@ -44,6 +23,8 @@ import { SublineService } from '../../../../api/service/lidi/subline.service';
 import { LineService } from '../../../../api/service/lidi/line.service';
 import { LineInternalService } from '../../../../api/service/lidi/line-internal.service';
 import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { DateModule } from '../../../../core/module/date.module';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 const readSublineVersion: ReadSublineVersionV2 = {
   id: 1234,
@@ -140,10 +121,10 @@ describe('SublineDetailComponent for existing sublineVersion', () => {
 
     setupTestBed(sublineService, sublineInternalService, mockData);
 
+    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(SublineDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = TestBed.inject(Router);
   });
 
   it('should update SublineVersion successfully', async () => {
@@ -241,10 +222,10 @@ describe('SublineDetailComponent for new sublineVersion', () => {
 
     setupTestBed(sublineService, {} as SublineInternalService, mockData);
 
+    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(SublineDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = TestBed.inject(Router);
   });
 
   it('should create', () => {
@@ -351,32 +332,8 @@ function setupTestBed(
   data: { sublineDetail: ReadSublineVersionV2[] }
 ) {
   TestBed.configureTestingModule({
-    imports: [
-      AppTestingModule,
-      SublineDetailComponent,
-      MockBoSelectComponent,
-      InfoIconComponent,
-      LinkIconComponent,
-      SearchSelectComponent,
-      MainlineDescriptionPipe,
-      AtlasLabelFieldComponent,
-      AtlasFieldErrorComponent,
-      TextFieldComponent,
-      SelectComponent,
-      AtlasSpacerComponent,
-      DetailPageContainerComponent,
-      DetailPageContentComponent,
-      DetailFooterComponent,
-      AtlasButtonComponent,
-      UserDetailInfoComponent,
-      SwitchVersionComponent,
-      DateRangeComponent,
-      DateRangeTextComponent,
-      DateIconComponent,
-      DisplayDatePipe,
-    ],
+    imports: [DateModule.forRoot()],
     providers: [
-      { provide: FormBuilder },
       { provide: SublineService, useValue: sublinesService },
       { provide: SublineInternalService, useValue: sublineInternalService },
       { provide: LineService, useValue: lineService },
@@ -384,18 +341,16 @@ function setupTestBed(
       { provide: DialogService, useValue: dialogService },
       { provide: PermissionService, useValue: adminPermissionServiceMock },
       { provide: ActivatedRoute, useValue: { snapshot: { data: data } } },
-      TranslatePipe,
+      translateServiceProvider,
+      provideHttpClient(),
       provideHttpClientTesting(),
     ],
-  })
-    .overrideComponent(SublineDetailComponent, {
-      set: {
-        providers: [
-          { provide: ValidityService, useValue: validityService },
-          TranslatePipe,
-        ],
-      },
-    })
-    .compileComponents()
-    .then();
+  }).overrideComponent(SublineDetailComponent, {
+    set: {
+      providers: [
+        { provide: ValidityService, useValue: validityService },
+        TranslatePipe,
+      ],
+    },
+  });
 }

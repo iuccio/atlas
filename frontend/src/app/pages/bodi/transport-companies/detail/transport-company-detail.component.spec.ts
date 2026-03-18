@@ -5,24 +5,13 @@ import {
   TransportCompanyBoRelation,
 } from '../../../../api';
 import { TransportCompanyDetailComponent } from './transport-company-detail.component';
-import { AppTestingModule } from '../../../../app.testing.module';
-import { RelationComponent } from '../../../../core/components/relation/relation.component';
 import moment from 'moment';
 import { of } from 'rxjs';
-import { CommentComponent } from '../../../../core/form-components/comment/comment.component';
 import {
   adminPermissionServiceMock,
-  MockAtlasButtonComponent,
+  translateServiceProvider,
 } from '../../../../app.testing.mocks';
-import { TextFieldComponent } from '../../../../core/form-components/text-field/text-field.component';
-import { AtlasLabelFieldComponent } from '@atlas/form';
-import { AtlasFieldErrorComponent } from '../../../../core/form-components/atlas-field-error/atlas-field-error.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { SearchSelectComponent } from '../../../../core/form-components/search-select/search-select.component';
 import { ActivatedRoute } from '@angular/router';
-import { DetailPageContainerComponent } from '../../../../core/components/detail-page-container/detail-page-container.component';
-import { DetailFooterComponent } from '../../../../core/components/detail-footer/detail-footer.component';
-import { DetailPageContentComponent } from '../../../../core/components/detail-page-content/detail-page-content.component';
 import { PermissionService } from '../../../../core/auth/permission/permission.service';
 import { TransportCompanyRelationInternalService } from '../../../../api/service/bodi/transport-company-relation-internal.service';
 import { BusinessOrganisationService } from '../../../../api/service/bodi/business-organisation.service';
@@ -77,6 +66,7 @@ const transportCompanyRelations: TransportCompanyBoRelation[] = [
 describe('TransportCompanyDetailComponent', () => {
   let component: TransportCompanyDetailComponent;
   let fixture: ComponentFixture<TransportCompanyDetailComponent>;
+
   let boService: BusinessOrganisationService;
   let transportCompanyRelationInternalService: Mocked<
     Pick<
@@ -111,20 +101,6 @@ describe('TransportCompanyDetailComponent', () => {
     );
 
     TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        TransportCompanyDetailComponent,
-        RelationComponent,
-        SearchSelectComponent,
-        CommentComponent,
-        MockAtlasButtonComponent,
-        TextFieldComponent,
-        AtlasLabelFieldComponent,
-        AtlasFieldErrorComponent,
-        DetailPageContainerComponent,
-        DetailPageContentComponent,
-        DetailFooterComponent,
-      ],
       providers: [
         {
           provide: ActivatedRoute,
@@ -137,14 +113,12 @@ describe('TransportCompanyDetailComponent', () => {
           provide: TransportCompanyRelationInternalService,
           useValue: transportCompanyRelationInternalService,
         },
-        { provide: TranslatePipe },
+        translateServiceProvider,
       ],
-    })
-      .compileComponents()
-      .then();
+    });
 
-    fixture = TestBed.createComponent(TransportCompanyDetailComponent);
     boService = TestBed.inject(BusinessOrganisationService);
+    fixture = TestBed.createComponent(TransportCompanyDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
