@@ -1,39 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AppTestingModule } from '../../../app.testing.module';
-import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
 import { of } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import {
   ActivatedRouteMockType,
-  MockAtlasButtonComponent,
+  translateServiceProvider,
 } from '../../../app.testing.mocks';
-import { DateRangeTextComponent } from '../../../core/versioning/date-range-text/date-range-text.component';
 import { SplitServicePointNumberPipe } from '../../../core/search-service-point/split-service-point-number.pipe';
-import { TextFieldComponent } from '../../../core/form-components/text-field/text-field.component';
-import { SelectComponent } from '../../../core/form-components/select/select.component';
-import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
-import { SwitchVersionComponent } from '../../../core/components/switch-version/switch-version.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { AtlasFieldErrorComponent } from '../../../core/form-components/atlas-field-error/atlas-field-error.component';
-import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
-import { GeographyComponent } from '../geography/geography.component';
-import { DecimalNumberPipe } from '../../../core/pipe/decimal-number.pipe';
-import { AtlasSlideToggleComponent } from '../../../core/form-components/atlas-slide-toggle/atlas-slide-toggle.component';
-import { RemoveCharsDirective } from '../../../core/form-components/text-field/remove-chars.directive';
-import { SloidComponent } from '../../../core/form-components/sloid/sloid.component';
 import { DialogService } from '../../../core/components/dialog/dialog.service';
 import moment from 'moment/moment';
 import { LoadingPointsDetailComponent } from './loading-points-detail.component';
 import { LOADING_POINT } from '../../../../test/data/loading-point';
 import { BERN_WYLEREGG } from '../../../../test/data/service-point';
-import { UserDetailInfoComponent } from '../../../core/components/user-edit-info/user-detail-info.component';
-import { DetailPageContainerComponent } from '../../../core/components/detail-page-container/detail-page-container.component';
-import { DetailPageContentComponent } from '../../../core/components/detail-page-content/detail-page-content.component';
-import { DetailFooterComponent } from '../../../core/components/detail-footer/detail-footer.component';
 import { ServicePointService } from '../../../api/service/sepodi/service-point.service';
 import { LoadingPointService } from '../../../api/service/sepodi/loading-point.service';
+import { DateModule } from '../../../core/module/date.module';
 
 describe('LoadingPointsDetailComponent', () => {
   const authService: Partial<AuthService> = {};
@@ -72,31 +54,8 @@ describe('LoadingPointsDetailComponent', () => {
     dialogService.confirm.mockReturnValue(of(true));
 
     Element.prototype.scrollIntoView = vi.fn();
-    return TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        LoadingPointsDetailComponent,
-        DisplayDatePipe,
-        SplitServicePointNumberPipe,
-        MockAtlasButtonComponent,
-        DateRangeTextComponent,
-        TextFieldComponent,
-        SelectComponent,
-        AtlasLabelFieldComponent,
-        SwitchVersionComponent,
-        AtlasFieldErrorComponent,
-        AtlasSpacerComponent,
-        AtlasSlideToggleComponent,
-        GeographyComponent,
-        DecimalNumberPipe,
-        InfoIconComponent,
-        RemoveCharsDirective,
-        SloidComponent,
-        UserDetailInfoComponent,
-        DetailPageContainerComponent,
-        DetailPageContentComponent,
-        DetailFooterComponent,
-      ],
+    TestBed.configureTestingModule({
+      imports: [DateModule.forRoot()],
       providers: [
         { provide: AuthService, useValue: authService },
         { provide: ActivatedRoute, useValue: activatedRoute },
@@ -104,21 +63,21 @@ describe('LoadingPointsDetailComponent', () => {
         { provide: LoadingPointService, useValue: loadingPointService },
         { provide: DialogService, useValue: dialogService },
         SplitServicePointNumberPipe,
-        TranslatePipe,
+        translateServiceProvider,
       ],
-    }).compileComponents();
+    });
   }
 
   describe('for existing Version', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       const activatedRouteMock = {
         data: of({ loadingPoint: LOADING_POINT }),
         snapshot: { params: { servicePointNumber: 8504414 } },
       };
-      await setupTestBed(activatedRouteMock);
+      setupTestBed(activatedRouteMock);
+      router = TestBed.inject(Router);
       fixture = TestBed.createComponent(LoadingPointsDetailComponent);
       component = fixture.componentInstance;
-      router = TestBed.inject(Router);
       fixture.detectChanges();
     });
 
@@ -169,15 +128,15 @@ describe('LoadingPointsDetailComponent', () => {
   });
 
   describe('for new Version', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       const activatedRouteMock = {
         data: of({ loadingPoint: [] }),
         snapshot: { params: { servicePointNumber: 8504414 } },
       };
-      await setupTestBed(activatedRouteMock);
+      setupTestBed(activatedRouteMock);
+      router = TestBed.inject(Router);
       fixture = TestBed.createComponent(LoadingPointsDetailComponent);
       component = fixture.componentInstance;
-      router = TestBed.inject(Router);
       fixture.detectChanges();
     });
 

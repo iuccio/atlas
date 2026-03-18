@@ -1,28 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { TimetableFieldNumberDetailComponent } from './timetable-field-number-detail.component';
-import { AbstractControl, FormBuilder } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TimetableFieldNumberVersion } from '../../../api';
 import moment from 'moment';
 import { of, throwError } from 'rxjs';
 import { HomeComponent } from '../../home/home.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AppTestingModule } from '../../../app.testing.module';
-import { FormModule } from '../../../core/module/form.module';
-import { ErrorNotificationComponent } from '../../../core/notification/error/error-notification.component';
 import {
   adminPermissionServiceMock,
-  MockBoSelectComponent,
+  translateServiceProvider,
 } from '../../../app.testing.mocks';
-import { CommentComponent } from '../../../core/form-components/comment/comment.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { AtlasFieldErrorComponent } from '../../../core/form-components/atlas-field-error/atlas-field-error.component';
-import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
-import { TextFieldComponent } from '../../../core/form-components/text-field/text-field.component';
 import { PermissionService } from '../../../core/auth/permission/permission.service';
 import { TimetableFieldNumberInternalService } from '../../../api/service/lidi/timetable-field-number-internal.service';
 import { TimetableFieldNumberService } from '../../../api/service/lidi/timetable-field-number.service';
+import { DateModule } from '../../../core/module/date.module';
 
 const version: TimetableFieldNumberVersion = {
   id: 1,
@@ -86,7 +79,7 @@ describe('TimetableFieldNumberDetailComponent detail page read version', () => {
     Pick<TimetableFieldNumberInternalService, 'deleteVersions'>
   >;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockTimetableFieldNumberService = {
       updateVersionWithVersioning: vi.fn(),
     };
@@ -94,20 +87,9 @@ describe('TimetableFieldNumberDetailComponent detail page read version', () => {
       deleteVersions: vi.fn(),
     };
 
-    await TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        TimetableFieldNumberDetailComponent,
-        MockBoSelectComponent,
-        ErrorNotificationComponent,
-        InfoIconComponent,
-        AtlasFieldErrorComponent,
-        AtlasLabelFieldComponent,
-        TextFieldComponent,
-        CommentComponent,
-      ],
+    TestBed.configureTestingModule({
+      imports: [DateModule.forRoot()],
       providers: [
-        { provide: FormBuilder },
         {
           provide: TimetableFieldNumberInternalService,
           useValue: mockTimetableFieldNumberInternalService,
@@ -121,19 +103,15 @@ describe('TimetableFieldNumberDetailComponent detail page read version', () => {
           provide: ActivatedRoute,
           useValue: { snapshot: { data: mockData } },
         },
-        { provide: TranslatePipe },
+        translateServiceProvider,
       ],
-    })
-      .compileComponents()
-      .then();
-  });
+    });
 
-  beforeEach(() => {
     Element.prototype.scrollIntoView = vi.fn();
+    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(TimetableFieldNumberDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = TestBed.inject(Router);
   });
 
   it('should create', () => {
@@ -200,22 +178,17 @@ describe('TimetableFieldNumberDetailComponent Detail page add new version', () =
   >;
   let router: Router;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockTimetableFieldNumbersService = {
       createVersion: vi.fn(),
     };
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         RouterModule.forRoot([{ path: '', component: HomeComponent }]),
-        AppTestingModule,
-        FormModule,
-        TimetableFieldNumberDetailComponent,
-        ErrorNotificationComponent,
-        InfoIconComponent,
+        DateModule.forRoot(),
       ],
       providers: [
-        { provide: FormBuilder },
         {
           provide: TimetableFieldNumberService,
           useValue: mockTimetableFieldNumbersService,
@@ -232,14 +205,12 @@ describe('TimetableFieldNumberDetailComponent Detail page add new version', () =
           provide: PermissionService,
           useValue: adminPermissionServiceMock,
         },
-        { provide: TranslatePipe },
+        translateServiceProvider,
       ],
-    }).compileComponents();
-  });
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TimetableFieldNumberDetailComponent);
     router = TestBed.inject(Router);
+    fixture = TestBed.createComponent(TimetableFieldNumberDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
