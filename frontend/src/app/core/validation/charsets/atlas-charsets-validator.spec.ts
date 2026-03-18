@@ -48,6 +48,20 @@ describe('Atlas Charsets Validator', () => {
     expect(alphaNumeric(new FormControl('asdf 2'))).toBeDefined();
     expect(alphaNumeric(new FormControl('.hello.'))).toBeDefined();
     expect(alphaNumeric(new FormControl('╗'))).toBeDefined();
+    expect(alphaNumeric(new FormControl('AAHS2S:123'))).toBeDefined();
+  });
+
+  it('should allow alphaNumericWithColon charset', () => {
+    const alphaNumericWithColon = AtlasCharsetsValidator.alphaNumericWithColon;
+
+    expect(alphaNumericWithColon(new FormControl('asdf'))).toBeNull();
+    expect(alphaNumericWithColon(new FormControl('sbb01'))).toBeNull();
+    expect(alphaNumericWithColon(new FormControl('AAHS2S'))).toBeNull();
+    expect(alphaNumericWithColon(new FormControl('AAHS2S:123'))).toBeNull();
+
+    expect(alphaNumericWithColon(new FormControl('asdf 2'))).toBeDefined();
+    expect(alphaNumericWithColon(new FormControl('.hello.'))).toBeDefined();
+    expect(alphaNumericWithColon(new FormControl('╗'))).toBeDefined();
   });
 
   it('should allow ISO-8859-1 charset', () => {
