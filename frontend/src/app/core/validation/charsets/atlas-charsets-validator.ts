@@ -115,6 +115,16 @@ export class AtlasCharsetsValidator {
     );
   }
 
+  static alphaNumericWithColon(
+    control: AbstractControl
+  ): ValidationErrors | null {
+    return AtlasCharsetsValidator.validateAllowedCharacters(
+      control,
+      '[0-9a-zA-Z:]*',
+      '0-9a-zA-Z:'
+    );
+  }
+
   static email(control: AbstractControl): ValidationErrors | null {
     return AtlasCharsetsValidator.validateAllowedCharacters(
       control,
