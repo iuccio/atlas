@@ -34,7 +34,7 @@ export class LineFormGroupBuilder {
       {
         linienId: new FormControl(version?.linienId, [
           Validators.maxLength(20),
-          AtlasCharsetsValidator.alphaNumeric,
+          AtlasCharsetsValidator.alphaNumericWithColon,
         ]),
         swissLineNumber: new FormControl(version?.swissLineNumber, [
           Validators.required,
