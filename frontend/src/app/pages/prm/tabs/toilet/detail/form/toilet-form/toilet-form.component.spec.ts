@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { ToiletFormComponent } from './toilet-form.component';
 import { TextFieldComponent } from '../../../../../../../core/form-components/text-field/text-field.component';
@@ -15,8 +16,8 @@ describe('ToiletFormComponent', () => {
   let component: ToiletFormComponent;
   let fixture: ComponentFixture<ToiletFormComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
         ToiletFormComponent,
@@ -29,7 +30,7 @@ describe('ToiletFormComponent', () => {
         CommentComponent,
       ],
       providers: [{ provide: TranslatePipe }],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(ToiletFormComponent);
     component = fixture.componentInstance;

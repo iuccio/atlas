@@ -1,48 +1,33 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { StopPointDetailComponent } from './stop-point-detail.component';
-import { EMPTY, Observable, of } from 'rxjs';
-import { AppTestingModule } from '../../../../../app.testing.module';
-import { ActivatedRoute, Router } from '@angular/router';
-import {
-  MockAtlasButtonComponent,
-  MockAtlasFieldErrorComponent,
-  MockNavigationSepodiPrmComponent,
-  MockSelectComponent,
-} from '../../../../../app.testing.mocks';
-import { SwitchVersionComponent } from '../../../../../core/components/switch-version/switch-version.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { UserDetailInfoComponent } from '../../../../../core/components/user-edit-info/user-detail-info.component';
-import { StopPointCompleteFormComponent } from '../form/stop-point-complete-form/stop-point-complete-form.component';
-import { StopPointReducedFormComponent } from '../form/stop-point-reduced-form/stop-point-reduced-form.component';
-import { TextFieldComponent } from '../../../../../core/form-components/text-field/text-field.component';
-import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
-import { MeansOfTransportPickerComponent } from '../../../../../core/form-components/means-of-transport-picker/means-of-transport-picker.component';
-import { AtlasSpacerComponent } from '../../../../../core/components/spacer/atlas-spacer.component';
+import { EMPTY, firstValueFrom, of } from 'rxjs';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { DialogService } from '../../../../../core/components/dialog/dialog.service';
 import { StopPointFormGroupBuilder } from '../form/stop-point-detail-form-group';
-import { MeanOfTransport, ReadStopPointVersion } from '../../../../../api';
+import { MeanOfTransport } from '../../../../../api';
 import { NotificationService } from '../../../../../core/notification/notification.service';
 import {
   STOP_POINT,
   STOP_POINT_COMPLETE,
-} from '../../../util/stop-point-test-data.spec';
+} from '../../../util/stop-point-test-data';
 import { BERN_WYLEREGG } from '../../../../../../test/data/service-point';
-import { DetailFooterComponent } from '../../../../../core/components/detail-footer/detail-footer.component';
 import { PrmVariantInfoService } from '../prm-variant-info.service';
 import { ValidityService } from '../../../../sepodi/validity/validity.service';
 import { StopPointService } from '../../../../../api/service/prm/stop-point/stop-point.service';
-import SpyObj = jasmine.SpyObj;
-import Spy = jasmine.Spy;
+import { mock, type MockProxy } from 'vitest-mock-extended';
+import { DateModule } from '../../../../../core/module/date.module';
 
 describe('StopPointDetailComponent', () => {
   let component: StopPointDetailComponent;
   let fixture: ComponentFixture<StopPointDetailComponent>;
 
-  let dialogService: SpyObj<DialogService>;
-  let routerSpy: SpyObj<Router>;
-  let stopPointServiceSpy: SpyObj<StopPointService>;
-  let prmVariantInfoService: SpyObj<PrmVariantInfoService>;
-  let notificationService: SpyObj<NotificationService>;
+  let dialogServiceMock: MockProxy<DialogService>;
+  let routerMock: MockProxy<Router>;
+  let stopPointServiceMock: MockProxy<StopPointService>;
+  let prmVariantInfoServiceMock: MockProxy<PrmVariantInfoService>;
+  let notificationServiceMock: MockProxy<NotificationService>;
 
   const activatedRouteMock = {
     parent: {
@@ -51,65 +36,34 @@ describe('StopPointDetailComponent', () => {
   };
 
   beforeEach(() => {
-    routerSpy = jasmine.createSpyObj(['navigate']);
+    Element.prototype.scrollIntoView = vi.fn();
+    routerMock = mock<Router>();
 
-    dialogService = jasmine.createSpyObj('dialogService', ['confirm']);
-    dialogService.confirm.and.returnValue(of(true));
+    dialogServiceMock = mock<DialogService>();
+    dialogServiceMock.confirm.mockReturnValue(of(true));
 
-    stopPointServiceSpy = jasmine.createSpyObj('stopPointService', [
-      'createStopPoint',
-      'updateStopPoint',
-    ]);
-    (
-      stopPointServiceSpy.createStopPoint as Spy<
-        (...args: unknown[]) => Observable<ReadStopPointVersion>
-      >
-    ).and.returnValue(of(STOP_POINT));
+    stopPointServiceMock = mock<StopPointService>();
+    stopPointServiceMock.createStopPoint.mockReturnValue(of(STOP_POINT));
+    stopPointServiceMock.updateStopPoint.mockReturnValue(of(STOP_POINT));
 
-    (
-      stopPointServiceSpy.updateStopPoint as unknown as Spy<
-        (...args: unknown[]) => Observable<ReadStopPointVersion[]>
-      >
-    ).and.returnValue(of([STOP_POINT]));
-
-    prmVariantInfoService = jasmine.createSpyObj('prmVariantInfoService', [
-      'getPrmMeansOfTransportToShow',
-    ]);
-    prmVariantInfoService.getPrmMeansOfTransportToShow.and.returnValue(
+    prmVariantInfoServiceMock = mock<PrmVariantInfoService>();
+    prmVariantInfoServiceMock.getPrmMeansOfTransportToShow.mockReturnValue(
       Object.values(MeanOfTransport)
     );
 
-    notificationService = jasmine.createSpyObj('notificationService', [
-      'success',
-    ]);
+    notificationServiceMock = mock<NotificationService>();
 
     TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        StopPointDetailComponent,
-        MockAtlasButtonComponent,
-        SwitchVersionComponent,
-        UserDetailInfoComponent,
-        StopPointCompleteFormComponent,
-        StopPointReducedFormComponent,
-        MockSelectComponent,
-        TextFieldComponent,
-        InfoIconComponent,
-        AtlasLabelFieldComponent,
-        MockAtlasFieldErrorComponent,
-        MeansOfTransportPickerComponent,
-        AtlasSpacerComponent,
-        DetailFooterComponent,
-        MockNavigationSepodiPrmComponent,
-      ],
+      imports: [DateModule.forRoot(), RouterModule.forRoot([])],
       providers: [
         ValidityService,
         { provide: ActivatedRoute, useValue: activatedRouteMock },
-        { provide: StopPointService, useValue: stopPointServiceSpy },
-        { provide: PrmVariantInfoService, useValue: prmVariantInfoService },
-        { provide: NotificationService, useValue: notificationService },
-        { provide: Router, useValue: routerSpy },
-        TranslatePipe,
+        { provide: StopPointService, useValue: stopPointServiceMock },
+        { provide: PrmVariantInfoService, useValue: prmVariantInfoServiceMock },
+        { provide: NotificationService, useValue: notificationServiceMock },
+        { provide: Router, useValue: routerMock },
+        { provide: DialogService, useValue: dialogServiceMock },
+        translateServiceProvider,
       ],
     });
     fixture = TestBed.createComponent(StopPointDetailComponent);
@@ -123,8 +77,8 @@ describe('StopPointDetailComponent', () => {
 
   it('should init component', () => {
     //given
-    spyOn(component, 'initServicePointsData');
-    spyOn(component, 'initStopPoint');
+    vi.spyOn(component, 'initServicePointsData').mockImplementation(() => {});
+    vi.spyOn(component, 'initStopPoint').mockImplementation(() => {});
     //when
     component.ngOnInit();
     //then
@@ -137,8 +91,10 @@ describe('StopPointDetailComponent', () => {
 
   it('should init when stop point exists', () => {
     component.stopPointVersions = [STOP_POINT];
-    spyOn(component, 'initExistingStopPoint');
-    spyOn(component, 'initNotExistingStopPoint');
+    vi.spyOn(component, 'initExistingStopPoint').mockImplementation(() => {});
+    vi.spyOn(component, 'initNotExistingStopPoint').mockImplementation(
+      () => {}
+    );
     //when
     component.initStopPoint();
     //then
@@ -149,8 +105,10 @@ describe('StopPointDetailComponent', () => {
   it('should init when stop point does exists', () => {
     //given
     component.stopPointVersions = [];
-    spyOn(component, 'initExistingStopPoint');
-    spyOn(component, 'initNotExistingStopPoint');
+    vi.spyOn(component, 'initExistingStopPoint').mockImplementation(() => {});
+    vi.spyOn(component, 'initNotExistingStopPoint').mockImplementation(
+      () => {}
+    );
     //when
     component.initStopPoint();
     //then
@@ -161,8 +119,8 @@ describe('StopPointDetailComponent', () => {
   it('should toggle edit when form is enabled', () => {
     //given
     component.form.enable();
-    spyOn(component, 'showConfirmationDialog');
-    spyOn(component, 'enableForm');
+    vi.spyOn(component, 'showConfirmationDialog').mockImplementation(() => {});
+    vi.spyOn(component, 'enableForm').mockImplementation(() => {});
 
     //when
     component.toggleEdit();
@@ -174,8 +132,8 @@ describe('StopPointDetailComponent', () => {
   it('should toggle edit when form is disable', () => {
     //given
     component.form.disable();
-    spyOn(component, 'showConfirmationDialog');
-    spyOn(component, 'enableForm');
+    vi.spyOn(component, 'showConfirmationDialog').mockImplementation(() => {});
+    vi.spyOn(component, 'enableForm').mockImplementation(() => {});
 
     //when
     component.toggleEdit();
@@ -186,9 +144,9 @@ describe('StopPointDetailComponent', () => {
 
   it('should showConfirmationDialog when is not new', () => {
     //given
-    spyOn(component, 'backToSearchPrm');
-    spyOn(component, 'initSelectedVersion');
-    spyOn(component, 'disableForm');
+    vi.spyOn(component, 'backToSearchPrm').mockImplementation(() => {});
+    vi.spyOn(component, 'initSelectedVersion').mockImplementation(() => {});
+    vi.spyOn(component, 'disableForm').mockImplementation(() => {});
 
     //when
     component.showConfirmationDialog();
@@ -202,10 +160,10 @@ describe('StopPointDetailComponent', () => {
     //given
     component.form = StopPointFormGroupBuilder.buildFormGroup(STOP_POINT);
     component.isNew = true;
-    spyOn(component, 'navigateToPrmHomeSearch');
-    spyOn(component, 'initSelectedVersion');
-    spyOn(component, 'disableForm');
-    spyOn(component.form, 'reset');
+    vi.spyOn(component, 'navigateToPrmHomeSearch').mockImplementation(() => {});
+    vi.spyOn(component, 'initSelectedVersion').mockImplementation(() => {});
+    vi.spyOn(component, 'disableForm').mockImplementation(() => {});
+    vi.spyOn(component.form, 'reset').mockImplementation(() => {});
 
     //when
     component.showConfirmationDialog();
@@ -217,21 +175,21 @@ describe('StopPointDetailComponent', () => {
 
   it('should save when stopPoint isNew', () => {
     //given
-    routerSpy.navigate.and.returnValue(Promise.resolve(true));
+    routerMock.navigate.mockResolvedValue(true);
 
     component.form = StopPointFormGroupBuilder.buildFormGroup(STOP_POINT);
     component.isNew = true;
     //when
     component.save();
     //then
-    expect(stopPointServiceSpy.createStopPoint).toHaveBeenCalled();
-    expect(notificationService.success).toHaveBeenCalled();
+    expect(stopPointServiceMock.createStopPoint).toHaveBeenCalled();
+    expect(notificationServiceMock.success).toHaveBeenCalled();
   });
 
   it('should save without prm variant change when stopPoint update ', () => {
     //given
-    routerSpy.navigate.and.returnValue(Promise.resolve(true));
-    spyOn(component, 'updateStopPoint');
+    routerMock.navigate.mockResolvedValue(true);
+    vi.spyOn(component, 'updateStopPoint').mockImplementation(() => EMPTY);
 
     component.form = StopPointFormGroupBuilder.buildFormGroup(STOP_POINT);
     component.isNew = false;
@@ -241,23 +199,21 @@ describe('StopPointDetailComponent', () => {
     expect(component.updateStopPoint).toHaveBeenCalled();
   });
 
-  it('should update stopPoint', (done) => {
+  it('should update stopPoint', async () => {
     //given
-    routerSpy.navigate.and.returnValue(Promise.resolve(true));
+    routerMock.navigate.mockResolvedValue(true);
     component.form = StopPointFormGroupBuilder.buildFormGroup(STOP_POINT);
     component.isNew = false;
     //when
-    component.doUpdateStopPoint(STOP_POINT).subscribe(() => {
-      expect(stopPointServiceSpy.updateStopPoint).toHaveBeenCalled();
-      expect(notificationService.success).toHaveBeenCalled();
-      done();
-    });
+    await firstValueFrom(component.doUpdateStopPoint(STOP_POINT));
+    expect(stopPointServiceMock.updateStopPoint).toHaveBeenCalled();
+    expect(notificationServiceMock.success).toHaveBeenCalled();
   });
 
   it('should update without prm variant change', () => {
     //given
-    routerSpy.navigate.and.returnValue(Promise.resolve(true));
-    spyOn(component, 'doUpdateStopPoint');
+    routerMock.navigate.mockResolvedValue(true);
+    vi.spyOn(component, 'doUpdateStopPoint').mockImplementation(() => EMPTY);
 
     component.form = StopPointFormGroupBuilder.buildFormGroup(STOP_POINT);
     component.selectedVersion = STOP_POINT;
@@ -270,10 +226,11 @@ describe('StopPointDetailComponent', () => {
 
   it('should update with prm variant change', () => {
     //given
-    routerSpy.navigate.and.returnValue(Promise.resolve(true));
-    spyOn(component, 'showPrmChangeVariantConfirmationDialog').and.returnValue(
-      EMPTY
-    );
+    routerMock.navigate.mockResolvedValue(true);
+    vi.spyOn(
+      component,
+      'showPrmChangeVariantConfirmationDialog'
+    ).mockReturnValue(EMPTY);
 
     component.form = StopPointFormGroupBuilder.buildFormGroup(STOP_POINT);
     component.selectedVersion = STOP_POINT;
@@ -286,8 +243,10 @@ describe('StopPointDetailComponent', () => {
 
   it('should initNotExistingStopPoint when user is authorized', () => {
     //given
-    spyOn(component, 'hasPermissionToCreateNewStopPoint').and.returnValue(true);
-    spyOn(component, 'initEmptyForm');
+    vi.spyOn(component, 'hasPermissionToCreateNewStopPoint').mockReturnValue(
+      true
+    );
+    vi.spyOn(component, 'initEmptyForm').mockImplementation(() => {});
     //when
     component.initNotExistingStopPoint();
     //then
@@ -298,10 +257,10 @@ describe('StopPointDetailComponent', () => {
 
   it('should initNotExistingStopPoint when user is not authorized', () => {
     //given
-    spyOn(component, 'hasPermissionToCreateNewStopPoint').and.returnValue(
+    vi.spyOn(component, 'hasPermissionToCreateNewStopPoint').mockReturnValue(
       false
     );
-    spyOn(component, 'initEmptyForm');
+    vi.spyOn(component, 'initEmptyForm').mockImplementation(() => {});
     //when
     component.initNotExistingStopPoint();
     //then
@@ -313,10 +272,10 @@ describe('StopPointDetailComponent', () => {
   it('should initEmptyForm', () => {
     //given
     component.servicePointVersion = BERN_WYLEREGG;
-    const buildEmptyWithReducedValidationFormGroupSpy = spyOn(
+    const buildEmptyWithReducedValidationFormGroupSpy = vi.spyOn(
       StopPointFormGroupBuilder,
       'buildEmptyWithReducedValidationFormGroup'
-    ).and.callThrough();
+    );
     //when
     component.initEmptyForm();
     //then

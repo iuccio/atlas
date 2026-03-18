@@ -1,32 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { LineWorkflowFormComponent } from './line-workflow-form.component';
-import { AppTestingModule } from '../../../app.testing.module';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WorkflowFormGroup } from '../workflow-form-group';
-import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
-import { CommentComponent } from '../../form-components/comment/comment.component';
-import { TextFieldComponent } from '../../form-components/text-field/text-field.component';
-import { AtlasFieldErrorComponent } from '../../form-components/atlas-field-error/atlas-field-error.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import { translateServiceProvider } from '../../../app.testing.mocks';
 
 describe('LineWorkflowFormComponent', () => {
   let component: LineWorkflowFormComponent;
   let fixture: ComponentFixture<LineWorkflowFormComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        LineWorkflowFormComponent,
-        InfoIconComponent,
-        CommentComponent,
-        TextFieldComponent,
-        AtlasFieldErrorComponent,
-        AtlasLabelFieldComponent,
-      ],
-      providers: [{ provide: TranslatePipe }],
-    }).compileComponents();
+  beforeEach(() => {
+    // Config
+    TestBed.configureTestingModule({
+      providers: [translateServiceProvider],
+    });
+
+    // Arrangement
     fixture = TestBed.createComponent(LineWorkflowFormComponent);
     component = fixture.componentInstance;
     component.formGroup = new FormGroup<WorkflowFormGroup>({

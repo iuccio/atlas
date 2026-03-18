@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { FileDropDirective } from './file-drop.directive';
+import { mock } from 'vitest-mock-extended';
 
 @Component({
   imports: [FileDropDirective],
@@ -13,10 +15,7 @@ describe('FileDropDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
 
   beforeEach(() => {
-    fixture = TestBed.configureTestingModule({
-      imports: [FileDropDirective, TestComponent],
-    }).createComponent(TestComponent);
-
+    fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
   });
 
@@ -26,17 +25,14 @@ describe('FileDropDirective', () => {
     );
     expect(elementWithDirective).toBeTruthy();
 
-    elementWithDirective.triggerEventHandler(
-      'dragover',
-      new DragEvent('dragover')
-    );
-    fixture.detectChanges();
-    expect(elementWithDirective.classes['fileover']).toBeTrue();
+    const dragoverEvent = mock<DragEvent>();
+    elementWithDirective.triggerEventHandler('dragover', dragoverEvent);
 
-    elementWithDirective.triggerEventHandler(
-      'dragleave',
-      new DragEvent('dragleave')
-    );
+    fixture.detectChanges();
+    expect(elementWithDirective.classes['fileover']).toBe(true);
+
+    const dragleaveEvent = mock<DragEvent>();
+    elementWithDirective.triggerEventHandler('dragleave', dragleaveEvent);
     fixture.detectChanges();
     expect(elementWithDirective.classes['fileover']).toBeFalsy();
   });

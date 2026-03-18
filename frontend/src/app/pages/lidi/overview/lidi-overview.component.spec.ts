@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { LidiOverviewComponent } from './lidi-overview.component';
 import { LinesComponent } from '../lines/lines.component';
 import { AppTestingModule } from '../../../app.testing.module';
 import { AtlasButtonComponent } from '../../../core/components/button/atlas-button.component';
 import { PermissionService } from '../../../core/auth/permission/permission.service';
 import { adminPermissionServiceMock } from '../../../app.testing.mocks';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('LidiOverviewComponent', () => {
   let component: LidiOverviewComponent;
@@ -26,9 +26,7 @@ describe('LidiOverviewComponent', () => {
         },
       ],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(LidiOverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -1,6 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import {
+  ActivatedRouteSnapshot,
+  convertToParamMap,
+  RouterStateSnapshot,
+} from '@angular/router';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { ClientCredential } from '../../../../api';
 import { AppTestingModule } from '../../../../app.testing.module';
 import {
@@ -8,25 +12,24 @@ import {
   clientCredentialResolver,
 } from './client-credential-administration.resolver';
 import { ClientCredentialAdministrationService } from '../../../../api/service/user-administration/client-credential-administration.service';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 const clientCredential: ClientCredential = {
   clientCredentialId: '23456789',
 };
 
-const routerStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['']);
+const routerStateSnapshot = {} as RouterStateSnapshot;
 
 describe('ClientCredentialAdministrationResolver', () => {
-  const clientCredentialAdministrationService = jasmine.createSpyObj(
-    'ClientCredentialAdministrationService',
-    ['getClientCredential']
-  );
-  clientCredentialAdministrationService.getClientCredential.and.returnValue(
-    of(clientCredential)
-  );
-
+  let clientCredentialAdministrationService: Mocked<
+    Pick<ClientCredentialAdministrationService, 'getClientCredential'>
+  >;
   let resolver: ClientCredentialAdministrationResolver;
 
   beforeEach(() => {
+    clientCredentialAdministrationService = {
+      getClientCredential: vi.fn().mockReturnValue(of(clientCredential)),
+    };
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
@@ -44,7 +47,7 @@ describe('ClientCredentialAdministrationResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get client credential from service to display', () => {
+  it('should get client credential from service to display', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ clientId: '23456789' }),
     } as ActivatedRouteSnapshot;
@@ -53,11 +56,10 @@ describe('ClientCredentialAdministrationResolver', () => {
       clientCredentialResolver(mockRoute, routerStateSnapshot)
     ) as Observable<ClientCredential>;
 
-    result.subscribe((snapshot) => {
-      expect(snapshot.clientCredentialId).toBe('23456789');
-    });
+    const snapshot = await firstValueFrom(result);
+    expect(snapshot.clientCredentialId).toBe('23456789');
     expect(
       clientCredentialAdministrationService.getClientCredential
-    ).toHaveBeenCalled();
+    ).toHaveBeenCalledExactlyOnceWith('23456789');
   });
 });

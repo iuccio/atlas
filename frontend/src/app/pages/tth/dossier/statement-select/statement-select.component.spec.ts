@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 
 import { StatementSelectComponent } from './statement-select.component';
 import { ActivatedRoute } from '@angular/router';
@@ -17,12 +18,11 @@ const statement: TimetableHearingStatementV2 = {
   },
   documents: [],
 };
-const timetableHearingStatementInternalService = jasmine.createSpyObj(
-  'TimetableHearingStatementInternalService',
-  {
-    getStatement: of(statement),
-  }
-);
+const timetableHearingStatementInternalService: Mocked<
+  Pick<TimetableHearingStatementInternalService, 'getStatement'>
+> = {
+  getStatement: vi.fn().mockReturnValue(of(statement)),
+};
 
 describe('StatementSelectComponent', () => {
   let component: StatementSelectComponent;
@@ -73,11 +73,13 @@ describe('StatementSelectComponent', () => {
   });
 
   it('should go to statement', () => {
-    spyOn(window, 'open');
+    const windowOpenSpy = vi
+      .spyOn(window, 'open')
+      .mockImplementation(() => null);
 
     component.goToStatement(statement);
 
     const expectedUrl = '/timetable-hearing/be/active/statements/456';
-    expect(window.open).toHaveBeenCalledWith(expectedUrl, '_blank');
+    expect(windowOpenSpy).toHaveBeenCalledWith(expectedUrl, '_blank');
   });
 });

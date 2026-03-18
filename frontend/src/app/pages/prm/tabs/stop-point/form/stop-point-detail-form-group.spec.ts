@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import {
   StopPointDetailFormGroup,
   StopPointFormGroupBuilder,
@@ -20,7 +22,7 @@ describe('StopPointFormGroupBuilder', () => {
 
       const writableStopPoint =
         StopPointFormGroupBuilder.getWritableStopPoint(completeForm);
-      expect(writableStopPoint.interoperable).toBeFalse();
+      expect(writableStopPoint.interoperable).toBe(false);
     });
   });
 });

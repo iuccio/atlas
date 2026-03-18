@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { AddExaminantsComponent } from './add-examinants.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -19,32 +20,39 @@ import { ValidationService } from '../../../../../core/validation/validation.ser
 import { StringListComponent } from '../../../../../core/form-components/string-list/string-list.component';
 import { StopPointWorkflowService } from '../../../../../api/service/workflow/stop-point-workflow.service';
 
-const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
-const notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
-  'success',
-]);
-const router = jasmine.createSpyObj({
-  navigate: Promise.resolve(),
-});
-const detailHelperService = jasmine.createSpyObj({
-  confirmLeaveDirtyForm: of(true),
-});
-const stopPointWorkflowService = jasmine.createSpyObj(
-  'StopPointWorkflowService',
-  { addExaminantsToStopPointWorkflow: EMPTY }
-);
-
-const workflowDialogData: AddExaminantsDialogData = {
-  title: '',
-  message: '',
-  workflowId: 5,
-};
-
 describe('AddExaminantsComponent', () => {
   let component: AddExaminantsComponent;
   let fixture: ComponentFixture<AddExaminantsComponent>;
 
+  let dialogRefSpy: Mocked<Pick<MatDialogRef<AddExaminantsComponent>, 'close'>>;
+  let notificationServiceSpy: Mocked<Pick<NotificationService, 'success'>>;
+  let router: Mocked<Pick<Router, 'navigate'>>;
+  let detailHelperService: Mocked<
+    Pick<DetailDialogHelperService, 'confirmLeaveDirtyForm'>
+  >;
+  let stopPointWorkflowService: Mocked<
+    Pick<StopPointWorkflowService, 'addExaminantsToStopPointWorkflow'>
+  >;
+
+  const workflowDialogData: AddExaminantsDialogData = {
+    title: '',
+    message: '',
+    workflowId: 5,
+  };
+
   beforeEach(async () => {
+    dialogRefSpy = { close: vi.fn() };
+    notificationServiceSpy = { success: vi.fn() };
+    router = {
+      navigate: vi.fn().mockReturnValue(Promise.resolve()),
+    };
+    detailHelperService = {
+      confirmLeaveDirtyForm: vi.fn().mockReturnValue(of(true)),
+    };
+    stopPointWorkflowService = {
+      addExaminantsToStopPointWorkflow: vi.fn().mockReturnValue(EMPTY),
+    };
+
     TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -93,7 +101,7 @@ describe('AddExaminantsComponent', () => {
   });
 
   it('should add examinants via service', () => {
-    spyOn(ValidationService, 'validateForm').and.callThrough();
+    vi.spyOn(ValidationService, 'validateForm');
 
     const firstExaminant = component.form.controls.examinants.at(0);
     firstExaminant.controls.firstName.setValue('');
@@ -120,12 +128,12 @@ describe('AddExaminantsComponent', () => {
     ]);
     expect(component.form.controls.examinants.length).toBe(1);
     expect(component.form.controls.ccEmails.value?.length ?? 0).toBe(0);
-    expect(component.form.valid).toBeTrue();
+    expect(component.form.valid).toBe(true);
 
     component.form.controls.examinants.removeAt(0);
-    expect(component.form.valid).toBeFalse();
+    expect(component.form.valid).toBe(false);
 
     component.form.controls.ccEmails.setValue(['winnetou@apache.usa']);
-    expect(component.form.valid).toBeTrue();
+    expect(component.form.valid).toBe(true);
   });
 });

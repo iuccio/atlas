@@ -1,5 +1,6 @@
 import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
-import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { firstValueFrom, of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { AppTestingModule } from '../../../app.testing.module';
 import { LoadingPointsDetailResolver } from './loading-points-detail-resolver.service';
@@ -7,14 +8,17 @@ import { LOADING_POINT } from '../../../../test/data/loading-point';
 import { LoadingPointService } from '../../../api/service/sepodi/loading-point.service';
 
 describe('LoadingPointsDetailResolver', () => {
-  const loadingPointsService = jasmine.createSpyObj('loadingPointsService', [
-    'getLoadingPoint',
-  ]);
-  loadingPointsService.getLoadingPoint.and.returnValue(of(LOADING_POINT));
-
+  let loadingPointsService: Mocked<
+    Pick<LoadingPointService, 'getLoadingPoint'>
+  >;
   let resolver: LoadingPointsDetailResolver;
 
   beforeEach(() => {
+    loadingPointsService = {
+      getLoadingPoint: vi.fn(),
+    };
+    loadingPointsService.getLoadingPoint.mockReturnValue(of(LOADING_POINT));
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
@@ -25,7 +29,7 @@ describe('LoadingPointsDetailResolver', () => {
     resolver = TestBed.inject(LoadingPointsDetailResolver);
   });
 
-  it('should get versions from service to display', () => {
+  it('should get versions from service to display', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({
         servicePointNumber: '8504414',
@@ -35,10 +39,9 @@ describe('LoadingPointsDetailResolver', () => {
 
     const resolvedVersion = resolver.resolve(mockRoute);
 
-    resolvedVersion.subscribe((versions) => {
-      expect(versions.length).toBe(2);
-      expect(versions[0].number).toBe(1231);
-      expect(versions[0].id).toBe(1255);
-    });
+    const versions = await firstValueFrom(resolvedVersion);
+    expect(versions.length).toBe(2);
+    expect(versions[0].number).toBe(1231);
+    expect(versions[0].id).toBe(1255);
   });
 });

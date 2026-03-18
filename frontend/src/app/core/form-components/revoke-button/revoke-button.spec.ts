@@ -1,29 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { RevokeButton } from './revoke-button';
 import { translateServiceProvider } from '../../../app.testing.mocks';
-import { provideHttpClient } from '@angular/common/http';
 import { DialogService } from '../../components/dialog/dialog.service';
 import { of } from 'rxjs';
 import { ApplicationType } from '../../../api';
 
-const dialogService = jasmine.createSpyObj<DialogService>('DialogService', {
-  confirm: of(true),
-});
-
 describe('RevokeButton', () => {
   let component: RevokeButton;
   let fixture: ComponentFixture<RevokeButton>;
+  let dialogServiceMock: Mocked<Pick<DialogService, 'confirm'>>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RevokeButton],
+  beforeEach(() => {
+    dialogServiceMock = {
+      confirm: vi.fn().mockReturnValue(of(true)),
+    };
+
+    TestBed.configureTestingModule({
       providers: [
         translateServiceProvider,
-        provideHttpClient(),
-        { provide: DialogService, useValue: dialogService },
+        { provide: DialogService, useValue: dialogServiceMock },
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(RevokeButton);
     component = fixture.componentInstance;
@@ -37,11 +35,11 @@ describe('RevokeButton', () => {
 
   it('should revoke', () => {
     //given
-    spyOn(component.revokeClicked, 'emit');
+    vi.spyOn(component.revokeClicked, 'emit');
     //when
     component.revoke();
     //then
-    expect(dialogService.confirm).toHaveBeenCalled();
+    expect(dialogServiceMock.confirm).toHaveBeenCalled();
     expect(component.revokeClicked.emit).toHaveBeenCalled();
   });
 });

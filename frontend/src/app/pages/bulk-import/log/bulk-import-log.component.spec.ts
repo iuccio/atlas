@@ -2,14 +2,22 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BulkImportLogComponent } from './bulk-import-log.component';
 import { ActivatedRoute } from '@angular/router';
 import { BulkImportResult } from '../../../api';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { Pipe, PipeTransform } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { MockMatPaginatorComponent } from '../../../app.testing.mocks';
 import { By } from '@angular/platform-browser';
 import { UserDisplayNamePipe } from '../../../core/pipe/user-display-name.pipe';
 import { BulkImportService } from '../../../api/service/bulk/bulk-import.service';
-import Spy = jasmine.Spy;
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mocked,
+  MockInstance,
+  vi,
+} from 'vitest';
 
 @Pipe({
   name: 'userDisplayName',
@@ -24,25 +32,23 @@ class UserDisplayNamePipeMock implements PipeTransform {
 describe('BulkImportLogComponent', () => {
   let component: BulkImportLogComponent;
   let fixture: ComponentFixture<BulkImportLogComponent>;
+  let bulkImportService: Mocked<
+    Pick<BulkImportService, 'getBulkImportResults'>
+  >;
+  let pageChangedFnSpy: MockInstance<
+    typeof BulkImportLogComponent.prototype.pageChanged
+  >;
 
-  let pageChangedFnSpy: Spy;
+  beforeEach(() => {
+    bulkImportService = {
+      getBulkImportResults: vi.fn(),
+    };
+    bulkImportService.getBulkImportResults.mockReturnValue(of(importResult));
 
-  beforeEach(async () => {
-    const bulkImportServiceSpy = jasmine.createSpyObj<BulkImportService>([
-      'getBulkImportResults',
-    ]);
-    (
-      bulkImportServiceSpy.getBulkImportResults as Spy<
-        (id: number) => Observable<BulkImportResult>
-      >
-    )
-      .withArgs(10)
-      .and.returnValue(of(importResult));
-
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [BulkImportLogComponent, TranslateModule.forRoot()],
       providers: [
-        { provide: BulkImportService, useValue: bulkImportServiceSpy },
+        { provide: BulkImportService, useValue: bulkImportService },
         { provide: ActivatedRoute, useValue: { params: of({ id: 10 }) } },
       ],
     })
@@ -54,64 +60,58 @@ describe('BulkImportLogComponent', () => {
 
     fixture = TestBed.createComponent(BulkImportLogComponent);
     component = fixture.componentInstance;
-    pageChangedFnSpy = spyOn(component, 'pageChanged');
+    pageChangedFnSpy = vi.spyOn(component, 'pageChanged');
   });
 
-  it('should create and init', (done) => {
+  it('should create and init', async () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(pageChangedFnSpy).toHaveBeenCalledTimes(1);
-    component.data$?.subscribe((data) => {
-      expect(data.id).toEqual(10);
-      expect(data.importResult).toEqual({
-        importType: 'UPDATE',
-        businessObjectType: 'SERVICE_POINT',
-        creator: 'atlas',
-        creationDate: '2024-09-24T12:31:01.87023',
-        inNameOf: 'atlas2',
-        nbOfSuccess: 1,
-        nbOfInfo: 1,
-        nbOfError: 1,
-        logEntries: [
-          {
-            expanded: false,
-            lineNumber: 2,
-            status: 'INFO',
-            errors: [
-              {
-                errorMessage: 'error',
-                displayInfo: {
-                  code: 'TRANSLATIONS.TEST',
-                  parameters: [
-                    {
-                      key: 'field',
-                      value: 'test',
-                    },
-                  ],
-                },
+    const data = await firstValueFrom(component.data$!);
+    expect(data.id).toEqual(10);
+    expect(data.importResult).toEqual({
+      importType: 'UPDATE',
+      businessObjectType: 'SERVICE_POINT',
+      creator: 'atlas',
+      creationDate: '2024-09-24T12:31:01.87023',
+      inNameOf: 'atlas2',
+      nbOfSuccess: 1,
+      nbOfInfo: 1,
+      nbOfError: 1,
+      logEntries: [
+        {
+          expanded: false,
+          lineNumber: 2,
+          status: 'INFO',
+          errors: [
+            {
+              errorMessage: 'error',
+              displayInfo: {
+                code: 'TRANSLATIONS.TEST',
+                parameters: [{ key: 'field', value: 'test' }],
               },
-            ],
-          },
-          {
-            expanded: false,
-            lineNumber: 3,
-            status: 'DATA_EXECUTION_ERROR',
-            errors: [],
-          },
-          {
-            expanded: false,
-            lineNumber: 4,
-            status: 'DATA_VALIDATION_ERROR',
-            errors: [],
-          },
-        ],
-      });
-      done();
+            },
+          ],
+        },
+        {
+          expanded: false,
+          lineNumber: 3,
+          status: 'DATA_EXECUTION_ERROR',
+          errors: [],
+        },
+        {
+          expanded: false,
+          lineNumber: 4,
+          status: 'DATA_VALIDATION_ERROR',
+          errors: [],
+        },
+      ],
     });
   });
 
   it('should change page', () => {
-    pageChangedFnSpy.and.callThrough();
+    pageChangedFnSpy.mockRestore();
+    pageChangedFnSpy = vi.spyOn(component, 'pageChanged');
     fixture.detectChanges();
     const paginator: MockMatPaginatorComponent = fixture.debugElement.query(
       By.css('mat-paginator')
@@ -146,25 +146,12 @@ const importResult: BulkImportResult = {
           errorMessage: 'error',
           displayInfo: {
             code: 'TRANSLATIONS.TEST',
-            parameters: [
-              {
-                key: 'field',
-                value: 'test',
-              },
-            ],
+            parameters: [{ key: 'field', value: 'test' }],
           },
         },
       ],
     },
-    {
-      lineNumber: 3,
-      status: 'DATA_EXECUTION_ERROR',
-      errors: [],
-    },
-    {
-      lineNumber: 4,
-      status: 'DATA_VALIDATION_ERROR',
-      errors: [],
-    },
+    { lineNumber: 3, status: 'DATA_EXECUTION_ERROR', errors: [] },
+    { lineNumber: 4, status: 'DATA_VALIDATION_ERROR', errors: [] },
   ],
 };

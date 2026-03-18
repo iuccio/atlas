@@ -1,14 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { AddToDossierDialogService } from './add-to-dossier-dialog.service';
 import { TimetableHearingStatementV2 } from '../../../../api';
 
 describe('AddToDossierDialogService', () => {
   let service: AddToDossierDialogService;
 
-  const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+  const dialogSpy: Mocked<Pick<MatDialog, 'open'>> = {
+    open: vi.fn(),
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -18,13 +21,15 @@ describe('AddToDossierDialogService', () => {
     service = TestBed.inject(AddToDossierDialogService);
   });
 
-  it('should open confirmation dialog', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of([1000]) });
+  it('should open confirmation dialog', async () => {
+    dialogSpy.open.mockReturnValue({
+      afterClosed: () => of([1000]),
+    } as ReturnType<MatDialog['open']>);
 
-    service
-      .openDialog({} as TimetableHearingStatementV2)
-      .subscribe((result) => expect(result).toEqual([1000]));
-
-    expect(dialogSpy.open).toHaveBeenCalled();
+    const result = await firstValueFrom(
+      service.openDialog({} as TimetableHearingStatementV2)
+    );
+    expect(result).toEqual([1000]);
+    expect(dialogSpy.open).toHaveBeenCalledTimes(1);
   });
 });

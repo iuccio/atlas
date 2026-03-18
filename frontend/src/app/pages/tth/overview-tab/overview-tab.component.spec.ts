@@ -1,5 +1,6 @@
 import { OverviewTabComponent } from './overview-tab.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { OverviewToTabShareDataService } from './service/overview-to-tab-share-data.service';
 import { HearingStatus } from '../../../api';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,18 +12,23 @@ describe('OverviewTabComponent', () => {
   let component: OverviewTabComponent;
   let fixture: ComponentFixture<OverviewTabComponent>;
   let routerEventsSubject: Subject<Event>;
-  let permissionServiceSpy: jasmine.SpyObj<PermissionService>;
+  let permissionServiceSpy: Mocked<
+    Pick<PermissionService, 'getTthApplicationUserType'>
+  >;
 
   beforeEach(async () => {
     routerEventsSubject = new Subject();
 
-    permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
+    permissionServiceSpy = {
+      getTthApplicationUserType: vi.fn(),
+    };
 
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate'], {
-      events: routerEventsSubject.asObservable(),
-    });
+    const routerSpy: Mocked<Pick<Router, 'navigate'>> & {
+      events: Subject<Event>;
+    } = {
+      navigate: vi.fn(),
+      events: routerEventsSubject,
+    };
 
     await TestBed.configureTestingModule({
       imports: [OverviewTabComponent],
@@ -69,7 +75,7 @@ describe('OverviewTabComponent', () => {
   });
 
   it('should define only one tab for BO_TTH', () => {
-    permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+    permissionServiceSpy.getTthApplicationUserType.mockReturnValue('BO_TTH');
 
     fixture = TestBed.createComponent(OverviewTabComponent);
     component = fixture.componentInstance;

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { PrmDetailPanelComponent } from './prm-detail-panel.component';
 import { AppTestingModule } from '../../../../app.testing.module';
@@ -20,6 +21,7 @@ describe('PrmDetailPanelComponent', () => {
       ],
       providers: [TranslatePipe],
     });
+
     fixture = TestBed.createComponent(PrmDetailPanelComponent);
     component = fixture.componentInstance;
   });

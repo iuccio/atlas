@@ -1,55 +1,42 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { UserAdministrationClientCreateComponent } from './user-administration-client-create.component';
 import { NotificationService } from '../../../../../core/notification/notification.service';
-import { TranslatePipe } from '@ngx-translate/core';
 import { of } from 'rxjs';
-import { Router, RouterModule } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { DetailPageContainerComponent } from '../../../../../core/components/detail-page-container/detail-page-container.component';
-import { DetailFooterComponent } from '../../../../../core/components/detail-footer/detail-footer.component';
-import { DetailPageContentComponent } from '../../../../../core/components/detail-page-content/detail-page-content.component';
 import { ClientCredentialAdministrationService } from '../../../../../api/service/user-administration/client-credential-administration.service';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
-import { provideHttpClient } from '@angular/common/http';
-import { tickAsync } from '../../../../../../test/tick-async';
-import SpyObj = jasmine.SpyObj;
 
 describe('UserAdministrationClientCreateComponent', () => {
   let component: UserAdministrationClientCreateComponent;
   let fixture: ComponentFixture<UserAdministrationClientCreateComponent>;
 
-  let clientCredentialAdministrationServiceSpy: SpyObj<ClientCredentialAdministrationService>;
-  let notificationServiceSpy: SpyObj<NotificationService>;
+  let clientCredentialAdministrationService: Mocked<
+    Pick<ClientCredentialAdministrationService, 'createClientCredential'>
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
 
-  beforeEach(async () => {
-    clientCredentialAdministrationServiceSpy = jasmine.createSpyObj(
-      'ClientCredentialAdministrationService',
-      ['createClientCredential']
-    );
-    notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
-      'success',
-    ]);
+  beforeEach(() => {
+    clientCredentialAdministrationService = {
+      createClientCredential: vi.fn(),
+    };
+    notificationService = {
+      success: vi.fn(),
+    };
 
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        UserAdministrationClientCreateComponent,
-        DetailPageContainerComponent,
-        DetailPageContentComponent,
-        DetailFooterComponent,
-      ],
+    TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
         translateServiceProvider,
+        provideRouter([]),
         {
           provide: ClientCredentialAdministrationService,
-          useValue: clientCredentialAdministrationServiceSpy,
+          useValue: clientCredentialAdministrationService,
         },
         {
           provide: NotificationService,
-          useValue: notificationServiceSpy,
+          useValue: notificationService,
         },
-        TranslatePipe,
         {
           provide: MAT_DIALOG_DATA,
           useValue: { user: undefined },
@@ -63,7 +50,7 @@ describe('UserAdministrationClientCreateComponent', () => {
           },
         },
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(UserAdministrationClientCreateComponent);
     component = fixture.componentInstance;
@@ -79,20 +66,21 @@ describe('UserAdministrationClientCreateComponent', () => {
     component.form.controls.clientCredentialId.setValue('client-id');
     component.form.controls.alias.setValue('alias');
 
-    clientCredentialAdministrationServiceSpy.createClientCredential.and.returnValue(
+    clientCredentialAdministrationService.createClientCredential.mockReturnValue(
       of({
         clientCredentialId: 'client-id',
       })
     );
-    spyOn(router, 'navigate').and.resolveTo(true);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.create();
+
     expect(
-      clientCredentialAdministrationServiceSpy.createClientCredential
+      clientCredentialAdministrationService.createClientCredential
     ).toHaveBeenCalledTimes(1);
     expect(router.navigate).toHaveBeenCalledTimes(1);
-    await tickAsync(1000);
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
+    await fixture.whenStable();
+    expect(notificationService.success).toHaveBeenCalledExactlyOnceWith(
       'USER_ADMIN.NOTIFICATIONS.ADD_SUCCESS'
     );
   });

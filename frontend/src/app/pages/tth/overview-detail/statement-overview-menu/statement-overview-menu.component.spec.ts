@@ -10,21 +10,24 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
 import { AddToDossierDialogService } from '../../dossier/add-to-dossier-dialog/add-to-dossier-dialog.service';
 import { Pages } from '../../../pages';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 
-const tthChangeCantonDialogService = jasmine.createSpyObj(
-  'TthChangeCantonDialogService',
-  { onClick: of(true) }
-);
-const addToDossierDialogService = jasmine.createSpyObj(
-  'AddToDossierDialogService',
-  { openDialog: of(true) }
-);
-const dialogService = jasmine.createSpyObj('dialogService', {
-  confirm: of(true),
-});
-const router = jasmine.createSpyObj('Router', {
-  navigate: Promise.resolve(),
-});
+const tthChangeCantonDialogService: Mocked<
+  Pick<TthChangeCantonDialogService, 'onClick'>
+> = {
+  onClick: vi.fn().mockReturnValue(of(true)),
+};
+const addToDossierDialogService: Mocked<
+  Pick<AddToDossierDialogService, 'openDialog'>
+> = {
+  openDialog: vi.fn().mockReturnValue(of(true)),
+};
+const dialogService: Mocked<Pick<DialogService, 'confirm'>> = {
+  confirm: vi.fn().mockReturnValue(of(true)),
+};
+const router: Mocked<Pick<Router, 'navigate'>> = {
+  navigate: vi.fn().mockResolvedValue(undefined),
+};
 
 const timetableHearingStatement: TimetableHearingStatementV2 = {
   timetableYear: 2001,
@@ -101,7 +104,7 @@ describe('StatementOverviewMenuComponent', () => {
     fixture.componentRef.setInput('column', { disabled: false });
 
     fixture.detectChanges();
-    router.navigate.calls.reset();
+    router.navigate.mockClear();
   });
 
   it('should create', () => {
@@ -109,56 +112,56 @@ describe('StatementOverviewMenuComponent', () => {
   });
 
   it('should duplicate dossier', () => {
-    const statement: TimetableHearingStatementV2 = {
+    const statement = {
       swissCanton: SwissCanton.Aargau,
       statement: 'This is a statement',
       statementSender: {
         emails: new Set('muster@muster.com'),
       },
-    };
+    } as TimetableHearingStatementV2;
     component.duplicate(statement);
 
     expect(statementShareService.statement).toBe(statement);
   });
 
   it('should create dossier', () => {
-    const statement: TimetableHearingStatementV2 = {
+    const statement = {
       swissCanton: SwissCanton.Aargau,
       statement: 'This is a statement',
       statementSender: {
         emails: new Set('muster@muster.com'),
       },
-    };
+    } as TimetableHearingStatementV2;
     component.createDossier(statement);
     expect(router.navigate).toHaveBeenCalledWith(
       ['..', Pages.TTH_DOSSIERS.path, 'add'],
-      jasmine.any(Object)
+      expect.any(Object)
     );
   });
 
   it('should add statement to existing dossier', () => {
-    const statement: TimetableHearingStatementV2 = {
+    const statement = {
       swissCanton: SwissCanton.Aargau,
       statement: 'This is a statement',
       statementSender: {
         emails: new Set('muster@muster.com'),
       },
-    };
+    } as TimetableHearingStatementV2;
     component.addToDossier(statement);
 
-    expect(addToDossierDialogService.openDialog).toHaveBeenCalled();
+    expect(addToDossierDialogService.openDialog).toHaveBeenCalledTimes(1);
   });
 
   it('should change canton via dialog', () => {
-    const statement: TimetableHearingStatementV2 = {
+    const statement = {
       swissCanton: SwissCanton.Aargau,
       statement: 'This is a statement',
       statementSender: {
         emails: new Set('muster@muster.com'),
       },
-    };
+    } as TimetableHearingStatementV2;
     component.switchCanton(statement);
 
-    expect(tthChangeCantonDialogService.onClick).toHaveBeenCalled();
+    expect(tthChangeCantonDialogService.onClick).toHaveBeenCalledTimes(1);
   });
 });

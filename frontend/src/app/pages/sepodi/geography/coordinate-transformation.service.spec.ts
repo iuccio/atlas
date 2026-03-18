@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { CoordinateTransformationService } from './coordinate-transformation.service';
 import { SpatialReference } from '../../../api';
 

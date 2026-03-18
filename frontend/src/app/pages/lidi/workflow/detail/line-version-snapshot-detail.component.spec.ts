@@ -36,9 +36,9 @@ import { DateRangeComponent } from '../../../../core/form-components/date-range/
 import { DateIconComponent } from '../../../../core/form-components/date-icon/date-icon.component';
 import { LineService } from '../../../../api/service/lidi/line.service';
 import { LineWorkflowService } from '../../../../api/service/workflow/line-workflow.service';
-import SpyObj = jasmine.SpyObj;
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
-const lineVersionSnapsot: LineVersionSnapshot = {
+const lineVersionSnapshot: LineVersionSnapshot = {
   id: 1234,
   slnid: 'slnid',
   number: 'name',
@@ -70,25 +70,27 @@ const lineVersion: LineVersionV2 = {
 };
 
 const mockData = {
-  lineVersionSnapshot: lineVersionSnapsot,
+  lineVersionSnapshot: lineVersionSnapshot,
 };
 
 describe('LineVersionSnapshotDetailComponent', () => {
   let component: LineVersionSnapshotDetailComponent;
   let fixture: ComponentFixture<LineVersionSnapshotDetailComponent>;
-
-  let lineServiceSpy: SpyObj<LineService>;
-  let lineWorkflowServiceSpy: SpyObj<LineWorkflowService>;
+  let lineService: Mocked<Pick<LineService, 'getLineVersionsV2'>>;
+  let lineWorkflowService: Mocked<Pick<LineWorkflowService, 'getWorkflow'>>;
 
   beforeEach(() => {
-    lineServiceSpy = jasmine.createSpyObj<LineService>(['getLineVersionsV2']);
-    lineServiceSpy.getLineVersionsV2.and.returnValue(of([lineVersion]));
+    lineService = {
+      getLineVersionsV2: vi.fn(),
+    };
+    lineService.getLineVersionsV2.mockReturnValue(of([lineVersion]));
 
-    lineWorkflowServiceSpy = jasmine.createSpyObj<LineWorkflowService>({
-      getWorkflow: EMPTY,
-    });
+    lineWorkflowService = {
+      getWorkflow: vi.fn(),
+    };
+    lineWorkflowService.getWorkflow.mockReturnValue(EMPTY);
 
-    setupTestBed(lineServiceSpy, lineWorkflowServiceSpy, mockData);
+    setupTestBed(lineService, lineWorkflowService, mockData);
 
     fixture = TestBed.createComponent(LineVersionSnapshotDetailComponent);
     component = fixture.componentInstance;
@@ -106,8 +108,8 @@ describe('LineVersionSnapshotDetailComponent', () => {
 });
 
 function setupTestBed(
-  lineService: LineService,
-  lineWorkflowService: LineWorkflowService,
+  lineService: Partial<LineService>,
+  lineWorkflowService: Partial<LineWorkflowService>,
   data: { lineVersionSnapshot: string | LineVersionSnapshot }
 ) {
   TestBed.configureTestingModule({

@@ -1,6 +1,10 @@
 import { BusinessOrganisationVersion } from '../../../api';
 import { BoDisplayPipe } from './bo-display.pipe';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { BoSelectionDisplayPipe } from './bo-selection-display.pipe';
+import { mock } from 'vitest-mock-extended';
+import { BusinessOrganisationService } from '../../../api/service/bodi/business-organisation.service';
 
 const version: BusinessOrganisationVersion = {
   id: 1234,
@@ -22,19 +26,11 @@ const version: BusinessOrganisationVersion = {
 describe('BoDisplayPipe', () => {
   let boDisplayPipe: BoDisplayPipe;
 
-  const boSelectionDisplayPipe = jasmine.createSpyObj(
-    'BoSelectionDisplayPipe',
-    {
-      transform: '123 - 123 - 123 - sboid',
-    }
-  );
+  const boSelectionDisplayPipe = mock<BoSelectionDisplayPipe>();
+  boSelectionDisplayPipe.transform.mockReturnValue('123 - 123 - 123 - sboid');
 
-  const businessOrganisationsService = jasmine.createSpyObj(
-    'BusinessOrganisationsService',
-    {
-      getVersions: of([version]),
-    }
-  );
+  const businessOrganisationsService = mock<BusinessOrganisationService>();
+  businessOrganisationsService.getVersions.mockReturnValue(of([version]));
 
   beforeEach(() => {
     boDisplayPipe = new BoDisplayPipe(
@@ -47,13 +43,11 @@ describe('BoDisplayPipe', () => {
     expect(boDisplayPipe).toBeTruthy();
   });
 
-  it('should transform given sboid', (doneCallback) => {
-    boDisplayPipe.transform('sboid').subscribe((result) => {
-      expect(result).toBe('123 - 123 - 123 - sboid');
+  it('should transform given sboid', async () => {
+    const result = await firstValueFrom(boDisplayPipe.transform('sboid'));
+    expect(result).toBe('123 - 123 - 123 - sboid');
 
-      expect(boSelectionDisplayPipe.transform).toHaveBeenCalled();
-      expect(businessOrganisationsService.getVersions).toHaveBeenCalled();
-      doneCallback();
-    });
+    expect(boSelectionDisplayPipe.transform).toHaveBeenCalled();
+    expect(businessOrganisationsService.getVersions).toHaveBeenCalled();
   });
 });

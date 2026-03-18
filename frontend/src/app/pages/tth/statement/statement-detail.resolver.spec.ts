@@ -7,8 +7,9 @@ import {
 } from '../../../api';
 import { StatementDetailResolver } from './statement-detail.resolver';
 import { AppTestingModule } from '../../../app.testing.module';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { TimetableHearingStatementInternalService } from '../../../api/service/lidi/timetable-hearing-statement-internal.service';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 
 const statement: TimetableHearingStatementV2 = {
   id: 1234,
@@ -20,13 +21,11 @@ const statement: TimetableHearingStatementV2 = {
 };
 
 describe('StatementDetailResolver', () => {
-  const timetableHearingStatementsServiceSpy = jasmine.createSpyObj(
-    'TimetableHearingStatementInternalService',
-    ['getStatement']
-  );
-  timetableHearingStatementsServiceSpy.getStatement.and.returnValue(
-    of(statement)
-  );
+  const timetableHearingStatementsServiceSpy: Mocked<
+    Pick<TimetableHearingStatementInternalService, 'getStatement'>
+  > = {
+    getStatement: vi.fn().mockReturnValue(of(statement)),
+  };
 
   let resolver: StatementDetailResolver;
 
@@ -48,16 +47,15 @@ describe('StatementDetailResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get statement from service', () => {
+  it('should get statement from service', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
     mockRoute.data = { hearingStatus: HearingStatus.Archived };
-    const statement = resolver.resolve(mockRoute);
+    const statementObs = resolver.resolve(mockRoute);
 
-    statement.subscribe((statement) => {
-      expect(statement).toBeTruthy();
-      expect(statement!.id).toBe(1234);
-    });
+    const statement = await firstValueFrom(statementObs);
+    expect(statement).toBeTruthy();
+    expect(statement!.id).toBe(1234);
   });
 });

@@ -1,24 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SublineShorteningDialogComponent } from './subline-shortening-dialog.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { Router } from '@angular/router';
 import { Pages } from '../../../pages';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 describe('SublineShorteningDialogComponent', () => {
   let component: SublineShorteningDialogComponent;
   let fixture: ComponentFixture<SublineShorteningDialogComponent>;
-  let router: jasmine.SpyObj<Router>;
+  let router: Mocked<Pick<Router, 'createUrlTree' | 'serializeUrl'>>;
 
-  beforeEach(async () => {
-    const routerSpy = jasmine.createSpyObj('Router', [
-      'createUrlTree',
-      'serializeUrl',
-    ]);
+  beforeEach(() => {
+    router = {
+      createUrlTree: vi.fn(),
+      serializeUrl: vi.fn(),
+    };
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [AppTestingModule, SublineShorteningDialogComponent],
       providers: [
         {
@@ -32,14 +32,13 @@ describe('SublineShorteningDialogComponent', () => {
           },
         },
         { provide: TranslatePipe },
-        { provide: Router, useValue: routerSpy },
+        { provide: Router, useValue: router },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SublineShorteningDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
   });
 
   it('should create', () => {
@@ -48,11 +47,12 @@ describe('SublineShorteningDialogComponent', () => {
 
   it('should open new tab with correct url', () => {
     const slnid = '123';
-
     const expectedUrl = '/line-directory/sublines/123';
-    router.serializeUrl.and.returnValue(expectedUrl);
 
-    spyOn(window, 'open');
+    router.serializeUrl.mockReturnValue(expectedUrl);
+    const windowOpenSpy = vi
+      .spyOn(window, 'open')
+      .mockImplementation(() => null);
 
     component.openNewTabOfSubline(slnid);
 
@@ -61,6 +61,9 @@ describe('SublineShorteningDialogComponent', () => {
       Pages.SUBLINES.path,
       slnid,
     ]);
-    expect(window.open).toHaveBeenCalledWith(expectedUrl, '_blank');
+    expect(windowOpenSpy).toHaveBeenCalledExactlyOnceWith(
+      expectedUrl,
+      '_blank'
+    );
   });
 });

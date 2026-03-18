@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { StopPointTerminationInfoComponent } from './stop-point-termination-info.component';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
@@ -13,22 +14,27 @@ const terminationInfo: TerminationInfo = {
   terminationDate: new Date('2021-06-01'),
 };
 
-const workflowService = jasmine.createSpyObj('workflowService', [
-  'getTerminationInfoBySloid',
-]);
-
-workflowService.getTerminationInfoBySloid.and.returnValue(of(terminationInfo));
-
 describe('StopPointTerminationInfoComponent', () => {
   let component: StopPointTerminationInfoComponent;
   let fixture: ComponentFixture<StopPointTerminationInfoComponent>;
-  let router: jasmine.SpyObj<Router>;
+  let routerSpy: Mocked<Pick<Router, 'createUrlTree' | 'serializeUrl'>>;
+
+  let workflowServiceSpy: Mocked<
+    Pick<StopPointTerminationWorkflowService, 'getTerminationInfoBySloid'>
+  >;
 
   beforeEach(async () => {
-    const routerSpy = jasmine.createSpyObj('Router', [
-      'createUrlTree',
-      'serializeUrl',
-    ]);
+    workflowServiceSpy = {
+      getTerminationInfoBySloid: vi.fn(),
+    };
+    workflowServiceSpy.getTerminationInfoBySloid.mockReturnValue(
+      of(terminationInfo)
+    );
+
+    routerSpy = {
+      createUrlTree: vi.fn(),
+      serializeUrl: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [StopPointTerminationInfoComponent, TranslateModule.forRoot()],
@@ -36,7 +42,7 @@ describe('StopPointTerminationInfoComponent', () => {
         { provide: TranslatePipe },
         {
           provide: StopPointTerminationWorkflowService,
-          useValue: workflowService,
+          useValue: workflowServiceSpy,
         },
         { provide: Router, useValue: routerSpy },
       ],
@@ -45,7 +51,6 @@ describe('StopPointTerminationInfoComponent', () => {
     component = fixture.componentInstance;
     fixture.componentRef.setInput('sloid', 'ch:1:sloid:7000');
     fixture.detectChanges();
-    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
   });
 
   it('should create', () => {
@@ -62,13 +67,13 @@ describe('StopPointTerminationInfoComponent', () => {
 
     const expectedUrl =
       '/line-service-point-directory/termination-workflows/123';
-    router.serializeUrl.and.returnValue(expectedUrl);
+    routerSpy.serializeUrl.mockReturnValue(expectedUrl);
 
-    spyOn(window, 'open');
+    vi.spyOn(window, 'open').mockImplementation(() => null);
 
     component.navigate();
 
-    expect(router.createUrlTree).toHaveBeenCalledWith([
+    expect(routerSpy.createUrlTree).toHaveBeenCalledWith([
       Pages.SEPODI.path,
       Pages.TERMINATION_STOP_POINT_WORKFLOWS.path,
       workflowId,

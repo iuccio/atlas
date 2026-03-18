@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { StopPointTerminationDialogComponent } from './stop-point-termination-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogCloseComponent } from 'src/app/core/components/dialog/close/dialog-close.component';
@@ -14,28 +14,9 @@ import { NotificationService } from '../../../../../../core/notification/notific
 import { Permission, User } from '../../../../../../api';
 import { UserAdministrationService } from '../../../../../../api/service/user-administration/user-administration.service';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { TerminationStopPointWorkflowModel } from '../../../../../../api/model/terminationStopPointWorkflowModel';
 
-const dialogRefSpy = jasmine.createSpyObj(['close']);
-const notificationServiceSpy = jasmine.createSpyObj(['success']);
-const workflowServiceMock = jasmine.createSpyObj(
-  StopPointTerminationWorkflowService,
-  {
-    startTermination: of({}),
-  }
-);
-const user: User = {
-  sbbUserId: 'e123',
-  lastName: 'Marek',
-  firstName: 'Hamsik',
-  mail: 'a@b.cd',
-  permissions: new Set<Permission>(),
-};
-const userAdministrationServiceMock = jasmine.createSpyObj(
-  UserAdministrationService,
-  {
-    getCurrentUser: of(user),
-  }
-);
 const workflowDialogData: StopPointTerminationDialogData = {
   title: 'TERMINATION_WORKFLOW.DIALOG.START_TERMINATION_TITLE',
   message: '',
@@ -46,11 +27,39 @@ const workflowDialogData: StopPointTerminationDialogData = {
   boTerminationDate: new Date(),
 };
 
+const user: User = {
+  sbbUserId: 'e123',
+  lastName: 'Marek',
+  firstName: 'Hamsik',
+  mail: 'a@b.cd',
+  permissions: new Set<Permission>(),
+};
+
 describe('StopPointTerminationDialogComponent', () => {
   let component: StopPointTerminationDialogComponent;
   let fixture: ComponentFixture<StopPointTerminationDialogComponent>;
 
+  let dialogRefSpy: Mocked<
+    Pick<MatDialogRef<StopPointTerminationDialogComponent>, 'close'>
+  >;
+  let notificationServiceSpy: Mocked<Pick<NotificationService, 'success'>>;
+  let workflowServiceSpy: Mocked<
+    Pick<StopPointTerminationWorkflowService, 'startTermination'>
+  >;
+  let userAdministrationServiceSpy: Mocked<
+    Pick<UserAdministrationService, 'getCurrentUser'>
+  >;
+
   beforeEach(async () => {
+    dialogRefSpy = { close: vi.fn() };
+    notificationServiceSpy = { success: vi.fn() };
+    workflowServiceSpy = { startTermination: vi.fn() };
+    workflowServiceSpy.startTermination.mockReturnValue(
+      of({} as TerminationStopPointWorkflowModel)
+    );
+    userAdministrationServiceSpy = { getCurrentUser: vi.fn() };
+    userAdministrationServiceSpy.getCurrentUser.mockReturnValue(of(user));
+
     await TestBed.configureTestingModule({
       imports: [
         StopPointTerminationDialogComponent,
@@ -69,15 +78,16 @@ describe('StopPointTerminationDialogComponent', () => {
         },
         {
           provide: StopPointTerminationWorkflowService,
-          useValue: workflowServiceMock,
+          useValue: workflowServiceSpy,
         },
         { provide: NotificationService, useValue: notificationServiceSpy },
         {
           provide: UserAdministrationService,
-          useValue: userAdministrationServiceMock,
+          useValue: userAdministrationServiceSpy,
         },
         { provide: TranslatePipe },
         provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 

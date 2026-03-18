@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { Router } from '@angular/router';
 import { ReadStopPointWorkflow, StopPointPerson } from '../../../../../api';
 import { StopPointWorkflowDetailFormComponent } from './stop-point-workflow-detail-form.component';
@@ -16,35 +17,35 @@ import { StopPointWorkflowExaminantsTableComponent } from '../examinant-table/st
 import { of } from 'rxjs';
 import { StopPointWorkflowService } from '../../../../../api/service/workflow/stop-point-workflow.service';
 
-const workflow: ReadStopPointWorkflow = {
-  versionId: 1,
-  sloid: 'ch:1:sloid:8000',
-  workflowComment: 'No comment',
-};
-
-let router: Router;
-
-const defaultExaminants: StopPointPerson[] = [
-  {
-    organisation: 'SKI',
-    personFunction: 'Fachstelle atlas',
-    mail: 'atlas@sbb.ch',
-    defaultExaminant: true,
-  },
-];
-
-const stopPointWorkflowService = jasmine.createSpyObj(
-  'stopPointWorkflowService',
-  {
-    getExaminants: of(defaultExaminants),
-  }
-);
-
 describe('StopPointWorkflowDetailFormComponent', () => {
+  const workflow: ReadStopPointWorkflow = {
+    versionId: 1,
+    sloid: 'ch:1:sloid:8000',
+    workflowComment: 'No comment',
+  };
+
+  const defaultExaminants: StopPointPerson[] = [
+    {
+      organisation: 'SKI',
+      personFunction: 'Fachstelle atlas',
+      mail: 'atlas@sbb.ch',
+      defaultExaminant: true,
+    },
+  ];
+
   let component: StopPointWorkflowDetailFormComponent;
   let fixture: ComponentFixture<StopPointWorkflowDetailFormComponent>;
+  let router: Router;
+
+  let stopPointWorkflowService: Mocked<
+    Pick<StopPointWorkflowService, 'getExaminants'>
+  >;
 
   beforeEach(async () => {
+    stopPointWorkflowService = {
+      getExaminants: vi.fn().mockReturnValue(of(defaultExaminants)),
+    };
+
     TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -99,7 +100,7 @@ describe('StopPointWorkflowDetailFormComponent', () => {
   });
 
   it('should go to swisstopo', () => {
-    spyOn(window, 'open');
+    vi.spyOn(window, 'open').mockImplementation(() => null);
 
     component.goToSwissTopo();
     expect(window.open).toHaveBeenCalledWith(
@@ -111,8 +112,8 @@ describe('StopPointWorkflowDetailFormComponent', () => {
   it('should go to atlas', () => {
     const url =
       'http://localhost:4200/service-point-directory/service-points/8500039/service-point?id=1085';
-    spyOn(window, 'open');
-    spyOn(router, 'serializeUrl').and.returnValue(url);
+    vi.spyOn(window, 'open').mockImplementation(() => null);
+    vi.spyOn(router, 'serializeUrl').mockReturnValue(url);
 
     component.goToAtlasStopPoint();
     expect(router.serializeUrl).toHaveBeenCalled();

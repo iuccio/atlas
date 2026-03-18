@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach } from 'vitest';
 import { FormControl, FormGroup } from '@angular/forms';
 import { StringListComponent } from './string-list.component';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
@@ -59,7 +60,7 @@ describe('StringListComponent', () => {
     expect(component.formGroup.get(component.controlName)?.value).toEqual([
       'a@a.ch',
     ]);
-    expect(component.formGroup.dirty).toBeFalse();
+    expect(component.formGroup.dirty).toBe(false);
     expect(component.strListFormGroup.get('input')?.value).toEqual('');
   });
 
@@ -77,7 +78,7 @@ describe('StringListComponent', () => {
       'a@a.ch',
       'b@b.ch',
     ]);
-    expect(component.formGroup.dirty).toBeTrue();
+    expect(component.formGroup.dirty).toBe(true);
     expect(component.strListFormGroup.get('input')?.value).toEqual('');
   });
 
@@ -94,7 +95,7 @@ describe('StringListComponent', () => {
     expect(component.formGroup.get(component.controlName)?.value).toEqual([
       'a@a.ch',
     ]);
-    expect(component.formGroup.dirty).toBeFalse();
+    expect(component.formGroup.dirty).toBe(false);
     expect(component.strListFormGroup.get('input')?.value).toEqual(null);
   });
 
@@ -106,6 +107,6 @@ describe('StringListComponent', () => {
     fixture.detectChanges();
     component.removeItem(0);
     expect(component.formGroup.get(component.controlName)?.value).toEqual([]);
-    expect(component.formGroup.dirty).toBeTrue();
+    expect(component.formGroup.dirty).toBe(true);
   });
 });

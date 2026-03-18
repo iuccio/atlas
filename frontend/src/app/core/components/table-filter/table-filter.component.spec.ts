@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TableFilterComponent } from './table-filter.component';
-import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import moment from 'moment';
 import {
@@ -34,6 +34,7 @@ import { TransportCompanySelectComponent } from '../../form-components/tu-select
 import { TimetableFieldNumberSelectComponent } from '../../form-components/ttfn-select/timetable-field-number-select.component';
 import { SelectComponent } from '../../form-components/select/select.component';
 import { BusinessOrganisationSelectComponent } from '../../form-components/bo-select/business-organisation-select.component';
+import { translateServiceProvider } from '../../../app.testing.mocks';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
@@ -101,38 +102,33 @@ describe('TableFilterComponent', () => {
   let component: TableFilterComponent<unknown>;
   let fixture: ComponentFixture<TableFilterComponent<unknown>>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), TableFilterComponent],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       providers: [
-        TranslatePipe,
+        translateServiceProvider,
         provideNativeDateAdapter(),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
-    })
-      .overrideComponent(TableFilterComponent, {
-        remove: {
-          imports: [
-            MatDatepickerInput,
-            MatChipInput,
-            MatChipGrid,
-            SelectComponent,
-          ],
-        },
-        add: {
-          imports: [
-            MockMatDatepickerInputComponent,
-            MockMatChipInputComponent,
-            MockMatChipGridComponent,
-            MockAtlasSelectComponent,
-          ],
-        },
-      })
-      .compileComponents();
-  });
+    }).overrideComponent(TableFilterComponent, {
+      remove: {
+        imports: [
+          MatDatepickerInput,
+          MatChipInput,
+          MatChipGrid,
+          SelectComponent,
+        ],
+      },
+      add: {
+        imports: [
+          MockMatDatepickerInputComponent,
+          MockMatChipInputComponent,
+          MockMatChipGridComponent,
+          MockAtlasSelectComponent,
+        ],
+      },
+    });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(TableFilterComponent);
     component = fixture.componentInstance;
   });
@@ -148,7 +144,7 @@ describe('TableFilterComponent', () => {
     component.filterConfigurations = [[multiSelectFilter]];
     fixture.detectChanges();
 
-    spyOn(component.searchEvent, 'emit');
+    vi.spyOn(component.searchEvent, 'emit').mockImplementation(() => {});
     const mockAtlasSelectComponent: MockAtlasSelectComponent =
       fixture.debugElement.query(
         By.directive(MockAtlasSelectComponent)
@@ -156,7 +152,7 @@ describe('TableFilterComponent', () => {
     mockAtlasSelectComponent.selectChanged.emit({ value: ['one'] });
 
     expect(multiSelectFilter.getActiveSearch()).toEqual(['one']);
-    expect(component.searchEvent.emit).toHaveBeenCalledOnceWith();
+    expect(component.searchEvent.emit).toHaveBeenCalledExactlyOnceWith();
 
     mockAtlasSelectComponent.selectChanged.emit({ value: [] });
 
@@ -169,7 +165,7 @@ describe('TableFilterComponent', () => {
     component.filterConfigurations = [[dateSelect]];
     fixture.detectChanges();
 
-    spyOn(component.searchEvent, 'emit');
+    vi.spyOn(component.searchEvent, 'emit').mockImplementation(() => {});
     const mockMatDatepickerInputComponent: MockMatDatepickerInputComponent =
       fixture.debugElement.query(
         By.directive(MockMatDatepickerInputComponent)
@@ -185,7 +181,7 @@ describe('TableFilterComponent', () => {
     expect(dateSelect.getActiveSearch()).toEqual(
       moment('31.12.2021', 'DD.MM.yyyy').toDate()
     );
-    expect(component.searchEvent.emit).toHaveBeenCalledOnceWith();
+    expect(component.searchEvent.emit).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('should not set date when invalid', () => {
@@ -193,7 +189,7 @@ describe('TableFilterComponent', () => {
     component.filterConfigurations = [[dateSelect]];
     fixture.detectChanges();
 
-    spyOn(component.searchEvent, 'emit');
+    vi.spyOn(component.searchEvent, 'emit').mockImplementation(() => {});
     const mockMatDatepickerInputComponent: MockMatDatepickerInputComponent =
       fixture.debugElement.query(
         By.directive(MockMatDatepickerInputComponent)
@@ -220,19 +216,19 @@ describe('TableFilterComponent', () => {
         By.directive(MockMatChipInputComponent)
       ).componentInstance;
 
-    spyOn(component.searchEvent, 'emit');
-    const chipInputClearSpy = jasmine.createSpy();
-    const matChipInputSpy = jasmine.createSpyObj('MatChipInputEvent', [], {
+    vi.spyOn(component.searchEvent, 'emit').mockImplementation(() => {});
+    const chipInputClearSpy = vi.fn();
+    const matChipInputSpy = {
       value: 'Test',
       chipInput: {
         clear: chipInputClearSpy,
       },
-    });
+    } as any;
     mockMatChipInputComponent.matChipInputTokenEnd.emit(matChipInputSpy);
 
     expect(chipSelect.getActiveSearch()).toEqual(['Test']);
-    expect(component.searchEvent.emit).toHaveBeenCalledOnceWith();
-    expect(chipInputClearSpy).toHaveBeenCalledOnceWith();
+    expect(component.searchEvent.emit).toHaveBeenCalledExactlyOnceWith();
+    expect(chipInputClearSpy).toHaveBeenCalledExactlyOnceWith();
   });
 
   it("should not add search if it's already there", () => {
@@ -246,19 +242,19 @@ describe('TableFilterComponent', () => {
         By.directive(MockMatChipInputComponent)
       ).componentInstance;
 
-    spyOn(component.searchEvent, 'emit');
-    const chipInputClearSpy = jasmine.createSpy();
-    const matChipInputSpy = jasmine.createSpyObj('MatChipInputEvent', [], {
+    vi.spyOn(component.searchEvent, 'emit').mockImplementation(() => {});
+    const chipInputClearSpy = vi.fn();
+    const matChipInputSpy = {
       value: 'Test',
       chipInput: {
         clear: chipInputClearSpy,
       },
-    });
+    } as any;
     mockMatChipInputComponent.matChipInputTokenEnd.emit(matChipInputSpy);
 
     expect(chipSelect.getActiveSearch()).toEqual(['Test']);
-    expect(component.searchEvent.emit).toHaveBeenCalledOnceWith();
-    expect(chipInputClearSpy).toHaveBeenCalledOnceWith();
+    expect(component.searchEvent.emit).toHaveBeenCalledExactlyOnceWith();
+    expect(chipInputClearSpy).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('should remove search', () => {
@@ -267,14 +263,14 @@ describe('TableFilterComponent', () => {
     component.filterConfigurations = [[chipSelect]];
     fixture.detectChanges();
 
-    spyOn(component.searchEvent, 'emit');
+    vi.spyOn(component.searchEvent, 'emit').mockImplementation(() => {});
     const matChipRow: MatChipRow = fixture.debugElement.query(
       By.directive(MatChipRow)
     ).componentInstance;
     matChipRow.removed.emit();
 
     expect(chipSelect.getActiveSearch()).toEqual([]);
-    expect(component.searchEvent.emit).toHaveBeenCalledOnceWith();
+    expect(component.searchEvent.emit).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('should set active search on bo-select change', () => {
@@ -289,7 +285,7 @@ describe('TableFilterComponent', () => {
     component.filterConfigurations = [[searchSelect]];
     fixture.detectChanges();
 
-    spyOn(component.searchEvent, 'emit');
+    vi.spyOn(component.searchEvent, 'emit').mockImplementation(() => {});
     const boSelectComponent: BusinessOrganisationSelectComponent =
       fixture.debugElement.query(
         By.directive(BusinessOrganisationSelectComponent)
@@ -299,7 +295,7 @@ describe('TableFilterComponent', () => {
     } as BusinessOrganisation);
 
     expect(searchSelect.getActiveSearch()).toEqual({ sboid: 'Test' });
-    expect(component.searchEvent.emit).toHaveBeenCalledOnceWith();
+    expect(component.searchEvent.emit).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('should set active search on ttfn-select change', () => {
@@ -314,7 +310,7 @@ describe('TableFilterComponent', () => {
     component.filterConfigurations = [[searchSelect]];
     fixture.detectChanges();
 
-    spyOn(component.searchEvent, 'emit');
+    vi.spyOn(component.searchEvent, 'emit').mockImplementation(() => {});
     const ttfnSelectComponent: TimetableFieldNumberSelectComponent =
       fixture.debugElement.query(
         By.directive(TimetableFieldNumberSelectComponent)
@@ -324,7 +320,7 @@ describe('TableFilterComponent', () => {
     } as TimetableFieldNumber);
 
     expect(searchSelect.getActiveSearch()).toEqual({ ttfnid: 'Test' });
-    expect(component.searchEvent.emit).toHaveBeenCalledOnceWith();
+    expect(component.searchEvent.emit).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('should set active search on tu-select change', () => {
@@ -339,7 +335,7 @@ describe('TableFilterComponent', () => {
     component.filterConfigurations = [[searchSelect]];
     fixture.detectChanges();
 
-    spyOn(component.searchEvent, 'emit');
+    vi.spyOn(component.searchEvent, 'emit').mockImplementation(() => {});
     const tuSelectComponent: TransportCompanySelectComponent =
       fixture.debugElement.query(
         By.directive(TransportCompanySelectComponent)
@@ -347,7 +343,7 @@ describe('TableFilterComponent', () => {
     tuSelectComponent.tuSelectionChanged.emit({ number: 'Test' });
 
     expect(searchSelect.getActiveSearch()).toEqual({ number: 'Test' });
-    expect(component.searchEvent.emit).toHaveBeenCalledOnceWith();
+    expect(component.searchEvent.emit).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('should set single search', () => {
@@ -364,19 +360,19 @@ describe('TableFilterComponent', () => {
         By.directive(MockMatChipInputComponent)
       ).componentInstance;
 
-    spyOn(component.searchEvent, 'emit');
-    const chipInputClearSpy = jasmine.createSpy();
-    const matChipInputSpy = jasmine.createSpyObj('MatChipInputEvent', [], {
+    vi.spyOn(component.searchEvent, 'emit').mockImplementation(() => {});
+    const chipInputClearSpy = vi.fn();
+    const matChipInputSpy = {
       value: 'Test',
       chipInput: {
         clear: chipInputClearSpy,
       },
-    });
+    } as any;
     mockMatChipInputComponent.matChipInputTokenEnd.emit(matChipInputSpy);
 
     expect(singleSearch.getActiveSearch()).toEqual('Test');
-    expect(component.searchEvent.emit).toHaveBeenCalledOnceWith();
-    expect(chipInputClearSpy).toHaveBeenCalledOnceWith();
+    expect(component.searchEvent.emit).toHaveBeenCalledExactlyOnceWith();
+    expect(chipInputClearSpy).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('should set active search on boolean slide toggle change', () => {
@@ -388,9 +384,9 @@ describe('TableFilterComponent', () => {
     component.filterConfigurations = [[booleanFilter]];
     fixture.detectChanges();
 
-    expect(booleanFilter.getActiveSearch()).toBeFalse();
+    expect(booleanFilter.getActiveSearch()).toBe(false);
 
-    spyOn(component.searchEvent, 'emit');
+    vi.spyOn(component.searchEvent, 'emit').mockImplementation(() => {});
 
     const slideToggleComponent: AtlasSlideToggleComponent =
       fixture.debugElement.query(
@@ -400,13 +396,13 @@ describe('TableFilterComponent', () => {
     slideToggleComponent.toggleChange.emit(true);
     fixture.detectChanges();
 
-    expect(booleanFilter.getActiveSearch()).toBeTrue();
-    expect(component.searchEvent.emit).toHaveBeenCalledOnceWith();
+    expect(booleanFilter.getActiveSearch()).toBe(true);
+    expect(component.searchEvent.emit).toHaveBeenCalledExactlyOnceWith();
 
     slideToggleComponent.toggleChange.emit(false);
     fixture.detectChanges();
 
-    expect(booleanFilter.getActiveSearch()).toBeFalse();
+    expect(booleanFilter.getActiveSearch()).toBe(false);
     expect(component.searchEvent.emit).toHaveBeenCalledTimes(2);
   });
 });

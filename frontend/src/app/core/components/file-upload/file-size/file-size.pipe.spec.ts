@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { FileSizePipe } from './file-size.pipe';
 
 describe('FileSizePipe', () => {

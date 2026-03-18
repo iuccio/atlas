@@ -1,8 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AtlasApiService } from '../atlas-api.service';
 import { CompanyService } from './company.service';
 import { UserService } from '../../../core/auth/user/user.service';
+import { EMPTY } from 'rxjs';
 
 describe('CompanyService', () => {
   let service: CompanyService;
@@ -21,9 +23,9 @@ describe('CompanyService', () => {
     service = TestBed.inject(CompanyService);
     apiService = TestBed.inject(AtlasApiService);
 
-    spyOn(apiService, 'paramsOf').and.callThrough();
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'get');
+    vi.spyOn(apiService, 'paramsOf');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
   });
 
   it('should getCompanies', () => {
@@ -34,15 +36,15 @@ describe('CompanyService', () => {
 
     service.getCompanies(searchCriteria, page, size, sort);
 
-    expect(apiService.paramsOf).toHaveBeenCalledOnceWith({
+    expect(apiService.paramsOf).toHaveBeenCalledExactlyOnceWith({
       searchCriteria,
       page,
       size,
       sort,
     });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/business-organisation-directory/v1/companies',
-      jasmine.any(HttpParams),
+      expect.any(HttpParams),
     );
   });
 
@@ -51,8 +53,8 @@ describe('CompanyService', () => {
 
     service.getCompany(uic);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({ uic });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({ uic });
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       `/business-organisation-directory/v1/companies/${uic}`,
     );
   });

@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../user/user.service';
@@ -26,7 +27,7 @@ describe('AdminGuard', () => {
 
   it('should return true', () => {
     isAdmin = true;
-    expect(adminGuard.canActivate()).toBeTrue();
+    expect(adminGuard.canActivate()).toBe(true);
   });
 
   it('should return / redirect', () => {

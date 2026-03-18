@@ -1,26 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { SearchSelectComponent } from './search-select.component';
-import { NgSelectModule } from '@ng-select/ng-select';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { FormControl, FormGroup } from '@angular/forms';
 import { translateServiceProvider } from '../../../app.testing.mocks';
-import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
+import { mock } from 'vitest-mock-extended';
 
 describe('SearchSelectComponent', () => {
   let component: SearchSelectComponent<unknown>;
   let fixture: ComponentFixture<SearchSelectComponent<unknown>>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        NgSelectModule,
-        ReactiveFormsModule,
-        SearchSelectComponent,
-        AtlasFieldErrorComponent,
-      ],
-      providers: [translateServiceProvider, provideHttpClient()],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [translateServiceProvider],
+    });
 
     fixture = TestBed.createComponent(SearchSelectComponent);
     component = fixture.componentInstance;
@@ -34,16 +28,13 @@ describe('SearchSelectComponent', () => {
   });
 
   it('isDropdownOpen should return false', () => {
-    component.ngSelect = jasmine.createSpyObj('NgSelectComponent', [], {
-      isOpen: signal(undefined),
-    });
-    expect(component.isDropdownOpen()).toBeFalse();
+    expect(component.isDropdownOpen()).toBe(false);
   });
 
   it('isDropdownOpen should return true', () => {
-    component.ngSelect = jasmine.createSpyObj('NgSelectComponent', [], {
-      isOpen: signal(true),
-    });
-    expect(component.isDropdownOpen()).toBeTrue();
+    const ngSelectMock = mock<NgSelectComponent>();
+    ngSelectMock.isOpen.mockImplementation(signal(true));
+    component.ngSelect = ngSelectMock;
+    expect(component.isDropdownOpen()).toBe(true);
   });
 });

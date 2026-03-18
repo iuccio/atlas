@@ -1,27 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { LoadingSpinnerComponent } from './loading-spinner.component';
 import { By } from '@angular/platform-browser';
-import { ChangeDetectionStrategy } from '@angular/core';
 
 describe('LoadingSpinnerComponent', () => {
-  let component: LoadingSpinnerComponent;
   let fixture: ComponentFixture<LoadingSpinnerComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [LoadingSpinnerComponent],
-    })
-      .overrideComponent(LoadingSpinnerComponent, {
-        set: { changeDetection: ChangeDetectionStrategy.Default },
-      })
-      .compileComponents();
-
+  beforeEach(() => {
     fixture = TestBed.createComponent(LoadingSpinnerComponent);
-    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create spinning logo', () => {
-    component.isLoading = true;
+    fixture.componentRef.setInput('isLoading', true);
     fixture.detectChanges();
 
     const loadingSpinnerDiv = fixture.debugElement.query(

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import {
   BULK_IMPORT_APPLICATIONS,
   BulkImportPermission,
@@ -17,7 +18,7 @@ describe('BulkImportPermission', () => {
         permissionRestrictions: [],
       },
     ]);
-    expect(result).toBeTrue();
+    expect(result).toBe(true);
   });
 
   it('may not access BulkImport for reader', () => {
@@ -28,7 +29,7 @@ describe('BulkImportPermission', () => {
         permissionRestrictions: [],
       },
     ]);
-    expect(result).toBeFalse();
+    expect(result).toBe(false);
   });
 
   it('may not access BulkImport for writer', () => {
@@ -39,7 +40,7 @@ describe('BulkImportPermission', () => {
         permissionRestrictions: [],
       },
     ]);
-    expect(result).toBeFalse();
+    expect(result).toBe(false);
   });
 
   it('may access BulkImport for writer with explicit import permission', () => {
@@ -52,7 +53,7 @@ describe('BulkImportPermission', () => {
         ],
       },
     ]);
-    expect(result).toBeTrue();
+    expect(result).toBe(true);
   });
 
   it('should have bulk import applications ', () => {

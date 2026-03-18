@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { StopPointWorkflowBasicInfo } from './stop-point-workflow-basic-info';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';

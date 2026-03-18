@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { BaseChangeDialogComponent } from './base-change-dialog.component';
 import { DialogService } from '../../../../core/components/dialog/dialog.service';
 import { of } from 'rxjs';
@@ -16,6 +17,7 @@ import { TthChangeStatusFormGroup } from '../tth-change-status-dialog/model/tth-
 import { AtlasFieldLengthValidator } from '../../../../core/validation/field-lengths/atlas-field-length-validator';
 import { WhitespaceValidator } from '../../../../core/validation/whitespace/whitespace-validator';
 import { By } from '@angular/platform-browser';
+import { mock, mockClear } from 'vitest-mock-extended';
 
 const statement: TimetableHearingStatementV2 = {
   id: 1,
@@ -27,16 +29,17 @@ const statement: TimetableHearingStatementV2 = {
   },
 };
 
-const dialogServiceSpy = jasmine.createSpyObj(DialogService, {
-  confirmLeave: of(true),
-});
-const dialogRefSpy = jasmine.createSpyObj('dialogRef', ['close']);
+const dialogServiceSpy: Mocked<Pick<DialogService, 'confirmLeave'>> = {
+  confirmLeave: vi.fn().mockReturnValue(of(true)),
+};
+const dialogRefSpy = mock<MatDialogRef<BaseChangeDialogComponent>>();
 
 describe('BaseChangeDialogComponent', () => {
   let component: BaseChangeDialogComponent;
   let fixture: ComponentFixture<BaseChangeDialogComponent>;
 
   beforeEach(async () => {
+    mockClear(dialogRefSpy);
     await TestBed.configureTestingModule({
       imports: [AppTestingModule, FormModule, BaseChangeDialogComponent],
       providers: [
@@ -76,7 +79,7 @@ describe('BaseChangeDialogComponent', () => {
     //when
     component.closeDialog();
     //then
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+    expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
   });
 
   it('should close dialog when form is dirty', () => {
@@ -84,8 +87,8 @@ describe('BaseChangeDialogComponent', () => {
     component.formGroup.markAsDirty();
     component.closeDialog();
     //then
-    expect(dialogServiceSpy.confirmLeave).toHaveBeenCalled();
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+    expect(dialogServiceSpy.confirmLeave).toHaveBeenCalledTimes(1);
+    expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
   });
 
   it('should render tth change status dialog', () => {
@@ -94,12 +97,12 @@ describe('BaseChangeDialogComponent', () => {
     const title = fixture.debugElement.query(
       By.css('div.dialog > div.mb-5 > span.font-bold-4xl')
     );
-    expect(title.nativeElement.innerText).toBe('Title');
+    expect(title.nativeElement.textContent).toBe('Title');
 
     const content = fixture.debugElement.query(
       By.css('div.dialog > div > span.message')
     );
-    expect(content.nativeElement.innerText).toBe('message');
+    expect(content.nativeElement.textContent).toBe('message');
 
     const publicComment = fixture.debugElement.query(
       By.css('atlas-form-comment')
@@ -111,11 +114,11 @@ describe('BaseChangeDialogComponent', () => {
     const cancelButton = fixture.debugElement.query(
       By.css('mat-dialog-actions button.me-3')
     );
-    expect(cancelButton.nativeElement.innerText).toBe('DIALOG.CANCEL');
+    expect(cancelButton.nativeElement.textContent).to.contain(' DIALOG.CANCEL');
 
     const confirmButton = fixture.debugElement.query(
       By.css('mat-dialog-actions button.primary-color-btn')
     );
-    expect(confirmButton.nativeElement.innerText).toBe('DIALOG.OK');
+    expect(confirmButton.nativeElement.textContent).to.contain('DIALOG.OK');
   });
 });

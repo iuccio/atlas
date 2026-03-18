@@ -1,19 +1,16 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DateRangeTextComponent } from './date-range-text.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { AppTestingModule } from '../../../app.testing.module';
-import { DisplayDatePipe } from '../../pipe/display-date.pipe';
+import { translateServiceProvider } from '../../../app.testing.mocks';
 
 describe('DateRangeTextComponent', () => {
   let component: DateRangeTextComponent;
   let fixture: ComponentFixture<DateRangeTextComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppTestingModule, DateRangeTextComponent, DisplayDatePipe],
-      providers: [{ provide: TranslatePipe }],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [translateServiceProvider],
+    });
 
     fixture = TestBed.createComponent(DateRangeTextComponent);
     component = fixture.componentInstance;
@@ -21,7 +18,6 @@ describe('DateRangeTextComponent', () => {
       validFrom: new Date('2023-01-01'),
       validTo: new Date('2023-01-31'),
     };
-
     fixture.detectChanges();
   });
 

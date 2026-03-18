@@ -1,9 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AtlasApiService } from '../atlas-api.service';
 import { HttpClient } from '@angular/common/http';
 import { BusinessOrganisationInternalService } from './business-organisation-internal.service';
 import { BusinessOrganisationVersion } from '../../model/businessOrganisationVersion';
 import { UserService } from '../../../core/auth/user/user.service';
+import { EMPTY } from 'rxjs';
 
 describe('BusinessOrganisationInternalService', () => {
   let service: BusinessOrganisationInternalService;
@@ -22,11 +24,11 @@ describe('BusinessOrganisationInternalService', () => {
     service = TestBed.inject(BusinessOrganisationInternalService);
     apiService = TestBed.inject(AtlasApiService);
 
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'paramsOf').and.callThrough();
-    spyOn(apiService, 'post');
-    spyOn(apiService, 'delete');
-    spyOn(apiService, 'put');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'paramsOf');
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'delete').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'put').mockImplementation(() => EMPTY);
   });
 
   it('should createBusinessOrganisationVersion', () => {
@@ -34,10 +36,10 @@ describe('BusinessOrganisationInternalService', () => {
 
     service.createBusinessOrganisationVersion(version);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       businessOrganisationVersion: version,
     });
-    expect(apiService.post).toHaveBeenCalledOnceWith(
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
       '/business-organisation-directory/internal/business-organisations/versions',
       version
     );
@@ -48,10 +50,10 @@ describe('BusinessOrganisationInternalService', () => {
 
     service.deleteBusinessOrganisation(sboid);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       sboid,
     });
-    expect(apiService.delete).toHaveBeenCalledOnceWith(
+    expect(apiService.delete).toHaveBeenCalledExactlyOnceWith(
       '/business-organisation-directory/internal/business-organisations/' + encodeURIComponent(sboid)
     );
   });
@@ -61,10 +63,10 @@ describe('BusinessOrganisationInternalService', () => {
 
     service.revokeBusinessOrganisation(sboid);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       sboid,
     });
-    expect(apiService.post).toHaveBeenCalledOnceWith(
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
       '/business-organisation-directory/internal/business-organisations/' + encodeURIComponent(sboid) + '/revoke'
     );
   });
@@ -75,11 +77,11 @@ describe('BusinessOrganisationInternalService', () => {
 
     service.updateBusinessOrganisationVersion(id, version);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       id,
       businessOrganisationVersion: version,
     });
-    expect(apiService.put).toHaveBeenCalledOnceWith(
+    expect(apiService.put).toHaveBeenCalledExactlyOnceWith(
       '/business-organisation-directory/internal/business-organisations/versions/' + id,
       version
     );
