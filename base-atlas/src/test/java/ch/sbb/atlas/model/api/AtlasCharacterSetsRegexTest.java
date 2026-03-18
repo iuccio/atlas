@@ -101,6 +101,22 @@ public class AtlasCharacterSetsRegexTest {
     assertThat(pattern.matcher("wut_this").matches()).isFalse();
     assertThat(pattern.matcher("hello@asdf").matches()).isFalse();
     assertThat(pattern.matcher("tag me on #atlas").matches()).isFalse();
+    assertThat(pattern.matcher("hello:there").matches()).isFalse();
+  }
+
+  @Test
+  void shouldValidateAlphaNumericWithColonCorrectly() {
+    Pattern pattern = Pattern.compile(AtlasCharacterSetsRegex.ALPHA_NUMERIC_WITH_COLON);
+
+    assertThat(pattern.matcher("ABK").matches()).isTrue();
+    assertThat(pattern.matcher("sbb01").matches()).isTrue();
+    assertThat(pattern.matcher("hello:there").matches()).isTrue();
+
+    assertThat(pattern.matcher(".").matches()).isFalse();
+    assertThat(pattern.matcher("hello there").matches()).isFalse();
+    assertThat(pattern.matcher("wut_this").matches()).isFalse();
+    assertThat(pattern.matcher("hello@asdf").matches()).isFalse();
+    assertThat(pattern.matcher("tag me on #atlas").matches()).isFalse();
   }
 
   @Test
