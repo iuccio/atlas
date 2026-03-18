@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { StopPointWorkflowOverviewComponent } from './stop-point-workflow-overview.component';
 import { MockTableComponent } from '../../../../app.testing.mocks';
 import {
@@ -12,35 +13,36 @@ import { TableComponent } from '../../../../core/components/table/table.componen
 import { TranslateModule } from '@ngx-translate/core';
 import { StopPointWorkflowService } from '../../../../api/service/workflow/stop-point-workflow.service';
 
-const workflow: ReadStopPointWorkflow = {
-  versionId: 1000,
-  sloid: 'ch:1:sloid:7000',
-  workflowComment: 'no comment!',
-};
-const container: ContainerReadStopPointWorkflow = {
-  objects: [workflow],
-  totalCount: 1,
-};
-let isAtLeastSupervisor = true;
-const permissionServiceMock: Partial<PermissionService> = {
-  isAtLeastSupervisor(): boolean {
-    return isAtLeastSupervisor;
-  },
-};
-
 describe('StopPointWorkflowOverviewComponent', () => {
+  const workflow: ReadStopPointWorkflow = {
+      versionId: 1000,
+      sloid: 'ch:1:sloid:7000',
+      workflowComment: 'no comment!',
+    };
+    const container: ContainerReadStopPointWorkflow = {
+      objects: [workflow],
+      totalCount: 1,
+    };
+    let isAtLeastSupervisor = true;
+    const permissionServiceMock: Partial<PermissionService> = {
+      isAtLeastSupervisor(): boolean {
+        return isAtLeastSupervisor;
+      },
+    };
+
   let component: StopPointWorkflowOverviewComponent;
   let fixture: ComponentFixture<StopPointWorkflowOverviewComponent>;
   let router: Router;
 
-  const stopPointWorkflowService = jasmine.createSpyObj(
-    'stopPointWorkflowService',
-    {
-      getStopPointWorkflows: of(container),
-    }
-  );
+  let stopPointWorkflowService: Mocked<
+    Pick<StopPointWorkflowService, 'getStopPointWorkflows'>
+  >;
 
   beforeEach(async () => {
+    stopPointWorkflowService = {
+      getStopPointWorkflows: vi.fn().mockReturnValue(of(container)),
+    };
+
     TestBed.configureTestingModule({
       imports: [StopPointWorkflowOverviewComponent, TranslateModule.forRoot()],
       providers: [
@@ -95,7 +97,7 @@ describe('StopPointWorkflowOverviewComponent', () => {
   });
 
   it('should go to detail on click', () => {
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
 
     component.edit(workflow);
 

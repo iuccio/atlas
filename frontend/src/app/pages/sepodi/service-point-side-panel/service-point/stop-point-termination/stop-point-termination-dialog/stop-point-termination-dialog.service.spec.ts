@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { StopPointTerminationDialogService } from './stop-point-termination-dialog.service';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import {
   Country,
   ReadServicePointVersion,
@@ -29,9 +29,13 @@ const stopPoint: ReadServicePointVersion = {
 describe('StopPointTerminationDialogService', () => {
   let service: StopPointTerminationDialogService;
 
-  const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+  let dialogSpy: Mocked<Pick<MatDialog, 'open'>>;
 
   beforeEach(() => {
+    dialogSpy = {
+      open: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
       providers: [{ provide: MatDialog, useValue: dialogSpy }],
@@ -43,13 +47,15 @@ describe('StopPointTerminationDialogService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should open dialog', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
+  it('should open dialog', async () => {
+    dialogSpy.open.mockReturnValue({
+      afterClosed: () => of(true),
+    } as ReturnType<MatDialog['open']>);
 
-    service
-      .openDialog(stopPoint, moment('2020-1-1'))
-      .subscribe((result) => expect(result).toBeTrue());
-
+    const result = await firstValueFrom(
+      service.openDialog(stopPoint, moment('2020-01-01', 'YYYY-MM-DD'))
+    );
+    expect(result).toBe(true);
     expect(dialogSpy.open).toHaveBeenCalled();
   });
 });

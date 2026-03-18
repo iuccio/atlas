@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { LineWorkflowDialogComponent } from './line-workflow-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { TranslatePipe } from '@ngx-translate/core';
 import { LineWorkflowDialogData } from './line-workflow-dialog-data';
 import {
   LineVersionWorkflow,
@@ -13,28 +12,16 @@ import {
   WorkflowProcessingStatus,
   WorkflowStart,
 } from '../../../api';
-import { CommentComponent } from '../../form-components/comment/comment.component';
-import { ErrorNotificationComponent } from '../../notification/error/error-notification.component';
-import { AppTestingModule } from '../../../app.testing.module';
-import { FormModule } from '../../module/form.module';
 import { NotificationService } from '../../notification/notification.service';
 import { of } from 'rxjs';
-import { LineWorkflowCheckFormComponent } from '../workflow-check-form/line-workflow-check-form.component';
-import { LineWorkflowFormComponent } from '../workflow-form/line-workflow-form.component';
 import {
   adminPermissionServiceMock,
-  MockAtlasButtonComponent,
+  translateServiceProvider,
 } from '../../../app.testing.mocks';
 import { PermissionService } from '../../auth/permission/permission.service';
-import { DialogFooterComponent } from '../../components/dialog/footer/dialog-footer.component';
-import { DialogContentComponent } from '../../components/dialog/content/dialog-content.component';
-import { DialogCloseComponent } from '../../components/dialog/close/dialog-close.component';
 import { UserAdministrationService } from '../../../api/service/user-administration/user-administration.service';
 import { LineWorkflowService } from '../../../api/service/workflow/line-workflow.service';
 import WorkflowTypeEnum = WorkflowStart.WorkflowTypeEnum;
-
-const dialogRefSpy = jasmine.createSpyObj(['close']);
-const notificationServiceSpy = jasmine.createSpyObj(['success']);
 
 const user: User = {
   sbbUserId: 'e123',
@@ -43,12 +30,7 @@ const user: User = {
   mail: 'a@b.cd',
   permissions: new Set<Permission>(),
 };
-const userAdministrationServiceMock = jasmine.createSpyObj(
-  UserAdministrationService,
-  {
-    getCurrentUser: of(user),
-  }
-);
+
 const workflow: Workflow = {
   id: 1,
   businessObjectId: 14214,
@@ -63,31 +45,67 @@ const workflow: Workflow = {
   },
   workflowType: WorkflowTypeEnum.Line,
 };
-const workflowServiceMock = jasmine.createSpyObj(LineWorkflowService, {
-  getWorkflow: of(workflow),
-  startWorkflow: of({}),
-});
 
 describe('LineWorkflowDialogComponent new', () => {
   let component: LineWorkflowDialogComponent;
   let fixture: ComponentFixture<LineWorkflowDialogComponent>;
 
-  beforeEach(async () => {
-    setupTestBed({
-      lineRecord: {
-        id: 123,
-        validFrom: new Date(),
-        validTo: new Date(),
-        slnid: 'ch:1:slnid:1000003',
-        businessOrganisation: 'ch:1:sboid:110000',
-        status: Status.Draft,
-        versionNumber: 0,
-      },
-      descriptionForWorkflow: 'Toller Workflow',
-      title: 'Acciaroli bello',
-      message: 'Andiamo in spiaggia?',
+  let dialogRefStub: Mocked<
+    Pick<MatDialogRef<LineWorkflowDialogComponent>, 'close'>
+  >;
+  let notificationServiceStub: Mocked<Pick<NotificationService, 'success'>>;
+  let userAdministrationServiceStub: Mocked<
+    Pick<UserAdministrationService, 'getCurrentUser'>
+  >;
+  let workflowServiceStub: Mocked<
+    Pick<LineWorkflowService, 'getWorkflow' | 'startWorkflow'>
+  >;
+
+  beforeEach(() => {
+    // Mocking
+    dialogRefStub = { close: vi.fn() };
+    notificationServiceStub = { success: vi.fn() };
+    userAdministrationServiceStub = {
+      getCurrentUser: vi.fn().mockReturnValue(of(user)),
+    };
+    workflowServiceStub = {
+      getWorkflow: vi.fn().mockReturnValue(of(workflow)),
+      startWorkflow: vi.fn().mockReturnValue(of({})),
+    };
+
+    // Config
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: PermissionService, useValue: adminPermissionServiceMock },
+        {
+          provide: UserAdministrationService,
+          useValue: userAdministrationServiceStub,
+        },
+        { provide: LineWorkflowService, useValue: workflowServiceStub },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            lineRecord: {
+              id: 123,
+              validFrom: new Date(),
+              validTo: new Date(),
+              slnid: 'ch:1:slnid:1000003',
+              businessOrganisation: 'ch:1:sboid:110000',
+              status: Status.Draft,
+              versionNumber: 0,
+            },
+            descriptionForWorkflow: 'Toller Workflow',
+            title: 'Acciaroli bello',
+            message: 'Andiamo in spiaggia?',
+          } satisfies LineWorkflowDialogData,
+        },
+        { provide: MatDialogRef, useValue: dialogRefStub },
+        { provide: NotificationService, useValue: notificationServiceStub },
+        translateServiceProvider,
+      ],
     });
 
+    // Arrangement
     fixture = TestBed.createComponent(LineWorkflowDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -111,7 +129,7 @@ describe('LineWorkflowDialogComponent new', () => {
 
     component.startWorkflow();
 
-    expect(workflowServiceMock.startWorkflow).toHaveBeenCalled();
+    expect(workflowServiceStub.startWorkflow).toHaveBeenCalled();
   });
 });
 
@@ -119,28 +137,68 @@ describe('LineWorkflowDialogComponent open', () => {
   let component: LineWorkflowDialogComponent;
   let fixture: ComponentFixture<LineWorkflowDialogComponent>;
 
-  beforeEach(async () => {
-    setupTestBed({
-      lineRecord: {
-        id: 123,
-        validFrom: new Date(),
-        validTo: new Date(),
-        slnid: 'ch:1:slnid:1000003',
-        businessOrganisation: 'ch:1:sboid:110000',
-        status: Status.Draft,
-        versionNumber: 0,
-        lineVersionWorkflows: new Set<LineVersionWorkflow>([
-          {
-            workflowId: workflow.id,
-            workflowProcessingStatus: WorkflowProcessingStatus.InProgress,
-          },
-        ]),
-      },
-      descriptionForWorkflow: 'Toller Workflow',
-      title: 'Acciaroli bello',
-      message: 'Andiamo in spiaggia?',
+  let dialogRefStub: Mocked<
+    Pick<MatDialogRef<LineWorkflowDialogComponent>, 'close'>
+  >;
+  let notificationServiceStub: Mocked<Pick<NotificationService, 'success'>>;
+  let userAdministrationServiceStub: Mocked<
+    Pick<UserAdministrationService, 'getCurrentUser'>
+  >;
+  let workflowServiceStub: Mocked<
+    Pick<LineWorkflowService, 'getWorkflow' | 'startWorkflow'>
+  >;
+
+  beforeEach(() => {
+    // Mocking
+    dialogRefStub = { close: vi.fn() };
+    notificationServiceStub = { success: vi.fn() };
+    userAdministrationServiceStub = {
+      getCurrentUser: vi.fn().mockReturnValue(of(user)),
+    };
+    workflowServiceStub = {
+      getWorkflow: vi.fn().mockReturnValue(of(workflow)),
+      startWorkflow: vi.fn().mockReturnValue(of({})),
+    };
+
+    // Config
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: PermissionService, useValue: adminPermissionServiceMock },
+        {
+          provide: UserAdministrationService,
+          useValue: userAdministrationServiceStub,
+        },
+        { provide: LineWorkflowService, useValue: workflowServiceStub },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            lineRecord: {
+              id: 123,
+              validFrom: new Date(),
+              validTo: new Date(),
+              slnid: 'ch:1:slnid:1000003',
+              businessOrganisation: 'ch:1:sboid:110000',
+              status: Status.Draft,
+              versionNumber: 0,
+              lineVersionWorkflows: new Set<LineVersionWorkflow>([
+                {
+                  workflowId: workflow.id,
+                  workflowProcessingStatus: WorkflowProcessingStatus.InProgress,
+                },
+              ]),
+            },
+            descriptionForWorkflow: 'Toller Workflow',
+            title: 'Acciaroli bello',
+            message: 'Andiamo in spiaggia?',
+          } satisfies LineWorkflowDialogData,
+        },
+        { provide: MatDialogRef, useValue: dialogRefStub },
+        { provide: NotificationService, useValue: notificationServiceStub },
+        translateServiceProvider,
+      ],
     });
 
+    // Arrangement
     fixture = TestBed.createComponent(LineWorkflowDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -165,38 +223,3 @@ describe('LineWorkflowDialogComponent open', () => {
     );
   });
 });
-
-function setupTestBed(workflowDialogData: LineWorkflowDialogData) {
-  TestBed.configureTestingModule({
-    imports: [
-      AppTestingModule,
-      FormModule,
-      LineWorkflowDialogComponent,
-      LineWorkflowFormComponent,
-      LineWorkflowCheckFormComponent,
-      CommentComponent,
-      ErrorNotificationComponent,
-      MockAtlasButtonComponent,
-      DialogCloseComponent,
-      DialogFooterComponent,
-      DialogContentComponent,
-    ],
-    providers: [
-      { provide: PermissionService, useValue: adminPermissionServiceMock },
-      {
-        provide: UserAdministrationService,
-        useValue: userAdministrationServiceMock,
-      },
-      { provide: LineWorkflowService, useValue: workflowServiceMock },
-      {
-        provide: MAT_DIALOG_DATA,
-        useValue: workflowDialogData,
-      },
-      { provide: MatDialogRef, useValue: dialogRefSpy },
-      { provide: NotificationService, useValue: notificationServiceSpy },
-      { provide: TranslatePipe },
-    ],
-  })
-    .compileComponents()
-    .then();
-}

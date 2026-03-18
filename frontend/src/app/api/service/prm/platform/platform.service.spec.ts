@@ -1,10 +1,12 @@
 import {TestBed} from '@angular/core/testing';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
 
 import {PlatformService} from './platform.service';
-import {AtlasApiService} from "../../atlas-api.service";
-import {HttpClient} from "@angular/common/http";
-import {UserService} from "../../../../core/auth/user/user.service";
-import {ReadPlatformVersion} from "../../../model/readPlatformVersion";
+import {AtlasApiService} from '../../atlas-api.service';
+import {HttpClient} from '@angular/common/http';
+import {UserService} from '../../../../core/auth/user/user.service';
+import {ReadPlatformVersion} from '../../../model/readPlatformVersion';
+import {EMPTY} from 'rxjs';
 
 describe('PlatformService', () => {
   let service: PlatformService;
@@ -19,19 +21,19 @@ describe('PlatformService', () => {
     });
     service = TestBed.inject(PlatformService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'get');
-    spyOn(apiService, 'put');
-    spyOn(apiService, 'post');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'put').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
   });
 
   it('should getPlatformVersions', () => {
     service.getPlatformVersions('ch:1:sloid:7000');
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       sloid: 'ch:1:sloid:7000'
     });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/prm-directory/v1/platforms/ch:1:sloid:7000',
     );
   });
@@ -55,7 +57,7 @@ describe('PlatformService', () => {
 
     // then
     expect(apiService.post)
-      .toHaveBeenCalledOnceWith('/prm-directory/v1/platforms', platformVersion);
+      .toHaveBeenCalledExactlyOnceWith('/prm-directory/v1/platforms', platformVersion);
   });
 
 
@@ -78,7 +80,7 @@ describe('PlatformService', () => {
 
     // then
     expect(apiService.put)
-      .toHaveBeenCalledOnceWith('/prm-directory/v1/platforms/1', platformVersion);
+      .toHaveBeenCalledExactlyOnceWith('/prm-directory/v1/platforms/1', platformVersion);
   });
 
 });

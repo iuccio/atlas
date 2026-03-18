@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { SectorOverviewComponent } from './sector-overview.component';
 import { provideHttpClient } from '@angular/common/http';
@@ -17,6 +18,11 @@ describe('SectorOverviewComponent', () => {
   let component: SectorOverviewComponent;
   let fixture: ComponentFixture<SectorOverviewComponent>;
 
+  let sectorInternalServiceSpy: Mocked<
+    Pick<SectorInternalService, 'getSectors'>
+  >;
+  let routerSpy: Mocked<Pick<Router, 'navigate'>>;
+
   const activatedRouteMock = {
     parent: {
       snapshot: {
@@ -30,19 +36,22 @@ describe('SectorOverviewComponent', () => {
     },
   };
 
-  const sectorInternalService = jasmine.createSpyObj('SectorInternalService', [
-    'getSectors',
-  ]);
   const sectorOverview: ContainerReadSectorVersion = {
     objects: [],
     totalCount: 0,
   };
-  sectorInternalService.getSectors.and.returnValue(of(sectorOverview));
-
-  const routerSpy = jasmine.createSpyObj(['navigate']);
-  routerSpy.navigate.and.returnValue(Promise.resolve(true));
 
   beforeEach(async () => {
+    sectorInternalServiceSpy = {
+      getSectors: vi.fn(),
+    };
+    sectorInternalServiceSpy.getSectors.mockReturnValue(of(sectorOverview));
+
+    routerSpy = {
+      navigate: vi.fn(),
+    };
+    routerSpy.navigate.mockReturnValue(Promise.resolve(true));
+
     await TestBed.configureTestingModule({
       imports: [SectorOverviewComponent, TranslateModule.forRoot()],
       providers: [
@@ -50,7 +59,7 @@ describe('SectorOverviewComponent', () => {
         provideHttpClientTesting(),
         {
           provide: SectorInternalService,
-          useValue: sectorInternalService,
+          useValue: sectorInternalServiceSpy,
         },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: PermissionService, useValue: adminPermissionServiceMock },
@@ -65,7 +74,7 @@ describe('SectorOverviewComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(component.showCreateButtons).toBeTrue();
+    expect(component.showCreateButtons).toBe(true);
   });
 
   it('should display sector data', () => {
@@ -74,7 +83,7 @@ describe('SectorOverviewComponent', () => {
       size: 10,
     });
 
-    expect(sectorInternalService.getSectors).toHaveBeenCalledWith(
+    expect(sectorInternalServiceSpy.getSectors).toHaveBeenCalledWith(
       'ch:1:sloid:7000:1',
       0,
       10,
@@ -111,7 +120,7 @@ describe('SectorOverviewComponent', () => {
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       ['ch:1:sloid:7000:1:1'],
-      jasmine.any(Object)
+      expect.any(Object)
     );
   });
 
@@ -120,7 +129,7 @@ describe('SectorOverviewComponent', () => {
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       ['../..'],
-      jasmine.any(Object)
+      expect.any(Object)
     );
   });
 
@@ -129,7 +138,7 @@ describe('SectorOverviewComponent', () => {
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       ['add'],
-      jasmine.any(Object)
+      expect.any(Object)
     );
   });
 });

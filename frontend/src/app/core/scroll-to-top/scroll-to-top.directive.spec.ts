@@ -1,10 +1,11 @@
+import { describe, expect, it, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement } from '@angular/core';
+import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { ScrollToTopDirective } from './scroll-to-top.directive';
 
 @Component({
-  template: ` <div id="scrollbar-content-container" class="full-height">
+  template: `<div id="scrollbar-content-container" class="full-height">
     <div atlasScrollToTop id="some-child-component">Random Content</div>
   </div>`,
   imports: [ScrollToTopDirective],
@@ -13,23 +14,19 @@ class TestComponent {}
 
 describe('ScrollToTopDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
-  let scrollContainer: DebugElement;
 
   beforeEach(() => {
-    fixture = TestBed.configureTestingModule({
-      imports: [ScrollToTopDirective, TestComponent],
-    }).createComponent(TestComponent);
-
-    scrollContainer = fixture.debugElement.query(
-      By.css('#scrollbar-content-container')
-    );
+    fixture = TestBed.createComponent(TestComponent);
   });
 
   it('should scroll to top', () => {
-    const scrollElement = scrollContainer.nativeElement;
-    spyOn(scrollElement, 'scroll').and.callThrough();
+    const scrollContainer = fixture.debugElement.query(
+      By.css('#scrollbar-content-container')
+    ).nativeElement;
+    scrollContainer.scroll = vi.fn();
 
     fixture.detectChanges();
-    expect(scrollElement.scroll).toHaveBeenCalledWith(0, 0);
+
+    expect(scrollContainer.scroll).toHaveBeenCalledExactlyOnceWith(0, 0);
   });
 });

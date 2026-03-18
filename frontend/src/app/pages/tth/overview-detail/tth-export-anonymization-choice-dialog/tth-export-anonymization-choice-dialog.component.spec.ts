@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 
 import { TthExportAnonymizationChoiceDialogComponent } from './tth-export-anonymization-choice-dialog.component';
 import { AppTestingModule } from '../../../../app.testing.module';
@@ -13,13 +14,15 @@ describe('TthExportAnonymizationChoiceDialogComponent', () => {
   let component: TthExportAnonymizationChoiceDialogComponent;
   let fixture: ComponentFixture<TthExportAnonymizationChoiceDialogComponent>;
 
-  const dialogRefSpy = jasmine.createSpyObj<
-    MatDialogRef<TthExportAnonymizationChoiceDialogComponent>
-  >('MatDialogRef', ['close']);
+  const dialogRefSpy: Mocked<
+    Pick<MatDialogRef<TthExportAnonymizationChoiceDialogComponent>, 'close'>
+  > = {
+    close: vi.fn(),
+  };
 
-  const dialogServiceSpy = jasmine.createSpyObj(DialogService, {
-    confirmLeave: of({}),
-  });
+  const dialogServiceSpy: Mocked<Pick<DialogService, 'confirmLeave'>> = {
+    confirmLeave: vi.fn().mockReturnValue(of({})),
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -41,7 +44,8 @@ describe('TthExportAnonymizationChoiceDialogComponent', () => {
       TthExportAnonymizationChoiceDialogComponent
     );
     component = fixture.componentInstance;
-    dialogRefSpy.close.calls.reset();
+    // reset mock
+    dialogRefSpy.close.mockClear();
 
     fixture.detectChanges();
   });
@@ -53,7 +57,8 @@ describe('TthExportAnonymizationChoiceDialogComponent', () => {
   it('should close dialog with null', () => {
     component.close();
 
-    expect(dialogRefSpy.close).toHaveBeenCalledOnceWith(null);
+    expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
+    expect(dialogRefSpy.close).toHaveBeenCalledWith(null);
   });
 
   it('should close dialog with isAnonymized = true', () => {
@@ -61,7 +66,8 @@ describe('TthExportAnonymizationChoiceDialogComponent', () => {
 
     component.confirm();
 
-    expect(dialogRefSpy.close).toHaveBeenCalledOnceWith({ isAnonymized: true });
+    expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
+    expect(dialogRefSpy.close).toHaveBeenCalledWith({ isAnonymized: true });
   });
 
   it('should close dialog with isAnonymized = false', () => {
@@ -69,7 +75,8 @@ describe('TthExportAnonymizationChoiceDialogComponent', () => {
 
     component.confirm();
 
-    expect(dialogRefSpy.close).toHaveBeenCalledOnceWith({
+    expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
+    expect(dialogRefSpy.close).toHaveBeenCalledWith({
       isAnonymized: false,
     });
   });

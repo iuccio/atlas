@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { SectorDetailComponent } from './sector-detail.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SectorMapService } from '../../map/sector-map.service';
@@ -20,46 +21,114 @@ import { DialogService } from '../../../../core/components/dialog/dialog.service
 describe('SectorDetailComponent', () => {
   let component: SectorDetailComponent;
   let fixture: ComponentFixture<SectorDetailComponent>;
-
   let router: Router;
 
-  const sectorMapService = jasmine.createSpyObj<SectorMapService>([
-    'displaySectorsOnMap',
-    'clearDisplayedSectors',
-    'displayCurrentSector',
-    'clearCurrentSector',
-  ]);
-  const trafficPointMapService = jasmine.createSpyObj<TrafficPointMapService>([
-    'displayTrafficPointsOnMap',
-    'displayCurrentTrafficPoint',
-    'clearDisplayedTrafficPoints',
-    'clearCurrentTrafficPoint',
-  ]);
-  const mapService = jasmine.createSpyObj<MapService>([
-    'placeMarkerAndFlyTo',
-    'enterCoordinateSelectionMode',
-    'exitCoordinateSelectionMode',
-  ]);
-  mapService.mapInitialized = new BehaviorSubject<boolean>(true);
-  mapService.clickedGeographyCoordinates = new Subject<CoordinatePairWGS84>();
+  let sectorMapServiceSpy: Mocked<
+    Pick<
+      SectorMapService,
+      | 'displaySectorsOnMap'
+      | 'clearDisplayedSectors'
+      | 'displayCurrentSector'
+      | 'clearCurrentSector'
+    >
+  >;
+  let trafficPointMapServiceSpy: Mocked<
+    Pick<
+      TrafficPointMapService,
+      | 'displayTrafficPointsOnMap'
+      | 'displayCurrentTrafficPoint'
+      | 'clearDisplayedTrafficPoints'
+      | 'clearCurrentTrafficPoint'
+    >
+  >;
+  let mapServiceSpy: Mocked<
+    Pick<
+      MapService,
+      | 'placeMarkerAndFlyTo'
+      | 'enterCoordinateSelectionMode'
+      | 'exitCoordinateSelectionMode'
+    >
+  > & {
+    mapInitialized: BehaviorSubject<boolean>;
+    clickedGeographyCoordinates: Subject<CoordinatePairWGS84>;
+  };
+  let validityServiceSpy: Mocked<
+    Pick<ValidityService, 'initValidity' | 'updateValidity' | 'validate'>
+  >;
+  let sectorServiceSpy: Mocked<
+    Pick<SectorService, 'createSector' | 'updateSector'>
+  >;
+  let sectorInternalServiceSpy: Mocked<
+    Pick<SectorInternalService, 'revokeSector'>
+  >;
+  let dialogServiceSpy: Mocked<Pick<DialogService, 'confirm'>>;
 
-  const validityService = jasmine.createSpyObj<ValidityService>([
-    'initValidity',
-    'updateValidity',
-    'validate',
-  ]);
-  validityService.validate.and.returnValue(of(true));
+  function setupTestBed(activatedRoute: ActivatedRouteMockType) {
+    Element.prototype.scrollIntoView = vi.fn();
 
-  const sectorService = jasmine.createSpyObj<SectorService>([
-    'createSector',
-    'updateSector',
-  ]);
-  const sectorInternalService = jasmine.createSpyObj<SectorInternalService>({
-    revokeSector: of(),
-  });
-  const dialogService = jasmine.createSpyObj<DialogService>({
-    confirm: of(true),
-  });
+    sectorMapServiceSpy = {
+      displaySectorsOnMap: vi.fn(),
+      clearDisplayedSectors: vi.fn(),
+      displayCurrentSector: vi.fn(),
+      clearCurrentSector: vi.fn(),
+    };
+    trafficPointMapServiceSpy = {
+      displayTrafficPointsOnMap: vi.fn(),
+      displayCurrentTrafficPoint: vi.fn(),
+      clearDisplayedTrafficPoints: vi.fn(),
+      clearCurrentTrafficPoint: vi.fn(),
+    };
+    mapServiceSpy = {
+      placeMarkerAndFlyTo: vi.fn(),
+      enterCoordinateSelectionMode: vi.fn(),
+      exitCoordinateSelectionMode: vi.fn(),
+      mapInitialized: new BehaviorSubject<boolean>(true),
+      clickedGeographyCoordinates: new Subject<CoordinatePairWGS84>(),
+    };
+    validityServiceSpy = {
+      initValidity: vi.fn(),
+      updateValidity: vi.fn(),
+      validate: vi.fn(),
+    };
+    validityServiceSpy.validate.mockReturnValue(of(true));
+
+    sectorServiceSpy = {
+      createSector: vi.fn(),
+      updateSector: vi.fn(),
+    };
+    sectorInternalServiceSpy = {
+      revokeSector: vi.fn(),
+    };
+    sectorInternalServiceSpy.revokeSector.mockReturnValue(of(undefined));
+
+    dialogServiceSpy = {
+      confirm: vi.fn(),
+    };
+    dialogServiceSpy.confirm.mockReturnValue(of(true));
+
+    return TestBed.configureTestingModule({
+      imports: [AppTestingModule, SectorDetailComponent],
+      providers: [
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: SectorMapService, useValue: sectorMapServiceSpy },
+        { provide: TrafficPointMapService, useValue: trafficPointMapServiceSpy },
+        { provide: MapService, useValue: mapServiceSpy },
+        { provide: SectorService, useValue: sectorServiceSpy },
+        { provide: SectorInternalService, useValue: sectorInternalServiceSpy },
+        { provide: DialogService, useValue: dialogServiceSpy },
+      ],
+    })
+      .overrideComponent(SectorDetailComponent, {
+        set: {
+          providers: [
+            { provide: ValidityService, useValue: validityServiceSpy },
+            TranslatePipe,
+          ],
+        },
+      })
+      .compileComponents()
+      .then();
+  }
 
   describe('new mode', () => {
     beforeEach(() => {
@@ -78,22 +147,22 @@ describe('SectorDetailComponent', () => {
     });
 
     it('should enter new with coordinate selection mode', () => {
-      expect(component.isNew).toBeTrue();
+      expect(component.isNew).toBe(true);
       expect(component.servicePointDesignationOfficial).toBe('Bern');
 
-      expect(mapService.enterCoordinateSelectionMode).toHaveBeenCalled();
+      expect(mapServiceSpy.enterCoordinateSelectionMode).toHaveBeenCalled();
     });
 
     it('should go back to sector overview', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
       component.back();
 
-      expect(router.navigate).toHaveBeenCalledWith(['..'], jasmine.any(Object));
+      expect(router.navigate).toHaveBeenCalledWith(['..'], expect.any(Object));
     });
 
     it('should save new sector', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-      sectorService.createSector.and.returnValue(
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
+      sectorServiceSpy.createSector.mockReturnValue(
         of(BERN_PLATFORM_1_SECTOR_A[0])
       );
 
@@ -109,10 +178,10 @@ describe('SectorDetailComponent', () => {
 
       component.save();
 
-      expect(sectorService.createSector).toHaveBeenCalled();
+      expect(sectorServiceSpy.createSector).toHaveBeenCalled();
       expect(router.navigate).toHaveBeenCalledWith(
         ['..', 'ch:1:sloid:7000:1:1:1'],
-        jasmine.any(Object)
+        expect.any(Object)
       );
     });
   });
@@ -134,7 +203,7 @@ describe('SectorDetailComponent', () => {
     });
 
     it('should display current designation and validity', () => {
-      expect(component.isNew).toBeFalse();
+      expect(component.isNew).toBe(false);
       expect(component.selectedVersion).toBeTruthy();
 
       expect(component.selectedVersion.designation).toEqual('A');
@@ -145,62 +214,37 @@ describe('SectorDetailComponent', () => {
     });
 
     it('should toggle edit mode', () => {
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeTrue();
+      expect(component.form.enabled).toBe(true);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
     });
 
     it('should update sector', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-      sectorService.updateSector.and.returnValue(of(BERN_PLATFORM_1_SECTOR_A));
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
+      sectorServiceSpy.updateSector.mockReturnValue(of(BERN_PLATFORM_1_SECTOR_A));
 
       component.toggleEdit();
       component.form.controls.designation.setValue('AAA');
 
       component.save();
 
-      expect(sectorService.updateSector).toHaveBeenCalled();
+      expect(sectorServiceSpy.updateSector).toHaveBeenCalled();
       expect(router.navigate).toHaveBeenCalledWith(
         ['..', 'ch:1:sloid:7000:1:1:1'],
-        jasmine.any(Object)
+        expect.any(Object)
       );
     });
 
     it('should revoke sector', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
       component.revoke();
 
-      expect(sectorInternalService.revokeSector).toHaveBeenCalled();
+      expect(sectorInternalServiceSpy.revokeSector).toHaveBeenCalled();
     });
   });
-
-  function setupTestBed(activatedRoute: ActivatedRouteMockType) {
-    return TestBed.configureTestingModule({
-      imports: [AppTestingModule, SectorDetailComponent],
-      providers: [
-        { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: SectorMapService, useValue: sectorMapService },
-        { provide: TrafficPointMapService, useValue: trafficPointMapService },
-        { provide: MapService, useValue: mapService },
-        { provide: SectorService, useValue: sectorService },
-        { provide: SectorInternalService, useValue: sectorInternalService },
-        { provide: DialogService, useValue: dialogService },
-      ],
-    })
-      .overrideComponent(SectorDetailComponent, {
-        set: {
-          providers: [
-            { provide: ValidityService, useValue: validityService },
-            TranslatePipe,
-          ],
-        },
-      })
-      .compileComponents()
-      .then();
-  }
 });

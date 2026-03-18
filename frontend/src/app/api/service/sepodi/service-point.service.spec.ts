@@ -1,4 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { EMPTY } from 'rxjs';
+
 import { AtlasApiService } from '../atlas-api.service';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../../core/auth/user/user.service';
@@ -12,43 +15,45 @@ describe('ServicePointService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ServicePointService, AtlasApiService,
-        {provide: HttpClient, useValue: {}},
-        {provide: UserService, useValue: {}},
+      providers: [
+        ServicePointService,
+        AtlasApiService,
+        { provide: HttpClient, useValue: {} },
+        { provide: UserService, useValue: {} },
       ],
     });
 
     service = TestBed.inject(ServicePointService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'get');
-    spyOn(apiService, 'put');
-    spyOn(apiService, 'post');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'put').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
   });
 
   it('should getServicePointVersions', () => {
     service.getServicePointVersions(123);
 
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/service-point-directory/v1/service-points/123',
     );
   });
 
   it('should createServicePoint', () => {
-    service.createServicePoint( {} as CreateServicePointVersion);
+    service.createServicePoint({} as CreateServicePointVersion);
 
-    expect(apiService.post).toHaveBeenCalledOnceWith(
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
       '/service-point-directory/v1/service-points',
-      {}
+      {},
     );
   });
 
   it('should updateServicePoint', () => {
     service.updateServicePoint(123, {} as UpdateServicePointVersion);
 
-    expect(apiService.put).toHaveBeenCalledOnceWith(
+    expect(apiService.put).toHaveBeenCalledExactlyOnceWith(
       '/service-point-directory/v1/service-points/123',
-      {}
+      {},
     );
   });
 });

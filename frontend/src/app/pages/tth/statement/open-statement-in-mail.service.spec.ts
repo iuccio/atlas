@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { TranslatePipe } from '@ngx-translate/core';
 import { OpenStatementInMailService } from './open-statement-in-mail.service';
 import {
@@ -10,16 +11,22 @@ import {
 import { AppTestingModule } from '../../../app.testing.module';
 import { translateServiceProvider } from '../../../app.testing.mocks';
 
-const translatePipeSpy = jasmine.createSpyObj('translatePipe', ['transform']);
-translatePipeSpy.transform
-  .withArgs('TTH.STATEMENT.TTFN')
-  .and.returnValue('Fahrplanfeld')
-  .withArgs('TTH.STATEMENT.STATEMENT')
-  .and.returnValue('Stellungnahme')
-  .withArgs('TTH.STATEMENT.REQUEST')
-  .and.returnValue('Anfrage Stellungnahme')
-  .withArgs('TTH.STATEMENT.STOP_POINT')
-  .and.returnValue('Haltestelle');
+const translatePipeSpy: Mocked<Pick<TranslatePipe, 'transform'>> = {
+  transform: vi.fn((key) => {
+    switch (key) {
+      case 'TTH.STATEMENT.TTFN':
+        return 'Fahrplanfeld';
+      case 'TTH.STATEMENT.STATEMENT':
+        return 'Stellungnahme';
+      case 'TTH.STATEMENT.REQUEST':
+        return 'Anfrage Stellungnahme';
+      case 'TTH.STATEMENT.STOP_POINT':
+        return 'Haltestelle';
+      default:
+        return key;
+    }
+  }),
+};
 
 describe('OpenStatementInMailService', () => {
   let openStatementInMailService: OpenStatementInMailService;

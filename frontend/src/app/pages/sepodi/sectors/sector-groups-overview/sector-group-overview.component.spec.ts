@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { SectorGroupOverviewComponent } from './sector-group-overview.component';
 import { provideHttpClient } from '@angular/common/http';
@@ -17,6 +18,12 @@ describe('SectorGroupOverviewComponent', () => {
   let component: SectorGroupOverviewComponent;
   let fixture: ComponentFixture<SectorGroupOverviewComponent>;
 
+  let sectorGroupInternalServiceSpy: Mocked<
+    Pick<SectorGroupInternalService, 'getSectorGroups'>
+  >;
+  let sectorInternalServiceSpy: Mocked<Pick<SectorInternalService, 'getSectors'>>;
+  let routerSpy: Mocked<Pick<Router, 'navigate'>>;
+
   const activatedRouteMock = {
     parent: {
       snapshot: {
@@ -30,32 +37,34 @@ describe('SectorGroupOverviewComponent', () => {
     },
   };
 
-  const sectorGroupInternalService = jasmine.createSpyObj(
-    'SectorGroupInternalService',
-    ['getSectorGroups']
-  );
   const sectorGroupOverview: ContainerReadSectorVersion = {
     objects: [],
     totalCount: 0,
   };
-  sectorGroupInternalService.getSectorGroups.and.returnValue(
-    of(sectorGroupOverview)
-  );
-
-  const sectorInternalService = jasmine.createSpyObj('SectorInternalService', [
-    'getSectors',
-  ]);
 
   const subject = new BehaviorSubject<ContainerReadSectorVersion>({
     totalCount: 1,
     objects: [],
   });
-  sectorInternalService.getSectors.and.returnValue(subject.asObservable());
-
-  const routerSpy = jasmine.createSpyObj(['navigate']);
-  routerSpy.navigate.and.returnValue(Promise.resolve(true));
 
   beforeEach(async () => {
+    sectorGroupInternalServiceSpy = {
+      getSectorGroups: vi.fn(),
+    };
+    sectorGroupInternalServiceSpy.getSectorGroups.mockReturnValue(
+      of(sectorGroupOverview)
+    );
+
+    sectorInternalServiceSpy = {
+      getSectors: vi.fn(),
+    };
+    sectorInternalServiceSpy.getSectors.mockReturnValue(subject.asObservable());
+
+    routerSpy = {
+      navigate: vi.fn(),
+    };
+    routerSpy.navigate.mockReturnValue(Promise.resolve(true));
+
     await TestBed.configureTestingModule({
       imports: [SectorGroupOverviewComponent, TranslateModule.forRoot()],
       providers: [
@@ -63,11 +72,11 @@ describe('SectorGroupOverviewComponent', () => {
         provideHttpClientTesting(),
         {
           provide: SectorGroupInternalService,
-          useValue: sectorGroupInternalService,
+          useValue: sectorGroupInternalServiceSpy,
         },
         {
           provide: SectorInternalService,
-          useValue: sectorInternalService,
+          useValue: sectorInternalServiceSpy,
         },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: PermissionService, useValue: adminPermissionServiceMock },
@@ -82,7 +91,7 @@ describe('SectorGroupOverviewComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(component.showCreateButtons).toBeTrue();
+    expect(component.showCreateButtons).toBe(true);
   });
 
   it('should display sector group data', () => {
@@ -91,7 +100,7 @@ describe('SectorGroupOverviewComponent', () => {
       size: 10,
     });
 
-    expect(sectorGroupInternalService.getSectorGroups).toHaveBeenCalledWith(
+    expect(sectorGroupInternalServiceSpy.getSectorGroups).toHaveBeenCalledWith(
       'ch:1:sloid:7000:1',
       0,
       10,
@@ -110,7 +119,7 @@ describe('SectorGroupOverviewComponent', () => {
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       ['ch:1:sloid:7000:1:1'],
-      jasmine.any(Object)
+      expect.any(Object)
     );
   });
 
@@ -119,7 +128,7 @@ describe('SectorGroupOverviewComponent', () => {
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       ['../..'],
-      jasmine.any(Object)
+      expect.any(Object)
     );
   });
 
@@ -128,7 +137,7 @@ describe('SectorGroupOverviewComponent', () => {
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       ['add'],
-      jasmine.any(Object)
+      expect.any(Object)
     );
   });
 
@@ -136,13 +145,13 @@ describe('SectorGroupOverviewComponent', () => {
     subject.next({ totalCount: 1, objects: [] });
     fixture.detectChanges();
 
-    expect(component.hasAtLeastTwoSectors).toBeFalse();
+    expect(component.hasAtLeastTwoSectors).toBe(false);
   });
 
   it('should set hasAtLeastTwoSectors to true ', () => {
     subject.next({ totalCount: 2, objects: [] });
     fixture.detectChanges();
 
-    expect(component.hasAtLeastTwoSectors).toBeTrue();
+    expect(component.hasAtLeastTwoSectors).toBe(true);
   });
 });

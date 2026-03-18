@@ -13,7 +13,6 @@ import { AbstractControl, FormGroup } from '@angular/forms';
   selector: 'atlas-slide-toggle',
   templateUrl: './atlas-slide-toggle.component.html',
   styleUrls: ['./atlas-slide-toggle.component.scss'],
-  imports: [],
 })
 export class AtlasSlideToggleComponent implements OnInit, OnChanges {
   @Input() toggle = false;

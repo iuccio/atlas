@@ -5,28 +5,17 @@ import {
   TransportCompanyBoRelation,
 } from '../../../../api';
 import { TransportCompanyDetailComponent } from './transport-company-detail.component';
-import { AppTestingModule } from '../../../../app.testing.module';
-import { RelationComponent } from '../../../../core/components/relation/relation.component';
 import moment from 'moment';
 import { of } from 'rxjs';
-import { CommentComponent } from '../../../../core/form-components/comment/comment.component';
 import {
   adminPermissionServiceMock,
-  MockAtlasButtonComponent,
+  translateServiceProvider,
 } from '../../../../app.testing.mocks';
-import { TextFieldComponent } from '../../../../core/form-components/text-field/text-field.component';
-import { AtlasLabelFieldComponent } from '@atlas/form';
-import { AtlasFieldErrorComponent } from '../../../../core/form-components/atlas-field-error/atlas-field-error.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { SearchSelectComponent } from '../../../../core/form-components/search-select/search-select.component';
 import { ActivatedRoute } from '@angular/router';
-import { DetailPageContainerComponent } from '../../../../core/components/detail-page-container/detail-page-container.component';
-import { DetailFooterComponent } from '../../../../core/components/detail-footer/detail-footer.component';
-import { DetailPageContentComponent } from '../../../../core/components/detail-page-content/detail-page-content.component';
 import { PermissionService } from '../../../../core/auth/permission/permission.service';
 import { TransportCompanyRelationInternalService } from '../../../../api/service/bodi/transport-company-relation-internal.service';
 import { BusinessOrganisationService } from '../../../../api/service/bodi/business-organisation.service';
-import SpyObj = jasmine.SpyObj;
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const transportCompany: TransportCompany = {
   id: 1234,
@@ -74,20 +63,62 @@ const transportCompanyRelations: TransportCompanyBoRelation[] = [
   },
 ];
 
-let component: TransportCompanyDetailComponent;
-let fixture: ComponentFixture<TransportCompanyDetailComponent>;
-
-let boService: BusinessOrganisationService;
-let transportCompanyRelationInternalServiceSpy: SpyObj<TransportCompanyRelationInternalService>;
-
 describe('TransportCompanyDetailComponent', () => {
+  let component: TransportCompanyDetailComponent;
+  let fixture: ComponentFixture<TransportCompanyDetailComponent>;
+
+  let boService: BusinessOrganisationService;
+  let transportCompanyRelationInternalService: Mocked<
+    Pick<
+      TransportCompanyRelationInternalService,
+      | 'createTransportCompanyRelation'
+      | 'getTransportCompanyBoRelations'
+      | 'updateTransportCompanyRelation'
+      | 'deleteTransportCompanyRelation'
+    >
+  >;
+
   const mockData = [transportCompany, transportCompanyRelations];
 
   beforeEach(() => {
-    setupTestBed(mockData);
+    transportCompanyRelationInternalService = {
+      createTransportCompanyRelation: vi.fn(),
+      getTransportCompanyBoRelations: vi.fn(),
+      updateTransportCompanyRelation: vi.fn(),
+      deleteTransportCompanyRelation: vi.fn(),
+    };
+    transportCompanyRelationInternalService.createTransportCompanyRelation.mockReturnValue(
+      of({})
+    );
+    transportCompanyRelationInternalService.getTransportCompanyBoRelations.mockReturnValue(
+      of([])
+    );
+    transportCompanyRelationInternalService.updateTransportCompanyRelation.mockReturnValue(
+      of(undefined)
+    );
+    transportCompanyRelationInternalService.deleteTransportCompanyRelation.mockReturnValue(
+      of(undefined)
+    );
 
-    fixture = TestBed.createComponent(TransportCompanyDetailComponent);
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { data: { transportCompanyDetail: mockData } },
+          },
+        },
+        { provide: PermissionService, useValue: adminPermissionServiceMock },
+        {
+          provide: TransportCompanyRelationInternalService,
+          useValue: transportCompanyRelationInternalService,
+        },
+        translateServiceProvider,
+      ],
+    });
+
     boService = TestBed.inject(BusinessOrganisationService);
+    fixture = TestBed.createComponent(TransportCompanyDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -114,7 +145,7 @@ describe('TransportCompanyDetailComponent', () => {
   });
 
   it('should call getAllBusinessOrganisations with correct params', () => {
-    spyOn(boService, 'getAllBusinessOrganisations').and.returnValue(
+    vi.spyOn(boService, 'getAllBusinessOrganisations').mockReturnValue(
       of({
         objects: [],
         totalCount: 0,
@@ -122,7 +153,9 @@ describe('TransportCompanyDetailComponent', () => {
     );
 
     component.getBusinessOrganisations('testSearchString');
-    expect(boService.getAllBusinessOrganisations).toHaveBeenCalledOnceWith(
+    expect(
+      boService.getAllBusinessOrganisations
+    ).toHaveBeenCalledExactlyOnceWith(
       ['testSearchString'],
       undefined,
       undefined,
@@ -143,23 +176,23 @@ describe('TransportCompanyDetailComponent', () => {
       validTo: moment('2021-05-05'),
     });
 
-    expect(component.form.valid).toBeTrue();
+    expect(component.form.valid).toBe(true);
 
     component.save();
 
-    expect(component.form.untouched).toBeTrue();
-    expect(component.editMode).toBeFalse();
+    expect(component.form.untouched).toBe(true);
+    expect(component.editMode).toBe(false);
     expect(
-      transportCompanyRelationInternalServiceSpy.createTransportCompanyRelation
-    ).toHaveBeenCalledOnceWith({
+      transportCompanyRelationInternalService.createTransportCompanyRelation
+    ).toHaveBeenCalledExactlyOnceWith({
       transportCompanyId: 1234,
       sboid: 'ch:1:sboid:100500',
       validFrom: moment('2020-05-05').toDate(),
       validTo: moment('2021-05-05').toDate(),
     });
     expect(
-      transportCompanyRelationInternalServiceSpy.getTransportCompanyBoRelations
-    ).toHaveBeenCalledOnceWith(1234);
+      transportCompanyRelationInternalService.getTransportCompanyBoRelations
+    ).toHaveBeenCalledExactlyOnceWith(1234);
   });
 
   it('should call updateTransportCompanyRelation and reloadRelations', () => {
@@ -175,79 +208,33 @@ describe('TransportCompanyDetailComponent', () => {
       validTo: moment('2021-05-05'),
     });
 
-    expect(component.form.valid).toBeTrue();
+    expect(component.form.valid).toBe(true);
 
     component.save();
 
-    expect(component.form.untouched).toBeTrue();
-    expect(component.editMode).toBeFalse();
-    expect(component.isUpdateRelationSelected).toBeFalse();
+    expect(component.form.untouched).toBe(true);
+    expect(component.editMode).toBe(false);
+    expect(component.isUpdateRelationSelected).toBe(false);
     expect(
-      transportCompanyRelationInternalServiceSpy.updateTransportCompanyRelation
-    ).toHaveBeenCalledOnceWith({
+      transportCompanyRelationInternalService.updateTransportCompanyRelation
+    ).toHaveBeenCalledExactlyOnceWith({
       id: 1,
       validFrom: moment('2020-05-05').toDate(),
       validTo: moment('2021-05-05').toDate(),
     });
     expect(
-      transportCompanyRelationInternalServiceSpy.getTransportCompanyBoRelations
-    ).toHaveBeenCalledOnceWith(1234);
+      transportCompanyRelationInternalService.getTransportCompanyBoRelations
+    ).toHaveBeenCalledExactlyOnceWith(1234);
   });
 
   it('should call deleteTransportCompanyRelation and reload relations', () => {
     component.selectedTransportCompanyRelationIndex = 0;
     component.deleteRelation();
     expect(
-      transportCompanyRelationInternalServiceSpy.deleteTransportCompanyRelation
-    ).toHaveBeenCalledOnceWith(1);
+      transportCompanyRelationInternalService.deleteTransportCompanyRelation
+    ).toHaveBeenCalledExactlyOnceWith(1);
     expect(
-      transportCompanyRelationInternalServiceSpy.getTransportCompanyBoRelations
-    ).toHaveBeenCalledOnceWith(1234);
+      transportCompanyRelationInternalService.getTransportCompanyBoRelations
+    ).toHaveBeenCalledExactlyOnceWith(1234);
   });
 });
-
-function setupTestBed(
-  data: (TransportCompany | TransportCompanyBoRelation[])[]
-) {
-  transportCompanyRelationInternalServiceSpy =
-    jasmine.createSpyObj<TransportCompanyRelationInternalService>({
-      createTransportCompanyRelation: of({}),
-      getTransportCompanyBoRelations: of([]),
-      updateTransportCompanyRelation: of(undefined),
-      deleteTransportCompanyRelation: of(undefined),
-    });
-
-  TestBed.configureTestingModule({
-    imports: [
-      AppTestingModule,
-      TransportCompanyDetailComponent,
-      RelationComponent,
-      SearchSelectComponent,
-      CommentComponent,
-      MockAtlasButtonComponent,
-      TextFieldComponent,
-      AtlasLabelFieldComponent,
-      AtlasFieldErrorComponent,
-      DetailPageContainerComponent,
-      DetailPageContentComponent,
-      DetailFooterComponent,
-    ],
-    providers: [
-      {
-        provide: ActivatedRoute,
-        useValue: { snapshot: { data: { transportCompanyDetail: data } } },
-      },
-      {
-        provide: PermissionService,
-        useValue: adminPermissionServiceMock,
-      },
-      {
-        provide: TransportCompanyRelationInternalService,
-        useValue: transportCompanyRelationInternalServiceSpy,
-      },
-      { provide: TranslatePipe },
-    ],
-  })
-    .compileComponents()
-    .then();
-}

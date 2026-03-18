@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { SwissCanton } from '../../../../../api';
 import { StatementDialogService } from './statement.dialog.service';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
@@ -55,9 +56,11 @@ const form = new FormGroup<StatementDetailFormGroup>({
 describe('StatementDialogService', () => {
   let service: StatementDialogService;
 
-  const dialogSpy = jasmine.createSpyObj('statementDialog', ['open']);
+  let dialogSpy: Mocked<Pick<MatDialog, 'open'>>;
 
   beforeEach(() => {
+    dialogSpy = { open: vi.fn() };
+
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
       providers: [{ provide: MatDialog, useValue: dialogSpy }],
@@ -65,19 +68,23 @@ describe('StatementDialogService', () => {
     service = TestBed.inject(StatementDialogService);
   });
 
-  it('should open statement comment dialog and pass cancel value - true', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
+  it('should open statement comment dialog and pass cancel value - true', async () => {
+    dialogSpy.open.mockReturnValue({
+      afterClosed: () => of(true),
+    } as ReturnType<MatDialog['open']>);
 
-    service.openDialog(form).subscribe((result) => expect(result).toBeTrue());
-
-    expect(dialogSpy.open).toHaveBeenCalled();
+    const result = await firstValueFrom(service.openDialog(form));
+    expect(result).toBe(true);
+    expect(dialogSpy.open).toHaveBeenCalledTimes(1);
   });
 
-  it('should open statement comment dialog and pass cancel value - false', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(false) });
+  it('should open statement comment dialog and pass cancel value - false', async () => {
+    dialogSpy.open.mockReturnValue({
+      afterClosed: () => of(false),
+    } as ReturnType<MatDialog['open']>);
 
-    service.openDialog(form).subscribe((result) => expect(result).toBeFalse());
-
-    expect(dialogSpy.open).toHaveBeenCalled();
+    const result = await firstValueFrom(service.openDialog(form));
+    expect(result).toBe(false);
+    expect(dialogSpy.open).toHaveBeenCalledTimes(1);
   });
 });

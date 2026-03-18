@@ -1,46 +1,37 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
 import { of, Subject } from 'rxjs';
 import { ApplicationRole, ApplicationType, Permission } from '../../../../api';
 import { UserAdministrationUserOverviewComponent } from './user-administration-user-overview.component';
-import { adminPermissionServiceMock } from '../../../../app.testing.mocks';
+import {
+  adminPermissionServiceMock,
+  translateServiceProvider,
+} from '../../../../app.testing.mocks';
 import { TableService } from '../../../../core/components/table/table.service';
 import { PermissionService } from '../../../../core/auth/permission/permission.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserAdministrationService } from '../../../../api/service/user-administration/user-administration.service';
-import { tickAsync } from '../../../../../test/tick-async';
 import { FormatPipe } from '../../../../core/components/table/pipe/format.pipe';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 describe('UserAdministrationUserOverviewComponent', () => {
   let component: UserAdministrationUserOverviewComponent;
   let fixture: ComponentFixture<UserAdministrationUserOverviewComponent>;
 
-  const userAdministrationServiceMock = jasmine.createSpyObj(
-    'UserAdministrationService',
-    ['getUsers', 'getUser']
-  );
-  userAdministrationServiceMock.getUsers.and.returnValue(
-    of({ objects: [], totalCount: 0 })
-  );
-
+  let userAdministrationService: Mocked<
+    Pick<UserAdministrationService, 'getUsers' | 'getUser'>
+  >;
   let tableService: TableService;
 
-  afterEach(async () => {
-    await userAdministrationServiceMock.getUsers.and.returnValue(
-      of({ objects: [], totalCount: 0 })
-    );
-  });
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        UserAdministrationUserOverviewComponent,
-        TranslateModule.forRoot(),
-      ],
+  beforeEach(() => {
+    userAdministrationService = {
+      getUsers: vi.fn().mockReturnValue(of({ objects: [], totalCount: 0 })),
+      getUser: vi.fn(),
+    };
+    TestBed.configureTestingModule({
       providers: [
         {
           provide: UserAdministrationService,
-          useValue: userAdministrationServiceMock,
+          useValue: userAdministrationService,
         },
         {
           provide: PermissionService,
@@ -51,8 +42,9 @@ describe('UserAdministrationUserOverviewComponent', () => {
           useValue: { paramMap: new Subject() },
         },
         FormatPipe,
+        translateServiceProvider,
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(UserAdministrationUserOverviewComponent);
     component = fixture.componentInstance;
@@ -71,8 +63,8 @@ describe('UserAdministrationUserOverviewComponent', () => {
     expect(component.userSearchForm.get('userSearch')?.value).toBe('test');
     expect(component.boForm.get('boSearch')?.value).toBe('test');
 
-    userAdministrationServiceMock.getUsers.calls.reset();
-    userAdministrationServiceMock.getUsers.and.returnValue(
+    userAdministrationService.getUsers.mockClear();
+    userAdministrationService.getUsers.mockReturnValue(
       of({
         objects: [
           {
@@ -91,8 +83,8 @@ describe('UserAdministrationUserOverviewComponent', () => {
     tableService.pageIndex = 10;
 
     component.loadUsers({ page: 5, size: 5 });
-    await tickAsync(1000);
-    expect(userAdministrationServiceMock.getUsers).toHaveBeenCalledOnceWith(
+
+    expect(userAdministrationService.getUsers).toHaveBeenCalledExactlyOnceWith(
       5,
       5
     );
@@ -117,14 +109,17 @@ describe('UserAdministrationUserOverviewComponent', () => {
   });
 
   it('test checkIfUserExists with undefined user', () => {
-    spyOn(component, 'loadUsers');
+    vi.spyOn(component, 'loadUsers');
     tableService.pageSize = 10;
     component.onUserFilterChanged(undefined!);
-    expect(component.loadUsers).toHaveBeenCalledOnceWith({ page: 0, size: 10 });
+    expect(component.loadUsers).toHaveBeenCalledExactlyOnceWith({
+      page: 0,
+      size: 10,
+    });
   });
 
   it('test checkIfUserExists normal', () => {
-    userAdministrationServiceMock.getUser.and.returnValue(
+    userAdministrationService.getUser.mockReturnValue(
       of({
         sbbUserId: 'u123456',
         permissions: new Set<Permission>([
@@ -138,9 +133,6 @@ describe('UserAdministrationUserOverviewComponent', () => {
     );
     tableService.pageIndex = 10;
 
-    userAdministrationServiceMock.hasUserPermissions = jasmine
-      .createSpy()
-      .and.returnValue(of(true));
     component.onUserFilterChanged({
       sbbUserId: 'u123456',
       permissions: new Set<Permission>(),
@@ -164,14 +156,17 @@ describe('UserAdministrationUserOverviewComponent', () => {
   });
 
   it('test selectedSearchChanged', () => {
-    spyOn(component, 'loadUsers');
+    vi.spyOn(component, 'loadUsers');
     component.selectedSearchChanged();
-    expect(component.loadUsers).toHaveBeenCalledOnceWith({ page: 0, size: 10 });
+    expect(component.loadUsers).toHaveBeenCalledExactlyOnceWith({
+      page: 0,
+      size: 10,
+    });
   });
 
   it('test filterChanged', () => {
-    userAdministrationServiceMock.getUsers.calls.reset();
-    userAdministrationServiceMock.getUsers.and.returnValue(
+    userAdministrationService.getUsers.mockClear();
+    userAdministrationService.getUsers.mockReturnValue(
       of({
         totalCount: 1,
         objects: [
@@ -188,7 +183,7 @@ describe('UserAdministrationUserOverviewComponent', () => {
 
     component.filterChanged();
 
-    expect(userAdministrationServiceMock.getUsers).toHaveBeenCalledOnceWith(
+    expect(userAdministrationService.getUsers).toHaveBeenCalledExactlyOnceWith(
       0,
       10,
       new Set([null]),
@@ -209,19 +204,22 @@ describe('UserAdministrationUserOverviewComponent', () => {
   });
 
   it('test reloadTableWithCurrentSettings, USER', () => {
-    spyOn(component, 'onUserFilterChanged');
+    vi.spyOn(component, 'onUserFilterChanged');
     tableService.pageSize = 10;
     tableService.pageIndex = 10;
     component.reloadTableWithCurrentSettings();
-    expect(component.onUserFilterChanged).toHaveBeenCalledOnceWith(null!, 10);
+    expect(component.onUserFilterChanged).toHaveBeenCalledExactlyOnceWith(
+      null!,
+      10
+    );
   });
 
   it('test reloadTableWithCurrentSettings, FILTER', () => {
-    spyOn(component, 'filterChanged');
+    vi.spyOn(component, 'filterChanged');
     tableService.pageSize = 10;
     tableService.pageIndex = 10;
     component.selectedSearch = 'FILTER';
     component.reloadTableWithCurrentSettings();
-    expect(component.filterChanged).toHaveBeenCalledOnceWith(10);
+    expect(component.filterChanged).toHaveBeenCalledExactlyOnceWith(10);
   });
 });

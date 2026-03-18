@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { DialogManageTthComponent } from './dialog-manage-tth.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TimetableHearingYear } from '../../../api';
@@ -27,11 +28,20 @@ describe('DialogManageTthComponent', () => {
   let component: DialogManageTthComponent;
   let fixture: ComponentFixture<DialogManageTthComponent>;
 
-  let tthYearLidiServiceSpy: jasmine.SpyObj<TimetableHearingYearInternalService>;
-  let tthYearWfServiceSpy: jasmine.SpyObj<TthYearInternalService>;
-  let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
-  let matDialogRefSpy: jasmine.SpyObj<
-    MatDialogRef<DialogManageTthComponent, boolean>
+  let tthYearLidiServiceSpy: Mocked<
+    Pick<
+      TimetableHearingYearInternalService,
+      'getHearingYear' | 'updateTimetableHearingSettings'
+    >
+  >;
+  let tthYearWfServiceSpy: Mocked<
+    Pick<TthYearInternalService, 'closeTimetableHearingYear'>
+  >;
+  let notificationServiceSpy: Mocked<
+    Pick<NotificationService, 'success' | 'error'>
+  >;
+  let matDialogRefSpy: Mocked<
+    Pick<MatDialogRef<DialogManageTthComponent, boolean>, 'close'>
   >;
 
   const matDialogDataMock = 2020;
@@ -42,21 +52,20 @@ describe('DialogManageTthComponent', () => {
   };
 
   beforeEach(async () => {
-    tthYearLidiServiceSpy =
-      jasmine.createSpyObj<TimetableHearingYearInternalService>(
-        'TthServiceSpy',
-        ['getHearingYear', 'updateTimetableHearingSettings']
-      );
-    tthYearWfServiceSpy = jasmine.createSpyObj<TthYearInternalService>([
-      'closeTimetableHearingYear',
-    ]);
-    notificationServiceSpy = jasmine.createSpyObj<NotificationService>(
-      'NotificationServiceSpy',
-      ['success', 'error']
-    );
-    matDialogRefSpy = jasmine.createSpyObj<
-      MatDialogRef<DialogManageTthComponent, boolean>
-    >('MatDialogRefSpy', ['close']);
+    tthYearLidiServiceSpy = {
+      getHearingYear: vi.fn().mockReturnValue(of(tthYear)),
+      updateTimetableHearingSettings: vi.fn(),
+    };
+    tthYearWfServiceSpy = {
+      closeTimetableHearingYear: vi.fn(),
+    };
+    notificationServiceSpy = {
+      success: vi.fn(),
+      error: vi.fn(),
+    };
+    matDialogRefSpy = {
+      close: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       providers: [
@@ -78,7 +87,7 @@ describe('DialogManageTthComponent', () => {
           useValue: notificationServiceSpy,
         },
         {
-          provide: MatDialogRef<DialogManageTthComponent, boolean>,
+          provide: MatDialogRef,
           useValue: matDialogRefSpy,
         },
       ],
@@ -90,10 +99,6 @@ describe('DialogManageTthComponent', () => {
       ],
     }).compileComponents();
 
-    tthYearLidiServiceSpy.getHearingYear.and
-      .stub()
-      .and.returnValue(of(tthYear));
-
     fixture = TestBed.createComponent(DialogManageTthComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -102,42 +107,46 @@ describe('DialogManageTthComponent', () => {
   it('should create and initialize', () => {
     expect(component).toBeTruthy();
     expect(component.currentView).toEqual(component.manageView);
-    expect(tthYearLidiServiceSpy.getHearingYear).toHaveBeenCalledOnceWith(2020);
+    expect(tthYearLidiServiceSpy.getHearingYear).toHaveBeenCalledWith(2020);
   });
 
   it('should handleSaveAndCloseClick', () => {
-    tthYearLidiServiceSpy.updateTimetableHearingSettings.and
-      .stub()
-      .and.returnValue(of({}));
+    tthYearLidiServiceSpy.updateTimetableHearingSettings.mockReturnValue(
+      of(undefined)
+    );
 
     component.handleSaveAndCloseClick();
-    expect(component.actionButtonsDisabled).toBeTrue();
+    expect(component.actionButtonsDisabled).toBe(true);
     expect(
       tthYearLidiServiceSpy.updateTimetableHearingSettings
-    ).toHaveBeenCalledOnceWith(2020, {
+    ).toHaveBeenCalledWith(2020, {
       statementEditable: true,
       statementCreatableInternal: false,
       statementCreatableExternal: true,
     } as TimetableHearingYear);
-    expect(matDialogRefSpy.close).toHaveBeenCalledOnceWith(true);
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
+    expect(matDialogRefSpy.close).toHaveBeenCalledWith(true);
+    expect(notificationServiceSpy.success).toHaveBeenCalledWith(
       'TTH.MANAGE_TIMETABLE_HEARING.SUCCESSFUL_SAVE_NOTIFICATION'
     );
   });
 
   it('should handleCloseViewTthCloseClick', () => {
-    tthYearWfServiceSpy.closeTimetableHearingYear.and
-      .stub()
-      .and.returnValue(of({}));
+    tthYearWfServiceSpy.closeTimetableHearingYear.mockReturnValue(
+      of({
+        timetableYear: 2020,
+        hearingFrom: new Date(),
+        hearingTo: new Date(),
+      })
+    );
 
     component.handleCloseViewTthCloseClick();
 
-    expect(component.actionButtonsDisabled).toBeTrue();
-    expect(
-      tthYearWfServiceSpy.closeTimetableHearingYear
-    ).toHaveBeenCalledOnceWith(2020);
-    expect(matDialogRefSpy.close).toHaveBeenCalledOnceWith(true);
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
+    expect(component.actionButtonsDisabled).toBe(true);
+    expect(tthYearWfServiceSpy.closeTimetableHearingYear).toHaveBeenCalledWith(
+      2020
+    );
+    expect(matDialogRefSpy.close).toHaveBeenCalledWith(true);
+    expect(notificationServiceSpy.success).toHaveBeenCalledWith(
       'TTH.CLOSE_TIMETABLE_HEARING.SUCCESSFUL_CLOSE_NOTIFICATION'
     );
   });

@@ -1,51 +1,42 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BusinessOrganisationSelectComponent } from './business-organisation-select.component';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SearchSelectComponent } from '../search-select/search-select.component';
-import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
-import { AtlasLabelFieldComponent } from '@atlas/form';
 import { of } from 'rxjs';
 import { BusinessOrganisationService } from '../../../api/service/bodi/business-organisation.service';
 import { translateServiceProvider } from '../../../app.testing.mocks';
-import { provideHttpClient } from '@angular/common/http';
-import SpyObj = jasmine.SpyObj;
+import { beforeEach, describe, expect, it } from 'vitest';
+import { mock, mockClear } from 'vitest-mock-extended';
 
 describe('BusinessOrganisationSelectComponent', () => {
   let component: BusinessOrganisationSelectComponent;
   let fixture: ComponentFixture<BusinessOrganisationSelectComponent>;
 
-  let businessOrganisationServiceSpy: SpyObj<BusinessOrganisationService>;
+  const businessOrganisationServiceSpy = mock<BusinessOrganisationService>();
+  businessOrganisationServiceSpy.getAllBusinessOrganisations.mockReturnValue(
+    of({ objects: [] })
+  );
 
-  beforeEach(async () => {
-    businessOrganisationServiceSpy = jasmine.createSpyObj({
-      getAllBusinessOrganisations: of([]),
-    });
+  beforeEach(() => {
+    mockClear(businessOrganisationServiceSpy);
 
-    await TestBed.configureTestingModule({
-      imports: [
-        NgSelectModule,
-        BusinessOrganisationSelectComponent,
-        SearchSelectComponent,
-        AtlasLabelFieldComponent,
-        AtlasFieldErrorComponent,
-      ],
+    TestBed.configureTestingModule({
       providers: [
         {
           provide: BusinessOrganisationService,
           useValue: businessOrganisationServiceSpy,
         },
         translateServiceProvider,
-        provideHttpClient(),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(BusinessOrganisationSelectComponent);
     component = fixture.componentInstance;
+
     component.formGroup = new FormGroup({
       testControl: new FormControl(null),
     });
     component.controlName = 'testControl';
+
     fixture.detectChanges();
   });
 
@@ -54,7 +45,7 @@ describe('BusinessOrganisationSelectComponent', () => {
     component.searchBusinessOrganisation('ch:1:sboid:1');
     expect(
       businessOrganisationServiceSpy.getAllBusinessOrganisations
-    ).toHaveBeenCalledWith(
+    ).toHaveBeenCalledExactlyOnceWith(
       ['ch:1:sboid:1'],
       [],
       undefined,

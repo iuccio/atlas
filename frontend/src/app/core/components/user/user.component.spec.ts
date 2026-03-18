@@ -1,35 +1,32 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { UserComponent } from './user.component';
 import { AuthService } from '../../auth/auth.service';
 import { By } from '@angular/platform-browser';
 import {
   adminUserServiceMock,
-  authServiceSpy,
+  authServiceMock,
   translateServiceProvider,
 } from '../../../app.testing.mocks';
 import { UserService } from '../../auth/user/user.service';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('UserComponent', () => {
   let component: UserComponent;
   let fixture: ComponentFixture<UserComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [UserComponent],
+  beforeEach(() => {
+    // Config
+    TestBed.configureTestingModule({
       providers: [
         translateServiceProvider,
-        provideHttpClient(),
-        { provide: AuthService, useValue: authServiceSpy },
+        { provide: AuthService, useValue: authServiceMock },
         { provide: UserService, useValue: adminUserServiceMock },
       ],
-    }).compileComponents();
-  });
+    });
 
-  beforeEach(() => {
+    // Arrangement
     fixture = TestBed.createComponent(UserComponent);
     component = fixture.componentInstance;
-
     component.init();
   });
 
@@ -55,7 +52,7 @@ describe('UserComponent', () => {
       const logoutButton = fixture.debugElement.query(By.css('#logout'));
       logoutButton.nativeElement.click();
 
-      expect(authServiceSpy.logout).toHaveBeenCalled();
+      expect(authServiceMock.logout).toHaveBeenCalled();
     });
 
     it('should login', () => {
@@ -66,46 +63,33 @@ describe('UserComponent', () => {
       const loginButton = fixture.debugElement.query(By.css('#login'));
       loginButton.nativeElement.click();
 
-      expect(authServiceSpy.login).toHaveBeenCalled();
+      expect(authServiceMock.login).toHaveBeenCalled();
     });
   });
 
   describe('Component logic', () => {
     it('should extract username', () => {
-      //when
       component.extractUserName();
-
-      //then
       expect(component.userName).toBe('Test');
     });
 
     it('should return null when name is null', () => {
-      //given
       component.user = undefined;
-      //when
       component.extractUserName();
-
-      //then
       expect(component.userName).toBeUndefined();
     });
 
     it('should return user name if no (', () => {
-      //when
       const result = component.removeDepartment(
         'ATLAS / LIDI / FPFN Admin User'
       );
-
-      //then
       expect(result).toBe('ATLAS / LIDI / FPFN Admin User');
     });
 
     it('should return part before (', () => {
-      //when
       const result = component.removeDepartment(
         'Lastname Firstname (TEST-DEP)'
       );
-
-      //then
       expect(result).toBe('Lastname Firstname');
     });
   });

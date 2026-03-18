@@ -1,12 +1,14 @@
 import {TestBed} from '@angular/core/testing';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
 
 import {ParkingLotService} from './parking-lot.service';
-import {AtlasApiService} from "../../atlas-api.service";
-import {PlatformService} from "../platform/platform.service";
-import {HttpClient} from "@angular/common/http";
-import {UserService} from "../../../../core/auth/user/user.service";
-import {ReadParkingLotVersion} from "../../../model/readParkingLotVersion";
-import {BooleanOptionalAttributeType} from "../../../model/booleanOptionalAttributeType";
+import {AtlasApiService} from '../../atlas-api.service';
+import {PlatformService} from '../platform/platform.service';
+import {HttpClient} from '@angular/common/http';
+import {UserService} from '../../../../core/auth/user/user.service';
+import {ReadParkingLotVersion} from '../../../model/readParkingLotVersion';
+import {BooleanOptionalAttributeType} from '../../../model/booleanOptionalAttributeType';
+import {EMPTY} from 'rxjs';
 
 describe('ParkingLotService', () => {
   let service: ParkingLotService;
@@ -22,19 +24,19 @@ describe('ParkingLotService', () => {
     });
     service = TestBed.inject(ParkingLotService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'get');
-    spyOn(apiService, 'put');
-    spyOn(apiService, 'post');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'put').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
   });
 
   it('should getParkingLotVersions', () => {
     service.getParkingLotVersions('ch:1:sloid:7000');
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       sloid: 'ch:1:sloid:7000'
     });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/prm-directory/v1/parking-lots/ch:1:sloid:7000',
     );
   });
@@ -61,7 +63,7 @@ describe('ParkingLotService', () => {
 
     // then
     expect(apiService.post)
-      .toHaveBeenCalledOnceWith('/prm-directory/v1/parking-lots', parkingLotVersion);
+      .toHaveBeenCalledExactlyOnceWith('/prm-directory/v1/parking-lots', parkingLotVersion);
   });
 
 
@@ -87,6 +89,6 @@ describe('ParkingLotService', () => {
 
     // then
     expect(apiService.put)
-      .toHaveBeenCalledOnceWith('/prm-directory/v1/parking-lots/1', parkingLotVersion);
+      .toHaveBeenCalledExactlyOnceWith('/prm-directory/v1/parking-lots/1', parkingLotVersion);
   });
 });

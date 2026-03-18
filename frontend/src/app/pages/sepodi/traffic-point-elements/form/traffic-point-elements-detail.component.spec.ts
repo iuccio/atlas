@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { TrafficPointElementsDetailComponent } from './traffic-point-elements-detail.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DisplayDatePipe } from '../../../../core/pipe/display-date.pipe';
@@ -42,63 +43,101 @@ import { TrafficPointElementInternalService } from '../../../../api/service/sepo
 import { TrafficPointElementService } from '../../../../api/service/sepodi/traffic-point-element.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { DateModule } from '../../../../core/module/date.module';
 import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
-import SpyObj = jasmine.SpyObj;
-
-const authService: Partial<AuthService> = {};
-const trafficPointMapService = jasmine.createSpyObj<TrafficPointMapService>([
-  'displayTrafficPointsOnMap',
-  'clearDisplayedTrafficPoints',
-  'displayCurrentTrafficPoint',
-  'clearCurrentTrafficPoint',
-]);
 
 describe('TrafficPointElementsDetailComponent', () => {
   let component: TrafficPointElementsDetailComponent;
   let fixture: ComponentFixture<TrafficPointElementsDetailComponent>;
-  let routerSpy: SpyObj<Router>;
+  let routerSpy: Mocked<Pick<Router, 'navigate'>> & { events: unknown };
 
-  const mapService = jasmine.createSpyObj<MapService>([
-    'placeMarkerAndFlyTo',
-    'enterCoordinateSelectionMode',
-    'exitCoordinateSelectionMode',
-  ]);
-  mapService.mapInitialized = new BehaviorSubject<boolean>(true);
-  mapService.clickedGeographyCoordinates = new Subject<CoordinatePairWGS84>();
+  let authService: Partial<AuthService>;
+  let trafficPointMapService: Mocked<
+    Pick<
+      TrafficPointMapService,
+      | 'displayTrafficPointsOnMap'
+      | 'clearDisplayedTrafficPoints'
+      | 'displayCurrentTrafficPoint'
+      | 'clearCurrentTrafficPoint'
+    >
+  >;
+  let mapService: Mocked<
+    Pick<
+      MapService,
+      | 'placeMarkerAndFlyTo'
+      | 'enterCoordinateSelectionMode'
+      | 'exitCoordinateSelectionMode'
+      | 'mapInitialized'
+      | 'clickedGeographyCoordinates'
+    >
+  >;
+  let coordinateTransformationService: Mocked<
+    Pick<CoordinateTransformationService, 'transform'>
+  >;
+  let servicePointService: Mocked<
+    Pick<ServicePointService, 'getServicePointVersions'>
+  >;
+  let trafficPointService: Mocked<
+    Pick<
+      TrafficPointElementService,
+      'updateTrafficPoint' | 'createTrafficPoint'
+    >
+  >;
+  let trafficPointInternalService: Mocked<
+    Pick<
+      TrafficPointElementInternalService,
+      'getAreasOfServicePoint' | 'revokeTrafficPoint'
+    >
+  >;
+  let dialogService: Mocked<Pick<DialogService, 'confirm'>>;
 
-  const coordinateTransformationService =
-    jasmine.createSpyObj<CoordinateTransformationService>(['transform']);
-
-  const servicePointService = jasmine.createSpyObj(['getServicePointVersions']);
-  servicePointService.getServicePointVersions.and.returnValue(
-    of([BERN_WYLEREGG])
-  );
-  const trafficPointService = jasmine.createSpyObj(
-    'trafficPointElementsService',
-    ['updateTrafficPoint', 'createTrafficPoint']
-  );
-  const trafficPointInternalService = jasmine.createSpyObj({
-    getAreasOfServicePoint: of(BERN_WYLEREGG_TRAFFIC_POINTS_CONTAINER),
-    revokeTrafficPoint: of(),
+  beforeEach(() => {
+    authService = {};
+    trafficPointMapService = {
+      displayTrafficPointsOnMap: vi.fn(),
+      clearDisplayedTrafficPoints: vi.fn(),
+      displayCurrentTrafficPoint: vi.fn(),
+      clearCurrentTrafficPoint: vi.fn(),
+    };
+    mapService = {
+      placeMarkerAndFlyTo: vi.fn(),
+      enterCoordinateSelectionMode: vi.fn(),
+      exitCoordinateSelectionMode: vi.fn(),
+      mapInitialized: new BehaviorSubject<boolean>(true),
+      clickedGeographyCoordinates: new Subject<CoordinatePairWGS84>(),
+    };
+    coordinateTransformationService = {
+      transform: vi.fn(),
+    };
+    servicePointService = {
+      getServicePointVersions: vi.fn().mockReturnValue(of([BERN_WYLEREGG])),
+    };
+    trafficPointService = {
+      updateTrafficPoint: vi
+        .fn()
+        .mockReturnValue(of(BERN_WYLEREGG_TRAFFIC_POINTS)),
+      createTrafficPoint: vi
+        .fn()
+        .mockReturnValue(of(BERN_WYLEREGG_TRAFFIC_POINTS[0])),
+    };
+    trafficPointInternalService = {
+      getAreasOfServicePoint: vi
+        .fn()
+        .mockReturnValue(of(BERN_WYLEREGG_TRAFFIC_POINTS_CONTAINER)),
+      revokeTrafficPoint: vi.fn().mockReturnValue(of(undefined)),
+    };
+    dialogService = {
+      confirm: vi.fn().mockReturnValue(of(true)),
+    };
   });
-
-  trafficPointService.updateTrafficPoint.and.returnValue(
-    of(BERN_WYLEREGG_TRAFFIC_POINTS)
-  );
-  trafficPointService.createTrafficPoint.and.returnValue(
-    of(BERN_WYLEREGG_TRAFFIC_POINTS[0])
-  );
-
-  const dialogService = jasmine.createSpyObj('dialogService', ['confirm']);
-  dialogService.confirm.and.returnValue(of(true));
 
   describe('for existing Version', () => {
     beforeEach(async () => {
-      routerSpy = jasmine.createSpyObj('Router', ['navigate'], {
+      routerSpy = {
+        navigate: vi.fn().mockReturnValue(Promise.resolve(true)),
         events: of(null),
-      });
-      routerSpy.navigate.and.returnValue(Promise.resolve(true));
+      };
 
       const activatedRouteMock = {
         parent: {
@@ -138,7 +177,7 @@ describe('TrafficPointElementsDetailComponent', () => {
     });
 
     it('should go back to servicepoint', () => {
-      routerSpy.navigate.and.returnValue(Promise.resolve(true));
+      routerSpy.navigate.mockReturnValue(Promise.resolve(true));
       component.backToTrafficPointElements('traffic-point-elements');
 
       expect(routerSpy.navigate).toHaveBeenCalledWith([
@@ -150,13 +189,13 @@ describe('TrafficPointElementsDetailComponent', () => {
     });
 
     it('should toggle form correctly', () => {
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeTrue();
+      expect(component.form.enabled).toBe(true);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
     });
 
     it('should update via service', () => {
@@ -168,7 +207,9 @@ describe('TrafficPointElementsDetailComponent', () => {
 
     it('should navigate back on confirm cancel', () => {
       component.isTrafficPointArea = true;
-      spyOn(component, 'backToTrafficPointElements');
+      vi.spyOn(component, 'backToTrafficPointElements').mockImplementation(
+        () => {}
+      );
 
       component.confirmCancel();
 
@@ -178,10 +219,10 @@ describe('TrafficPointElementsDetailComponent', () => {
 
   describe('for new Version', () => {
     beforeEach(async () => {
-      routerSpy = jasmine.createSpyObj('Router', ['navigate'], {
+      routerSpy = {
+        navigate: vi.fn().mockReturnValue(Promise.resolve(true)),
         events: of(null),
-      });
-      routerSpy.navigate.and.returnValue(Promise.resolve(true));
+      };
 
       const activatedRouteMock = {
         parent: {
@@ -225,6 +266,7 @@ describe('TrafficPointElementsDetailComponent', () => {
   });
 
   function setupTestBed(activatedRoute: ActivatedRouteMockType) {
+    Element.prototype.scrollIntoView = vi.fn();
     return TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
@@ -272,6 +314,7 @@ describe('TrafficPointElementsDetailComponent', () => {
         SplitServicePointNumberPipe,
         TranslatePipe,
         provideHttpClient(),
+        provideHttpClientTesting(),
         translateServiceProvider,
       ],
     }).compileComponents();

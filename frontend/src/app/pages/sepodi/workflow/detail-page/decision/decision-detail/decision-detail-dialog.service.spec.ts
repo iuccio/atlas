@@ -1,6 +1,7 @@
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { DecisionDetailDialogService } from './decision-detail-dialog.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ExaminantFormGroup } from '../../detail-form/stop-point-workflow-detail-form-group';
@@ -9,20 +10,24 @@ import { DecisionType, WorkflowStatus } from '../../../../../../api';
 describe('DecisionDetailDialogService', () => {
   let service: DecisionDetailDialogService;
 
-  const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+  let dialogSpy: Mocked<Pick<MatDialog, 'open'>>;
 
   beforeEach(() => {
+    dialogSpy = {
+      open: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
       providers: [{ provide: MatDialog, useValue: dialogSpy }],
     });
     service = TestBed.inject(DecisionDetailDialogService);
   });
 
-  it('should open dialog', (done) => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
+  it('should open dialog', async () => {
+    dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) } as never);
 
-    service
-      .openDialog(
+    const result = await firstValueFrom(
+      service.openDialog(
         1,
         WorkflowStatus.Hearing,
         new FormGroup<ExaminantFormGroup>({
@@ -38,10 +43,8 @@ describe('DecisionDetailDialogService', () => {
           defaultExaminant: new FormControl(false),
         })
       )
-      .subscribe((result) => {
-        expect(result).toBeTrue();
-        expect(dialogSpy.open).toHaveBeenCalled();
-        done();
-      });
+    );
+    expect(result).toBe(true);
+    expect(dialogSpy.open).toHaveBeenCalled();
   });
 });

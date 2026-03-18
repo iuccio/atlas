@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { StopPointTerminationWorkflowOverviewComponent } from './stop-point-termination-workflow-overview.component';
 import { Component, input, output } from '@angular/core';
 import { By } from '@angular/platform-browser';
@@ -9,7 +10,6 @@ import { TablePagination } from '../../../../core/components/table/table-paginat
 import { TableComponent } from '../../../../core/components/table/table.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
-import SpyObj = jasmine.SpyObj;
 
 @Component({
   selector: 'atlas-table',
@@ -27,20 +27,26 @@ class MockTableComponent {
 describe('StopPointTerminationWorkflowOverviewComponent', () => {
   let fixture: ComponentFixture<StopPointTerminationWorkflowOverviewComponent>;
 
-  let wfServiceSpy: SpyObj<StopPointTerminationWorkflowService>;
+  let wfServiceMock: Mocked<
+    Pick<
+      StopPointTerminationWorkflowService,
+      'getTerminationStopPointWorkflows'
+    >
+  >;
 
   beforeEach(async () => {
-    wfServiceSpy = jasmine.createSpyObj(['getTerminationStopPointWorkflows']);
-    wfServiceSpy.getTerminationStopPointWorkflows.and.returnValue(
-      of({
-        objects: [
-          {
-            sloid: 'ch:1:sloid:1',
-          } as TerminationStopPointWorkflowModel,
-        ],
-        totalCount: 1,
-      })
-    );
+    wfServiceMock = {
+      getTerminationStopPointWorkflows: vi.fn().mockReturnValue(
+        of({
+          objects: [
+            {
+              sloid: 'ch:1:sloid:1',
+            } as TerminationStopPointWorkflowModel,
+          ],
+          totalCount: 1,
+        })
+      ),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -50,7 +56,7 @@ describe('StopPointTerminationWorkflowOverviewComponent', () => {
       providers: [
         {
           provide: StopPointTerminationWorkflowService,
-          useValue: wfServiceSpy,
+          useValue: wfServiceMock,
         },
         { provide: ActivatedRoute, useValue: { queryParam: new Subject() } },
       ],
@@ -87,7 +93,7 @@ describe('StopPointTerminationWorkflowOverviewComponent', () => {
 
   it('should update table data and count on user input', () => {
     // given
-    wfServiceSpy.getTerminationStopPointWorkflows.and.returnValue(
+    wfServiceMock.getTerminationStopPointWorkflows.mockReturnValue(
       of({
         objects: [
           {

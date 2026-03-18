@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { SwissCanton, TimetableHearingStatementV2 } from '../../../../api';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -12,12 +13,15 @@ import { MockAtlasButtonComponent } from '../../../../app.testing.mocks';
 import { of } from 'rxjs';
 import { TimetableHearingStatementInternalService } from '../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 
-const mockTimetableHearingStatementsService = jasmine.createSpyObj(
-  'TimetableHearingStatementInternalService',
-  ['updateHearingStatement']
-);
-const dialogRefSpy = jasmine.createSpyObj(['close']);
-const notificationServiceSpy = jasmine.createSpyObj(['success']);
+const mockTimetableHearingStatementsService: Mocked<
+  Pick<TimetableHearingStatementInternalService, 'updateHearingStatement'>
+> = {
+  updateHearingStatement: vi.fn(),
+};
+let dialogRefSpy: Mocked<Pick<MatDialogRef<StatementDialogComponent>, 'close'>>;
+const notificationServiceSpy: Mocked<Pick<NotificationService, 'success'>> = {
+  success: vi.fn(),
+};
 const statement: TimetableHearingStatementV2 = {
   id: 1,
   swissCanton: SwissCanton.Bern,
@@ -37,11 +41,12 @@ describe('StatementDialogComponent', () => {
   let component: StatementDialogComponent;
   let fixture: ComponentFixture<StatementDialogComponent>;
 
-  mockTimetableHearingStatementsService.updateHearingStatement.and.returnValue(
+  mockTimetableHearingStatementsService.updateHearingStatement.mockReturnValue(
     of(statement)
   );
 
   beforeEach(async () => {
+    dialogRefSpy = { close: vi.fn() };
     await TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -70,7 +75,7 @@ describe('StatementDialogComponent', () => {
     //when
     component.changeCantonAndAddComment();
     //then
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+    expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
     expect(notificationServiceSpy.success).toHaveBeenCalledWith(
       'TTH.STATEMENT.NOTIFICATION.EDIT_SUCCESS'
     );
@@ -80,15 +85,15 @@ describe('StatementDialogComponent', () => {
     //when
     component.goBackToStatementDetailEditMode();
     //then
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+    expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
   });
 
   it('should create dialog with title, text, label, comment and matDialogActions', () => {
     const title = fixture.debugElement.query(By.css('h1'));
-    expect(title.nativeElement.innerText).toBe('TTH.STATEMENT.DIALOG.TITLE');
+    expect(title.nativeElement.textContent).toBe('TTH.STATEMENT.DIALOG.TITLE');
 
     const dropdownLabel = fixture.debugElement.query(By.css('div > span'));
-    expect(dropdownLabel.nativeElement.innerText).toBe(
+    expect(dropdownLabel.nativeElement.textContent).to.contain(
       'TTH.STATEMENT.DIALOG.TEXT'
     );
 

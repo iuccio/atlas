@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { AddToDossierDialogComponent } from './add-to-dossier-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -25,11 +26,17 @@ const dialogData: AddToDossierData = {
   statement: statement,
 };
 
-const dialogRefSpy = jasmine.createSpyObj('dialogRef', ['close']);
+const dialogRefSpy: Mocked<
+  Pick<MatDialogRef<AddToDossierDialogComponent>, 'close'>
+> = {
+  close: vi.fn(),
+};
 
-const dossierInternalService = jasmine.createSpyObj('DossierInternalService', {
-  updateDossier: of(statement),
-});
+const dossierInternalService: Mocked<
+  Pick<DossierInternalService, 'updateDossier'>
+> = {
+  updateDossier: vi.fn().mockReturnValue(of(statement)),
+};
 
 describe('AddToDossierDialogComponent', () => {
   let component: AddToDossierDialogComponent;
@@ -73,7 +80,7 @@ describe('AddToDossierDialogComponent', () => {
     });
     component.confirm();
     //then
-    expect(dossierInternalService.updateDossier).toHaveBeenCalled();
+    expect(dossierInternalService.updateDossier).toHaveBeenCalledTimes(1);
     expect(dialogRefSpy.close).toHaveBeenCalledWith(true);
   });
 });

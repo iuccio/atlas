@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { DossierSelectFormatPipe } from './dossier-select-format.pipe';
 import { TthDossier } from '../../../../../api/model/tthDossier';
 

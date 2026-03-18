@@ -1,36 +1,39 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FileUploadComponent } from './file-upload.component';
-import { AppTestingModule } from '../../../app.testing.module';
-import { MockAtlasButtonComponent } from '../../../app.testing.mocks';
+import { translateServiceProvider } from '../../../app.testing.mocks';
 
 function getMockFileList(
   fileName: string,
   properties: FilePropertyBag,
   fileBits = '',
   filecount = 1
-) {
-  const dt = new DataTransfer();
+): FileList {
+  const items: Array<File> = [];
   for (let i = 0; i < filecount; i++) {
-    dt.items.add(new File([fileBits], fileName, properties));
+    items.push(new File([fileBits], fileName, properties));
   }
-  return dt.files;
+
+  return {
+    [Symbol.iterator](): ArrayIterator<File> {
+      return items[Symbol.iterator]();
+    },
+    item(index: number): File | null {
+      return items[index];
+    },
+    length: items.length,
+  };
 }
 
 describe('FileUploadComponent', () => {
   let component: FileUploadComponent;
   let fixture: ComponentFixture<FileUploadComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        FileUploadComponent,
-        MockAtlasButtonComponent,
-      ],
-    }).compileComponents();
-  });
-
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [translateServiceProvider],
+    });
+
     fixture = TestBed.createComponent(FileUploadComponent);
     component = fixture.componentInstance;
 
@@ -121,7 +124,9 @@ describe('FileUploadComponent', () => {
   });
 
   it('should add file successfully and delete it', () => {
-    spyOn(component.uploadedFilesChange, 'emit');
+    vi.spyOn(component.uploadedFilesChange, 'emit').mockImplementation(
+      () => {}
+    );
 
     component.addFileListToFile(
       getMockFileList('test.pdf', { type: 'application/pdf' }, 'as', 1)
@@ -154,7 +159,7 @@ describe('FileUploadComponent', () => {
   });
 
   it('should emit downloadExcelClick event when downloadExcel is called', () => {
-    spyOn(component.downloadExcelClick, 'emit');
+    vi.spyOn(component.downloadExcelClick, 'emit').mockImplementation(() => {});
 
     component.downloadExcel();
 

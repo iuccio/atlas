@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach } from 'vitest';
 import { OverviewToTabShareDataService } from './overview-to-tab-share-data.service';
 import { TimetableHearingYear } from '../../../../api';
 import moment from 'moment';
@@ -82,12 +83,12 @@ describe('OverviewToTabShareDataService', () => {
 
   describe('Loading State Management', () => {
     it('should have default loading state as false', () => {
-      expect(service.isYearLoading()).toBeFalse();
+      expect(service.isYearLoading()).toBe(false);
     });
 
     it('should update loading state to true', () => {
       service.setTimetableHearingYearLoading(true);
-      expect(service.isYearLoading()).toBeTrue();
+      expect(service.isYearLoading()).toBe(true);
     });
 
     describe('No Timetable Hearing Year Found Flag', () => {
