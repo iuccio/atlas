@@ -13,11 +13,12 @@ import ch.sbb.atlas.api.servicepoint.UpdateTerminationServicePointModel;
 import ch.sbb.atlas.model.controller.BaseControllerApiTest;
 import ch.sbb.atlas.user.administration.security.service.ServicePointTerminationBasedUserAdministrationService;
 import ch.sbb.atlas.workflow.termination.TerminationStopPointFeatureTogglingService;
-import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowPreconditionStatusException;
 import ch.sbb.workflow.module.sepodi.client.SePoDiAdminClient;
+import ch.sbb.workflow.module.sepodi.client.SePoDiClient;
 import ch.sbb.workflow.module.sepodi.hearing.enity.JudgementType;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationDecisionPerson;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationWorkflowStatus;
+import ch.sbb.workflow.module.sepodi.termination.exception.TerminationStopPointWorkflowPreconditionStatusException;
 import ch.sbb.workflow.module.sepodi.termination.model.StartTerminationStopPointWorkflowModel;
 import ch.sbb.workflow.module.sepodi.termination.model.TerminationDecisionModel;
 import ch.sbb.workflow.module.sepodi.termination.model.TerminationStopPointWorkflowModel;
@@ -72,6 +73,9 @@ class TerminationStopPointWorkflowVotingTest extends BaseControllerApiTest {
   @MockitoBean
   private SePoDiAdminClient sePoDiAdminClient;
 
+  @MockitoBean
+  private SePoDiClient sePoDiClient;
+
   @BeforeEach
   void setUp() {
     when(servicePointTerminationBasedUserAdministrationService.hasUserInfoPlusTerminationVotePermission()).thenReturn(true);
@@ -84,7 +88,7 @@ class TerminationStopPointWorkflowVotingTest extends BaseControllerApiTest {
         .validTo(LocalDate.of(9999, 12, 31))
         .build();
 
-    when(sePoDiAdminClient.startServicePointTermination(any(), any(), any(
+    when(sePoDiClient.startServicePointTermination(any(), any(), any(
         UpdateTerminationServicePointModel.class))).thenReturn(servicePointVersionModel);
   }
 

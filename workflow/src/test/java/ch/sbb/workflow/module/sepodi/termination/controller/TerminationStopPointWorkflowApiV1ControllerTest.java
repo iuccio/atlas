@@ -17,6 +17,7 @@ import ch.sbb.atlas.api.servicepoint.ReadServicePointVersionModel;
 import ch.sbb.atlas.api.servicepoint.UpdateTerminationServicePointModel;
 import ch.sbb.atlas.model.controller.BaseControllerApiTest;
 import ch.sbb.workflow.module.sepodi.client.SePoDiAdminClient;
+import ch.sbb.workflow.module.sepodi.client.SePoDiClient;
 import ch.sbb.workflow.module.sepodi.termination.api.TerminationStopPointWorkflowApiV1;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationDecision;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationDecisionPerson;
@@ -43,6 +44,9 @@ class TerminationStopPointWorkflowApiV1ControllerTest extends BaseControllerApiT
 
   @MockitoBean
   private SePoDiAdminClient sePoDiAdminClient;
+
+  @MockitoBean
+  private SePoDiClient sePoDiClient;
 
   @AfterEach
   void tearDown() {
@@ -114,7 +118,7 @@ class TerminationStopPointWorkflowApiV1ControllerTest extends BaseControllerApiT
         .validTo(LocalDate.of(2000, 12, 31))
         .build();
 
-    when(sePoDiAdminClient.startServicePointTermination(eq(workflowModel.getSloid()), eq(workflowModel.getVersionId()), any(
+    when(sePoDiClient.startServicePointTermination(eq(workflowModel.getSloid()), eq(workflowModel.getVersionId()), any(
         UpdateTerminationServicePointModel.class))).thenReturn(servicePointVersionModel);
 
     //when
