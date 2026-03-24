@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "ch.sbb.atlas"
-version = "2.1178.0"
+version = "2.1179.0"
 
 description = "Atlas Bulk Import Service"
 
