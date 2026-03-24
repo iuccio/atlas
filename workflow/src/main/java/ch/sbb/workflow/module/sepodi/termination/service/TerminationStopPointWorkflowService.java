@@ -21,6 +21,7 @@ import ch.sbb.atlas.redact.Redacted;
 import ch.sbb.workflow.aop.LoggingAspect.WorkflowType;
 import ch.sbb.workflow.aop.MethodLogged;
 import ch.sbb.workflow.module.sepodi.client.SePoDiAdminClient;
+import ch.sbb.workflow.module.sepodi.client.SePoDiClient;
 import ch.sbb.workflow.module.sepodi.hearing.enity.JudgementType;
 import ch.sbb.workflow.module.sepodi.termination.TerminationWorkflowHelper;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationDecision;
@@ -49,6 +50,7 @@ public class TerminationStopPointWorkflowService {
 
   private final TerminationStopPointWorkflowRepository repository;
   private final SePoDiAdminClient sePoDiAdminClient;
+  private final SePoDiClient sePoDiClient;
   private final TerminationStopPointNotificationService notificationService;
 
   @Redacted
@@ -68,6 +70,9 @@ public class TerminationStopPointWorkflowService {
     return repository.findAll(searchRestrictions.getSpecification(), searchRestrictions.getPageable());
   }
 
+  /**
+   * Permission check on ServicePointVersion#updateStopPointTerminationStatus
+   */
   @MethodLogged(workflowType = WorkflowType.STOP_POINT_TERMINATION_WORKFLOW)
   public TerminationStopPointWorkflow startTerminationWorkflow(StartTerminationStopPointWorkflowModel model) {
     checkTerminationWorkflowAlreadyExists(model);
@@ -76,7 +81,7 @@ public class TerminationStopPointWorkflowService {
         .terminationDate(model.getBoTerminationDate())
         .build();
 
-    ReadServicePointVersionModel readServicePointVersionModel = sePoDiAdminClient.startServicePointTermination(
+    ReadServicePointVersionModel readServicePointVersionModel = sePoDiClient.startServicePointTermination(
         model.getSloid(), model.getVersionId(), terminationServicePointModel);
 
     TerminationStopPointWorkflow terminationStopPointWorkflow = populateWorkflow(
