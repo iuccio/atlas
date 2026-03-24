@@ -1151,7 +1151,8 @@
       "CANCEL_DOSSIER": "Dossier aufheben",
       "DISSOLVE_DOSSIER": "Dossier auflösen",
       "TOPIC": "Thema",
-      "ADD_TO_DOSSIER_INFO": "Nach dem Hinzufügen, ist individuelles Editieren nicht mehr möglich. Änderungen betreffen immer alle Stellungnahmen in einem Dossier."
+      "ADD_TO_DOSSIER_INFO": "Nach dem Hinzufügen, ist individuelles Editieren nicht mehr möglich. Änderungen betreffen immer alle Stellungnahmen in einem Dossier.",
+      "ID_AND_TOPIC": "Dossier-ID und Thema"
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Fahrplanjahr schliessen",
