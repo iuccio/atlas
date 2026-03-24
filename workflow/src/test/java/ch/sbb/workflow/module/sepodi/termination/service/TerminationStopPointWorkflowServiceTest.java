@@ -28,6 +28,7 @@ import ch.sbb.workflow.aop.LoggingAspect;
 import ch.sbb.workflow.aop.LoggingAspect.WorkflowType;
 import ch.sbb.workflow.exception.AtlasClientException;
 import ch.sbb.workflow.module.sepodi.client.SePoDiAdminClient;
+import ch.sbb.workflow.module.sepodi.client.SePoDiClient;
 import ch.sbb.workflow.module.sepodi.hearing.enity.JudgementType;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationDecision;
 import ch.sbb.workflow.module.sepodi.termination.entity.TerminationDecisionPerson;
@@ -68,6 +69,9 @@ class TerminationStopPointWorkflowServiceTest {
 
   @MockitoBean
   private SePoDiAdminClient sePoDiAdminClient;
+
+  @MockitoBean
+  private SePoDiClient sePoDiClient;
 
   @MockitoBean
   private TerminationStopPointNotificationService notificationService;
@@ -420,7 +424,7 @@ class TerminationStopPointWorkflowServiceTest {
         .terminationInProgress(true)
         .terminationDate(stopPointWorkflowModel.getBoTerminationDate())
         .build();
-    when(sePoDiAdminClient.startServicePointTermination(
+    when(sePoDiClient.startServicePointTermination(
         stopPointWorkflowModel.getSloid(),
         stopPointWorkflowModel.getVersionId(),
         terminationServicePointModel))
@@ -444,7 +448,7 @@ class TerminationStopPointWorkflowServiceTest {
         .terminationInProgress(true)
         .terminationDate(stopPointWorkflowModel.getBoTerminationDate())
         .build();
-    when(sePoDiAdminClient.startServicePointTermination(
+    when(sePoDiClient.startServicePointTermination(
         stopPointWorkflowModel.getSloid(),
         stopPointWorkflowModel.getVersionId(),
         terminationServicePointModel))
@@ -452,7 +456,7 @@ class TerminationStopPointWorkflowServiceTest {
 
     ErrorResponse errorResponse = ErrorResponse.builder().details(new TreeSet<>()).build();
     AtlasClientException atlasClientException = new AtlasClientException(errorResponse);
-    doThrow(atlasClientException).when(sePoDiAdminClient).startServicePointTermination(any(), any(), any());
+    doThrow(atlasClientException).when(sePoDiClient).startServicePointTermination(any(), any(), any());
     //when
     assertThrows(AtlasClientException.class,
         () -> service.startTerminationWorkflow(stopPointWorkflowModel));
