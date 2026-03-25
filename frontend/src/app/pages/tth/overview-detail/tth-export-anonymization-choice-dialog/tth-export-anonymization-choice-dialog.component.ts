@@ -7,7 +7,6 @@ import { DialogContentComponent } from '../../../../core/components/dialog/conte
 import { DialogFooterComponent } from '../../../../core/components/dialog/footer/dialog-footer.component';
 import { FormsModule } from '@angular/forms';
 import { DialogData } from '../../../../core/components/dialog/dialog.data';
-import { InfoIconComponent } from '@atlas/form';
 
 @Component({
   selector: 'atlas-tth-export-anonymization-choice-dialog',
@@ -20,7 +19,6 @@ import { InfoIconComponent } from '@atlas/form';
     DialogContentComponent,
     DialogFooterComponent,
     FormsModule,
-    InfoIconComponent,
   ],
 })
 export class TthExportAnonymizationChoiceDialogComponent {
