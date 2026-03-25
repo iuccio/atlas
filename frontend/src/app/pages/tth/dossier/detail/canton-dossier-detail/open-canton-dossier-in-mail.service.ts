@@ -1,9 +1,10 @@
-import { inject, Injectable } from '@angular/core';
-import { TranslatePipe } from '@ngx-translate/core';
-import { TimetableHearingStatementInternalService } from '../../../../../api/service/lidi/timetable-hearing-statement-internal.service';
-import { forkJoin } from 'rxjs';
+import { Injectable } from '@angular/core';
+import {
+  DossierMailData,
+  OpenDossierInMailService,
+} from '../open-dossier-in-mail.service';
 
-export interface CantonDossierMailData {
+export interface CantonDossierMailData extends DossierMailData {
   topic: string;
   statementIds: number[];
   question: string | null | undefined;
@@ -15,18 +16,9 @@ export interface CantonDossierMailData {
 @Injectable({
   providedIn: 'root',
 })
-export class OpenCantonDossierInMailService {
-  private readonly translatePipe = inject(TranslatePipe);
-  private readonly timetableHearingStatementInternalService = inject(
-    TimetableHearingStatementInternalService
-  );
-
+export class OpenCantonDossierInMailService extends OpenDossierInMailService {
   openDossierInMailClient(dossierMailData: CantonDossierMailData) {
-    forkJoin(
-      dossierMailData.statementIds.map((id) =>
-        this.timetableHearingStatementInternalService.getStatement(id)
-      )
-    ).subscribe((statements) => {
+    this.buildStatementInfo(dossierMailData).subscribe((statementInfo) => {
       const topicInfo = this.buildInfoWithLabel(
         'TTH.DOSSIER.TOPIC',
         dossierMailData.topic
@@ -47,29 +39,11 @@ export class OpenCantonDossierInMailService {
         'TTH.DOSSIER.PUBLIC_COMMENT',
         dossierMailData.publicComment
       );
-      const statementInfo = this.buildInfoWithLabel(
-        'TTH.DOSSIER.STATEMENTS',
-        statements
-          .map((i) => {
-            const anonymizedStatement = i.statementAnonymous
-              ? i.statement
-              : (i.anonymousStatement ?? '');
-            return `[${i.id}]: ${anonymizedStatement}`;
-          })
-          .join('\n\n')
-      );
 
-      const subject = 'Dossier ' + `"${dossierMailData.topic}"`;
+      const subject = `Dossier "${dossierMailData.topic}"`;
       const body = `${topicInfo}${questionInfo}${answerInfo}${internalCommentInfo}${publicCommentInfo}${statementInfo}`;
       const link = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       window.open(link, '_self');
     });
-  }
-
-  private buildInfoWithLabel(label: string, value: string | null | undefined) {
-    if (value) {
-      return this.translatePipe.transform(label) + ':\n' + value + '\n\n';
-    }
-    return '';
   }
 }

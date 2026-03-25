@@ -1,9 +1,13 @@
-import { inject, Injectable } from '@angular/core';
-import { TranslatePipe } from '@ngx-translate/core';
+import { Injectable } from '@angular/core';
 import { SwissCanton } from '../../../../../api';
 import { Cantons } from '../../../../../core/cantons/Cantons';
+import {
+  DossierMailData,
+  OpenDossierInMailService,
+} from '../open-dossier-in-mail.service';
 
-export interface BoDossierMailData {
+export interface BoDossierMailData extends DossierMailData {
+  id: number;
   topic: string;
   cantonQuestion: string;
   swissCanton: SwissCanton;
@@ -12,26 +16,32 @@ export interface BoDossierMailData {
 @Injectable({
   providedIn: 'root',
 })
-export class OpenBoDossierInMailService {
-  private readonly translatePipe = inject(TranslatePipe);
-
+export class OpenBoDossierInMailService extends OpenDossierInMailService {
   openDossierInMail(data: BoDossierMailData) {
-    const subject = 'Dossier ' + `"${data.topic}"`;
-    const canton = this.getCantonLabel(data.swissCanton);
-    const inquiryFromCantonLabel = this.getInquiryFromCantonLabel();
-    const body = `${inquiryFromCantonLabel} [${canton}]\n${data.cantonQuestion}`;
+    const tth = this.translatePipe.transform('PAGES.TTH.TITLE_MENU');
+    const subject = `${tth} - Dossier "${data.topic}"`;
 
-    window.open(
-      `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
-      '_self'
-    );
+    this.buildStatementInfo(data).subscribe((statementInfo) => {
+      const dossierInfo = this.buildInfoWithLabel(
+        'TTH.DOSSIER.ID_AND_TOPIC',
+        `${data.id} - "${data.topic}"`
+      );
+      const cantonInfo = this.buildInfoWithLabel(
+        this.translatePipe.transform('TTH.DOSSIER.INQUIRY_FROM_THE_CANTON') +
+          ' ' +
+          this.getCantonLabel(data.swissCanton),
+        data.cantonQuestion
+      );
+      const body = `${dossierInfo}${cantonInfo}${statementInfo}`;
+
+      window.open(
+        `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
+        '_self'
+      );
+    });
   }
 
-  private getInquiryFromCantonLabel() {
-    return this.translatePipe.transform('TTH.DOSSIER.INQUIRY_FROM_THE_CANTON');
-  }
-
-  private getCantonLabel(swissCanton: SwissCanton) {
+  private getCantonLabel(swissCanton: SwissCanton): string {
     return this.translatePipe.transform(
       'TTH.CANTON.' + Cantons.fromSwissCanton(swissCanton)?.short
     );

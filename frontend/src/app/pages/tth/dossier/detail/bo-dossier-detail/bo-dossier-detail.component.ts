@@ -110,7 +110,9 @@ export class BoDossierDetailComponent implements DetailFormComponent, OnInit {
 
   openInMail() {
     this.openBoDossierInMailService.openDossierInMail({
+      id: this.currentDossier!.id!,
       topic: this.currentDossier!.topic,
+      statementIds: this.currentDossier!.statementIds,
       cantonQuestion: this.cantonQuestion,
       swissCanton: this.currentDossier!.swissCanton,
     });
