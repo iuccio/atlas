@@ -840,9 +840,8 @@
       "MULTIPLE_STATUS_CHANGE_MESSAGE": "Sie ändern {{tthsLength}} ausgewählte Stellungnahme.",
       "EXPORT_TYPE_TITLE": "Exporttyp auswählen",
       "EXPORT_TYPE_MESSAGE": "Bitte wählen Sie den gewünschten Exporttyp für die Stellungnahmen aus.",
-      "EXPORT_TYPE_INFO": "Anonymisierte Exporte entfernen alle personenbezogenen Daten",
-      "EXPORT_TYPE_ANONYMIZED": "Anonymisiert",
-      "EXPORT_TYPE_NOT_ANONYMIZED": "Nicht Anonymisiert",
+      "EXPORT_TYPE_ANONYMIZED": "Anonymisiert (Personenbezogene Daten werden nicht exportiert; Begleittexte werden entsprechend der Datenschutz-Klassifizierung exportiert.)",
+      "EXPORT_TYPE_NOT_ANONYMIZED": "Nicht anonymisiert",
       "EXPORT_TYPE_RESPONSIBILITY_INFO": "Für nicht anonymisierte Daten liegt die Verantwortung vollständig beim Benutzer.",
       "CONFIRM": "Auswählen"
     },
