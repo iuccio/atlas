@@ -143,8 +143,7 @@ class RecoveryJobsRunnerTest {
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobRepository.getJobInstanceCount(EXPORT_SERVICE_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
-        TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
+    when(jobRepository.getJobInstances(EXPORT_SERVICE_POINT_CSV_JOB_NAME, 0, 1)).thenReturn(List.of(jobInstance));
     when(jobRepository.getJobInstances(EXPORT_SERVICE_POINT_CSV_JOB_NAME, 0,
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
@@ -171,8 +170,7 @@ class RecoveryJobsRunnerTest {
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobRepository.getJobInstanceCount(EXPORT_TRAFFIC_POINT_ELEMENT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
-        TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
+    when(jobRepository.getJobInstances(EXPORT_TRAFFIC_POINT_ELEMENT_CSV_JOB_NAME, 0, 1)).thenReturn(List.of(jobInstance));
     when(jobRepository.getJobInstances(EXPORT_TRAFFIC_POINT_ELEMENT_CSV_JOB_NAME, 0,
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
@@ -198,8 +196,7 @@ class RecoveryJobsRunnerTest {
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobRepository.getJobInstanceCount(EXPORT_LOADING_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
-        TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
+    when(jobRepository.getJobInstances(EXPORT_LOADING_POINT_CSV_JOB_NAME, 0, 1)).thenReturn(List.of(jobInstance));
     when(jobRepository.getJobInstances(EXPORT_LOADING_POINT_CSV_JOB_NAME, 0,
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
@@ -225,8 +222,7 @@ class RecoveryJobsRunnerTest {
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobRepository.getJobInstanceCount(EXPORT_STOP_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
-        TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
+    when(jobRepository.getJobInstances(EXPORT_STOP_POINT_CSV_JOB_NAME, 0, 1)).thenReturn(List.of(jobInstance));
     when(
         jobRepository.getJobInstances(EXPORT_STOP_POINT_CSV_JOB_NAME, 0, TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
@@ -252,8 +248,7 @@ class RecoveryJobsRunnerTest {
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobRepository.getJobInstanceCount(EXPORT_PLATFORM_CSV_JOB_NAME)).thenReturn(Long.valueOf(
-        TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
+    when(jobRepository.getJobInstances(EXPORT_PLATFORM_CSV_JOB_NAME, 0, 1)).thenReturn(List.of(jobInstance));
     when(jobRepository.getJobInstances(EXPORT_PLATFORM_CSV_JOB_NAME, 0, TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
     when(jobRepository.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));
@@ -278,8 +273,7 @@ class RecoveryJobsRunnerTest {
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobRepository.getJobInstanceCount(EXPORT_REFERENCE_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
-        TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
+    when(jobRepository.getJobInstances(EXPORT_REFERENCE_POINT_CSV_JOB_NAME, 0, 1)).thenReturn(List.of(jobInstance));
     when(jobRepository.getJobInstances(EXPORT_REFERENCE_POINT_CSV_JOB_NAME, 0,
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
@@ -305,8 +299,7 @@ class RecoveryJobsRunnerTest {
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobRepository.getJobInstanceCount(EXPORT_CONTACT_POINT_CSV_JOB_NAME)).thenReturn(Long.valueOf(
-        TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
+    when(jobRepository.getJobInstances(EXPORT_CONTACT_POINT_CSV_JOB_NAME, 0, 1)).thenReturn(List.of(jobInstance));
     when(jobRepository.getJobInstances(EXPORT_CONTACT_POINT_CSV_JOB_NAME, 0,
         TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
@@ -332,8 +325,7 @@ class RecoveryJobsRunnerTest {
     when(jobExecution.getJobParameters()).thenReturn(jobParameters);
     when(jobExecution.getStepExecutions()).thenReturn(List.of(stepExecution));
     when(jobExecution.getCreateTime()).thenReturn(LocalDateTime.now());
-    when(jobRepository.getJobInstanceCount(EXPORT_RELATION_CSV_JOB_NAME)).thenReturn(Long.valueOf(
-        TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE));
+    when(jobRepository.getJobInstances(EXPORT_RELATION_CSV_JOB_NAME, 0, 1)).thenReturn(List.of(jobInstance));
     when(jobRepository.getJobInstances(EXPORT_RELATION_CSV_JOB_NAME, 0, TODAY_CSV_AND_JSON_EXPORTS_JOB_EXECUTION_SIZE)).thenReturn(
         List.of(jobInstance));
     when(jobRepository.getJobExecutions(jobInstance)).thenReturn(List.of(jobExecution));

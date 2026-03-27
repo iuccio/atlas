@@ -34,7 +34,6 @@ import static ch.sbb.exportservice.util.JobDescriptionConstant.EXPORT_TTFN_CSV_J
 import static ch.sbb.exportservice.util.JobDescriptionConstant.EXPORT_TTFN_JSON_JOB_NAME;
 
 import ch.sbb.atlas.amazon.service.FileService;
-import ch.sbb.atlas.batch.exception.JobExecutionException;
 import ch.sbb.exportservice.job.BaseExportJobService;
 import ch.sbb.exportservice.job.bodi.businessorganisation.service.ExportBusinessOrganisationJobService;
 import ch.sbb.exportservice.job.bodi.transportcompany.service.ExportTransportCompanyJobService;
@@ -63,7 +62,6 @@ import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.JobInstance;
-import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -166,15 +164,12 @@ public class RecoveryJobsRunner implements ApplicationListener<ApplicationReadyE
   }
 
   private boolean isTheFirstJobsExecution(List<String> exportJobsName) {
-    int totalJobExecutionCount = 0;
+    int totalJobInstanceCount = 0;
     for (String job : exportJobsName) {
-      try {
-        totalJobExecutionCount += (int) jobRepository.getJobInstanceCount(job);
-      } catch (NoSuchJobException e) {
-        throw new JobExecutionException(job, e);
-      }
+      List<JobInstance> jobInstances = jobRepository.getJobInstances(job, 0, 1);
+      totalJobInstanceCount += jobInstances.size();
     }
-    return totalJobExecutionCount <= 0;
+    return totalJobInstanceCount == 0;
   }
 
   private List<JobExecution> getTodayJobExecutions(List<String> exportJobsName) {
