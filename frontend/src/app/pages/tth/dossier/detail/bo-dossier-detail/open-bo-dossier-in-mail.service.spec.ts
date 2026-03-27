@@ -80,7 +80,7 @@ describe('OpenBoDossierInMailService', () => {
     });
 
     const result =
-      'mailto:?subject=Fahrplananh%C3%B6rung%20-%20Dossier%20%22Thema%22&body=Dossier-ID%20und%20Thema%3A%0A0%20-%20%22Thema%22%0A%0AR%C3%BCckfrage%20des%20Kantons%20Bern%3A%0AFrage%20an%20das%20Transportunternehmen%0A%0AStellungnahmen%20des%20Dossiers%3A%0A%5B123%5D%3A%20This%20is%20an%20anonymized%20statement%0A%0A';
+      'mailto:?subject=Fahrplananh%C3%B6rung%20-%20Dossier%200%20-%20%22Thema%22&body=Dossier-ID%20und%20Thema%3A%0A0%20-%20%22Thema%22%0A%0AR%C3%BCckfrage%20des%20Kantons%20Bern%3A%0AFrage%20an%20das%20Transportunternehmen%0A%0AStellungnahmen%20des%20Dossiers%3A%0A%5B123%5D%3A%20This%20is%20an%20anonymized%20statement%0A%0A';
     expect(windowOpenSpy).toHaveBeenCalledWith(result, '_self');
   });
 });

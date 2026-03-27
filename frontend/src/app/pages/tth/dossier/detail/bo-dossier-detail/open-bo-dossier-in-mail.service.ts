@@ -19,7 +19,7 @@ export interface BoDossierMailData extends DossierMailData {
 export class OpenBoDossierInMailService extends OpenDossierInMailService {
   openDossierInMail(data: BoDossierMailData) {
     const tth = this.translatePipe.transform('PAGES.TTH.TITLE_MENU');
-    const subject = `${tth} - Dossier "${data.topic}"`;
+    const subject = `${tth} - Dossier ${data.id} - "${data.topic}"`;
 
     this.buildStatementInfo(data).subscribe((statementInfo) => {
       const dossierInfo = this.buildInfoWithLabel(
