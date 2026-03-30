@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 import { ParkingLotTableComponent } from './parking-lot-table.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,7 +7,7 @@ import {
   MockAtlasButtonComponent,
   MockTableComponent,
 } from '../../../../app.testing.mocks';
-import { STOP_POINT } from '../../util/stop-point-test-data.spec';
+import { STOP_POINT } from '../../util/stop-point-test-data';
 import { BERN_WYLEREGG } from '../../../../../test/data/service-point';
 import { of } from 'rxjs';
 import {
@@ -42,14 +43,9 @@ describe('ParkingLotTableComponent', () => {
   let component: ParkingLotTableComponent;
   let fixture: ComponentFixture<ParkingLotTableComponent>;
   let router: Router;
-
-  const parkingLotInternalService = jasmine.createSpyObj(
-    'ParkingLotInternalService',
-    ['getParkingLotsOverview']
-  );
-  parkingLotInternalService.getParkingLotsOverview.and.returnValue(
-    of(parkingLotOverview)
-  );
+  let parkingLotInternalService: Mocked<
+    Pick<ParkingLotInternalService, 'getParkingLotsOverview'>
+  >;
 
   const activatedRouteMock = {
     parent: {
@@ -61,6 +57,13 @@ describe('ParkingLotTableComponent', () => {
   };
 
   beforeEach(() => {
+    parkingLotInternalService = {
+      getParkingLotsOverview: vi.fn(),
+    };
+    parkingLotInternalService.getParkingLotsOverview.mockReturnValue(
+      of(parkingLotOverview)
+    );
+
     TestBed.configureTestingModule({
       imports: [ParkingLotTableComponent, TranslateModule.forRoot()],
       providers: [
@@ -74,6 +77,7 @@ describe('ParkingLotTableComponent', () => {
       remove: { imports: [AtlasButtonComponent, TableComponent] },
       add: { imports: [MockAtlasButtonComponent, MockTableComponent] },
     });
+
     fixture = TestBed.createComponent(ParkingLotTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -91,11 +95,13 @@ describe('ParkingLotTableComponent', () => {
   });
 
   it('should navigate on table click', () => {
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.getOverview({ page: 0, size: 10 });
 
     component.rowClicked(component.parkingLots[0]);
-    expect(router.navigate).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith([component.parkingLots[0].sloid], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+    });
   });
 });

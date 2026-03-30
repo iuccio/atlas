@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { TthChangeStatusDialogComponent } from './tth-change-status-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AppTestingModule } from '../../../../app.testing.module';
@@ -19,15 +20,22 @@ import { BaseChangeDialogComponent } from '../base-change-dialog/base-change-dia
 import { MaintenanceIconComponent } from '../../../../core/components/header/maintenance-icon/maintenance-icon.component';
 import { TimetableHearingStatementInternalService } from '../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 
-const mockTimetableHearingStatementsService = jasmine.createSpyObj(
-  'timetableHearingStatementsService',
-  ['updateHearingStatementStatus']
-);
-const dialogServiceSpy = jasmine.createSpyObj(DialogService, {
-  confirmLeave: of({}),
-});
-const dialogRefSpy = jasmine.createSpyObj(['close']);
-const notificationServiceSpy = jasmine.createSpyObj(['success']);
+const mockTimetableHearingStatementsService: Mocked<
+  Pick<TimetableHearingStatementInternalService, 'updateHearingStatementStatus'>
+> = {
+  updateHearingStatementStatus: vi.fn(),
+};
+const dialogServiceSpy: Mocked<Pick<DialogService, 'confirmLeave'>> = {
+  confirmLeave: vi.fn().mockReturnValue(of({})),
+};
+const dialogRefSpy: Mocked<
+  Pick<MatDialogRef<TthChangeStatusDialogComponent>, 'close'>
+> = {
+  close: vi.fn(),
+};
+const notificationServiceSpy: Mocked<Pick<NotificationService, 'success'>> = {
+  success: vi.fn(),
+};
 const statement: TimetableHearingStatementV2 = {
   id: 1,
   swissCanton: SwissCanton.Bern,
@@ -42,8 +50,10 @@ describe('TthChangeStatusDialogComponent', () => {
   let component: TthChangeStatusDialogComponent;
   let fixture: ComponentFixture<TthChangeStatusDialogComponent>;
 
-  mockTimetableHearingStatementsService.updateHearingStatementStatus.and.returnValue(
-    of(statement)
+  mockTimetableHearingStatementsService.updateHearingStatementStatus.mockReturnValue(
+    of(undefined) as ReturnType<
+      TimetableHearingStatementInternalService['updateHearingStatementStatus']
+    >
   );
 
   beforeEach(async () => {
@@ -95,7 +105,7 @@ describe('TthChangeStatusDialogComponent', () => {
     //when
     component.onClick();
     //then
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+    expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
     expect(notificationServiceSpy.success).toHaveBeenCalledWith(
       'TTH.NOTIFICATION.STATUS_CHANGE.SUCCESS'
     );

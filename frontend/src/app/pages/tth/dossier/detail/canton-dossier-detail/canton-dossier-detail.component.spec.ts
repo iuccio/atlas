@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 
 import { CantonDossierDetailComponent } from './canton-dossier-detail.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,12 +27,11 @@ const statement: TimetableHearingStatementV2 = {
   },
   documents: [],
 };
-const timetableHearingStatementInternalService = jasmine.createSpyObj(
-  'TimetableHearingStatementInternalService',
-  {
-    getStatement: of(statement),
-  }
-);
+const timetableHearingStatementInternalService: Mocked<
+  Pick<TimetableHearingStatementInternalService, 'getStatement'>
+> = {
+  getStatement: vi.fn().mockReturnValue(of(statement)),
+};
 const dossier: TthDossier = {
   swissCanton: SwissCanton.Bern,
   boContactMail: 'info@bls.ch',
@@ -42,33 +42,36 @@ const dossier: TthDossier = {
   topic: 'Mehr Busse bitte',
   dossierStatus: DossierStatus.Added,
 };
-const dossierInternalService = jasmine.createSpyObj('DossierInternalService', {
-  createDossier: of(dossier),
-  updateDossier: of(dossier),
-  sendDossierToBo: of(),
-  completeDossier: of(),
-});
+const dossierInternalService: Mocked<
+  Pick<
+    DossierInternalService,
+    'createDossier' | 'updateDossier' | 'sendDossierToBo' | 'completeDossier'
+  >
+> = {
+  createDossier: vi.fn().mockReturnValue(of(dossier)),
+  updateDossier: vi.fn().mockReturnValue(of(dossier)),
+  sendDossierToBo: vi.fn().mockReturnValue(of(undefined)),
+  completeDossier: vi.fn().mockReturnValue(of(undefined)),
+};
 
-const statementSelectDialogService = jasmine.createSpyObj(
-  'StatementSelectDialogService',
-  {
-    select: of([1, 2]),
-  }
-);
+const statementSelectDialogService: Mocked<
+  Pick<StatementSelectDialogService, 'select'>
+> = {
+  select: vi.fn().mockReturnValue(of([1, 2])),
+};
 
-const notificationService = jasmine.createSpyObj('NotificationService', [
-  'success',
-]);
-const openDossierInMailService = jasmine.createSpyObj(
-  'OpenDossierInMailService',
-  ['openDossierInMailClient']
-);
-const dialogService = jasmine.createSpyObj('DialogService', {
-  confirm: of(true),
-});
-const router = jasmine.createSpyObj('Router', {
-  navigate: Promise.resolve(true),
-});
+const notificationService: Mocked<Pick<NotificationService, 'success'>> = {
+  success: vi.fn(),
+};
+const openDossierInMailService: Mocked<
+  Pick<OpenCantonDossierInMailService, 'openDossierInMailClient'>
+> = {
+  openDossierInMailClient: vi.fn(),
+};
+const dialogService: Mocked<Pick<DialogService, 'confirm'>> = {
+  confirm: vi.fn().mockReturnValue(of(true)),
+};
+let router: Mocked<Pick<Router, 'navigate'>>;
 
 describe('DossierDetailComponent', () => {
   let component: CantonDossierDetailComponent;
@@ -94,8 +97,8 @@ describe('DossierDetailComponent', () => {
       expect(component.swissCanton).toBe(SwissCanton.Bern);
       expect(component.timetableHearingYear).toBe(2023);
 
-      expect(component.isNew).toBeTrue();
-      expect(component.form.enabled).toBeTrue();
+      expect(component.isNew).toBe(true);
+      expect(component.form.enabled).toBe(true);
     });
 
     it('should save dossier', () => {
@@ -103,14 +106,14 @@ describe('DossierDetailComponent', () => {
       component.selectedStatements = [456];
 
       component.save();
-      expect(dossierInternalService.createDossier).toHaveBeenCalled();
-      expect(notificationService.success).toHaveBeenCalled();
+      expect(dossierInternalService.createDossier).toHaveBeenCalledTimes(1);
+      expect(notificationService.success).toHaveBeenCalledTimes(1);
     });
 
     it('should open statement select dialog', () => {
       component.openAddStatementsDialog();
 
-      expect(statementSelectDialogService.select).toHaveBeenCalled();
+      expect(statementSelectDialogService.select).toHaveBeenCalledTimes(1);
       expect(component.selectedStatements).toEqual([1, 2]);
     });
   });
@@ -129,72 +132,75 @@ describe('DossierDetailComponent', () => {
 
     it('should create', () => {
       expect(component).toBeTruthy();
-      expect(component.isNew).toBeFalse();
+      expect(component.isNew).toBe(false);
 
       expect(component.currentDossier).toBeDefined();
-      expect(component.isEditable).toBeTrue();
-      expect(component.isSendableToBo).toBeTrue();
+      expect(component.isEditable).toBe(true);
+      expect(component.isSendableToBo).toBe(true);
     });
 
     it('should toggle edit', () => {
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeTrue();
-      expect(component.form.controls.answerToCanton.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(true);
+      expect(component.form.controls.answerToCanton.enabled).toBe(false);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
     });
 
     it('should open internal feedback mail', () => {
       component.openInternalFeedbackMail();
       expect(
         openDossierInMailService.openDossierInMailClient
-      ).toHaveBeenCalled();
+      ).toHaveBeenCalledTimes(1);
     });
 
     it('should not enable question fields if answer already here', () => {
       component.form.controls.answerToCanton.setValue('We have more buses');
 
       component.toggleEdit();
-      expect(component.form.controls.question.enabled).toBeFalse();
-      expect(component.form.controls.boContactMail.enabled).toBeFalse();
-      expect(component.form.controls.boDeadlineToAnswer.enabled).toBeFalse();
+      expect(component.form.controls.question.enabled).toBe(false);
+      expect(component.form.controls.boContactMail.enabled).toBe(false);
+      expect(component.form.controls.boDeadlineToAnswer.enabled).toBe(false);
     });
 
     it('should update', () => {
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
       component.toggleEdit();
-      expect(component.form.enabled).toBeTrue();
+      expect(component.form.enabled).toBe(true);
 
       component.form.controls.topic.setValue('updated topic');
       component.save();
 
-      expect(dossierInternalService.updateDossier).toHaveBeenCalled();
+      expect(dossierInternalService.updateDossier).toHaveBeenCalledTimes(1);
     });
 
     it('should send to bo', () => {
       component.sendToBo();
 
-      expect(dossierInternalService.sendDossierToBo).toHaveBeenCalled();
+      expect(dossierInternalService.sendDossierToBo).toHaveBeenCalledTimes(1);
     });
 
     it('should complete to bo', () => {
       component.completeDossier(DossierStatus.Canceled);
 
-      expect(dialogService.confirm).toHaveBeenCalled();
-      expect(dossierInternalService.completeDossier).toHaveBeenCalled();
+      expect(dialogService.confirm).toHaveBeenCalledTimes(1);
+      expect(dossierInternalService.completeDossier).toHaveBeenCalledTimes(1);
     });
 
     it('should go back', () => {
       component.back();
 
-      expect(router.navigate).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledTimes(1);
     });
   });
 
   async function setupTestBed(activatedRoute: ActivatedRouteMockType) {
+    router = {
+      navigate: vi.fn().mockResolvedValue(true),
+    };
     await TestBed.configureTestingModule({
       imports: [CantonDossierDetailComponent, AppTestingModule],
       providers: [

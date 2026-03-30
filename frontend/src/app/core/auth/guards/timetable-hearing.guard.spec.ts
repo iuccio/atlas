@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import {
   canActivateTimetableHearing,
@@ -12,7 +13,7 @@ import {
 } from '@angular/router';
 import { PermissionService } from '../permission/permission.service';
 import { UserService } from '../user/user.service';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 
 describe('TimetableHearingGuard', () => {
   let guard: TimetableHearingGuard;
@@ -60,7 +61,7 @@ describe('TimetableHearingGuard', () => {
     expect(guard).toBeTruthy();
   });
 
-  it('should be allowed and wait for permissions to be loaded', (done) => {
+  it('should be allowed and wait for permissions to be loaded', async () => {
     mayAccessTth = true;
 
     const mockRoute = {
@@ -75,14 +76,12 @@ describe('TimetableHearingGuard', () => {
     );
 
     expect(result).toBeDefined();
-    result.subscribe((guardResult) => {
-      expect(permissionsLoadedCalled).toBeTrue();
-      expect(guardResult).toBeTrue();
-      done();
-    });
+    const guardResult = await firstValueFrom(result);
+    expect(permissionsLoadedCalled).toBe(true);
+    expect(guardResult).toBe(true);
   });
 
-  it('should not be allowed and wait for permissions to be loaded', (done) => {
+  it('should not be allowed and wait for permissions to be loaded', async () => {
     mayAccessTth = false;
 
     const mockRoute = {
@@ -97,10 +96,8 @@ describe('TimetableHearingGuard', () => {
     );
 
     expect(result).toBeDefined();
-    result.subscribe((guardResult) => {
-      expect(permissionsLoadedCalled).toBeTrue();
-      expect(guardResult.toString()).toEqual('/');
-      done();
-    });
+    const guardResult = await firstValueFrom(result);
+    expect(permissionsLoadedCalled).toBe(true);
+    expect(guardResult.toString()).toEqual('/');
   });
 });

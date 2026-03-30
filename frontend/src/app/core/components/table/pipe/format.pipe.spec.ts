@@ -1,18 +1,27 @@
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { FormatPipe } from './format.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TableColumn } from '../table-column';
-import SpyObj = jasmine.SpyObj;
+import { TestBed } from '@angular/core/testing';
 
 describe('FormatPipe', () => {
-  let translatePipeMock: SpyObj<TranslatePipe>;
   let formatPipe: FormatPipe;
 
+  let translatePipeStub: Mocked<Pick<TranslatePipe, 'transform'>>;
+
   beforeEach(() => {
-    translatePipeMock = jasmine.createSpyObj<TranslatePipe>(
-      'TranslatePipeSpy',
-      ['transform']
-    );
-    formatPipe = new FormatPipe(translatePipeMock);
+    translatePipeStub = {
+      transform: vi.fn(),
+    };
+
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: TranslatePipe, useValue: translatePipeStub },
+        FormatPipe,
+      ],
+    });
+
+    formatPipe = TestBed.inject(FormatPipe);
   });
 
   it('create an instance', () => {
@@ -44,15 +53,19 @@ describe('FormatPipe', () => {
       },
     } as TableColumn<object>;
     formatPipe.transform(value, tableColumn);
-    expect(translatePipeMock.transform).toHaveBeenCalledOnceWith('prefix.test');
+    expect(translatePipeStub.transform).toHaveBeenCalledExactlyOnceWith(
+      'prefix.test'
+    );
   });
 
   it('should call column callback', () => {
     const value = 'test';
-    const tableColumn = jasmine.createSpyObj('TableColumn', ['callback']);
+    const tableColumn = {
+      callback: vi.fn(),
+    } as Partial<TableColumn<unknown>> as Mocked<TableColumn<unknown>>;
 
     formatPipe.transform(value, tableColumn);
-    expect(tableColumn.callback).toHaveBeenCalledOnceWith('test');
+    expect(tableColumn.callback).toHaveBeenCalledExactlyOnceWith('test');
   });
 
   it('should only return value when no condition matches', () => {

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { ServicePointDetailComponent } from './service-point-detail.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
@@ -36,31 +37,6 @@ import moment from 'moment';
 import { StopPointTerminationDialogService } from './stop-point-termination/stop-point-termination-dialog/stop-point-termination-dialog.service';
 import { ServicePointService } from '../../../../api/service/sepodi/service-point.service';
 import { ServicePointInternalService } from '../../../../api/service/sepodi/service-point-internal.service';
-import SpyObj = jasmine.SpyObj;
-
-const dialogServiceSpy = jasmine.createSpyObj('DialogService', ['confirm']);
-const servicePointService = jasmine.createSpyObj('ServicePointService', [
-  'updateServicePoint',
-]);
-const servicePointInternalService = jasmine.createSpyObj(
-  'ServicePointInternalService',
-  ['validateServicePoint', 'revokeServicePoint']
-);
-
-const notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
-  'success',
-]);
-const mapServiceSpy = jasmine.createSpyObj('MapService', [
-  'placeMarkerAndFlyTo',
-  'deselectServicePoint',
-  'refreshMap',
-]);
-mapServiceSpy.mapInitialized = new BehaviorSubject<boolean>(false);
-
-const addStopPointWorkflowDialogService = jasmine.createSpyObj(
-  'addStopPointWorkflowDialogService',
-  ['openDialog']
-);
 
 @Component({
   selector: 'atlas-service-point-form',
@@ -88,7 +64,30 @@ class ServicePointGeographyMockComponent {
 describe('ServicePointDetailComponent', () => {
   let component: ServicePointDetailComponent;
   let fixture: ComponentFixture<ServicePointDetailComponent>;
-  let routerSpy: SpyObj<Router>;
+  let routerSpy: Mocked<Pick<Router, 'navigate'>>;
+
+  let dialogServiceSpy: Mocked<Pick<DialogService, 'confirm'>>;
+  let servicePointServiceSpy: Mocked<
+    Pick<ServicePointService, 'updateServicePoint'>
+  >;
+  let servicePointInternalServiceSpy: Mocked<
+    Pick<
+      ServicePointInternalService,
+      'validateServicePoint' | 'revokeServicePoint'
+    >
+  >;
+  let notificationServiceSpy: Mocked<Pick<NotificationService, 'success'>>;
+  let mapServiceSpy: Mocked<
+    Pick<
+      MapService,
+      'placeMarkerAndFlyTo' | 'deselectServicePoint' | 'refreshMap'
+    > & {
+      mapInitialized: BehaviorSubject<boolean>;
+    }
+  >;
+  let addStopPointWorkflowDialogServiceSpy: Mocked<
+    Pick<AddStopPointWorkflowDialogService, 'openDialog'>
+  >;
 
   const activatedRouteMock = { parent: { data: of({ servicePoint: BERN }) } };
 
@@ -97,8 +96,24 @@ describe('ServicePointDetailComponent', () => {
   let stopPointTerminationDialogService: StopPointTerminationDialogService;
 
   beforeEach(async () => {
-    routerSpy = jasmine.createSpyObj(['navigate']);
-    routerSpy.navigate.and.returnValue(Promise.resolve(true));
+    Element.prototype.scrollIntoView = vi.fn();
+
+    dialogServiceSpy = { confirm: vi.fn() };
+    servicePointServiceSpy = { updateServicePoint: vi.fn() };
+    servicePointInternalServiceSpy = {
+      validateServicePoint: vi.fn(),
+      revokeServicePoint: vi.fn(),
+    };
+    notificationServiceSpy = { success: vi.fn() };
+    mapServiceSpy = {
+      placeMarkerAndFlyTo: vi.fn(),
+      deselectServicePoint: vi.fn(),
+      refreshMap: vi.fn(),
+      mapInitialized: new BehaviorSubject<boolean>(false),
+    };
+    addStopPointWorkflowDialogServiceSpy = { openDialog: vi.fn() };
+    routerSpy = { navigate: vi.fn() };
+    routerSpy.navigate.mockReturnValue(Promise.resolve(true));
 
     await TestBed.configureTestingModule({
       imports: [ServicePointDetailComponent, TranslateModule.forRoot()],
@@ -111,17 +126,17 @@ describe('ServicePointDetailComponent', () => {
         { provide: PermissionService, useValue: adminPermissionServiceMock },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: DialogService, useValue: dialogServiceSpy },
-        { provide: ServicePointService, useValue: servicePointService },
+        { provide: ServicePointService, useValue: servicePointServiceSpy },
         {
           provide: ServicePointInternalService,
-          useValue: servicePointInternalService,
+          useValue: servicePointInternalServiceSpy,
         },
         { provide: NotificationService, useValue: notificationServiceSpy },
         { provide: TranslatePipe },
         { provide: MapService, useValue: mapServiceSpy },
         {
           provide: AddStopPointWorkflowDialogService,
-          useValue: addStopPointWorkflowDialogService,
+          useValue: addStopPointWorkflowDialogServiceSpy,
         },
         { provide: Router, useValue: routerSpy },
       ],
@@ -157,7 +172,7 @@ describe('ServicePointDetailComponent', () => {
   });
 
   it('should initialize versioning correctly', () => {
-    expect(component.showVersionSwitch).toBeTrue();
+    expect(component.showVersionSwitch).toBe(true);
     expect(component.selectedVersion).toBeTruthy();
 
     expect(
@@ -166,14 +181,14 @@ describe('ServicePointDetailComponent', () => {
   });
 
   it('should initialize form correctly', () => {
-    expect(component.form?.disabled).toBeTrue();
+    expect(component.form?.disabled).toBe(true);
   });
 
   it('should switch to edit mode', () => {
-    expect(component.form?.disabled).toBeTrue();
+    expect(component.form?.disabled).toBe(true);
 
     component.toggleEdit();
-    expect(component.form?.enabled).toBeTrue();
+    expect(component.form?.enabled).toBe(true);
   });
 
   it('should not show revoke button when status in review', () => {
@@ -237,49 +252,49 @@ describe('ServicePointDetailComponent', () => {
     component.servicePointVersions.push(version);
     component.initShowRevokeButton(version);
 
-    expect(component.showRevokeButton).toBeTrue();
+    expect(component.showRevokeButton).toBe(true);
   });
 
   it('should switch to readonly mode when not dirty without confirmation', () => {
     component.form?.enable();
 
-    expect(component.form?.enabled).toBeTrue();
-    expect(component.form?.dirty).toBeFalse();
+    expect(component.form?.enabled).toBe(true);
+    expect(component.form?.dirty).toBe(false);
 
     component.toggleEdit();
-    expect(component.form?.disabled).toBeTrue();
+    expect(component.form?.disabled).toBe(true);
   });
 
   it('should switch to readonly mode when dirty with confirmation', () => {
     // given
     component.form?.enable();
-    expect(component.form?.enabled).toBeTrue();
+    expect(component.form?.enabled).toBe(true);
 
     component.form?.controls.designationOfficial.setValue('Basel beste Sport');
     component.form?.markAsDirty();
-    expect(component.form?.dirty).toBeTrue();
+    expect(component.form?.dirty).toBe(true);
 
-    dialogServiceSpy.confirm.and.returnValue(of(true));
+    dialogServiceSpy.confirm.mockReturnValue(of(true));
 
     // when & then
     component.toggleEdit();
-    expect(component.form?.disabled).toBeTrue();
+    expect(component.form?.disabled).toBe(true);
   });
 
   it('should stay in edit mode when confirmation canceled', () => {
     // given
     component.form?.enable();
-    expect(component.form?.enabled).toBeTrue();
+    expect(component.form?.enabled).toBe(true);
 
     component.form?.controls.designationOfficial.setValue('Basel beste Sport');
     component.form?.markAsDirty();
-    expect(component.form?.dirty).toBeTrue();
+    expect(component.form?.dirty).toBe(true);
 
-    dialogServiceSpy.confirm.and.returnValue(of(false));
+    dialogServiceSpy.confirm.mockReturnValue(of(false));
 
     // when & then
     component.toggleEdit();
-    expect(component.form?.enabled).toBeTrue();
+    expect(component.form?.enabled).toBe(true);
   });
 
   it('should set isAbbreviationAllowed based on selectedVersion.businessOrganisation', () => {
@@ -300,7 +315,7 @@ describe('ServicePointDetailComponent', () => {
 
     component.checkIfAbbreviationIsAllowed();
 
-    expect(component.isAbbreviationAllowed).toBeTrue();
+    expect(component.isAbbreviationAllowed).toBe(true);
 
     component.selectedVersion = {
       businessOrganisation: 'falseBusinessOrganisation',
@@ -318,7 +333,7 @@ describe('ServicePointDetailComponent', () => {
     };
     component.checkIfAbbreviationIsAllowed();
 
-    expect(component.isAbbreviationAllowed).toBeFalse();
+    expect(component.isAbbreviationAllowed).toBe(false);
   });
 
   it('should set isLatestVersionSelected to true if selected version is the latest', () => {
@@ -357,7 +372,7 @@ describe('ServicePointDetailComponent', () => {
 
     component.isSelectedVersionHighDate(versions, selectedVersion);
 
-    expect(component.isLatestVersionSelected).toBeTrue();
+    expect(component.isLatestVersionSelected).toBe(true);
   });
 
   it('should set isLatestVersionSelected to false if selected version is not the latest', () => {
@@ -396,47 +411,55 @@ describe('ServicePointDetailComponent', () => {
 
     component.isSelectedVersionHighDate(versions, selectedVersion);
 
-    expect(component.isLatestVersionSelected).toBeFalse();
+    expect(component.isLatestVersionSelected).toBe(false);
   });
 
   it('should validate service point on validate', () => {
-    dialogServiceSpy.confirm.and.returnValue(of(true));
-    servicePointInternalService.validateServicePoint.and.returnValue(of(BERN));
+    dialogServiceSpy.confirm.mockReturnValue(of(true));
+    servicePointInternalServiceSpy.validateServicePoint.mockReturnValue(
+      of(BERN[0])
+    );
 
     component.validate();
 
-    expect(servicePointInternalService.validateServicePoint).toHaveBeenCalled();
+    expect(
+      servicePointInternalServiceSpy.validateServicePoint
+    ).toHaveBeenCalled();
   });
 
   it('should revoke service points on revoke', () => {
-    dialogServiceSpy.confirm.and.returnValue(of(true));
-    servicePointInternalService.revokeServicePoint.and.returnValue(of(BERN));
+    dialogServiceSpy.confirm.mockReturnValue(of(true));
+    servicePointInternalServiceSpy.revokeServicePoint.mockReturnValue(of(BERN));
 
     component.revoke();
 
-    expect(servicePointInternalService.revokeServicePoint).toHaveBeenCalled();
+    expect(
+      servicePointInternalServiceSpy.revokeServicePoint
+    ).toHaveBeenCalled();
   });
 
   it('should update service point on save', () => {
-    spyOn(validityService, 'initValidity').and.callThrough();
-    spyOn(validityService, 'validateAndDisableCustom').and.callThrough();
-    spyOn(validityService, 'confirmValidityDialog').and.returnValue(of(true));
+    vi.spyOn(validityService, 'initValidity');
+    vi.spyOn(validityService, 'validateAndDisableCustom');
+    vi.spyOn(validityService, 'confirmValidityDialog').mockReturnValue(
+      of(true)
+    );
 
-    dialogServiceSpy.confirm.and.returnValue(of(true));
-    servicePointService.updateServicePoint.and.returnValue(of(BERN));
+    dialogServiceSpy.confirm.mockReturnValue(of(true));
+    servicePointServiceSpy.updateServicePoint.mockReturnValue(of(BERN[0]));
 
     component.toggleEdit();
     component.form?.controls.designationOfficial.setValue('New YB Station');
     component.save();
 
-    expect(servicePointService.updateServicePoint).toHaveBeenCalled();
+    expect(servicePointServiceSpy.updateServicePoint).toHaveBeenCalled();
   });
 
   it('should start termination on save', () => {
     //given
-    spyOn(validityService, 'initValidity').and.callThrough();
-    spyOn(terminationService, 'isStartingTermination').and.returnValue(true);
-    spyOn(stopPointTerminationDialogService, 'openDialog').and.returnValue(
+    vi.spyOn(validityService, 'initValidity');
+    vi.spyOn(terminationService, 'isStartingTermination').mockReturnValue(true);
+    vi.spyOn(stopPointTerminationDialogService, 'openDialog').mockReturnValue(
       of(true)
     );
 
@@ -455,6 +478,6 @@ describe('ServicePointDetailComponent', () => {
   it('should open add workflow dialog', () => {
     component.addWorkflow();
 
-    expect(addStopPointWorkflowDialogService.openDialog).toHaveBeenCalled();
+    expect(addStopPointWorkflowDialogServiceSpy.openDialog).toHaveBeenCalled();
   });
 });

@@ -6,6 +6,7 @@ import { BusinessObjectType } from '../../model/businessObjectType';
 import { ImportType } from '../../model/importType';
 import { BulkImportRequest } from '../../model/bulkImportRequest';
 import { provideHttpClient } from '@angular/common/http';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('BulkImportService', () => {
   let service: BulkImportService;
@@ -22,21 +23,18 @@ describe('BulkImportService', () => {
 
     service = TestBed.inject(BulkImportService);
     httpTestingController = TestBed.inject(HttpTestingController);
-
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call downloadTemplate with the correct URL', () => {
+  it('should call downloadTemplate with the correct URL', async () => {
     const applicationType = ApplicationType.Sepodi;
     const objectType = BusinessObjectType.ServicePoint;
     const importType = ImportType.Create;
-    service.downloadTemplate(applicationType, objectType, importType)
-      .subscribe(response => {
-        expect(response).toBeTruthy();
-      });
+
+    service.downloadTemplate(applicationType, objectType, importType).subscribe();
 
     const req = httpTestingController.expectOne(request =>
       request.method === 'GET' &&
@@ -48,10 +46,10 @@ describe('BulkImportService', () => {
 
   it('should throw an error in getBulkImportResults if id is null', () => {
     expect(() => service.getBulkImportResults(null as any))
-      .toThrowError(`Required parameter 'id' is null or undefined.`);
+      .toThrow(`Required parameter 'id' is null or undefined.`);
   });
 
-  it('should call startBulkImport with correct URL, method and FormData body', () => {
+  it('should call startBulkImport with correct URL, method and FormData body', async () => {
     const bulkImportRequest: BulkImportRequest = {
       applicationType: ApplicationType.Sepodi,
       objectType: BusinessObjectType.ServicePoint,
@@ -59,21 +57,17 @@ describe('BulkImportService', () => {
     };
     const file = new Blob(['Test'], { type: 'text/plain' });
 
-    service.startBulkImport(bulkImportRequest, file).subscribe(response => {
-      expect(response).toBeTruthy();
-    });
+    service.startBulkImport(bulkImportRequest, file).subscribe();
 
     const req = httpTestingController.expectOne(r =>
       r.method === 'POST' &&
       r.url.endsWith('/bulk-import-service/v1/import/bulk')
     );
-    expect(req.request.body instanceof FormData).toBeTrue();
+    expect(req.request.body instanceof FormData).toBe(true);
 
     const formData: FormData = req.request.body;
-
-    expect(formData.has('bulkImportRequest')).toBeTrue();
-    expect(formData.has('file')).toBeTrue();
-
+    expect(formData.has('bulkImportRequest')).toBe(true);
+    expect(formData.has('file')).toBe(true);
   });
 
 });

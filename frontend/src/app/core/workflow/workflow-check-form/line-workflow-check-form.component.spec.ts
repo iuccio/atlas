@@ -1,63 +1,50 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { LineWorkflowCheckFormComponent } from './line-workflow-check-form.component';
-import { AppTestingModule } from '../../../app.testing.module';
-import { CommentComponent } from '../../form-components/comment/comment.component';
 import { By } from '@angular/platform-browser';
-import { LineWorkflowFormComponent } from '../workflow-form/line-workflow-form.component';
-import { AtlasButtonComponent } from '../../components/button/atlas-button.component';
 import { EMPTY, of } from 'rxjs';
-import { AtlasFieldErrorComponent } from '../../form-components/atlas-field-error/atlas-field-error.component';
-import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
-import { TextFieldComponent } from '../../form-components/text-field/text-field.component';
-import { TranslatePipe } from '@ngx-translate/core';
 import { PermissionService } from '../../auth/permission/permission.service';
 import { LineWorkflowService } from '../../../api/service/workflow/line-workflow.service';
 import { UserAdministrationService } from '../../../api/service/user-administration/user-administration.service';
 import { Workflow } from '../../../api';
-import SpyObj = jasmine.SpyObj;
-
-let isAtLeastSupervisor = true;
-const permissionServiceMock: Partial<PermissionService> = {
-  isAtLeastSupervisor(): boolean {
-    return isAtLeastSupervisor;
-  },
-};
+import { translateServiceProvider } from '../../../app.testing.mocks';
 
 describe('LineWorkflowCheckFormComponent', () => {
   let component: LineWorkflowCheckFormComponent;
   let fixture: ComponentFixture<LineWorkflowCheckFormComponent>;
 
-  let workflowServiceSpy: SpyObj<LineWorkflowService>;
-  let userAdminServiceSpy: SpyObj<UserAdministrationService>;
+  let isAtLeastSupervisor = true;
+  let permissionServiceStub: Pick<PermissionService, 'isAtLeastSupervisor'>;
+  let workflowServiceStub: Mocked<Pick<LineWorkflowService, 'examinantCheck'>>;
+  let userAdminServiceStub: Mocked<
+    Pick<UserAdministrationService, 'getCurrentUser'>
+  >;
 
-  beforeEach(async () => {
-    workflowServiceSpy = jasmine.createSpyObj<LineWorkflowService>({
-      examinantCheck: of({} as Workflow),
-    });
-    userAdminServiceSpy = jasmine.createSpyObj<UserAdministrationService>({
-      getCurrentUser: EMPTY,
-    });
+  beforeEach(() => {
+    // Mocking
+    permissionServiceStub = {
+      isAtLeastSupervisor(): boolean {
+        return isAtLeastSupervisor;
+      },
+    };
+    workflowServiceStub = {
+      examinantCheck: vi.fn().mockReturnValue(of({} as Workflow)),
+    };
+    userAdminServiceStub = {
+      getCurrentUser: vi.fn().mockReturnValue(EMPTY),
+    };
 
-    await TestBed.configureTestingModule({
+    // Config
+    TestBed.configureTestingModule({
       providers: [
-        { provide: PermissionService, useValue: permissionServiceMock },
-        { provide: LineWorkflowService, useValue: workflowServiceSpy },
-        { provide: UserAdministrationService, useValue: userAdminServiceSpy },
-        { provide: TranslatePipe },
+        { provide: PermissionService, useValue: permissionServiceStub },
+        { provide: LineWorkflowService, useValue: workflowServiceStub },
+        { provide: UserAdministrationService, useValue: userAdminServiceStub },
+        translateServiceProvider,
       ],
-      imports: [
-        AppTestingModule,
-        LineWorkflowCheckFormComponent,
-        LineWorkflowFormComponent,
-        AtlasButtonComponent,
-        InfoIconComponent,
-        CommentComponent,
-        AtlasFieldErrorComponent,
-        AtlasLabelFieldComponent,
-        TextFieldComponent,
-      ],
-    }).compileComponents();
+    });
 
+    // Arrangement
     fixture = TestBed.createComponent(LineWorkflowCheckFormComponent);
     component = fixture.componentInstance;
   });
@@ -90,6 +77,6 @@ describe('LineWorkflowCheckFormComponent', () => {
 
     component.acceptWorkflow();
 
-    expect(workflowServiceSpy.examinantCheck).toHaveBeenCalled();
+    expect(workflowServiceStub.examinantCheck).toHaveBeenCalled();
   });
 });

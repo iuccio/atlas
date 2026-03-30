@@ -1,13 +1,20 @@
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mock,
+  Mocked,
+  vi,
+} from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { AuthService, BC_TOKEN } from './auth.service';
-import { of } from 'rxjs';
+import { lastValueFrom, of } from 'rxjs';
 import { UserService } from './user/user.service';
 import { PageService } from '../pages/page.service';
 import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
 import { User } from './user/user';
-import SpyObj = jasmine.SpyObj;
-import Spy = jasmine.Spy;
 
 const fakeToken =
   'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkZha2UgVXNlciIsInJvbGVzIjpbImF0bGFzLWFkbWluIl0sImlzcyI6Im15LWFwcCIsImV4cCI6MTcwNTA5NjAwMH0.';
@@ -29,28 +36,56 @@ function storageMockImplOf(storageMock: { [k: string]: string }) {
 describe('AuthService', () => {
   let authService: AuthService;
 
-  let userServiceSpy: SpyObj<UserService>;
-  let pageServiceSpy: SpyObj<PageService>;
-  let oidcSecurityServiceSpy: SpyObj<OidcSecurityService>;
-  let bcTokenSpy: Spy;
-  let routerSpy: SpyObj<Router>;
+  let userServiceSpy: Mocked<
+    Pick<
+      UserService,
+      'setToUnauthenticatedUser' | 'setCurrentUserAndLoadPermissions'
+    >
+  >;
+  let pageServiceSpy: Mocked<Pick<PageService, 'addPagesBasedOnPermissions'>>;
+  let oidcSecurityServiceSpy: Mocked<
+    Pick<
+      OidcSecurityService,
+      'checkAuth' | 'authorize' | 'logoffAndRevokeTokens'
+    >
+  >;
+  let bcTokenSpy: Mock;
+  let routerSpy: Mocked<Pick<Router, 'navigateByUrl'>>;
+
+  let localGetCalled: Mock;
+  let sessionGetCalled: Mock;
+  let localSetCalled: Mock;
+  let sessionSetCalled: Mock;
+  let localRemoveCalled: Mock;
+  let sessionRemoveCalled: Mock;
 
   beforeEach(() => {
-    userServiceSpy = jasmine.createSpyObj<UserService>([
-      'setCurrentUserAndLoadPermissions',
-      'setToUnauthenticatedUser',
-    ]);
+    localGetCalled = vi.fn();
+    sessionGetCalled = vi.fn();
+    localSetCalled = vi.fn();
+    sessionSetCalled = vi.fn();
+    localRemoveCalled = vi.fn();
+    sessionRemoveCalled = vi.fn();
 
-    pageServiceSpy = jasmine.createSpyObj(['addPagesBasedOnPermissions']);
+    userServiceSpy = {
+      setCurrentUserAndLoadPermissions: vi.fn(),
+      setToUnauthenticatedUser: vi.fn(),
+    };
 
-    oidcSecurityServiceSpy = jasmine.createSpyObj<OidcSecurityService>([
-      'checkAuth',
-      'authorize',
-      'logoffAndRevokeTokens',
-    ]);
+    pageServiceSpy = {
+      addPagesBasedOnPermissions: vi.fn(),
+    };
 
-    bcTokenSpy = jasmine.createSpy('BC_TOKEN_SPY');
-    routerSpy = jasmine.createSpyObj(['navigateByUrl']);
+    oidcSecurityServiceSpy = {
+      checkAuth: vi.fn(),
+      authorize: vi.fn(),
+      logoffAndRevokeTokens: vi.fn(),
+    };
+
+    bcTokenSpy = vi.fn();
+    routerSpy = {
+      navigateByUrl: vi.fn(),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -63,25 +98,55 @@ describe('AuthService', () => {
       ],
     });
 
-    const localStorageMock: { [k: string]: string } = {};
+    const localStorageMock: {
+      [k: string]: string;
+    } = {};
     const localStorageMockImpl = storageMockImplOf(localStorageMock);
-    spyOn(localStorage, 'getItem').and.callFake(localStorageMockImpl.getItem);
-    spyOn(localStorage, 'setItem').and.callFake(localStorageMockImpl.setItem);
-    spyOn(localStorage, 'removeItem').and.callFake(
-      localStorageMockImpl.removeItem
-    );
 
-    const sessionStorageMock: { [k: string]: string } = {};
+    const sessionStorageMock: {
+      [k: string]: string;
+    } = {};
     const sessionStorageMockImpl = storageMockImplOf(sessionStorageMock);
-    spyOn(sessionStorage, 'getItem').and.callFake(
-      sessionStorageMockImpl.getItem
-    );
-    spyOn(sessionStorage, 'setItem').and.callFake(
-      sessionStorageMockImpl.setItem
-    );
-    spyOn(sessionStorage, 'removeItem').and.callFake(
-      sessionStorageMockImpl.removeItem
-    );
+
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(function (
+      this: Storage,
+      key: string
+    ): string | null {
+      if (this === localStorage) {
+        localGetCalled(key);
+        return localStorageMockImpl.getItem(key);
+      } else {
+        sessionGetCalled(key);
+        return sessionStorageMockImpl.getItem(key);
+      }
+    });
+
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (
+      this: Storage,
+      key: string,
+      value: string
+    ): void {
+      if (this === localStorage) {
+        localStorageMockImpl.setItem(key, value);
+        localSetCalled(key, value);
+      } else {
+        sessionStorageMockImpl.setItem(key, value);
+        sessionSetCalled(key, value);
+      }
+    });
+
+    vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(function (
+      this: Storage,
+      key: string
+    ): void {
+      if (this === localStorage) {
+        localStorageMockImpl.removeItem(key);
+        localRemoveCalled(key);
+      } else {
+        sessionStorageMockImpl.removeItem(key);
+        sessionRemoveCalled(key);
+      }
+    });
   });
 
   it('should login', () => {
@@ -90,24 +155,24 @@ describe('AuthService', () => {
     // Act
     authService.login();
     // Assert
-    expect(sessionStorage.itemset);
-    expect(oidcSecurityServiceSpy.authorize).toHaveBeenCalledOnceWith();
+    expect(sessionSetCalled).toHaveBeenCalledTimes(1);
+    expect(oidcSecurityServiceSpy.authorize).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('should logout', () => {
     // Arrange
-    oidcSecurityServiceSpy.logoffAndRevokeTokens.and.returnValue(of(null));
+    oidcSecurityServiceSpy.logoffAndRevokeTokens.mockReturnValue(of(null));
     authService = TestBed.inject(AuthService);
     // Act
     authService.logout();
     // Assert
     expect(
       oidcSecurityServiceSpy.logoffAndRevokeTokens
-    ).toHaveBeenCalledOnceWith();
-    expect(localStorage.removeItem).toHaveBeenCalledOnceWith('tryLogin');
+    ).toHaveBeenCalledExactlyOnceWith();
+    expect(localRemoveCalled).toHaveBeenCalledExactlyOnceWith('tryLogin');
   });
 
-  it('should initAuth when userData defined', (done) => {
+  it('should initAuth when userData defined', async () => {
     // Arrange
     const loginResponse: LoginResponse = {
       accessToken: fakeToken,
@@ -119,40 +184,40 @@ describe('AuthService', () => {
         sbbuid: 'u123456',
       },
     };
-    oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
-    routerSpy.navigateByUrl.and.returnValue(Promise.resolve(true));
-    userServiceSpy.setCurrentUserAndLoadPermissions.and.returnValue(
+    oidcSecurityServiceSpy.checkAuth.mockReturnValue(of(loginResponse));
+    routerSpy.navigateByUrl.mockReturnValue(Promise.resolve(true));
+    userServiceSpy.setCurrentUserAndLoadPermissions.mockReturnValue(
       of({} as User)
     );
     sessionStorage.setItem('returnUrl', '/test');
     authService = TestBed.inject(AuthService);
     // Act
-    authService.initAuth().subscribe((result) => {
-      // Assert
-      expect(oidcSecurityServiceSpy.checkAuth).toHaveBeenCalledOnceWith();
-      expect(bcTokenSpy).toHaveBeenCalledTimes(1);
-      expect(
-        userServiceSpy.setCurrentUserAndLoadPermissions
-      ).toHaveBeenCalledOnceWith({
-        email: 'test@sbb.ch',
-        name: 'test',
-        sbbuid: 'u123456',
-        isAdmin: true,
-        permissions: [],
-      });
-      expect(
-        pageServiceSpy.addPagesBasedOnPermissions
-      ).toHaveBeenCalledOnceWith();
-      expect(sessionStorage.getItem('returnUrl')).toEqual('');
-      expect(localStorage.getItem('tryLogin')).toEqual('yes');
-      expect(routerSpy.navigateByUrl).toHaveBeenCalledOnceWith('/test');
-      expect(result).toBeTrue();
-      done();
+    const authResult = await lastValueFrom(authService.initAuth());
+    expect(oidcSecurityServiceSpy.checkAuth).toHaveBeenCalledExactlyOnceWith();
+    expect(bcTokenSpy).toHaveBeenCalledTimes(1);
+    expect(
+      userServiceSpy.setCurrentUserAndLoadPermissions
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      userServiceSpy.setCurrentUserAndLoadPermissions
+    ).toHaveBeenCalledWith({
+      email: 'test@sbb.ch',
+      name: 'test',
+      sbbuid: 'u123456',
+      isAdmin: true,
+      permissions: [],
     });
+    expect(
+      pageServiceSpy.addPagesBasedOnPermissions
+    ).toHaveBeenCalledExactlyOnceWith();
+    expect(sessionStorage.getItem('returnUrl')).toEqual('');
+    expect(localStorage.getItem('tryLogin')).toEqual('yes');
+    expect(routerSpy.navigateByUrl).toHaveBeenCalledExactlyOnceWith('/test');
+    expect(authResult).toBe(true);
   });
 
   describe('should initAuth when userData is not defined', () => {
-    it('should not try login', (done) => {
+    it('should not try login', async () => {
       // Arrange
       const loginResponse: LoginResponse = {
         accessToken: '',
@@ -160,21 +225,20 @@ describe('AuthService', () => {
         isAuthenticated: false,
         userData: {},
       };
-      oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
+      oidcSecurityServiceSpy.checkAuth.mockReturnValue(of(loginResponse));
       authService = TestBed.inject(AuthService);
       // Act
-      authService.initAuth().subscribe((result) => {
-        // Assert
-        expect(oidcSecurityServiceSpy.checkAuth).toHaveBeenCalledOnceWith();
-        expect(
-          userServiceSpy.setToUnauthenticatedUser
-        ).toHaveBeenCalledOnceWith();
-        expect(result).toBeTrue();
-        done();
-      });
+      const authResult = await lastValueFrom(authService.initAuth());
+      expect(
+        oidcSecurityServiceSpy.checkAuth
+      ).toHaveBeenCalledExactlyOnceWith();
+      expect(
+        userServiceSpy.setToUnauthenticatedUser
+      ).toHaveBeenCalledExactlyOnceWith();
+      expect(authResult).toBe(true);
     });
 
-    it('should try login', (done) => {
+    it('should try login', async () => {
       // Arrange
       const loginResponse: LoginResponse = {
         accessToken: '',
@@ -182,23 +246,25 @@ describe('AuthService', () => {
         isAuthenticated: false,
         userData: {},
       };
-      oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
+      oidcSecurityServiceSpy.checkAuth.mockReturnValue(of(loginResponse));
       authService = TestBed.inject(AuthService);
-      const loginSpy = spyOn(authService, 'login');
+      const loginSpy = vi.spyOn(authService, 'login');
       localStorage.setItem('tryLogin', 'yes');
       // Act
-      authService.initAuth().subscribe((result) => {
-        // Assert
-        expect(oidcSecurityServiceSpy.checkAuth).toHaveBeenCalledOnceWith();
-        expect(localStorage.getItem('tryLogin')).toEqual('');
-        expect(loginSpy).toHaveBeenCalledOnceWith();
-        expect(result).toBeTrue();
-        done();
-      });
+      const authResult = await lastValueFrom(authService.initAuth());
+      // Assert
+      expect(
+        oidcSecurityServiceSpy.checkAuth
+      ).toHaveBeenCalledExactlyOnceWith();
+      expect(localStorage.getItem('tryLogin')).toEqual('');
+      expect(loginSpy).toHaveBeenCalledExactlyOnceWith();
+      expect(authResult).toBe(true);
     });
   });
 
-  it('should catchError in initAuth', (done) => {
+  it('should catchError in initAuth', async () => {
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
+
     // Arrange
     const loginResponse: LoginResponse = {
       accessToken: fakeToken,
@@ -210,15 +276,15 @@ describe('AuthService', () => {
         sbbuid: 'u123456',
       },
     };
-    oidcSecurityServiceSpy.checkAuth.and.returnValue(of(loginResponse));
+    oidcSecurityServiceSpy.checkAuth.mockReturnValue(of(loginResponse));
 
-    userServiceSpy.setCurrentUserAndLoadPermissions.and.throwError('testError');
+    userServiceSpy.setCurrentUserAndLoadPermissions.mockImplementation(() => {
+      throw new Error('testError');
+    });
     authService = TestBed.inject(AuthService);
     // Act
-    authService.initAuth().subscribe((result) => {
-      // Assert
-      expect(result).toBeTrue();
-      done();
-    });
+    const authResult = await lastValueFrom(authService.initAuth());
+    // Assert
+    expect(authResult).toBe(true);
   });
 });

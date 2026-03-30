@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { FotCommentDetailComponent } from './fot-comment-detail.component';
 import { AppTestingModule } from '../../../../app.testing.module';
@@ -16,21 +17,26 @@ describe('FotCommentDetailComponent', () => {
   let component: FotCommentDetailComponent;
   let fixture: ComponentFixture<FotCommentDetailComponent>;
 
-  const servicePointService = jasmine.createSpyObj('ServicePointService', [
-    'getFotComment',
-    'saveFotComment',
-  ]);
-  servicePointService.getFotComment.and.returnValue(
-    of({ fotComment: 'Manu Hooligans', etagVersion: 3 })
-  );
-  servicePointService.saveFotComment.and.returnValue(
-    of({ fotComment: 'New comment', etagVersion: 3 })
-  );
+  let servicePointServiceSpy: Mocked<
+    Pick<ServicePointService, 'getFotComment' | 'saveFotComment'>
+  >;
+
   const route = {
     parent: { snapshot: { params: { servicePointNumber: 8504414 } } },
   };
 
   beforeEach(async () => {
+    servicePointServiceSpy = {
+      getFotComment: vi.fn(),
+      saveFotComment: vi.fn(),
+    };
+    servicePointServiceSpy.getFotComment.mockReturnValue(
+      of({ fotComment: 'Manu Hooligans', etagVersion: 3 })
+    );
+    servicePointServiceSpy.saveFotComment.mockReturnValue(
+      of({ fotComment: 'New comment', etagVersion: 3 })
+    );
+
     await TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -44,7 +50,7 @@ describe('FotCommentDetailComponent', () => {
       ],
       providers: [
         { provide: ActivatedRoute, useValue: route },
-        { provide: ServicePointService, useValue: servicePointService },
+        { provide: ServicePointService, useValue: servicePointServiceSpy },
       ],
     }).compileComponents();
 
@@ -60,23 +66,23 @@ describe('FotCommentDetailComponent', () => {
   });
 
   it('should update comment', () => {
-    expect(component.form.enabled).toBeFalse();
+    expect(component.form.enabled).toBe(false);
     component.toggleEdit();
-    expect(component.form.enabled).toBeTrue();
+    expect(component.form.enabled).toBe(true);
 
     component.form.controls.fotComment.setValue('New comment');
     component.save();
 
-    expect(servicePointService.saveFotComment).toHaveBeenCalled();
+    expect(servicePointServiceSpy.saveFotComment).toHaveBeenCalled();
     expect(component.form.controls.fotComment.value).toBe('New comment');
   });
 
   it('should display confirmation on dirty leave', () => {
     component.toggleEdit();
-    expect(component.form.enabled).toBeTrue();
+    expect(component.form.enabled).toBe(true);
 
     component.form.controls.fotComment.setValue('New comment');
     component.toggleEdit();
-    expect(component.form.enabled).toBeFalse();
+    expect(component.form.enabled).toBe(false);
   });
 });

@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
@@ -13,12 +14,12 @@ import {
 } from './service-point-creation-guard';
 import { Pages } from '../pages';
 
-let permissionsToCreate = true;
-const permissionServiceMock: Partial<PermissionService> = {
-  hasPermissionsToCreate: () => permissionsToCreate,
-};
-
 describe('CanActivateServicePointCreationGuard', () => {
+  let permissionsToCreate = true;
+  const permissionServiceMock: Partial<PermissionService> = {
+    hasPermissionsToCreate: () => permissionsToCreate,
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
@@ -39,7 +40,7 @@ describe('CanActivateServicePointCreationGuard', () => {
       canCreateServicePoint(mockRoute, {} as RouterStateSnapshot)
     ) as true | UrlTree;
 
-    expect(result).toBeTrue();
+    expect(result).toBe(true);
   });
 
   it('should not allow creation', () => {

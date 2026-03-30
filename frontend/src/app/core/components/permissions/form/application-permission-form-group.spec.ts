@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import {
   ApplicationRole,
   ApplicationType,
@@ -47,7 +48,10 @@ describe('ApplicationPermissionFormGroupBuilder', () => {
       ApplicationPermissionFormGroupBuilder.formToModel(formGroup);
     expect(permission.role).toEqual(existingPermission.role);
     expect(permission.permissionRestrictions).toEqual(
-      jasmine.arrayWithExactContents(existingPermission.permissionRestrictions)
+      expect.arrayContaining(existingPermission.permissionRestrictions)
+    );
+    expect(permission.permissionRestrictions.length).toBe(
+      existingPermission.permissionRestrictions.length
     );
   });
 

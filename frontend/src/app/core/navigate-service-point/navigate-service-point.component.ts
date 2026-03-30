@@ -13,7 +13,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ServicePointNavigationHelper } from './service-point-navigation.helper';
 import { InfoIconComponent } from '@atlas/form';
 
-export const MAX_PRM_COLON = 5;
 export const NOTFOUND_LABEL = 'COMMON.NODATAFOUND';
 export const NAVIGATION_PLACEHOLDER =
   'SEPODI.SERVICE_POINTS.NAVIGATION_PLACEHOLDER';

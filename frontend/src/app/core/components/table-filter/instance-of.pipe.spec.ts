@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { InstanceOfPipe } from './instance-of.pipe';
 
 describe('InstanceOfPipe', () => {

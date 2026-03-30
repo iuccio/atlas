@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
+import { provideRouter } from '@angular/router';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { UserProfileComponent } from './user-profile.component';
 import {
   adminUserServiceMock,
@@ -10,6 +10,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { UserService } from '../../core/auth/user/user.service';
 import { Component } from '@angular/core';
 import { PermissionComponent } from '../../core/components/permissions/permission.component';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 @Component({
   selector: 'atlas-permission',
@@ -23,14 +24,11 @@ describe('UserProfileComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        RouterModule.forRoot([]),
-        UserProfileComponent,
-      ],
       providers: [
         translateServiceProvider,
         provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
         { provide: UserService, useValue: adminUserServiceMock },
       ],
     }).overrideComponent(UserProfileComponent, {

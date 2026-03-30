@@ -1,48 +1,59 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { TerminationAbortDetailDialogComponent } from './termination-abort-detail-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup } from '@angular/forms';
 import { TerminationAbortFormGroup } from '../../stop-point-termination-workflow-detail-form-group';
 import { TerminationAbortDetailDialogData } from '../termination-abort-dialog.service';
 import { StopPointTerminationWorkflowService } from '../../../../../../api/service/workflow/stop-point-termination-workflow.service';
-import { of } from 'rxjs';
+import { EMPTY } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { translateServiceProvider } from '../../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
-
-const dialogRefSpy = jasmine.createSpyObj(['close']);
-
-const closeTerminationDialogData: TerminationAbortDetailDialogData = {
-  title: '',
-  message: '',
-  workflowId: 123,
-  abortComment: new FormGroup<TerminationAbortFormGroup>({
-    abortComment: new FormControl(''),
-  }),
-};
-
-const terminationWorkflowService = jasmine.createSpyObj('WorkflowService', {
-  abortTermination: of(),
-});
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('TerminationCancelDetailDialog', () => {
   let component: TerminationAbortDetailDialogComponent;
   let fixture: ComponentFixture<TerminationAbortDetailDialogComponent>;
 
+  let dialogRefMock: Mocked<
+    Pick<MatDialogRef<TerminationAbortDetailDialogComponent>, 'close'>
+  >;
+  let terminationWorkflowServiceMock: Mocked<
+    Pick<StopPointTerminationWorkflowService, 'abortTermination'>
+  >;
+
   beforeEach(async () => {
+    dialogRefMock = {
+      close: vi.fn(),
+    };
+
+    terminationWorkflowServiceMock = {
+      abortTermination: vi.fn().mockReturnValue(EMPTY),
+    };
+
+    const closeTerminationDialogData: TerminationAbortDetailDialogData = {
+      title: '',
+      message: '',
+      workflowId: 123,
+      abortComment: new FormGroup<TerminationAbortFormGroup>({
+        abortComment: new FormControl(''),
+      }),
+    };
+
     await TestBed.configureTestingModule({
       imports: [TerminationAbortDetailDialogComponent],
       providers: [
-        { provide: MatDialogRef, useValue: dialogRefSpy },
+        { provide: MatDialogRef, useValue: dialogRefMock },
         { provide: MAT_DIALOG_DATA, useValue: closeTerminationDialogData },
         {
           provide: StopPointTerminationWorkflowService,
-          useValue: terminationWorkflowService,
+          useValue: terminationWorkflowServiceMock,
         },
         TranslatePipe,
         translateServiceProvider,
         provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 
@@ -58,12 +69,12 @@ describe('TerminationCancelDetailDialog', () => {
   it('should close dialog', () => {
     component.close();
 
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+    expect(dialogRefMock.close).toHaveBeenCalled();
   });
 
   it('should cancel termination', () => {
     component.abortTermination();
 
-    expect(terminationWorkflowService.abortTermination).toHaveBeenCalled();
+    expect(terminationWorkflowServiceMock.abortTermination).toHaveBeenCalled();
   });
 });

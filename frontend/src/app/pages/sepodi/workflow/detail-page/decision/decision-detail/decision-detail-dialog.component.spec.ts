@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { DecisionDetailDialogComponent } from './decision-detail-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -25,56 +26,57 @@ import { DialogFooterComponent } from '../../../../../../core/components/dialog/
 import { MockAtlasButtonComponent } from '../../../../../../app.testing.mocks';
 import { StopPointWorkflowService } from '../../../../../../api/service/workflow/stop-point-workflow.service';
 
-const dialogRefSpy = jasmine.createSpyObj(['close']);
-const dialogData: DecisionDetailDialogData = {
-  title: '',
-  message: '',
-  workflowId: 123,
-  workflowStatus: WorkflowStatus.Hearing,
-  examinant: StopPointWorkflowDetailFormGroupBuilder.buildExaminantFormGroup(),
-};
-
-const dialogDataWithExisitingExaminant: DecisionDetailDialogData = {
-  title: '',
-  message: '',
-  workflowId: 123,
-  workflowStatus: WorkflowStatus.Hearing,
-  examinant: StopPointWorkflowDetailFormGroupBuilder.buildExaminantFormGroup({
-    judgement: JudgementType.Yes,
-    organisation: 'Stadt Bern',
-    mail: 'stadt@bern.be',
-  }),
-};
-
-const dialogDataWithSpecialDecision: DecisionDetailDialogData = {
-  title: '',
-  message: '',
-  workflowId: 123,
-  workflowStatus: WorkflowStatus.Canceled,
-  examinant: StopPointWorkflowDetailFormGroupBuilder.buildExaminantFormGroup({
-    judgement: JudgementType.No,
-    organisation: 'BAV',
-    mail: 'bav@bern.be',
-    decisionType: DecisionType.Canceled,
-  }),
-};
-
-const existingDecision: ReadDecision = {
-  judgement: JudgementType.Yes,
-  motivation: 'Yep boiii',
-};
-const stopPointWorkflowService = jasmine.createSpyObj(
-  'stopPointWorkflowService',
-  {
-    getDecision: of(existingDecision),
-  }
-);
-
 describe('DecisionDetailDialogComponent', () => {
+  let dialogRefSpy: Mocked<Pick<MatDialogRef<DecisionDetailDialogComponent>, 'close'>>;
+  let stopPointWorkflowService: Mocked<Pick<StopPointWorkflowService, 'getDecision'>>;
+
+  const dialogData: DecisionDetailDialogData = {
+    title: '',
+    message: '',
+    workflowId: 123,
+    workflowStatus: WorkflowStatus.Hearing,
+    examinant: StopPointWorkflowDetailFormGroupBuilder.buildExaminantFormGroup(),
+  };
+
+  const dialogDataWithExisitingExaminant: DecisionDetailDialogData = {
+    title: '',
+    message: '',
+    workflowId: 123,
+    workflowStatus: WorkflowStatus.Hearing,
+    examinant: StopPointWorkflowDetailFormGroupBuilder.buildExaminantFormGroup({
+      judgement: JudgementType.Yes,
+      organisation: 'Stadt Bern',
+      mail: 'stadt@bern.be',
+    }),
+  };
+
+  const dialogDataWithSpecialDecision: DecisionDetailDialogData = {
+    title: '',
+    message: '',
+    workflowId: 123,
+    workflowStatus: WorkflowStatus.Canceled,
+    examinant: StopPointWorkflowDetailFormGroupBuilder.buildExaminantFormGroup({
+      judgement: JudgementType.No,
+      organisation: 'BAV',
+      mail: 'bav@bern.be',
+      decisionType: DecisionType.Canceled,
+    }),
+  };
+
+  const existingDecision: ReadDecision = {
+    judgement: JudgementType.Yes,
+    motivation: 'Yep boiii',
+  };
+
   let component: DecisionDetailDialogComponent;
   let fixture: ComponentFixture<DecisionDetailDialogComponent>;
 
   beforeEach(() => {
+    dialogRefSpy = { close: vi.fn() };
+    stopPointWorkflowService = {
+      getDecision: vi.fn().mockReturnValue(of(existingDecision)),
+    };
+
     TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -113,7 +115,7 @@ describe('DecisionDetailDialogComponent', () => {
       expect(component).toBeTruthy();
 
       expect(component.existingDecision).toBeUndefined();
-      expect(component.decisionForm.disabled).toBeTrue();
+      expect(component.decisionForm.disabled).toBe(true);
     });
 
     it('should close dialog', () => {
@@ -162,7 +164,7 @@ describe('DecisionDetailDialogComponent', () => {
 
       expect(component.existingDecision).toBeDefined();
       expect(component.title).toEqual('WORKFLOW.STATUS.CANCELED');
-      expect(component.specialDecision).toBeTrue();
+      expect(component.specialDecision).toBe(true);
     });
   });
 });

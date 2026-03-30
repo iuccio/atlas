@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRouteSnapshot,
@@ -9,7 +10,7 @@ import {
   permissionsLoaded,
   PermissionsLoadedGuard,
 } from './permissions-loaded.guard';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 
 describe('PermissionsLoadedGuard', () => {
   let guard: PermissionsLoadedGuard;
@@ -43,10 +44,11 @@ describe('PermissionsLoadedGuard', () => {
     expect(guard).toBeTruthy();
   });
 
-  it('should wait for permissions to be loaded', (done) => {
+  it('should wait for permissions to be loaded', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
+
     const result = TestBed.runInInjectionContext(
       () =>
         permissionsLoaded(
@@ -56,10 +58,8 @@ describe('PermissionsLoadedGuard', () => {
     );
 
     expect(result).toBeDefined();
-    result.subscribe((guardResult) => {
-      expect(permissionsLoadedCalled).toBeTrue();
-      expect(guardResult).toBeTrue();
-      done();
-    });
+    const guardResult = await firstValueFrom(result);
+    expect(permissionsLoadedCalled).toBe(true);
+    expect(guardResult).toBe(true);
   });
 });

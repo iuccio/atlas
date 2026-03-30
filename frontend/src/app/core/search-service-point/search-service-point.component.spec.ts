@@ -1,36 +1,40 @@
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SearchServicePointComponent } from './search-service-point.component';
 import { AppTestingModule } from '../../app.testing.module';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { firstValueFrom, of, skip } from 'rxjs';
 import { ServicePointSearchResult } from '../../api';
 import { SearchSelectComponent } from '../form-components/search-select/search-select.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ServicePointSearch } from './service-point-search';
 import { BERN_WYLEREGG } from '../../../test/data/service-point';
 import { ServicePointInternalService } from '../../api/service/sepodi/service-point-internal.service';
-import { tickAsync } from '../../../test/tick-async';
-import SpyObj = jasmine.SpyObj;
+
+type ServicePointInternalServiceMock = Mocked<
+  Pick<ServicePointInternalService, 'searchServicePoints'>
+>;
 
 describe('SearchServicePointComponent', () => {
   let component: SearchServicePointComponent;
   let fixture: ComponentFixture<SearchServicePointComponent>;
-  let servicePointInternalService: SpyObj<ServicePointInternalService>;
+
+  let servicePointInternalService: ServicePointInternalServiceMock;
   let router: Router;
 
-  const activatedRouteMock = { data: of({ servicePoint: [BERN_WYLEREGG] }) };
+  const activatedRouteMock = {
+    data: of({ servicePoint: [BERN_WYLEREGG] }),
+  } as Partial<ActivatedRoute>;
 
   beforeEach(() => {
-    servicePointInternalService =
-      jasmine.createSpyObj<ServicePointInternalService>(
-        'servicePointsService',
-        ['searchServicePoints']
-      );
-    servicePointInternalService.searchServicePoints
-      .withArgs({ value: 'be' })
-      .and.returnValue(of());
+    // Mocking
+    servicePointInternalService = {
+      searchServicePoints: vi
+        .fn()
+        .mockReturnValue(of([{ sloid: 'ch:1:sloid:100' }])),
+    };
 
+    // Configuration
     TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -38,20 +42,23 @@ describe('SearchServicePointComponent', () => {
         SearchSelectComponent,
       ],
       providers: [
+        TranslatePipe,
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         {
           provide: ServicePointInternalService,
           useValue: servicePointInternalService,
         },
-        { provide: TranslatePipe },
       ],
     });
+
+    // Arrangement
+    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(SearchServicePointComponent);
     component = fixture.componentInstance;
-    fixture.componentInstance.searchType = ServicePointSearch.SePoDi;
+
+    component.searchType = ServicePointSearch.SePoDi;
     component._DEBOUNCE_TIME = 0;
     fixture.detectChanges();
-    router = TestBed.inject(Router);
   });
 
   it('should create', () => {
@@ -60,7 +67,7 @@ describe('SearchServicePointComponent', () => {
 
   it('should navigate to servicePoint details', () => {
     //given
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
     const searchResult: ServicePointSearchResult = {
       number: 8507000,
       designationOfficial: 'Bern',
@@ -68,27 +75,29 @@ describe('SearchServicePointComponent', () => {
     //when
     component.navigateTo(searchResult);
     //then
-    expect(router.navigate).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledOnce();
   });
 
   it('should load result', async () => {
-    //when
-    component._DEBOUNCE_TIME = 0;
-    fixture.componentInstance.searchInput$.next('be');
-    fixture.detectChanges();
-    await tickAsync(component._DEBOUNCE_TIME + 100);
-    //then
+    const promise = firstValueFrom(
+      component.servicePointSearchResult$.pipe(skip(1))
+    );
+    component.searchInput$.next('be');
+    await promise;
+
     expect(component.searchValue).toEqual('be');
-    expect(servicePointInternalService.searchServicePoints).toHaveBeenCalled();
+    expect(
+      servicePointInternalService.searchServicePoints
+    ).toHaveBeenCalledWith({ value: 'be' });
   });
 
   it('should not load result when search input length is smaller than 2', async () => {
-    //when
-    component._DEBOUNCE_TIME = 0;
-    fixture.componentInstance.searchInput$.next('b');
-    fixture.detectChanges();
-    await tickAsync(component._DEBOUNCE_TIME + 100);
-    //then
+    const promise = firstValueFrom(
+      component.servicePointSearchResult$.pipe(skip(1))
+    );
+    component.searchInput$.next('b');
+    await promise;
+
     expect(component.searchValue).toEqual('b');
     expect(
       servicePointInternalService.searchServicePoints
@@ -103,25 +112,23 @@ describe('SearchServicePointComponent', () => {
   });
 
   it('should get placeholder label when searchInput < 2', async () => {
-    //when
-    component._DEBOUNCE_TIME = 0;
+    const promise = firstValueFrom(
+      component.servicePointSearchResult$.pipe(skip(1))
+    );
+    component.searchInput$.next('b');
+    await promise;
 
-    fixture.componentInstance.searchInput$.next('b');
-    fixture.detectChanges();
-    await tickAsync(component._DEBOUNCE_TIME + 100);
-    //then
     expect(component.minThermLongText).toEqual('COMMON.TYPE_TO_SEARCH_SHORT');
     expect(component.notFoundText).toEqual('COMMON.TYPE_TO_SEARCH_SHORT');
   });
 
   it('should get placeholder label when searchInput >= 2', async () => {
-    //when
-    component._DEBOUNCE_TIME = 0;
+    const promise = firstValueFrom(
+      component.servicePointSearchResult$.pipe(skip(1))
+    );
+    component.searchInput$.next('be');
+    await promise;
 
-    fixture.componentInstance.searchInput$.next('be');
-    fixture.detectChanges();
-    await tickAsync(component._DEBOUNCE_TIME + 100);
-    //then
     expect(component.minThermLongText).toEqual('COMMON.NODATAFOUND');
     expect(component.notFoundText).toEqual('COMMON.NODATAFOUND');
   });

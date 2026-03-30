@@ -43,6 +43,7 @@ import { PermissionService } from '../../../../../core/auth/permission/permissio
 import { TimetableHearingStatementInternalService } from '../../../../../api/service/lidi/timetable-hearing-statement-internal.service';
 import { TimetableHearingYearInternalService } from '../../../../../api/service/lidi/timetable-hearing-year-internal.service';
 import { TimetableYearChangeInternalService } from '../../../../../api/service/lidi/timetable-year-change-internal.service';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 
 const existingStatement: TimetableHearingStatementV2 = {
   id: 1,
@@ -70,32 +71,45 @@ let component: CantonStatementDetailComponent;
 let fixture: ComponentFixture<CantonStatementDetailComponent>;
 let router: Router;
 
-const mockStatementShareService = jasmine.createSpyObj(
-  'statementShareService',
-  ['getCloneStatement', 'clearCachedStatement'],
-  { statement: existingStatement }
-);
-const mockTimetableHearingYearsService = jasmine.createSpyObj(
-  'TimetableHearingYearInternalService',
-  ['getHearingYears']
-);
+const mockStatementShareService: Mocked<
+  Pick<StatementShareService, 'getCloneStatement' | 'clearCachedStatement'> & {
+    statement: TimetableHearingStatementV2;
+  }
+> = {
+  getCloneStatement: vi.fn().mockReturnValue(existingStatement),
+  clearCachedStatement: vi.fn(),
+  statement: existingStatement,
+};
+const mockTimetableHearingYearsService: Mocked<
+  Pick<TimetableHearingYearInternalService, 'getHearingYears'>
+> = {
+  getHearingYears: vi.fn(),
+};
 
-const mockTimetableHearingStatementsService = jasmine.createSpyObj(
-  'TimetableHearingStatementInternalService',
-  [
-    'createStatement',
-    'getNextStatement',
-    'getPreviousStatement',
-    'getResponsibleTransportCompanies',
-    'updateHearingStatement',
-    'getStatementDocument',
-  ]
-);
+const mockTimetableHearingStatementsService: Mocked<
+  Pick<
+    TimetableHearingStatementInternalService,
+    | 'createStatement'
+    | 'getNextStatement'
+    | 'getPreviousStatement'
+    | 'getResponsibleTransportCompanies'
+    | 'updateHearingStatement'
+    | 'getStatementDocument'
+  >
+> = {
+  createStatement: vi.fn(),
+  getNextStatement: vi.fn(),
+  getPreviousStatement: vi.fn(),
+  getResponsibleTransportCompanies: vi.fn(),
+  updateHearingStatement: vi.fn(),
+  getStatementDocument: vi.fn(),
+};
 
-const timetableYearChangeInternalServiceSpy =
-  jasmine.createSpyObj<TimetableYearChangeInternalService>({
-    getTimetableYearChange: EMPTY,
-  });
+const timetableYearChangeInternalServiceSpy: Mocked<
+  Pick<TimetableYearChangeInternalService, 'getTimetableYearChange'>
+> = {
+  getTimetableYearChange: vi.fn().mockReturnValue(EMPTY),
+};
 
 const alternation: TimetableHearingStatementAlternating = {
   timetableHearingStatement: existingStatement,
@@ -107,19 +121,19 @@ const transportCompany: TransportCompany = {
   number: '#0001',
   businessRegisterName: 'Schweizerische Bundesbahnen SBB',
 };
-mockTimetableHearingStatementsService.getNextStatement.and.returnValue(
+mockTimetableHearingStatementsService.getNextStatement.mockReturnValue(
   of(alternation)
 );
-mockTimetableHearingStatementsService.getPreviousStatement.and.returnValue(
+mockTimetableHearingStatementsService.getPreviousStatement.mockReturnValue(
   of(alternation)
 );
-mockTimetableHearingStatementsService.getResponsibleTransportCompanies.and.returnValue(
+mockTimetableHearingStatementsService.getResponsibleTransportCompanies.mockReturnValue(
   of([transportCompany])
 );
-mockStatementShareService.getCloneStatement.and.returnValue(existingStatement);
+mockStatementShareService.getCloneStatement.mockReturnValue(existingStatement);
 
 const blob = 'Blob' as unknown as Blob;
-mockTimetableHearingStatementsService.getStatementDocument.and.returnValue(
+mockTimetableHearingStatementsService.getStatementDocument.mockReturnValue(
   of(blob)
 );
 
@@ -155,7 +169,7 @@ describe('StatementDetailComponent for existing statement', () => {
 
   it('should be created', () => {
     expect(component).toBeTruthy();
-    expect(component.isNew).toBeFalse();
+    expect(component.isNew).toBe(false);
   });
 
   it('should load existing Statement form successfully', () => {
@@ -165,10 +179,10 @@ describe('StatementDetailComponent for existing statement', () => {
   });
 
   it('should switch to edit mode successfully', () => {
-    expect(component.form.enabled).toBeFalse();
+    expect(component.form.enabled).toBe(false);
 
     component.toggleEdit();
-    expect(component.form.enabled).toBeTrue();
+    expect(component.form.enabled).toBe(true);
   });
 
   it('should not enable form when hearingStatus is Archived', () => {
@@ -194,7 +208,7 @@ describe('StatementDetailComponent for existing statement', () => {
     component.next();
     expect(
       mockTimetableHearingStatementsService.getNextStatement
-    ).toHaveBeenCalled();
+    ).toHaveBeenCalledTimes(1);
   });
 
   it('should go to previous statement', () => {
@@ -203,15 +217,15 @@ describe('StatementDetailComponent for existing statement', () => {
     component.previous();
     expect(
       mockTimetableHearingStatementsService.getPreviousStatement
-    ).toHaveBeenCalled();
+    ).toHaveBeenCalledTimes(1);
   });
 
   it('should update statement', () => {
-    mockTimetableHearingStatementsService.updateHearingStatement.and.returnValue(
+    mockTimetableHearingStatementsService.updateHearingStatement.mockReturnValue(
       of(existingStatement)
     );
     component.toggleEdit();
-    expect(component.form.enabled).toBeTrue();
+    expect(component.form.enabled).toBe(true);
 
     component.form.controls.timetableYear.setValue(2025);
     component.form.controls.statementStatus.setValue(StatementStatus.Received);
@@ -222,12 +236,12 @@ describe('StatementDetailComponent for existing statement', () => {
     component.save();
     expect(
       mockTimetableHearingStatementsService.updateHearingStatement
-    ).toHaveBeenCalled();
+    ).toHaveBeenCalledTimes(1);
   });
 
   it('should cantonSelectionChanged', () => {
     //given
-    mockTimetableHearingStatementsService.updateHearingStatement.and.returnValue(
+    mockTimetableHearingStatementsService.updateHearingStatement.mockReturnValue(
       of(existingStatement)
     );
     //when
@@ -243,7 +257,7 @@ describe('StatementDetailComponent for existing statement', () => {
 
   it('should removeDocument', () => {
     //given
-    mockTimetableHearingStatementsService.updateHearingStatement.and.returnValue(
+    mockTimetableHearingStatementsService.updateHearingStatement.mockReturnValue(
       of(existingStatement)
     );
     expect(component.form.controls.documents.controls.length).toBe(2);
@@ -257,11 +271,11 @@ describe('StatementDetailComponent for existing statement', () => {
   it('should downloadLocalFile', () => {
     //given
     expect(component.uploadedFiles.length).toBe(2);
-    mockTimetableHearingStatementsService.updateHearingStatement.and.returnValue(
+    mockTimetableHearingStatementsService.updateHearingStatement.mockReturnValue(
       of(existingStatement)
     );
     const blob = 'Blob' as unknown as Blob;
-    mockTimetableHearingStatementsService.getStatementDocument.and.returnValue(
+    mockTimetableHearingStatementsService.getStatementDocument.mockReturnValue(
       of(blob)
     );
     const documents = existingStatement.documents;
@@ -289,7 +303,7 @@ describe('test editButton', () => {
     };
     setupTestBed(mockRoute);
 
-    mockTimetableHearingYearsService.getHearingYears.and.returnValue(
+    mockTimetableHearingYearsService.getHearingYears.mockReturnValue(
       of([
         {
           ...years[0],
@@ -347,13 +361,13 @@ describe('StatementDetailComponent for new statement', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(component.isNew).toBeTrue();
+    expect(component.isNew).toBe(true);
   });
 
   describe('create new statement', () => {
     it('successfully', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-      mockTimetableHearingStatementsService.createStatement.and.returnValue(
+      vi.spyOn(router, 'navigate').mockResolvedValue(true);
+      mockTimetableHearingStatementsService.createStatement.mockReturnValue(
         of(existingStatement)
       );
 
@@ -367,12 +381,12 @@ describe('StatementDetailComponent for new statement', () => {
       component.save();
       expect(
         mockTimetableHearingStatementsService.createStatement
-      ).toHaveBeenCalled();
+      ).toHaveBeenCalledTimes(1);
 
       fixture.detectChanges();
 
       const snackBarContainer =
-        fixture.nativeElement.offsetParent.querySelector(
+        fixture.nativeElement.parentElement.querySelector(
           'mat-snack-bar-container'
         );
       expect(snackBarContainer).toBeDefined();
@@ -380,7 +394,7 @@ describe('StatementDetailComponent for new statement', () => {
         'TTH.STATEMENT.NOTIFICATION.ADD_SUCCESS'
       );
       expect(snackBarContainer.classList).toContain('success');
-      expect(router.navigate).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -390,14 +404,14 @@ describe('StatementDetailComponent for new statement', () => {
     } as TimetableFieldNumber);
     expect(
       mockTimetableHearingStatementsService.getResponsibleTransportCompanies
-    ).toHaveBeenCalled();
+    ).toHaveBeenCalledTimes(1);
   });
 });
 
 function setupTestBed(activatedRoute: {
   snapshot: { data: { statement: undefined | TimetableHearingStatementV2 } };
 }) {
-  mockTimetableHearingYearsService.getHearingYears.and.returnValue(of(years));
+  mockTimetableHearingYearsService.getHearingYears.mockReturnValue(of(years));
 
   TestBed.configureTestingModule({
     imports: [

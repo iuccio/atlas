@@ -1,9 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { PermissionComponent } from './permission.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { provideHttpClient } from '@angular/common/http';
 import { UserPermissionProviderService } from './application-permission/user-permission-provider-service';
 import { MockUserPermissionProviderService } from './application-permission/application-permission.component.spec';
 import { By } from '@angular/platform-browser';
@@ -17,28 +14,30 @@ describe('PermissionComponent', () => {
   let fixture: ComponentFixture<PermissionComponent>;
 
   let userPermissionProviderService: UserPermissionProviderService;
-  const dialogServiceSpy = jasmine.createSpyObj('DialogService', [
-    'confirmLeave',
-  ]);
-  dialogServiceSpy.confirmLeave.and.returnValue(of(true));
+  let dialogServiceStub: Mocked<Pick<DialogService, 'confirmLeave'>>;
 
   beforeEach(() => {
+    // Mocking
+    dialogServiceStub = {
+      confirmLeave: vi.fn().mockReturnValue(of(true)),
+    };
+
+    // Config
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, PermissionComponent],
       providers: [
-        TranslatePipe,
         translateServiceProvider,
         {
           provide: DialogService,
-          useValue: dialogServiceSpy,
+          useValue: dialogServiceStub,
         },
         {
           provide: UserPermissionProviderService,
           useClass: MockUserPermissionProviderService,
         },
-        provideHttpClient(),
       ],
-    }).compileComponents();
+    });
+
+    // Arrangement
     fixture = TestBed.createComponent(PermissionComponent);
     component = fixture.componentInstance;
     userPermissionProviderService = TestBed.inject(
@@ -52,10 +51,12 @@ describe('PermissionComponent', () => {
   });
 
   it('should switch tabs without confirmation if form is not dirty', () => {
-    expect(userPermissionProviderService.getCurrentForm()?.dirty).toBeFalse();
+    expect(userPermissionProviderService.getCurrentForm()?.dirty).toBe(false);
     const lidiTab = fixture.debugElement.query(By.css('.tab-LIDI'));
 
-    const applicationChangedEmit = spyOn(component.applicationChanged, 'emit');
+    const applicationChangedEmit = vi
+      .spyOn(component.applicationChanged, 'emit')
+      .mockImplementation(() => {});
     lidiTab.nativeElement.click();
     expect(applicationChangedEmit).toHaveBeenCalledWith(ApplicationType.Lidi);
   });
@@ -64,9 +65,11 @@ describe('PermissionComponent', () => {
     userPermissionProviderService.getCurrentForm()?.markAsDirty();
     const lidiTab = fixture.debugElement.query(By.css('.tab-LIDI'));
 
-    const applicationChangedEmit = spyOn(component.applicationChanged, 'emit');
+    const applicationChangedEmit = vi
+      .spyOn(component.applicationChanged, 'emit')
+      .mockImplementation(() => {});
     lidiTab.nativeElement.click();
-    expect(dialogServiceSpy.confirmLeave).toHaveBeenCalled();
+    expect(dialogServiceStub.confirmLeave).toHaveBeenCalled();
     expect(applicationChangedEmit).toHaveBeenCalledWith(ApplicationType.Lidi);
   });
 });

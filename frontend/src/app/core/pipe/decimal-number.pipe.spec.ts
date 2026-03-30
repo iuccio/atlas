@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { DecimalNumberPipe } from './decimal-number.pipe';
 
 describe('DecimalNumberPipe', () => {

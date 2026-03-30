@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { TimetableFieldNumberOverviewComponent } from './timetable-field-number-overview.component';
-import { Observable, of, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { ContainerTimetableFieldNumber } from '../../../api';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { AtlasButtonComponent } from '../../../core/components/button/atlas-button.component';
@@ -14,41 +15,36 @@ import { PermissionService } from '../../../core/auth/permission/permission.serv
 import { TimetableFieldNumberInternalService } from '../../../api/service/lidi/timetable-field-number-internal.service';
 import { ActivatedRoute } from '@angular/router';
 import { TableComponent } from '../../../core/components/table/table.component';
-import SpyObj = jasmine.SpyObj;
-import Spy = jasmine.Spy;
-
-const timetableFieldNumberContainer: ContainerTimetableFieldNumber = {
-  objects: [
-    {
-      ttfnid: 'ttfnid',
-      descriptionOutwardLine1: 'desc outward 1',
-      number: 'number',
-      businessOrganisation: 'businessOrganisation',
-      status: 'VALIDATED',
-      validFrom: new Date('2021-06-01'),
-      validTo: new Date('2029-06-01'),
-    },
-  ],
-  totalCount: 1,
-};
 
 describe('TimetableFieldNumberOverviewComponent', () => {
+  const timetableFieldNumberContainer: ContainerTimetableFieldNumber = {
+    objects: [
+      {
+        ttfnid: 'ttfnid',
+        descriptionOutwardLine1: 'desc outward 1',
+        number: 'number',
+        businessOrganisation: 'businessOrganisation',
+        status: 'VALIDATED',
+        validFrom: new Date('2021-06-01'),
+        validTo: new Date('2029-06-01'),
+      },
+    ],
+    totalCount: 1,
+  };
+
   let component: TimetableFieldNumberOverviewComponent;
   let fixture: ComponentFixture<TimetableFieldNumberOverviewComponent>;
-
-  let timetableFieldNumberServiceSpy: SpyObj<TimetableFieldNumberInternalService>;
+  let timetableFieldNumberServiceSpy: Mocked<
+    Pick<TimetableFieldNumberInternalService, 'getOverview'>
+  >;
 
   beforeEach(async () => {
-    timetableFieldNumberServiceSpy =
-      jasmine.createSpyObj<TimetableFieldNumberInternalService>(
-        'TimetableFieldNumberInternalService',
-        ['getOverview']
-      );
-    (
-      timetableFieldNumberServiceSpy.getOverview as Spy<
-        () => Observable<ContainerTimetableFieldNumber>
-      >
-    ).and.returnValue(of(timetableFieldNumberContainer));
+    timetableFieldNumberServiceSpy = {
+      getOverview: vi.fn(),
+    };
+    timetableFieldNumberServiceSpy.getOverview.mockReturnValue(
+      of(timetableFieldNumberContainer)
+    );
 
     await TestBed.configureTestingModule({
       imports: [
@@ -89,7 +85,9 @@ describe('TimetableFieldNumberOverviewComponent', () => {
       size: 10,
     });
 
-    expect(timetableFieldNumberServiceSpy.getOverview).toHaveBeenCalledOnceWith(
+    expect(
+      timetableFieldNumberServiceSpy.getOverview
+    ).toHaveBeenCalledExactlyOnceWith(
       [],
       undefined,
       undefined,

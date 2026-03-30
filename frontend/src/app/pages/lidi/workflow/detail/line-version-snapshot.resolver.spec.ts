@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import {
   lineVersionSnapshotResolver,
   LineVersionSnapshotResolver,
@@ -8,6 +8,7 @@ import {
 import { LineType, LineVersionSnapshot, WorkflowStatus } from '../../../../api';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { LineInternalService } from '../../../../api/service/lidi/line-internal.service';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const version: LineVersionSnapshot = {
   lineType: LineType.Operational,
@@ -26,17 +27,18 @@ const version: LineVersionSnapshot = {
   shortNumber: 'short',
 };
 
-const routerStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['']);
-
 describe('LineVersionSnapshotResolver', () => {
-  const lineInternalService = jasmine.createSpyObj('lineInternalService', [
-    'getLineVersionSnapshotById',
-  ]);
-  lineInternalService.getLineVersionSnapshotById.and.returnValue(of(version));
-
   let resolver: LineVersionSnapshotResolver;
+  let lineInternalService: Mocked<
+    Pick<LineInternalService, 'getLineVersionSnapshotById'>
+  >;
 
   beforeEach(() => {
+    lineInternalService = {
+      getLineVersionSnapshotById: vi.fn(),
+    };
+    lineInternalService.getLineVersionSnapshotById.mockReturnValue(of(version));
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
@@ -44,6 +46,7 @@ describe('LineVersionSnapshotResolver', () => {
         { provide: LineInternalService, useValue: lineInternalService },
       ],
     });
+
     resolver = TestBed.inject(LineVersionSnapshotResolver);
   });
 
@@ -51,18 +54,18 @@ describe('LineVersionSnapshotResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get snapshot from service to display', () => {
-    const mockRoute = {
-      params: { id: '1234' },
-    } as unknown as ActivatedRouteSnapshot;
+  it('should get snapshot from service to display', async () => {
+    const mockRoute = new ActivatedRouteSnapshot();
+    mockRoute.params = { id: '1234' };
+
+    const mockRouterState = {} as RouterStateSnapshot;
 
     const result = TestBed.runInInjectionContext(() =>
-      lineVersionSnapshotResolver(mockRoute, routerStateSnapshot)
+      lineVersionSnapshotResolver(mockRoute, mockRouterState)
     ) as Observable<LineVersionSnapshot>;
 
-    result.subscribe((snapshot) => {
-      expect(snapshot.id).toBe(1234);
-    });
+    const snapshot = await firstValueFrom(result);
+    expect(snapshot.id).toBe(1234);
     expect(lineInternalService.getLineVersionSnapshotById).toHaveBeenCalled();
   });
 });

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { UserDetailInfoComponent } from './user-detail-info.component';
-import { AppTestingModule } from '../../../app.testing.module';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { UserAdministrationService } from '../../../api/service/user-administration/user-administration.service';
 import { translateServiceProvider } from '../../../app.testing.mocks';
 
@@ -15,17 +15,16 @@ describe('UserDetailComponent', () => {
     },
   };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppTestingModule, UserDetailInfoComponent],
+  beforeEach(() => {
+    // Config
+    TestBed.configureTestingModule({
       providers: [
         { provide: UserAdministrationService, useValue: userAdminServiceMock },
         translateServiceProvider,
       ],
-    }).compileComponents();
-  });
+    });
 
-  beforeEach(() => {
+    // Arrangement
     fixture = TestBed.createComponent(UserDetailInfoComponent);
     component = fixture.componentInstance;
     component.record = {
@@ -41,15 +40,13 @@ describe('UserDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have processed creationEditionRecord', (done) => {
-    component.processedRecord.subscribe((value) => {
-      expect(value?.creator).toBe('u123456');
-      expect(value?.creatorDisplayName).toBe('Marek Hamsik');
-      expect(value?.creationDate).toBe('10.10.2022 16:58');
-      expect(value?.editor).toBe('u678910');
-      expect(value?.editorDisplayName).toBe('Marek Hamsik');
-      expect(value?.editionDate).toBe('10.11.2022 16:58');
-      done();
-    });
+  it('should have processed creationEditionRecord', async () => {
+    const value = await firstValueFrom(component.processedRecord);
+    expect(value?.creator).toBe('u123456');
+    expect(value?.creatorDisplayName).toBe('Marek Hamsik');
+    expect(value?.creationDate).toBe('10.10.2022 16:58');
+    expect(value?.editor).toBe('u678910');
+    expect(value?.editorDisplayName).toBe('Marek Hamsik');
+    expect(value?.editionDate).toBe('10.11.2022 16:58');
   });
 });

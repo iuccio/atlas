@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { PlatformDetailPanelComponent } from './platform-detail-panel.component';
-import { STOP_POINT } from '../../../util/stop-point-test-data.spec';
+import { STOP_POINT } from '../../../util/stop-point-test-data';
 import { BERN_WYLEREGG } from '../../../../../../test/data/service-point';
 import { BERN_WYLEREGG_TRAFFIC_POINTS } from '../../../../../../test/data/traffic-point-element';
 import { AppTestingModule } from '../../../../../app.testing.module';
@@ -39,6 +40,7 @@ describe('PlatformDetailPanelComponent', () => {
         SplitServicePointNumberPipe,
       ],
     });
+
     fixture = TestBed.createComponent(PlatformDetailPanelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -47,8 +49,8 @@ describe('PlatformDetailPanelComponent', () => {
   it('should init', () => {
     expect(component).toBeTruthy();
 
-    expect(component.isNew).toBeTrue();
-    expect(component.isReduced).toBeTrue();
+    expect(component.isNew).toBe(true);
+    expect(component.isReduced).toBe(true);
     expect(component.selectedVersion).toBeUndefined();
   });
 });

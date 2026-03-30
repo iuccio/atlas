@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { ServicePointNavigationHelper } from './service-point-navigation.helper';
 import { SloidLocationModel } from '../../api/model/sloidLocationModel';
 import { Pages } from '../../pages/pages';

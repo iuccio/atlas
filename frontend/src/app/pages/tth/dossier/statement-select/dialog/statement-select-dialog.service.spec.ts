@@ -1,14 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { StatementSelectDialogService } from './statement-select-dialog.service';
 import { SwissCanton } from '../../../../../api';
 
 describe('StatementSelectDialogService', () => {
   let service: StatementSelectDialogService;
 
-  const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+  const dialogSpy: Mocked<Pick<MatDialog, 'open'>> = { open: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -18,13 +19,15 @@ describe('StatementSelectDialogService', () => {
     service = TestBed.inject(StatementSelectDialogService);
   });
 
-  it('should open confirmation dialog', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of([1000]) });
+  it('should open confirmation dialog', async () => {
+    dialogSpy.open.mockReturnValue({
+      afterClosed: () => of([1000]),
+    } as ReturnType<MatDialog['open']>);
 
-    service
-      .select([1000], SwissCanton.Bern, 2020)
-      .subscribe((result) => expect(result).toEqual([1000]));
-
-    expect(dialogSpy.open).toHaveBeenCalled();
+    const result = await firstValueFrom(
+      service.select([1000], SwissCanton.Bern, 2020)
+    );
+    expect(result).toEqual([1000]);
+    expect(dialogSpy.open).toHaveBeenCalledTimes(1);
   });
 });

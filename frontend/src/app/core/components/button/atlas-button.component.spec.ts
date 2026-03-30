@@ -1,52 +1,54 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { AtlasButtonComponent } from './atlas-button.component';
-import { AppTestingModule } from '../../../app.testing.module';
 import { ApplicationRole, ApplicationType, Permission } from '../../../api';
 import { AtlasButtonType } from './atlas-button.type';
 import { By } from '@angular/platform-browser';
 import { PermissionService } from '../../auth/permission/permission.service';
-
-let component: AtlasButtonComponent;
-let fixture: ComponentFixture<AtlasButtonComponent>;
-
-let isAdmin = true;
-let isAtLeastSupervisor = true;
-let hasPermissionsToCreate = true;
-let hasPermissionsToWrite = true;
-let role = ApplicationRole.Reader;
-const permissionServiceMock: Partial<PermissionService> = {
-  get isAdmin(): boolean {
-    return isAdmin;
-  },
-  hasPermissionsToWrite(): boolean {
-    return hasPermissionsToWrite;
-  },
-  hasPermissionsToCreate(): boolean {
-    return hasPermissionsToCreate;
-  },
-  isAtLeastSupervisor(): boolean {
-    return isAtLeastSupervisor;
-  },
-  getApplicationUserPermission(applicationType: ApplicationType): Permission {
-    return {
-      application: applicationType,
-      role: role,
-      permissionRestrictions: [],
-    };
-  },
-};
+import { translateServiceProvider } from '../../../app.testing.mocks';
 
 describe('AtlasButtonComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppTestingModule, AtlasButtonComponent],
-      providers: [
-        { provide: PermissionService, useValue: permissionServiceMock },
-      ],
-    }).compileComponents();
-  });
+  let component: AtlasButtonComponent;
+  let fixture: ComponentFixture<AtlasButtonComponent>;
+
+  let isAdmin = true;
+  let isAtLeastSupervisor = true;
+  let hasPermissionsToCreate = true;
+  let hasPermissionsToWrite = true;
+  let role = ApplicationRole.Reader;
+
+  const permissionServiceMock: Partial<PermissionService> = {
+    get isAdmin(): boolean {
+      return isAdmin;
+    },
+    hasPermissionsToWrite(): boolean {
+      return hasPermissionsToWrite;
+    },
+    hasPermissionsToCreate(): boolean {
+      return hasPermissionsToCreate;
+    },
+    isAtLeastSupervisor(): boolean {
+      return isAtLeastSupervisor;
+    },
+    getApplicationUserPermission(applicationType: ApplicationType): Permission {
+      return {
+        application: applicationType,
+        role: role,
+        permissionRestrictions: [],
+      };
+    },
+  };
 
   beforeEach(() => {
+    // Config
+    TestBed.configureTestingModule({
+      providers: [
+        translateServiceProvider,
+        { provide: PermissionService, useValue: permissionServiceMock },
+      ],
+    });
+
+    // Arrangement
     fixture = TestBed.createComponent(AtlasButtonComponent);
     component = fixture.componentInstance;
 

@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ContactPointTableComponent } from './contact-point-table.component';
-import { STOP_POINT } from '../../util/stop-point-test-data.spec';
+import { STOP_POINT } from '../../util/stop-point-test-data';
 import {
   MockAtlasButtonComponent,
   MockTableComponent,
@@ -17,6 +16,7 @@ import {
 import { AtlasButtonComponent } from '../../../../core/components/button/atlas-button.component';
 import { TableComponent } from '../../../../core/components/table/table.component';
 import { ContactPointInternalService } from '../../../../api/service/prm/contact-point/contact-point-internal.service';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const contactPointOverview: ContactPointOverview[] = [
   {
@@ -40,29 +40,31 @@ const contactPointOverview: ContactPointOverview[] = [
   },
 ];
 
+const activatedRouteMock = {
+  parent: {
+    snapshot: {
+      params: { stopPointSloid: STOP_POINT.sloid },
+      data: { stopPoints: [STOP_POINT], servicePoints: [BERN_WYLEREGG] },
+    },
+  },
+};
+
 describe('ContactPointTableComponent', () => {
   let component: ContactPointTableComponent;
   let fixture: ComponentFixture<ContactPointTableComponent>;
   let router: Router;
-
-  const contactPointInternalService = jasmine.createSpyObj(
-    'contactPointInternalService',
-    ['getContactPointOverview']
-  );
-  contactPointInternalService.getContactPointOverview.and.returnValue(
-    of(contactPointOverview)
-  );
-
-  const activatedRouteMock = {
-    parent: {
-      snapshot: {
-        params: { stopPointSloid: STOP_POINT.sloid },
-        data: { stopPoints: [STOP_POINT], servicePoints: [BERN_WYLEREGG] },
-      },
-    },
-  };
+  let contactPointInternalService: Mocked<
+    Pick<ContactPointInternalService, 'getContactPointOverview'>
+  >;
 
   beforeEach(() => {
+    contactPointInternalService = {
+      getContactPointOverview: vi.fn(),
+    };
+    contactPointInternalService.getContactPointOverview.mockReturnValue(
+      of(contactPointOverview)
+    );
+
     TestBed.configureTestingModule({
       imports: [ContactPointTableComponent],
       providers: [
@@ -76,6 +78,7 @@ describe('ContactPointTableComponent', () => {
       remove: { imports: [AtlasButtonComponent, TableComponent] },
       add: { imports: [MockAtlasButtonComponent, MockTableComponent] },
     });
+
     fixture = TestBed.createComponent(ContactPointTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -93,11 +96,11 @@ describe('ContactPointTableComponent', () => {
   });
 
   it('should navigate on table click', () => {
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.getOverview({ page: 0, size: 10 });
-
     component.rowClicked(component.contactPoints[0]);
+
     expect(router.navigate).toHaveBeenCalled();
   });
 });

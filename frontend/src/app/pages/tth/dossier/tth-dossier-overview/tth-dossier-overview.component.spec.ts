@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { TthDossierOverviewComponent } from './tth-dossier-overview.component';
 import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
 import { TableService } from '../../../../core/components/table/table.service';
@@ -12,25 +13,38 @@ import { DossierStatus } from '../../../../api/model/dossierStatus';
 import { PermissionService } from '../../../../core/auth/permission/permission.service';
 import { UserService } from '../../../../core/auth/user/user.service';
 
-const activatedRouteStub = {
-  snapshot: {
-    params: {},
-    queryParams: {},
-    data: { hearingStatus: HearingStatus.Active },
-  },
-  params: of({}),
-  queryParams: of({}),
-};
-
 describe('TthDossierOverviewComponent', () => {
+  const activatedRouteStub = {
+    snapshot: {
+      params: {},
+      queryParams: {},
+      data: { hearingStatus: HearingStatus.Active },
+    },
+    params: of({}),
+    queryParams: of({}),
+  };
+
   let component: TthDossierOverviewComponent;
-  let dossierService: jasmine.SpyObj<DossierInternalService>;
-  let tableService: jasmine.SpyObj<TableService>;
-  let router: jasmine.SpyObj<Router>;
+  let dossierService: Mocked<Pick<DossierInternalService, 'getOverview'>>;
+  let tableService: Mocked<
+    Pick<TableService, 'initializeFilterConfig'> & {
+      pageIndex: number;
+      pageSize: number;
+      sortString: string;
+      filter: Record<string, { getActiveSearch: () => string | string[] }>;
+    }
+  >;
+  let router: Mocked<Pick<Router, 'navigate'>>;
   let overviewToTabService: OverviewToTabShareDataService;
   let activatedRoute: ActivatedRoute;
-  let permissionServiceSpy: jasmine.SpyObj<PermissionService>;
-  let userService: jasmine.SpyObj<UserService>;
+  let permissionServiceSpy: Mocked<
+    Pick<PermissionService, 'getTthApplicationUserType'>
+  >;
+  let userService: Mocked<
+    Pick<UserService, 'setCurrentUserAndLoadPermissions'> & {
+      currentUser: { email: string; sbbuid: string };
+    }
+  >;
 
   function createTestBed() {
     TestBed.configureTestingModule({
@@ -59,35 +73,33 @@ describe('TthDossierOverviewComponent', () => {
   }
 
   beforeEach(() => {
-    dossierService = jasmine.createSpyObj('DossierInternalService', [
-      'getOverview',
-    ]);
+    dossierService = {
+      getOverview: vi.fn(),
+    };
 
-    permissionServiceSpy = jasmine.createSpyObj('PermissionService', [
-      'getTthApplicationUserType',
-    ]);
+    permissionServiceSpy = {
+      getTthApplicationUserType: vi.fn(),
+    };
 
-    userService = jasmine.createSpyObj(
-      'UserService',
-      ['setCurrentUserAndLoadPermissions'],
-      { currentUser: { email: 'test@example.com', sbbuid: 'u123456' } }
-    );
+    userService = {
+      setCurrentUserAndLoadPermissions: vi.fn(),
+      currentUser: { email: 'test@example.com', sbbuid: 'u123456' },
+    };
 
-    tableService = jasmine.createSpyObj(
-      'TableService',
-      ['initializeFilterConfig'],
-      {
-        pageIndex: 0,
-        pageSize: 10,
-        sortString: 'topic,asc',
-        filter: {
-          chipSearch: { getActiveSearch: () => '' },
-          multiSelectDossierStatus: { getActiveSearch: () => [] },
-        },
-      }
-    );
+    tableService = {
+      initializeFilterConfig: vi.fn(),
+      pageIndex: 0,
+      pageSize: 10,
+      sortString: 'topic,asc',
+      filter: {
+        chipSearch: { getActiveSearch: () => '' },
+        multiSelectDossierStatus: { getActiveSearch: () => [] },
+      },
+    };
 
-    router = jasmine.createSpyObj('Router', ['navigate']);
+    router = {
+      navigate: vi.fn(),
+    };
 
     createTestBed();
 
@@ -130,9 +142,9 @@ describe('TthDossierOverviewComponent', () => {
 
   describe('loadData', () => {
     it('should initialize table for active hearing status', () => {
-      spyOn(component, 'initOverviewTable');
+      vi.spyOn(component, 'initOverviewTable').mockImplementation(() => {});
       overviewToTabService.setHearingStatus(HearingStatus.Active);
-      dossierService.getOverview.and.returnValue(
+      dossierService.getOverview.mockReturnValue(
         of({ objects: [], totalCount: 0 })
       );
 
@@ -146,8 +158,8 @@ describe('TthDossierOverviewComponent', () => {
     it('should initialize table for archived hearing status', () => {
       activatedRoute.snapshot.data = { hearingStatus: HearingStatus.Archived };
       overviewToTabService.setHearingStatus(HearingStatus.Archived);
-      spyOn(component, 'initOverviewTable');
-      dossierService.getOverview.and.returnValue(
+      vi.spyOn(component, 'initOverviewTable').mockImplementation(() => {});
+      dossierService.getOverview.mockReturnValue(
         of({ objects: [], totalCount: 0 })
       );
 
@@ -160,7 +172,7 @@ describe('TthDossierOverviewComponent', () => {
 
   describe('getOverview', () => {
     it('should call getOverview with correct parameters if canton', () => {
-      dossierService.getOverview.and.returnValue(
+      dossierService.getOverview.mockReturnValue(
         of({ objects: [], totalCount: 0 })
       );
 
@@ -168,23 +180,23 @@ describe('TthDossierOverviewComponent', () => {
 
       expect(dossierService.getOverview).toHaveBeenCalledWith(
         2024,
-        jasmine.any(String),
+        expect.any(String),
         undefined,
-        jasmine.anything(),
+        expect.anything(),
         [],
         0,
         10,
-        jasmine.any(Array)
+        expect.any(Array)
       );
       expect(component.totalCount).toBe(0);
     });
 
     it('should call getOverview with correct parameters if bo', () => {
       TestBed.resetTestingModule();
-      permissionServiceSpy.getTthApplicationUserType.and.returnValue('BO_TTH');
+      permissionServiceSpy.getTthApplicationUserType.mockReturnValue('BO_TTH');
       createTestBed();
 
-      dossierService.getOverview.and.returnValue(
+      dossierService.getOverview.mockReturnValue(
         of({ objects: [], totalCount: 0 })
       );
 
@@ -192,13 +204,13 @@ describe('TthDossierOverviewComponent', () => {
 
       expect(dossierService.getOverview).toHaveBeenCalledWith(
         2024,
-        jasmine.any(String),
+        expect.any(String),
         'u123456',
-        jasmine.anything(),
+        expect.anything(),
         [DossierStatus.DossierBoCheck],
         0,
         10,
-        jasmine.any(Array)
+        expect.any(Array)
       );
       expect(component.totalCount).toBe(0);
     });
@@ -214,7 +226,7 @@ describe('TthDossierOverviewComponent', () => {
           dossierStatus: 'ADDED',
         },
       ];
-      dossierService.getOverview.and.returnValue(
+      dossierService.getOverview.mockReturnValue(
         of({ objects: mockDossiers, totalCount: 1 })
       );
 
@@ -224,28 +236,30 @@ describe('TthDossierOverviewComponent', () => {
       expect(component.totalCount).toBe(1);
     });
 
-    it('should handle error gracefully', (done) => {
-      dossierService.getOverview.and.returnValue(
+    it('should handle error gracefully', () => {
+      dossierService.getOverview.mockReturnValue(
         throwError(() => new Error('Test error'))
       );
 
       component.getOverview({ page: 0, size: 10, sort: '' });
 
-      setTimeout(() => {
-        expect(component.tthDossiers).toEqual([]);
-        done();
-      }, 100);
+      return new Promise<void>((resolve) => {
+        setTimeout(() => {
+          expect(component.tthDossiers).toEqual([]);
+          resolve();
+        }, 100);
+      });
     });
   });
 
   describe('editDossier', () => {
     it('should navigate to edit dossier', async () => {
-      router.navigate.and.returnValue(Promise.resolve(true));
+      router.navigate.mockReturnValue(Promise.resolve(true));
 
       component.editDossier(123);
 
       expect(router.navigate).toHaveBeenCalledWith([123], {
-        relativeTo: jasmine.anything(),
+        relativeTo: expect.anything(),
       });
     });
   });
@@ -257,7 +271,7 @@ describe('TthDossierOverviewComponent', () => {
     });
 
     it('should return undefined for unmapped canton', () => {
-      spyOn(Cantons, 'fromSwissCanton').and.returnValue(undefined);
+      vi.spyOn(Cantons, 'fromSwissCanton').mockReturnValue(undefined);
       const result = component.mapToShortCanton(SwissCanton.Zurich);
       expect(result).toBeUndefined();
     });
@@ -265,7 +279,7 @@ describe('TthDossierOverviewComponent', () => {
 
   describe('initOverviewTable', () => {
     it('should call getOverview with table service parameters', () => {
-      spyOn(component, 'getOverview');
+      vi.spyOn(component, 'getOverview').mockImplementation(() => {});
 
       component.initOverviewTable();
 
