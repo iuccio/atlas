@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { UserService } from './user.service';
 import {
@@ -34,8 +35,8 @@ describe('UserService', () => {
       permissions: [],
     });
 
-    expect(userService.loggedIn).toBeTrue();
-    expect(userService.isAdmin).toBeTrue();
+    expect(userService.loggedIn).toBe(true);
+    expect(userService.isAdmin).toBe(true);
     expect(userService.permissions).toEqual([]);
   });
 
@@ -48,11 +49,11 @@ describe('UserService', () => {
       permissions: [],
     });
 
-    expect(userService.loggedIn).toBeTrue();
+    expect(userService.loggedIn).toBe(true);
     userService.setToUnauthenticatedUser();
 
-    expect(userService.loggedIn).toBeFalse();
-    expect(userService.isAdmin).toBeFalse();
+    expect(userService.loggedIn).toBe(false);
+    expect(userService.isAdmin).toBe(false);
     expect(userService.permissions).toEqual([]);
   });
 });

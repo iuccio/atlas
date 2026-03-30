@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { SearchResultHighlightPipe } from './search-result-highlight.pipe';
 
 describe('SearchResultHighlightPipe', () => {

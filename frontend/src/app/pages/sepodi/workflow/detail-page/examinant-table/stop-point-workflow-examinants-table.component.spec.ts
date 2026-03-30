@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ReadStopPointWorkflow } from '../../../../../api';
 import { StopPointWorkflowExaminantsTableComponent } from './stop-point-workflow-examinants-table.component';
 import { MockAtlasButtonComponent } from '../../../../../app.testing.mocks';

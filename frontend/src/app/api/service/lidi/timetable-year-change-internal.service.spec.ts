@@ -3,6 +3,8 @@ import { AtlasApiService } from '../atlas-api.service';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../../core/auth/user/user.service';
 import { TimetableYearChangeInternalService } from './timetable-year-change-internal.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { EMPTY } from 'rxjs';
 
 describe('TimetableYearChangeInternalService', () => {
   let service: TimetableYearChangeInternalService;
@@ -18,17 +20,17 @@ describe('TimetableYearChangeInternalService', () => {
 
     service = TestBed.inject(TimetableYearChangeInternalService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'get');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
   });
 
   it('should getNextTimetablesYearChange', () => {
     service.getNextTimetablesYearChange(123);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       count: 123,
     });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/line-directory/internal/timetable-year-change/next-years/123',
     );
   });
@@ -36,10 +38,10 @@ describe('TimetableYearChangeInternalService', () => {
   it('should getTimetableYearChange', () => {
     service.getTimetableYearChange(2025);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       year: 2025,
     });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/line-directory/internal/timetable-year-change/2025',
     );
   });

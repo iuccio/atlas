@@ -1,28 +1,31 @@
+import { beforeEach, describe, expect, it, Mocked, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { TranslationSortingService } from './translation-sorting.service';
-import { TranslatePipe } from '@ngx-translate/core';
-import { AppTestingModule } from '../../app.testing.module';
 import { translateServiceProvider } from '../../app.testing.mocks';
+import { TranslatePipe } from '@ngx-translate/core';
 
-const translatePipeSpy = jasmine.createSpyObj('translatePipe', ['transform']);
-translatePipeSpy.transform
-  .withArgs('p.A')
-  .and.returnValue('A')
-  .withArgs('p.B')
-  .and.returnValue('B')
-  .withArgs('p.C')
-  .and.returnValue('C');
+const translatePipeMockArguments: Record<string, string> = {
+  'p.A': 'A',
+  'p.B': 'B',
+  'p.C': 'C',
+} as const;
 
 describe('TranslationSortingService', () => {
   let service: TranslationSortingService;
 
+  let translatePipeMock: Mocked<Pick<TranslatePipe, 'transform'>>;
+
   beforeEach(() => {
+    translatePipeMock = {
+      transform: vi
+        .fn()
+        .mockImplementation((key: string) => translatePipeMockArguments[key]),
+    };
+
     TestBed.configureTestingModule({
-      imports: [AppTestingModule],
       providers: [
         translateServiceProvider,
-        { provide: TranslationSortingService },
-        { provide: TranslatePipe, useValue: translatePipeSpy },
+        { provide: TranslatePipe, useValue: translatePipeMock },
       ],
     });
     service = TestBed.inject(TranslationSortingService);

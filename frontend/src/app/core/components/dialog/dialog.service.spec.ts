@@ -1,56 +1,59 @@
 import { TestBed } from '@angular/core/testing';
-import { MatDialog } from '@angular/material/dialog';
-import { TranslateModule } from '@ngx-translate/core';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { translateServiceProvider } from '../../../app.testing.mocks';
 import { DialogService } from './dialog.service';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { DialogData } from './dialog.data';
-
-const dialogData: DialogData = {
-  title: 'Question',
-  message: 'Do you want to be a rockstar?',
-};
+import { mock } from 'vitest-mock-extended';
+import { DialogComponent } from './dialog.component';
 
 describe('DialogService', () => {
   let service: DialogService;
 
-  const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+  const dialogData: DialogData = {
+    title: 'Question',
+    message: 'Do you want to be a rockstar?',
+  };
+
+  const matDialog = mock<MatDialog>();
+  const matDialogRef = mock<MatDialogRef<DialogComponent>>();
 
   beforeEach(() => {
+    matDialogRef.afterClosed.mockReturnValue(of(true));
+    matDialog.open.mockReturnValue(matDialogRef);
+    // Config
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
-      providers: [{ provide: MatDialog, useValue: dialogSpy }],
+      providers: [
+        translateServiceProvider,
+        { provide: MatDialog, useValue: matDialog },
+      ],
     });
+
+    // Arrangement
     service = TestBed.inject(DialogService);
   });
 
-  it('should open confirmation dialog and pass success value - true', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
-
-    service
-      .confirm(dialogData)
-      .subscribe((result) => expect(result).toBeTrue());
-
-    expect(dialogSpy.open).toHaveBeenCalled();
+  it('should open confirmation dialog and pass success value - true', async () => {
+    const result = await firstValueFrom(service.confirm(dialogData));
+    expect(result).toBe(true);
+    expect(matDialog.open).toHaveBeenCalled();
   });
 
-  it('should open confirmation dialog and pass cancel value - false', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(false) });
+  it('should open confirmation dialog and pass cancel value - false', async () => {
+    matDialogRef.afterClosed.mockReturnValue(of(false));
 
-    service
-      .confirm(dialogData)
-      .subscribe((result) => expect(result).toBeFalse());
-
-    expect(dialogSpy.open).toHaveBeenCalled();
+    const result = await firstValueFrom(service.confirm(dialogData));
+    expect(result).toBe(false);
+    expect(matDialog.open).toHaveBeenCalled();
   });
 
-  it('should open info dialog and pass cancel value - false', () => {
+  it('should open info dialog and pass cancel value - false', async () => {
     dialogData.isInfo = true;
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(false) });
+    matDialogRef.afterClosed.mockReturnValue(of(false));
 
-    service
-      .showInfo(dialogData)
-      .subscribe((result) => expect(result).toBeFalse());
-
-    expect(dialogSpy.open).toHaveBeenCalled();
+    const result = await firstValueFrom(service.showInfo(dialogData));
+    expect(result).toBe(false);
+    expect(matDialog.open).toHaveBeenCalled();
   });
 });

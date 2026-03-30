@@ -1,4 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { EMPTY } from 'rxjs';
+
 import { AtlasApiService } from '../atlas-api.service';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../../core/auth/user/user.service';
@@ -19,17 +22,17 @@ describe('TthYearInternalService', () => {
     });
     service = TestBed.inject(TthYearInternalService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'post');
-    spyOn(apiService, 'validateParams').and.callThrough();
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'validateParams');
   });
 
   it('should closeTimetableHearing', () => {
     service.closeTimetableHearingYear(2025);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       year: 2025,
     });
-    expect(apiService.post).toHaveBeenCalledOnceWith(
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
       '/workflow/internal/tth/year/2025/close',
     );
   });

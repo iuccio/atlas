@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 
 import { TimetableHearingOverviewComponent } from './timetable-hearing-overview.component';
 import { By } from '@angular/platform-browser';
@@ -10,12 +11,10 @@ import { OverviewToTabShareDataService } from '../overview-tab/service/overview-
 describe('TimetableHearingOverviewComponent', () => {
   let component: TimetableHearingOverviewComponent;
   let fixture: ComponentFixture<TimetableHearingOverviewComponent>;
-  let service: jasmine.SpyObj<OverviewToTabShareDataService>;
+  let service: Mocked<Pick<OverviewToTabShareDataService, 'setCantonShort'>>;
 
   beforeEach(async () => {
-    service = jasmine.createSpyObj('OverviewToTabShareDataService', [
-      'setCantonShort',
-    ]);
+    service = { setCantonShort: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [

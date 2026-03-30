@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { KeepaliveService } from './keepalive.service';
 
@@ -26,7 +27,7 @@ describe('KeepaliveService', () => {
     expect(service['intervalId']).toBeUndefined();
     expect(service['timeoutId']).toBeUndefined();
     expect(service['eventsSubscription']).toBeDefined();
-    expect(service['eventsSubscription']?.closed).toBeTrue();
+    expect(service['eventsSubscription']?.closed).toBe(true);
     expect(service['interruptions']).toEqual([]);
   });
 });

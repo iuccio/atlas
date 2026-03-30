@@ -1,70 +1,83 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AppTestingModule } from '../../../app.testing.module';
-import { DisplayDatePipe } from '../../../core/pipe/display-date.pipe';
 import { of } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import {
   ActivatedRouteMockType,
-  MockAtlasButtonComponent,
+  translateServiceProvider,
 } from '../../../app.testing.mocks';
-import { DateRangeTextComponent } from '../../../core/versioning/date-range-text/date-range-text.component';
 import { SplitServicePointNumberPipe } from '../../../core/search-service-point/split-service-point-number.pipe';
-import { TextFieldComponent } from '../../../core/form-components/text-field/text-field.component';
-import { SelectComponent } from '../../../core/form-components/select/select.component';
-import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
-import { SwitchVersionComponent } from '../../../core/components/switch-version/switch-version.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { AtlasFieldErrorComponent } from '../../../core/form-components/atlas-field-error/atlas-field-error.component';
-import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
-import { GeographyComponent } from '../geography/geography.component';
-import { DecimalNumberPipe } from '../../../core/pipe/decimal-number.pipe';
-import { AtlasSlideToggleComponent } from '../../../core/form-components/atlas-slide-toggle/atlas-slide-toggle.component';
-import { RemoveCharsDirective } from '../../../core/form-components/text-field/remove-chars.directive';
-import { SloidComponent } from '../../../core/form-components/sloid/sloid.component';
 import { DialogService } from '../../../core/components/dialog/dialog.service';
 import moment from 'moment/moment';
 import { LoadingPointsDetailComponent } from './loading-points-detail.component';
 import { LOADING_POINT } from '../../../../test/data/loading-point';
 import { BERN_WYLEREGG } from '../../../../test/data/service-point';
-import { UserDetailInfoComponent } from '../../../core/components/user-edit-info/user-detail-info.component';
-import { DetailPageContainerComponent } from '../../../core/components/detail-page-container/detail-page-container.component';
-import { DetailPageContentComponent } from '../../../core/components/detail-page-content/detail-page-content.component';
-import { DetailFooterComponent } from '../../../core/components/detail-footer/detail-footer.component';
 import { ServicePointService } from '../../../api/service/sepodi/service-point.service';
 import { LoadingPointService } from '../../../api/service/sepodi/loading-point.service';
-
-const authService: Partial<AuthService> = {};
+import { DateModule } from '../../../core/module/date.module';
 
 describe('LoadingPointsDetailComponent', () => {
+  const authService: Partial<AuthService> = {};
   let component: LoadingPointsDetailComponent;
   let fixture: ComponentFixture<LoadingPointsDetailComponent>;
   let router: Router;
 
-  const servicePointService = jasmine.createSpyObj(['getServicePointVersions']);
-  servicePointService.getServicePointVersions.and.returnValue(
-    of([BERN_WYLEREGG])
-  );
-  const loadingPointService = jasmine.createSpyObj('loadingPointService', [
-    'createLoadingPoint',
-    'updateLoadingPoint',
-  ]);
-  loadingPointService.createLoadingPoint.and.returnValue(of(LOADING_POINT[0]));
-  loadingPointService.updateLoadingPoint.and.returnValue(of(LOADING_POINT));
+  let servicePointService: Mocked<
+    Pick<ServicePointService, 'getServicePointVersions'>
+  >;
+  let loadingPointService: Mocked<
+    Pick<LoadingPointService, 'createLoadingPoint' | 'updateLoadingPoint'>
+  >;
+  let dialogService: Mocked<Pick<DialogService, 'confirm'>>;
 
-  const dialogService = jasmine.createSpyObj('dialogService', ['confirm']);
-  dialogService.confirm.and.returnValue(of(true));
+  function setupTestBed(activatedRoute: ActivatedRouteMockType) {
+    servicePointService = {
+      getServicePointVersions: vi.fn(),
+    };
+    servicePointService.getServicePointVersions.mockReturnValue(
+      of([BERN_WYLEREGG])
+    );
+
+    loadingPointService = {
+      createLoadingPoint: vi.fn(),
+      updateLoadingPoint: vi.fn(),
+    };
+    loadingPointService.createLoadingPoint.mockReturnValue(
+      of(LOADING_POINT[0])
+    );
+    loadingPointService.updateLoadingPoint.mockReturnValue(of(LOADING_POINT));
+
+    dialogService = {
+      confirm: vi.fn(),
+    };
+    dialogService.confirm.mockReturnValue(of(true));
+
+    Element.prototype.scrollIntoView = vi.fn();
+    TestBed.configureTestingModule({
+      imports: [DateModule.forRoot()],
+      providers: [
+        { provide: AuthService, useValue: authService },
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: ServicePointService, useValue: servicePointService },
+        { provide: LoadingPointService, useValue: loadingPointService },
+        { provide: DialogService, useValue: dialogService },
+        SplitServicePointNumberPipe,
+        translateServiceProvider,
+      ],
+    });
+  }
 
   describe('for existing Version', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       const activatedRouteMock = {
         data: of({ loadingPoint: LOADING_POINT }),
         snapshot: { params: { servicePointNumber: 8504414 } },
       };
-      await setupTestBed(activatedRouteMock);
+      setupTestBed(activatedRouteMock);
+      router = TestBed.inject(Router);
       fixture = TestBed.createComponent(LoadingPointsDetailComponent);
       component = fixture.componentInstance;
-      router = TestBed.inject(Router);
       fixture.detectChanges();
     });
 
@@ -84,7 +97,7 @@ describe('LoadingPointsDetailComponent', () => {
     });
 
     it('should go back to servicepoint', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
       component.backToServicePoint();
 
       expect(router.navigate).toHaveBeenCalledWith([
@@ -96,17 +109,17 @@ describe('LoadingPointsDetailComponent', () => {
     });
 
     it('should toggle form correctly', () => {
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeTrue();
+      expect(component.form.enabled).toBe(true);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
     });
 
     it('should update via service', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
       component.toggleEdit();
       component.save();
 
@@ -115,15 +128,15 @@ describe('LoadingPointsDetailComponent', () => {
   });
 
   describe('for new Version', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       const activatedRouteMock = {
         data: of({ loadingPoint: [] }),
         snapshot: { params: { servicePointNumber: 8504414 } },
       };
-      await setupTestBed(activatedRouteMock);
+      setupTestBed(activatedRouteMock);
+      router = TestBed.inject(Router);
       fixture = TestBed.createComponent(LoadingPointsDetailComponent);
       component = fixture.componentInstance;
-      router = TestBed.inject(Router);
       fixture.detectChanges();
     });
 
@@ -132,7 +145,7 @@ describe('LoadingPointsDetailComponent', () => {
     });
 
     it('should save version', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
       component.form.controls.number.setValue(5);
       component.form.controls.designation.setValue('456');
@@ -146,42 +159,4 @@ describe('LoadingPointsDetailComponent', () => {
       expect(loadingPointService.createLoadingPoint).toHaveBeenCalled();
     });
   });
-
-  function setupTestBed(activatedRoute: ActivatedRouteMockType) {
-    return TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        LoadingPointsDetailComponent,
-        DisplayDatePipe,
-        SplitServicePointNumberPipe,
-        MockAtlasButtonComponent,
-        DateRangeTextComponent,
-        TextFieldComponent,
-        SelectComponent,
-        AtlasLabelFieldComponent,
-        SwitchVersionComponent,
-        AtlasFieldErrorComponent,
-        AtlasSpacerComponent,
-        AtlasSlideToggleComponent,
-        GeographyComponent,
-        DecimalNumberPipe,
-        InfoIconComponent,
-        RemoveCharsDirective,
-        SloidComponent,
-        UserDetailInfoComponent,
-        DetailPageContainerComponent,
-        DetailPageContentComponent,
-        DetailFooterComponent,
-      ],
-      providers: [
-        { provide: AuthService, useValue: authService },
-        { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: ServicePointService, useValue: servicePointService },
-        { provide: LoadingPointService, useValue: loadingPointService },
-        { provide: DialogService, useValue: dialogService },
-        SplitServicePointNumberPipe,
-        TranslatePipe,
-      ],
-    }).compileComponents();
-  }
 });

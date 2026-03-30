@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { SectorGroupDetailComponent } from './sector-group-detail.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SectorMapService } from '../../map/sector-map.service';
@@ -29,56 +30,129 @@ import { SectorGroupInternalService } from '../../../../api/service/sepodi/secto
 describe('SectorGroupDetailComponent', () => {
   let component: SectorGroupDetailComponent;
   let fixture: ComponentFixture<SectorGroupDetailComponent>;
-
   let router: Router;
 
-  const sectorMapService = jasmine.createSpyObj<SectorMapService>([
-    'displaySectorsOnMap',
-    'clearDisplayedSectors',
-    'displayCurrentSector',
-    'clearCurrentSector',
-    'setDisplayedSectors',
-  ]);
-  const trafficPointMapService = jasmine.createSpyObj<TrafficPointMapService>([
-    'displayTrafficPointsOnMap',
-    'displayCurrentTrafficPoint',
-    'clearDisplayedTrafficPoints',
-    'clearCurrentTrafficPoint',
-  ]);
+  let sectorMapServiceSpy: Mocked<
+    Pick<
+      SectorMapService,
+      | 'displaySectorsOnMap'
+      | 'clearDisplayedSectors'
+      | 'displayCurrentSector'
+      | 'clearCurrentSector'
+      | 'setDisplayedSectors'
+    >
+  >;
+  let trafficPointMapServiceSpy: Mocked<
+    Pick<
+      TrafficPointMapService,
+      | 'displayTrafficPointsOnMap'
+      | 'displayCurrentTrafficPoint'
+      | 'clearDisplayedTrafficPoints'
+      | 'clearCurrentTrafficPoint'
+    >
+  >;
+  let mapServiceSpy: Mocked<
+    Pick<
+      MapService,
+      | 'placeMarkerAndFlyTo'
+      | 'enterCoordinateSelectionMode'
+      | 'exitCoordinateSelectionMode'
+    >
+  >;
+  let validityServiceSpy: Mocked<
+    Pick<ValidityService, 'initValidity' | 'updateValidity' | 'validate'>
+  >;
+  let sectorInternalServiceSpy: Mocked<
+    Pick<SectorInternalService, 'getSectors'>
+  >;
+  let sectorGroupServiceSpy: Mocked<
+    Pick<
+      SectorGroupService,
+      'createSectorGroup' | 'updateSectorGroup' | 'getSectorsBySectorGroupSloid'
+    >
+  >;
+  let sectorGroupInternalServiceSpy: Mocked<
+    Pick<SectorGroupInternalService, 'revokeSectorGroup'>
+  >;
+  let dialogServiceSpy: Mocked<Pick<DialogService, 'confirm'>>;
 
-  const mapService = jasmine.createSpyObj<MapService>([
-    'placeMarkerAndFlyTo',
-    'enterCoordinateSelectionMode',
-    'exitCoordinateSelectionMode',
-  ]);
-
-  const validityService = jasmine.createSpyObj<ValidityService>([
-    'initValidity',
-    'updateValidity',
-    'validate',
-  ]);
-  validityService.validate.and.returnValue(of(true));
-
-  const sectorInternalService = jasmine.createSpyObj<SectorInternalService>([
-    'getSectors',
-  ]);
   const sectorOverview: ContainerReadSectorVersion = {
     objects: [],
     totalCount: 0,
   };
 
-  const sectorGroupService = jasmine.createSpyObj<SectorGroupService>([
-    'createSectorGroup',
-    'updateSectorGroup',
-    'getSectorsBySectorGroupSloid',
-  ]);
-  const sectorGroupInternalService =
-    jasmine.createSpyObj<SectorGroupInternalService>({
-      revokeSectorGroup: of(),
-    });
-  const dialogService = jasmine.createSpyObj<DialogService>({
-    confirm: of(true),
-  });
+  function setupTestBed(activatedRoute: ActivatedRouteMockType) {
+    Element.prototype.scrollIntoView = vi.fn();
+
+    sectorMapServiceSpy = {
+      displaySectorsOnMap: vi.fn(),
+      clearDisplayedSectors: vi.fn(),
+      displayCurrentSector: vi.fn(),
+      clearCurrentSector: vi.fn(),
+      setDisplayedSectors: vi.fn(),
+    };
+    trafficPointMapServiceSpy = {
+      displayTrafficPointsOnMap: vi.fn(),
+      displayCurrentTrafficPoint: vi.fn(),
+      clearDisplayedTrafficPoints: vi.fn(),
+      clearCurrentTrafficPoint: vi.fn(),
+    };
+    mapServiceSpy = {
+      placeMarkerAndFlyTo: vi.fn(),
+      enterCoordinateSelectionMode: vi.fn(),
+      exitCoordinateSelectionMode: vi.fn(),
+    };
+    validityServiceSpy = {
+      initValidity: vi.fn(),
+      updateValidity: vi.fn(),
+      validate: vi.fn(),
+    };
+    validityServiceSpy.validate.mockReturnValue(of(true));
+
+    sectorInternalServiceSpy = {
+      getSectors: vi.fn(),
+    };
+    sectorGroupServiceSpy = {
+      createSectorGroup: vi.fn(),
+      updateSectorGroup: vi.fn(),
+      getSectorsBySectorGroupSloid: vi.fn(),
+    };
+    sectorGroupInternalServiceSpy = {
+      revokeSectorGroup: vi.fn(),
+    };
+    sectorGroupInternalServiceSpy.revokeSectorGroup.mockReturnValue(of(undefined));
+
+    dialogServiceSpy = {
+      confirm: vi.fn(),
+    };
+    dialogServiceSpy.confirm.mockReturnValue(of(true));
+
+    return TestBed.configureTestingModule({
+      imports: [AppTestingModule, SectorGroupDetailComponent],
+      providers: [
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: SectorMapService, useValue: sectorMapServiceSpy },
+        { provide: TrafficPointMapService, useValue: trafficPointMapServiceSpy },
+        { provide: SectorGroupService, useValue: sectorGroupServiceSpy },
+        { provide: SectorInternalService, useValue: sectorInternalServiceSpy },
+        { provide: MapService, useValue: mapServiceSpy },
+        {
+          provide: SectorGroupInternalService,
+          useValue: sectorGroupInternalServiceSpy,
+        },
+        { provide: DialogService, useValue: dialogServiceSpy },
+      ],
+    })
+      .overrideComponent(SectorGroupDetailComponent, {
+        set: {
+          providers: [
+            { provide: ValidityService, useValue: validityServiceSpy },
+            TranslatePipe,
+          ],
+        },
+      })
+      .compileComponents();
+  }
 
   describe('new mode', () => {
     beforeEach(() => {
@@ -93,28 +167,28 @@ describe('SectorGroupDetailComponent', () => {
       router = TestBed.inject(Router);
       fixture = TestBed.createComponent(SectorGroupDetailComponent);
       component = fixture.componentInstance;
-      sectorInternalService.getSectors.and.returnValue(of(sectorOverview));
-      sectorGroupService.getSectorsBySectorGroupSloid.and.returnValue(of([]));
+      sectorInternalServiceSpy.getSectors.mockReturnValue(of(sectorOverview));
+      sectorGroupServiceSpy.getSectorsBySectorGroupSloid.mockReturnValue(of([]));
       fixture.detectChanges();
     });
 
     it('should enter new', () => {
-      expect(component.isNew).toBeTrue();
+      expect(component.isNew).toBe(true);
     });
 
     it('should go back to sectorGroup overview', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
       component.back();
 
-      expect(router.navigate).toHaveBeenCalledWith(['..'], jasmine.any(Object));
+      expect(router.navigate).toHaveBeenCalledWith(['..'], expect.any(Object));
     });
 
     it('should save new sector group', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-      sectorGroupService.createSectorGroup.and.returnValue(
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
+      sectorGroupServiceSpy.createSectorGroup.mockReturnValue(
         of(CREATE_BERN_PLATFORM_1_SECTORGROUP_A[0])
       );
-      sectorGroupService.getSectorsBySectorGroupSloid.and.returnValue(
+      sectorGroupServiceSpy.getSectorsBySectorGroupSloid.mockReturnValue(
         of(BERN_PLATFORM_1_SECTOR_MULTIPLE)
       );
 
@@ -131,10 +205,10 @@ describe('SectorGroupDetailComponent', () => {
       ]);
       component.save();
 
-      expect(sectorGroupService.createSectorGroup).toHaveBeenCalled();
+      expect(sectorGroupServiceSpy.createSectorGroup).toHaveBeenCalled();
       expect(router.navigate).toHaveBeenCalledWith(
         ['..', 'ch:1:sloid:7000:1:1:5'],
-        jasmine.any(Object)
+        expect.any(Object)
       );
     });
   });
@@ -152,14 +226,14 @@ describe('SectorGroupDetailComponent', () => {
       router = TestBed.inject(Router);
       fixture = TestBed.createComponent(SectorGroupDetailComponent);
       component = fixture.componentInstance;
-      sectorInternalService.getSectors.and.returnValue(of(sectorOverview));
-      sectorGroupService.getSectorsBySectorGroupSloid.and.returnValue(of([]));
+      sectorInternalServiceSpy.getSectors.mockReturnValue(of(sectorOverview));
+      sectorGroupServiceSpy.getSectorsBySectorGroupSloid.mockReturnValue(of([]));
 
       fixture.detectChanges();
     });
 
     it('should display current designation and validity', () => {
-      expect(component.isNew).toBeFalse();
+      expect(component.isNew).toBe(false);
       expect(component.selectedVersion).toBeTruthy();
 
       expect(component.selectedVersion.designation).toEqual('A');
@@ -170,23 +244,23 @@ describe('SectorGroupDetailComponent', () => {
     });
 
     it('should toggle edit mode', () => {
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeTrue();
+      expect(component.form.enabled).toBe(true);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
     });
 
     it('should update sector group', () => {
-      expect(component.isNew).toBeFalse();
+      expect(component.isNew).toBe(false);
 
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-      sectorGroupService.updateSectorGroup.and.returnValue(
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
+      sectorGroupServiceSpy.updateSectorGroup.mockReturnValue(
         of(BERN_PLATFORM_1_SECTORGROUP_A)
       );
-      sectorGroupService.getSectorsBySectorGroupSloid.and.returnValue(
+      sectorGroupServiceSpy.getSectorsBySectorGroupSloid.mockReturnValue(
         of(BERN_PLATFORM_1_SECTOR_A)
       );
       component.toggleEdit();
@@ -194,47 +268,19 @@ describe('SectorGroupDetailComponent', () => {
 
       component.save();
 
-      expect(sectorGroupService.updateSectorGroup).toHaveBeenCalled();
+      expect(sectorGroupServiceSpy.updateSectorGroup).toHaveBeenCalled();
       expect(router.navigate).toHaveBeenCalledWith(
         ['..', 'ch:1:sloid:7000:1:1:5'],
-        jasmine.any(Object)
+        expect.any(Object)
       );
     });
 
     it('should revoke sector group', () => {
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+      vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
       component.revoke();
 
-      expect(sectorGroupInternalService.revokeSectorGroup).toHaveBeenCalled();
+      expect(sectorGroupInternalServiceSpy.revokeSectorGroup).toHaveBeenCalled();
     });
   });
-
-  async function setupTestBed(activatedRoute: ActivatedRouteMockType) {
-    return TestBed.configureTestingModule({
-      imports: [AppTestingModule, SectorGroupDetailComponent],
-      providers: [
-        { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: SectorMapService, useValue: sectorMapService },
-        { provide: TrafficPointMapService, useValue: trafficPointMapService },
-        { provide: SectorGroupService, useValue: sectorGroupService },
-        { provide: SectorInternalService, useValue: sectorInternalService },
-        { provide: MapService, useValue: mapService },
-        {
-          provide: SectorGroupInternalService,
-          useValue: sectorGroupInternalService,
-        },
-        { provide: DialogService, useValue: dialogService },
-      ],
-    })
-      .overrideComponent(SectorGroupDetailComponent, {
-        set: {
-          providers: [
-            { provide: ValidityService, useValue: validityService },
-            TranslatePipe,
-          ],
-        },
-      })
-      .compileComponents();
-  }
 });

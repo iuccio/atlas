@@ -1,10 +1,12 @@
 import {TestBed} from '@angular/core/testing';
-
+import {beforeEach, describe, expect, it, vi} from 'vitest';
 import {StopPointService} from './stop-point.service';
-import {AtlasApiService} from "../../atlas-api.service";
-import {provideHttpClient} from "@angular/common/http";
-import {UserService} from "../../../../core/auth/user/user.service";
-import {ReadStopPointVersion} from "../../../model/readStopPointVersion";
+import {AtlasApiService} from '../../atlas-api.service';
+import {provideHttpClient} from '@angular/common/http';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
+import {UserService} from '../../../../core/auth/user/user.service';
+import {ReadStopPointVersion} from '../../../model/readStopPointVersion';
+import {EMPTY} from 'rxjs';
 
 describe('StopPointService', () => {
   let service: StopPointService;
@@ -14,24 +16,25 @@ describe('StopPointService', () => {
     TestBed.configureTestingModule({
       providers: [StopPointService, AtlasApiService,
         provideHttpClient(),
+        provideHttpClientTesting(),
         {provide: UserService, useValue: {}},
       ]
     });
     service = TestBed.inject(StopPointService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'get');
-    spyOn(apiService, 'put');
-    spyOn(apiService, 'post');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'put').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
   });
 
   it('should getStopPointVersions', () => {
     service.getStopPointVersions('ch:1:sloid:7000');
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       sloid: 'ch:1:sloid:7000'
     });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/prm-directory/v1/stop-points/ch:1:sloid:7000',
     );
   });
@@ -57,7 +60,7 @@ describe('StopPointService', () => {
 
     // then
     expect(apiService.post)
-      .toHaveBeenCalledOnceWith('/prm-directory/v1/stop-points', stopPointVersion);
+      .toHaveBeenCalledExactlyOnceWith('/prm-directory/v1/stop-points', stopPointVersion);
   });
 
 
@@ -82,7 +85,7 @@ describe('StopPointService', () => {
 
     // then
     expect(apiService.put)
-      .toHaveBeenCalledOnceWith('/prm-directory/v1/stop-points/1', stopPointVersion);
+      .toHaveBeenCalledExactlyOnceWith('/prm-directory/v1/stop-points/1', stopPointVersion);
   });
 
 });

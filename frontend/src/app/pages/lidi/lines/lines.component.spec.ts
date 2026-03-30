@@ -14,7 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Pages } from '../../pages';
 import { TableComponent } from '../../../core/components/table/table.component';
 import { LineInternalService } from '../../../api/service/lidi/line-internal.service';
-import SpyObj = jasmine.SpyObj;
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const line: Line = {
   swissLineNumber: 'IC6',
@@ -48,26 +48,20 @@ describe('LinesComponent', () => {
   let component: LinesComponent;
   let fixture: ComponentFixture<LinesComponent>;
   let router: Router;
-
-  let lineInternalServiceSpy: SpyObj<LineInternalService>;
+  let lineInternalService: Mocked<Pick<LineInternalService, 'getLines'>>;
 
   beforeEach(() => {
-    lineInternalServiceSpy = jasmine.createSpyObj<LineInternalService>(
-      'LineServiceSpy',
-      {
-        getLines: of(versionContainer),
-      }
-    );
+    lineInternalService = {
+      getLines: vi.fn(),
+    };
+    lineInternalService.getLines.mockReturnValue(of(versionContainer));
 
     TestBed.configureTestingModule({
       imports: [LinesComponent, TranslateModule.forRoot()],
       providers: [
         TranslatePipe,
-        { provide: LineInternalService, useValue: lineInternalServiceSpy },
-        {
-          provide: ActivatedRoute,
-          useValue: { paramMap: new Subject() },
-        },
+        { provide: LineInternalService, useValue: lineInternalService },
+        { provide: ActivatedRoute, useValue: { paramMap: new Subject() } },
       ],
     })
       .overrideComponent(LinesComponent, {
@@ -89,11 +83,13 @@ describe('LinesComponent', () => {
   it('should edit line', () => {
     //given
     line.elementType = 'LINE';
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const navigateSpy = vi
+      .spyOn(router, 'navigate')
+      .mockReturnValue(Promise.resolve(true));
     //when
     component.editVersion(line);
     //then
-    expect(router.navigate).toHaveBeenCalledWith([
+    expect(navigateSpy).toHaveBeenCalledWith([
       Pages.LIDI.path,
       Pages.LINES.path,
       line.slnid,
@@ -103,11 +99,13 @@ describe('LinesComponent', () => {
   it('should edit subline', () => {
     //given
     line.elementType = 'SUBLINE';
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const navigateSpy = vi
+      .spyOn(router, 'navigate')
+      .mockReturnValue(Promise.resolve(true));
     //when
     component.editVersion(line);
     //then
-    expect(router.navigate).toHaveBeenCalledWith([
+    expect(navigateSpy).toHaveBeenCalledWith([
       Pages.LIDI.path,
       Pages.SUBLINES.path,
       line.slnid,
@@ -120,7 +118,7 @@ describe('LinesComponent', () => {
       size: 10,
     });
 
-    expect(lineInternalServiceSpy.getLines).toHaveBeenCalledOnceWith(
+    expect(lineInternalService.getLines).toHaveBeenCalledExactlyOnceWith(
       undefined,
       [],
       [Status.Draft, Status.Validated, Status.InReview, Status.Withdrawn],

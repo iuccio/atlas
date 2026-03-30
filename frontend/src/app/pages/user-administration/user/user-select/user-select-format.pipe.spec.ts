@@ -1,9 +1,15 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { UserSelectFormatPipe } from './user-select-format.pipe';
 import { Permission } from '../../../../api';
 
 describe('UserSelectFormatPipe', () => {
+  let pipe: UserSelectFormatPipe;
+
+  beforeEach(() => {
+    pipe = new UserSelectFormatPipe();
+  });
+
   it('format user', () => {
-    const pipe = new UserSelectFormatPipe();
     expect(pipe).toBeTruthy();
     expect(
       pipe.transform({
@@ -16,7 +22,6 @@ describe('UserSelectFormatPipe', () => {
   });
 
   it('format user without mail', () => {
-    const pipe = new UserSelectFormatPipe();
     expect(
       pipe.transform({
         sbbUserId: 'uid',

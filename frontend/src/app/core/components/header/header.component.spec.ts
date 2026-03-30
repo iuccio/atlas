@@ -1,33 +1,45 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { HeaderComponent } from './header.component';
-import { UserComponent } from '../user/user.component';
-import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
-import { AppTestingModule } from '../../../app.testing.module';
-import { MaintenanceIconComponent } from './maintenance-icon/maintenance-icon.component';
-import { InfoIconComponent } from '@atlas/form';
 import { AuthService } from '../../auth/auth.service';
-import { authServiceSpy } from '../../../app.testing.mocks';
+import {
+  authServiceMock,
+  translateServiceProvider,
+} from '../../../app.testing.mocks';
+import { RouterModule } from '@angular/router';
+import { DateModule } from '../../module/date.module';
+import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
+import { UserComponent } from '../user/user.component';
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'atlas-language-switcher',
+  template: '<h1>LanguageSwitcherComponent</h1>',
+})
+class MockLanguageSwitcherComponent {}
+
+@Component({
+  selector: 'atlas-user',
+  template: '<h1>UserComponent</h1>',
+})
+class MockUserComponent {}
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        HeaderComponent,
-        UserComponent,
-        LanguageSwitcherComponent,
-        MaintenanceIconComponent,
-        InfoIconComponent,
-      ],
-      providers: [{ provide: AuthService, useValue: authServiceSpy }],
-    }).compileComponents();
-  });
-
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [DateModule.forRoot(), RouterModule.forRoot([])],
+      providers: [
+        { provide: AuthService, useValue: authServiceMock },
+        translateServiceProvider,
+      ],
+    }).overrideComponent(HeaderComponent, {
+      remove: { imports: [LanguageSwitcherComponent, UserComponent] },
+      add: { imports: [MockLanguageSwitcherComponent, MockUserComponent] },
+    });
+
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

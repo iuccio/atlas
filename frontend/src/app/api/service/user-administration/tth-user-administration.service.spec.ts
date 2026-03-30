@@ -3,6 +3,8 @@ import { AtlasApiService } from '../atlas-api.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserService } from '../../../core/auth/user/user.service';
 import { TthUserAdministrationService } from './tth-user-administration.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { EMPTY } from 'rxjs';
 
 describe('TthUserAdministrationService', () => {
   let service: TthUserAdministrationService;
@@ -18,15 +20,15 @@ describe('TthUserAdministrationService', () => {
 
     service = TestBed.inject(TthUserAdministrationService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'get');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
   });
 
   it('should searchBoDossierAnsweringUsers', () => {
     service.searchBoDossierAnsweringUsers('mail@sbb.ch');
 
-    expect(apiService.get).toHaveBeenCalledOnceWith(
-      '/user-administration/v1/search-bo-dossier-answering-users', jasmine.any(HttpParams)
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
+      '/user-administration/v1/search-bo-dossier-answering-users', expect.any(HttpParams)
     );
   });
 

@@ -4,8 +4,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'atlas-sloid-container',
-  imports: [AtlasClipboardComponent, TranslatePipe],
   templateUrl: './sloid-container.component.html',
+  imports: [AtlasClipboardComponent, TranslatePipe],
   providers: [TranslatePipe],
 })
 export class SloidContainerComponent {

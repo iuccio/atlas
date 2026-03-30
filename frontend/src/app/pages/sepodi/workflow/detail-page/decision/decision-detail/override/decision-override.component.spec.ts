@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { DecisionOverrideComponent } from './decision-override.component';
 import { AppTestingModule } from '../../../../../../../app.testing.module';
@@ -13,22 +14,23 @@ import { TextFieldComponent } from '../../../../../../../core/form-components/te
 import { AtlasLabelFieldComponent } from '@atlas/form';
 import { StopPointWorkflowService } from '../../../../../../../api/service/workflow/stop-point-workflow.service';
 
-const stopPointWorkflowService = jasmine.createSpyObj(
-  'stopPointWorkflowService',
-  {
-    overrideVoteWorkflow: of({}),
-  }
-);
-
-const notificationService = jasmine.createSpyObj('notificationService', [
-  'success',
-]);
-
 describe('DecisionOverrideComponent', () => {
   let component: DecisionOverrideComponent;
   let fixture: ComponentFixture<DecisionOverrideComponent>;
 
+  let stopPointWorkflowService: Mocked<
+    Pick<StopPointWorkflowService, 'overrideVoteWorkflow'>
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
+
   beforeEach(async () => {
+    stopPointWorkflowService = {
+      overrideVoteWorkflow: vi.fn().mockReturnValue(of({})),
+    };
+    notificationService = {
+      success: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -58,7 +60,7 @@ describe('DecisionOverrideComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(component.isSepodiSupervisor).toBeTrue();
+    expect(component.isSepodiSupervisor).toBe(true);
   });
 
   it('should save override', () => {

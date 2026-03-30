@@ -37,7 +37,7 @@ export class ServicePointService {
     return this.atlasApiService.get(`${this.BASE_PATH}/${encodeURIComponent(String(servicePointNumber))}/fot-comment`);
   }
 
-  public saveFotComment(servicePointNumber: number, servicePointFotComment: ServicePointFotComment): Observable<ReadServicePointVersion> {
+  public saveFotComment(servicePointNumber: number, servicePointFotComment: ServicePointFotComment): Observable<ServicePointFotComment> {
     this.atlasApiService.validateParams({ servicePointNumber, servicePointFotComment });
     return this.atlasApiService.put(`${this.BASE_PATH}/${encodeURIComponent(String(servicePointNumber))}/fot-comment`, servicePointFotComment);
   }

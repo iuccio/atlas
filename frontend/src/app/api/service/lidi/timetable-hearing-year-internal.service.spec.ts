@@ -4,7 +4,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserService } from '../../../core/auth/user/user.service';
 import { TimetableHearingYearInternalService } from './timetable-hearing-year-internal.service';
 import { TimetableHearingYear } from '../../model/timetableHearingYear';
-import any = jasmine.any;
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { EMPTY } from 'rxjs';
 
 describe('TimetableHearingYearInternalService', () => {
   let service: TimetableHearingYearInternalService;
@@ -20,20 +21,20 @@ describe('TimetableHearingYearInternalService', () => {
 
     service = TestBed.inject(TimetableHearingYearInternalService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'paramsOf').and.callThrough();
-    spyOn(apiService, 'post');
-    spyOn(apiService, 'get');
-    spyOn(apiService, 'put');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'paramsOf');
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'put').mockImplementation(() => EMPTY);
   });
 
   it('should createHearingYear', () => {
     service.createHearingYear({} as TimetableHearingYear);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       timetableHearingYear: {},
     });
-    expect(apiService.post).toHaveBeenCalledOnceWith(
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
       '/line-directory/internal/timetable-hearing/years',
       {},
     );
@@ -42,10 +43,10 @@ describe('TimetableHearingYearInternalService', () => {
   it('should getHearingYear', () => {
     service.getHearingYear(2025);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       year: 2025,
     });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/line-directory/internal/timetable-hearing/years/2025',
     );
   });
@@ -53,22 +54,22 @@ describe('TimetableHearingYearInternalService', () => {
   it('should getHearingYears', () => {
     service.getHearingYears(['ACTIVE', 'PLANNED']);
 
-    expect(apiService.paramsOf).toHaveBeenCalledOnceWith({
+    expect(apiService.paramsOf).toHaveBeenCalledExactlyOnceWith({
       statusChoices: ['ACTIVE', 'PLANNED'],
     });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/line-directory/internal/timetable-hearing/years',
-      any(HttpParams),
+      expect.any(HttpParams),
     );
   });
 
   it('should startHearingYear', () => {
     service.startHearingYear(2025);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       year: 2025,
     });
-    expect(apiService.post).toHaveBeenCalledOnceWith(
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
       '/line-directory/internal/timetable-hearing/years/2025/start',
     );
   });
@@ -76,11 +77,11 @@ describe('TimetableHearingYearInternalService', () => {
   it('should updateTimetableHearingSettings', () => {
     service.updateTimetableHearingSettings(2025, {} as TimetableHearingYear);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       year: 2025,
       timetableHearingYear: {},
     });
-    expect(apiService.put).toHaveBeenCalledOnceWith(
+    expect(apiService.put).toHaveBeenCalledExactlyOnceWith(
       '/line-directory/internal/timetable-hearing/years/2025',
       {},
     );

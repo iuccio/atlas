@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { GetIconPipe } from './get-icon.pipe';
 
 describe('GetIconPipe', () => {
@@ -12,4 +13,3 @@ describe('GetIconPipe', () => {
     expect(icon).toEqual('BUS_GRAY');
   });
 });
-

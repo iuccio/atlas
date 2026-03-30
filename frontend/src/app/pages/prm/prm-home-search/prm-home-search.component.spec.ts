@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PrmHomeSearchComponent } from './prm-home-search.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppTestingModule } from '../../../app.testing.module';
@@ -8,6 +7,7 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { provideRouter } from '@angular/router';
 import { Component, Input } from '@angular/core';
 import { ServicePointSearchType } from '../../../core/search-service-point/service-point-search';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 @Component({
   selector: 'atlas-search-service-point-panel',
@@ -47,6 +47,7 @@ describe('PrmHomeSearchComponent', () => {
         ]),
       ],
     });
+
     fixture = TestBed.createComponent(PrmHomeSearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

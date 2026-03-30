@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { ServicePointSidePanelComponent } from './service-point-side-panel.component';
 import { ActivatedRoute } from '@angular/router';
@@ -17,10 +18,6 @@ import { DetailPageContentComponent } from '../../../core/components/detail-page
 import { DetailFooterComponent } from '../../../core/components/detail-footer/detail-footer.component';
 
 const authService: Partial<AuthService> = {};
-const trafficPointMapService = jasmine.createSpyObj<TrafficPointMapService>([
-  'displayTrafficPointsOnMap',
-  'clearDisplayedTrafficPoints',
-]);
 
 const servicePointInGermany: ReadServicePointVersion[] = [
   {
@@ -80,9 +77,21 @@ describe('ServicePointSidePanelComponent', () => {
   let component: ServicePointSidePanelComponent;
   let fixture: ComponentFixture<ServicePointSidePanelComponent>;
 
+  let trafficPointMapServiceSpy: Mocked<
+    Pick<
+      TrafficPointMapService,
+      'displayTrafficPointsOnMap' | 'clearDisplayedTrafficPoints'
+    >
+  >;
+
   const activatedRouteMock = { data: of({ servicePoint: [BERN_WYLEREGG] }) };
 
   beforeEach(() => {
+    trafficPointMapServiceSpy = {
+      displayTrafficPointsOnMap: vi.fn(),
+      clearDisplayedTrafficPoints: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -98,7 +107,10 @@ describe('ServicePointSidePanelComponent', () => {
       providers: [
         { provide: AuthService, useValue: authService },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
-        { provide: TrafficPointMapService, useValue: trafficPointMapService },
+        {
+          provide: TrafficPointMapService,
+          useValue: trafficPointMapServiceSpy,
+        },
         SplitServicePointNumberPipe,
       ],
     });
@@ -124,10 +136,10 @@ describe('ServicePointSidePanelComponent', () => {
       expect(component.maxValidity.validFrom).toEqual(new Date('2014-12-14'));
       expect(component.maxValidity.validTo).toEqual(new Date('2021-03-31'));
 
-      expect(component.tabs).toHaveSize(5);
+      expect(component.tabs).toHaveLength(5);
 
       expect(
-        trafficPointMapService.displayTrafficPointsOnMap
+        trafficPointMapServiceSpy.displayTrafficPointsOnMap
       ).toHaveBeenCalled();
     });
   });
@@ -147,7 +159,7 @@ describe('ServicePointSidePanelComponent', () => {
     });
 
     it('should display only 3 tabs', () => {
-      expect(component.tabs).toHaveSize(3);
+      expect(component.tabs).toHaveLength(3);
     });
   });
 });

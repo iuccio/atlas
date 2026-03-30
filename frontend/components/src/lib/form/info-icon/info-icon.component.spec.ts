@@ -1,16 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InfoIconComponent } from '@atlas/form';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('InfoIconComponent', () => {
   let component: InfoIconComponent;
   let fixture: ComponentFixture<InfoIconComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [InfoIconComponent],
-    }).compileComponents();
-  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InfoIconComponent);

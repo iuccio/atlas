@@ -1,88 +1,68 @@
 import { BulkImportOverviewComponent } from './bulk-import-overview.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApplicationType, BusinessObjectType, ImportType } from '../../../api';
-import { AppTestingModule } from '../../../app.testing.module';
 import { BulkImportFormGroupBuilder } from '../detail/bulk-import-form-group';
 import { BehaviorSubject, EMPTY, of, throwError } from 'rxjs';
 import { NotificationService } from '../../../core/notification/notification.service';
 import { Router } from '@angular/router';
 import { FileDownloadService } from '../../../core/components/file-upload/file/file-download.service';
-import { AtlasButtonComponent } from '../../../core/components/button/atlas-button.component';
-import { DetailFooterComponent } from '../../../core/components/detail-footer/detail-footer.component';
-import { FileUploadComponent } from '../../../core/components/file-upload/file-upload.component';
-import { UploadIconComponent } from '../../../core/form-components/upload-icon/upload-icon.component';
-import { DownloadIconComponent } from '../../../core/form-components/download-icon/download-icon.component';
-import { StringListComponent } from '../../../core/form-components/string-list/string-list.component';
-import { SelectComponent } from '../../../core/form-components/select/select.component';
-import { TextFieldComponent } from '../../../core/form-components/text-field/text-field.component';
-import { AtlasFieldErrorComponent } from '../../../core/form-components/atlas-field-error/atlas-field-error.component';
-import { AtlasSpacerComponent } from '../../../core/components/spacer/atlas-spacer.component';
-import { AtlasLabelFieldComponent } from '@atlas/form';
 import { DialogService } from '../../../core/components/dialog/dialog.service';
 import { LoadingSpinnerService } from '../../../core/components/loading-spinner/loading-spinner.service';
 import { BulkImportService } from '../../../api/service/bulk/bulk-import.service';
 import { UserAdministrationService } from '../../../api/service/user-administration/user-administration.service';
-import SpyObj = jasmine.SpyObj;
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { translateServiceProvider } from '../../../app.testing.mocks';
 
 describe('BulkImportOverviewComponent', () => {
   let component: BulkImportOverviewComponent;
   let fixture: ComponentFixture<BulkImportOverviewComponent>;
 
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  let bulkImportServiceSpy: SpyObj<any>;
-  let notificationServiceSpy: SpyObj<NotificationService>;
-  let routerSpy: SpyObj<Router>;
-  let dialogServiceSpy: SpyObj<DialogService>;
-  let userAdminServiceSpy: SpyObj<UserAdministrationService>;
+  let bulkImportService: Mocked<
+    Pick<BulkImportService, 'startBulkImport' | 'downloadTemplate'>
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
+  let router: Mocked<Pick<Router, 'navigate'>>;
+  let dialogService: Mocked<Pick<DialogService, 'showInfo'>>;
+  let userAdminService: Mocked<
+    Pick<UserAdministrationService, 'getCurrentUser'>
+  >;
 
   beforeEach(() => {
-    bulkImportServiceSpy = jasmine.createSpyObj('BulkImportService', [
-      'startBulkImport',
-      'downloadTemplate',
-    ]);
-    notificationServiceSpy = jasmine.createSpyObj(['success']);
-    routerSpy = jasmine.createSpyObj(['navigate']);
-    routerSpy.navigate.and.returnValue(Promise.resolve(true));
-    dialogServiceSpy = jasmine.createSpyObj('dialogService', ['showInfo']);
-    userAdminServiceSpy = jasmine.createSpyObj<UserAdministrationService>({
-      getCurrentUser: EMPTY,
-    });
+    bulkImportService = {
+      startBulkImport: vi.fn(),
+      downloadTemplate: vi.fn(),
+    };
+
+    notificationService = {
+      success: vi.fn(),
+    };
+
+    router = {
+      navigate: vi.fn(),
+    };
+    router.navigate.mockResolvedValue(true);
+
+    dialogService = {
+      showInfo: vi.fn(),
+    };
+
+    userAdminService = {
+      getCurrentUser: vi.fn(),
+    };
+    userAdminService.getCurrentUser.mockReturnValue(EMPTY);
 
     TestBed.configureTestingModule({
-      imports: [
-        AppTestingModule,
-        BulkImportOverviewComponent,
-        AtlasButtonComponent,
-        DetailFooterComponent,
-        UploadIconComponent,
-        DownloadIconComponent,
-        AtlasFieldErrorComponent,
-        AtlasLabelFieldComponent,
-        StringListComponent,
-        SelectComponent,
-        AtlasSpacerComponent,
-        TextFieldComponent,
-        FileUploadComponent,
-      ],
       providers: [
+        translateServiceProvider,
         {
           provide: LoadingSpinnerService,
           useValue: { loading: new BehaviorSubject(false) },
         },
-        {
-          provide: BulkImportService,
-          useValue: bulkImportServiceSpy,
-        },
-        {
-          provide: NotificationService,
-          useValue: notificationServiceSpy,
-        },
-        {
-          provide: Router,
-          useValue: routerSpy,
-        },
-        { provide: DialogService, useValue: dialogServiceSpy },
-        { provide: UserAdministrationService, useValue: userAdminServiceSpy },
+        { provide: BulkImportService, useValue: bulkImportService },
+        { provide: NotificationService, useValue: notificationService },
+        { provide: Router, useValue: router },
+        { provide: DialogService, useValue: dialogService },
+        { provide: UserAdministrationService, useValue: userAdminService },
       ],
     });
 
@@ -91,18 +71,12 @@ describe('BulkImportOverviewComponent', () => {
   });
 
   it('should remove department', () => {
-    //when
     const result = component.removeDepartment('Lastname Firstname (TEST-DEP)');
-
-    //then
     expect(result).toBe('Lastname Firstname');
   });
 
   it('should not remove department if not exists', () => {
-    //when
     const result = component.removeDepartment('Lastname Firstname');
-
-    //then
     expect(result).toBe('Lastname Firstname');
   });
 
@@ -111,51 +85,46 @@ describe('BulkImportOverviewComponent', () => {
     const mockBulkImportRequest = BulkImportFormGroupBuilder.buildBulkImport(
       component.form
     );
-
     const mockFile = new File([''], 'test.csv', { type: 'text/csv' });
 
     component.uploadedFiles = [mockFile];
-
-    bulkImportServiceSpy.startBulkImport.and.returnValue(of({}));
+    bulkImportService.startBulkImport.mockReturnValue(of({}));
 
     component.startBulkImport();
 
-    expect(bulkImportServiceSpy.startBulkImport).toHaveBeenCalledWith(
+    expect(bulkImportService.startBulkImport).toHaveBeenCalledWith(
       mockBulkImportRequest,
       mockFile
     );
-    expect(notificationServiceSpy.success).toHaveBeenCalledWith(
+    expect(notificationService.success).toHaveBeenCalledWith(
       'PAGES.BULK_IMPORT.SUCCESS'
     );
   });
 
   it('should enable User select', () => {
     component.enableUserSelect(true);
-    expect(component.isUserSelectEnabled).toBeTrue();
+    expect(component.isUserSelectEnabled).toBe(true);
   });
 
   it('should check if file is uploaded', () => {
     const mockFile = new File([''], 'test.csv', { type: 'text/csv' });
-
     component.onFileChange([mockFile]);
-    expect(component.isFileUploaded).toBeTrue();
+    expect(component.isFileUploaded).toBe(true);
   });
 
   it('should reset configuration', () => {
     component.form = BulkImportFormGroupBuilder.initFormGroup();
-
-    spyOn(component, 'enableUserSelect');
+    const enableUserSelectSpy = vi.spyOn(component, 'enableUserSelect');
 
     component.resetConfiguration(true);
 
-    expect(component.isEnabledToStartImport).toBeFalse();
-    expect(component.enableUserSelect).toHaveBeenCalledWith(false);
+    expect(component.isEnabledToStartImport).toBe(false);
+    expect(enableUserSelectSpy).toHaveBeenCalledWith(false);
     expect(component.uploadedFiles).toEqual([]);
     expect(
       component.form.controls.userSearchForm.controls.userSearch.value
     ).toBeNull();
     expect(component.form.controls.objectType.value).toBeNull();
-
     expect(component.form.controls.applicationType.value).toBeNull();
     expect(component.form.controls.importType.value).toBeNull();
     expect(component.form.controls.emails.value).toEqual([]);
@@ -165,15 +134,17 @@ describe('BulkImportOverviewComponent', () => {
     const errorResponse = new Error('Test error');
     component.form = BulkImportFormGroupBuilder.initFormGroup();
 
-    bulkImportServiceSpy.startBulkImport.and.returnValue(
+    bulkImportService.startBulkImport.mockReturnValue(
       throwError(() => errorResponse)
     );
-    spyOn(component, 'resetConfiguration');
-    spyOn(component, 'ngOnInit');
+
+    const resetConfigurationSpy = vi.spyOn(component, 'resetConfiguration');
+    const ngOnInitSpy = vi.spyOn(component, 'ngOnInit');
+
     component.startBulkImport();
 
-    expect(component.resetConfiguration).toHaveBeenCalledWith(true);
-    expect(component.ngOnInit).toHaveBeenCalled();
+    expect(resetConfigurationSpy).toHaveBeenCalledWith(true);
+    expect(ngOnInitSpy).toHaveBeenCalled();
   });
 
   it('should set OPTIONS_OBJECT_TYPE when applicationType changes', () => {
@@ -195,61 +166,51 @@ describe('BulkImportOverviewComponent', () => {
     form.controls.objectType.setValue(BusinessObjectType.ServicePoint);
 
     fixture.detectChanges();
-    expect(component.isEnabledToStartImport).toBeTrue();
+    expect(component.isEnabledToStartImport).toBe(true);
   });
 
   it('should return true for checkForNull when none of the form controls are null', () => {
     component.form = BulkImportFormGroupBuilder.initFormGroup();
-
     component.form.controls.applicationType.setValue(ApplicationType.Sepodi);
     component.form.controls.objectType.setValue(
       BusinessObjectType.ServicePoint
     );
     component.form.controls.importType.setValue(ImportType.Create);
 
-    expect(component.checkForNull()).toBeTrue();
+    expect(component.checkForNull()).toBe(true);
   });
 
   it('should return false for checkForNull when any form control is null', () => {
     component.form = BulkImportFormGroupBuilder.initFormGroup();
-
     component.form.controls.applicationType.setValue(null);
     component.form.controls.objectType.setValue(
       BusinessObjectType.ServicePoint
     );
     component.form.controls.importType.setValue(ImportType.Create);
 
-    expect(component.checkForNull()).toBeFalse();
+    expect(component.checkForNull()).toBe(false);
   });
 
   it('should return true for combinationForActiveDownloadButton for valid combinations', () => {
     component.form = BulkImportFormGroupBuilder.initFormGroup();
-
-    const validCombination = {
-      applicationType: ApplicationType.Sepodi,
-      objectType: BusinessObjectType.ServicePoint,
-      importType: ImportType.Update,
-    };
-
-    component.form.controls.applicationType.setValue(
-      validCombination.applicationType
+    component.form.controls.applicationType.setValue(ApplicationType.Sepodi);
+    component.form.controls.objectType.setValue(
+      BusinessObjectType.ServicePoint
     );
-    component.form.controls.objectType.setValue(validCombination.objectType);
-    component.form.controls.importType.setValue(validCombination.importType);
+    component.form.controls.importType.setValue(ImportType.Update);
 
-    expect(component.combinationForActiveDownloadButton()).toBeTrue();
+    expect(component.combinationForActiveDownloadButton()).toBe(true);
   });
 
   it('should return false for combinationForActiveDownloadButton for invalid combinations', () => {
     component.form = BulkImportFormGroupBuilder.initFormGroup();
-
     component.form.controls.applicationType.setValue(ApplicationType.Prm);
     component.form.controls.objectType.setValue(
       BusinessObjectType.TrafficPoint
     );
     component.form.controls.importType.setValue(ImportType.Terminate);
 
-    expect(component.combinationForActiveDownloadButton()).toBeFalse();
+    expect(component.combinationForActiveDownloadButton()).toBe(false);
   });
 
   it('should download the Excel file', () => {
@@ -261,18 +222,23 @@ describe('BulkImportOverviewComponent', () => {
     component.form.controls.importType.setValue(ImportType.Create);
 
     const blob = new Blob(['test'], { type: 'text/csv' });
-    bulkImportServiceSpy.downloadTemplate.and.returnValue(of(blob));
-    const fileDownloadSpy = spyOn(FileDownloadService, 'downloadFile');
+    bulkImportService.downloadTemplate.mockReturnValue(of(blob));
+    const fileDownloadSpy = vi
+      .spyOn(FileDownloadService, 'downloadFile')
+      .mockImplementation(() => {});
 
     component.downloadExcel();
 
-    expect(bulkImportServiceSpy.downloadTemplate).toHaveBeenCalledWith(
+    expect(bulkImportService.downloadTemplate).toHaveBeenCalledExactlyOnceWith(
       ApplicationType.Sepodi,
       BusinessObjectType.ServicePoint,
       ImportType.Create
     );
-    expect(dialogServiceSpy.showInfo).toHaveBeenCalled();
-    expect(fileDownloadSpy).toHaveBeenCalledWith(
+    expect(dialogService.showInfo).toHaveBeenCalledExactlyOnceWith({
+      title: 'PAGES.BULK_IMPORT.DIALOG_TEMPLATE_TO_EXCEL',
+      message: 'PAGES.BULK_IMPORT.TEMPLATE_TO_EXCEL',
+    });
+    expect(fileDownloadSpy).toHaveBeenCalledExactlyOnceWith(
       'create_service_point.csv',
       blob
     );

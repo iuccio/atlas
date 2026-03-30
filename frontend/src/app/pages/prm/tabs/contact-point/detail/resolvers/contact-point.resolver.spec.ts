@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-
-import { Observable, of } from 'rxjs';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
@@ -43,14 +43,18 @@ const contactPoint: ReadContactPointVersion[] = [
 ];
 
 describe('PrmContactPointResolver', () => {
-  const contactPointServiceSpy = jasmine.createSpyObj('contanctPointService', [
-    'getContactPointVersions',
-  ]);
-  contactPointServiceSpy.getContactPointVersions.and.returnValue(
-    of(contactPoint)
-  );
+  let contactPointServiceSpy: Mocked<
+    Pick<ContactPointService, 'getContactPointVersions'>
+  >;
 
   beforeEach(() => {
+    contactPointServiceSpy = {
+      getContactPointVersions: vi.fn(),
+    };
+    contactPointServiceSpy.getContactPointVersions.mockReturnValue(
+      of(contactPoint)
+    );
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
@@ -62,7 +66,7 @@ describe('PrmContactPointResolver', () => {
     });
   });
 
-  it('should get contactPoint from prm-directory', () => {
+  it('should get contactPoint from prm-directory', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ sloid: 'ch:1:sloid:12345:1' }),
     } as ActivatedRouteSnapshot;
@@ -71,9 +75,8 @@ describe('PrmContactPointResolver', () => {
       contactPointResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<ReadContactPointVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].sloid).toBe('ch:1:sloid:12345:1');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(1);
+    expect(versions[0].sloid).toBe('ch:1:sloid:12345:1');
   });
 });

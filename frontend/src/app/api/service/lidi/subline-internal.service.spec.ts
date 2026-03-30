@@ -3,6 +3,8 @@ import { AtlasApiService } from '../atlas-api.service';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../../core/auth/user/user.service';
 import { SublineInternalService } from './subline-internal.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { EMPTY } from 'rxjs';
 
 describe('SublineInternalService', () => {
   let service: SublineInternalService;
@@ -18,18 +20,18 @@ describe('SublineInternalService', () => {
 
     service = TestBed.inject(SublineInternalService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'post');
-    spyOn(apiService, 'delete');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'post').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'delete').mockImplementation(() => EMPTY);
   });
 
   it('should revokeSubline', () => {
     service.revokeSubline('123');
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       slnid: '123',
     });
-    expect(apiService.post).toHaveBeenCalledOnceWith(
+    expect(apiService.post).toHaveBeenCalledExactlyOnceWith(
       '/line-directory/internal/sublines/123/revoke',
     );
   });
@@ -37,10 +39,10 @@ describe('SublineInternalService', () => {
   it('should deleteSublines', () => {
     service.deleteSublines('123');
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       slnid: '123',
     });
-    expect(apiService.delete).toHaveBeenCalledOnceWith(
+    expect(apiService.delete).toHaveBeenCalledExactlyOnceWith(
       '/line-directory/internal/sublines/123',
     );
   });

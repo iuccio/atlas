@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 
 import { TthDossierOverviewMenuComponent } from './tth-dossier-overview-menu.component';
 import { DialogService } from '../../../../core/components/dialog/dialog.service';
@@ -12,20 +13,22 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
 import { SwissCanton } from '../../../../api';
 
-const dialogService = jasmine.createSpyObj('DialogService', {
-  confirm: of(true),
-});
-const dossierInternalService = jasmine.createSpyObj('DossierInternalService', {
-  completeDossier: of(void 0),
-});
+const dialogService: Mocked<Pick<DialogService, 'confirm'>> = {
+  confirm: vi.fn().mockReturnValue(of(true)),
+};
+const dossierInternalService: Mocked<
+  Pick<DossierInternalService, 'completeDossier'>
+> = {
+  completeDossier: vi.fn().mockReturnValue(of(undefined)),
+};
 
-const notificationService = jasmine.createSpyObj('NotificationService', {
-  success: undefined,
-});
+const notificationService: Mocked<Pick<NotificationService, 'success'>> = {
+  success: vi.fn(),
+};
 
-const router = jasmine.createSpyObj('Router', {
-  navigate: Promise.resolve(true),
-});
+const router: Mocked<Pick<Router, 'navigate'>> = {
+  navigate: vi.fn().mockResolvedValue(true),
+};
 
 const mockDossier: TthDossier = {
   id: 123,
@@ -60,8 +63,8 @@ describe('TthDossierOverviewMenuComponent', () => {
     fixture.componentRef.setInput('column', { disabled: false });
 
     fixture.detectChanges();
-    router.navigate.calls.reset();
-    dialogService.confirm.calls.reset();
+    router.navigate.mockClear();
+    dialogService.confirm.mockClear();
   });
 
   it('should create', () => {
@@ -80,7 +83,7 @@ describe('TthDossierOverviewMenuComponent', () => {
   });
 
   it('should call service when dialog is confirmed', () => {
-    dialogService.confirm.and.returnValue(of(true));
+    dialogService.confirm.mockReturnValue(of(true));
 
     component.completeDossier(DossierStatus.Accepted);
 
@@ -92,13 +95,13 @@ describe('TthDossierOverviewMenuComponent', () => {
       'TTH.DOSSIER.NOTIFICATION.EDIT_SUCCESS'
     );
     expect(router.navigate).toHaveBeenCalledWith(['dossiers'], {
-      relativeTo: jasmine.any(Object),
+      relativeTo: expect.any(Object),
     });
   });
 
   it('should not call service when dialog is canceled', () => {
-    dialogService.confirm.and.returnValue(of(false));
-    dossierInternalService.completeDossier.calls.reset();
+    dialogService.confirm.mockReturnValue(of(false));
+    dossierInternalService.completeDossier.mockClear();
 
     component.completeDossier(DossierStatus.Accepted);
 

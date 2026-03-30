@@ -1,12 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslatePipe } from '@ngx-translate/core';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MeansOfTransportPickerComponent } from './means-of-transport-picker.component';
 import { MeanOfTransport } from '../../../api';
 import { By } from '@angular/platform-browser';
-import { AtlasLabelFieldComponent } from '@atlas/form';
 import { translateServiceProvider } from '../../../app.testing.mocks';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('MeansOfTransportPickerComponent', () => {
   let component: MeansOfTransportPickerComponent;
@@ -16,11 +14,10 @@ describe('MeansOfTransportPickerComponent', () => {
     fixture: ComponentFixture<MeansOfTransportPickerComponent>
   ) => fixture.debugElement.query(By.css('.sector-warning'));
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MeansOfTransportPickerComponent, AtlasLabelFieldComponent],
-      providers: [TranslatePipe, translateServiceProvider, provideHttpClient()],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [translateServiceProvider],
+    });
 
     fixture = TestBed.createComponent(MeansOfTransportPickerComponent);
     component = fixture.componentInstance;

@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
@@ -51,12 +52,14 @@ const platform: ReadPlatformVersion[] = [
 ];
 
 describe('PrmPlatformResolver', () => {
-  const platformServiceSpy = jasmine.createSpyObj('platformService', [
-    'getPlatformVersions',
-  ]);
-  platformServiceSpy.getPlatformVersions.and.returnValue(of(platform));
+  let platformServiceSpy: Mocked<Pick<PlatformService, 'getPlatformVersions'>>;
 
   beforeEach(() => {
+    platformServiceSpy = {
+      getPlatformVersions: vi.fn(),
+    };
+    platformServiceSpy.getPlatformVersions.mockReturnValue(of(platform));
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
@@ -68,7 +71,7 @@ describe('PrmPlatformResolver', () => {
     });
   });
 
-  it('should get platform from prm-directory', () => {
+  it('should get platform from prm-directory', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({
         platformSloid: 'ch:1:sloid:7000:0:100000',
@@ -79,9 +82,8 @@ describe('PrmPlatformResolver', () => {
       platformResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<ReadPlatformVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].sloid).toBe('ch:1:sloid:7000:0:100000');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(1);
+    expect(versions[0].sloid).toBe('ch:1:sloid:7000:0:100000');
   });
 });

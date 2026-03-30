@@ -1,21 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { AtlasSpacerComponent } from './atlas-spacer.component';
-import { AppTestingModule } from '../../../app.testing.module';
-
-let component: AtlasSpacerComponent;
-let fixture: ComponentFixture<AtlasSpacerComponent>;
 
 describe('AtlasSpacerComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppTestingModule, AtlasSpacerComponent],
-    }).compileComponents();
-  });
+  let component: AtlasSpacerComponent;
+  let fixture: ComponentFixture<AtlasSpacerComponent>;
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AtlasSpacerComponent);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
   });
 

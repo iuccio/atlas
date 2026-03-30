@@ -2,7 +2,7 @@
 okhttpVersion = "5.3.2"
 proj4jVersion = "1.4.1"
 shedlockVersion = "7.7.0"
-protobufVersion = "4.34.0"
+protobufVersion = "4.34.1"
 springCloudDependenciesVersion = "2025.1.1"
 
 [libraries]
@@ -29,12 +29,12 @@ protobuf-java = { group = "com.google.protobuf", name = "protobuf-java", version
 
 # Other
 swagger-core = { group = "io.swagger.core.v3", name = "swagger-core", version = "2.2.45" }
-aws-s3 = { group = "software.amazon.awssdk", name = "s3", version = "2.42.15" }
+aws-s3 = { group = "software.amazon.awssdk", name = "s3", version = "2.42.20" }
 jaxb-api = { group = "javax.xml.bind", name = "jaxb-api", version = "2.4.0-b180830.0359" }
 pdfbox = { group = "org.apache.pdfbox", name = "pdfbox", version = "3.0.7" }
 poi-ooxml = { group = "org.apache.poi", name = "poi-ooxml", version = "5.5.1" }
 mockito-inline = { group = "org.mockito", name = "mockito-inline", version = "5.2.0" }
-tika-core = { group = "org.apache.tika", name = "tika-core", version = "3.2.3" }
+tika-core = { group = "org.apache.tika", name = "tika-core", version = "3.3.0" }
 greenmail-junit5 = { group = "com.icegreen", name = "greenmail-junit5", version = "2.1.8" }
 microsoft-graph = { group = "com.microsoft.graph", name = "microsoft-graph", version = "6.62.0" }
 azure-identity = { group = "com.azure", name = "azure-identity", version = "1.18.2" }
@@ -42,7 +42,7 @@ azure-identity = { group = "com.azure", name = "azure-identity", version = "1.18
 # Gradle Plugin Dependencies
 asciidoctor-gradle-plugin = { group = "org.asciidoctor.jvm.convert", name = "org.asciidoctor.jvm.convert.gradle.plugin", version = "4.0.5" }
 spring-dependency-management-gradle-plugin = { group = "io.spring.dependency-management", name = "io.spring.dependency-management.gradle.plugin", version = "1.1.7" }
-spring-gradle-plugin = { group = "org.springframework.boot", name = "org.springframework.boot.gradle.plugin", version = "4.0.3" }
+spring-gradle-plugin = { group = "org.springframework.boot", name = "org.springframework.boot.gradle.plugin", version = "4.0.4" }
 
 
 [bundles]
@@ -52,6 +52,6 @@ shedlock = ["shedlock-spring", "shedlock-provider-jdbc-template"]
 protobuf = ["protoc", "protobuf-java"]
 
 [plugins]
-openapi-generator = { id = "org.openapi.generator", version = "7.20.0" }
+openapi-generator = { id = "org.openapi.generator", version = "7.21.0" }
 protobuf = { id = "com.google.protobuf", version = "0.9.6" }
 wsdl2java = { id = "com.github.bjornvester.wsdl2java", version = "2.0.2" }

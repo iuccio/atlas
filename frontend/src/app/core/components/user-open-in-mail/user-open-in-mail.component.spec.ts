@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { UserOpenInMailComponent } from './user-open-in-mail.component';
 import { inputBinding, signal } from '@angular/core';
 import { ApplicationType, Permission, User } from '../../../api';
@@ -25,17 +25,21 @@ describe('UserOpenInMailComponent', () => {
   };
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [UserOpenInMailComponent],
+    // Config
+    TestBed.configureTestingModule({
       providers: [
         { provide: UserAdministrationService, useValue: userAdminServiceMock },
       ],
-    }).compileComponents();
+    });
 
+    // Arrangement
+    const applicationTypeInputName: keyof UserOpenInMailComponent =
+      'applicationType';
+    const userIdInputName: keyof UserOpenInMailComponent = 'userId';
     fixture = TestBed.createComponent(UserOpenInMailComponent, {
       bindings: [
-        inputBinding('applicationType', signal(ApplicationType.Prm)),
-        inputBinding('userId', signal('e123456')),
+        inputBinding(applicationTypeInputName, signal(ApplicationType.Prm)),
+        inputBinding(userIdInputName, signal('e123456')),
       ],
     });
     component = fixture.componentInstance;
@@ -46,12 +50,12 @@ describe('UserOpenInMailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should create', () => {
-    //given
-    spyOn(window, 'open');
-    //when
+  it('should open mail', () => {
+    vi.spyOn(window, 'open').mockImplementation(() => null);
     component.openInMail();
-    //then
-    expect(window.open).toHaveBeenCalled();
+    expect(window.open).toHaveBeenCalledExactlyOnceWith(
+      'mailto:asd@as.ch',
+      '_self'
+    );
   });
 });

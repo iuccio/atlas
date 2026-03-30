@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach } from 'vitest';
 
 import { AtlasSlideToggleComponent } from './atlas-slide-toggle.component';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -31,7 +32,7 @@ describe('AtlasSlideToggleComponent', () => {
 
     component.handleToggleClick();
 
-    expect(component.formControl?.value).toBeTrue();
-    expect(component.formControl?.dirty).toBeTrue();
+    expect(component.formControl?.value).toBe(true);
+    expect(component.formControl?.dirty).toBe(true);
   });
 });

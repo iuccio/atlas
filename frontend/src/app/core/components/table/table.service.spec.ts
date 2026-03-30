@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TableService } from './table.service';
 import { TableFilterSingleSearch } from '../table-filter/config/table-filter-single-search';
 import { TableFilterChip } from '../table-filter/config/table-filter-chip';
@@ -10,12 +11,13 @@ import { BusinessOrganisation, WorkflowStatus } from '../../../api';
 import { TableFilterSearchType } from '../table-filter/config/table-filter-search-type';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Pages } from '../../../pages/pages';
+import { TestBed } from '@angular/core/testing';
 
 describe('TableService', () => {
   let service: TableService;
 
   beforeEach(() => {
-    service = new TableService();
+    service = TestBed.inject(TableService);
   });
 
   it('should be created', () => {

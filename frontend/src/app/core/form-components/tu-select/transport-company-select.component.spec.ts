@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach } from 'vitest';
 import { TransportCompanySelectComponent } from './transport-company-select.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormControl, FormGroup } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SearchSelectComponent } from '../search-select/search-select.component';
 import { AtlasFieldErrorComponent } from '../atlas-field-error/atlas-field-error.component';
 import { AtlasLabelFieldComponent } from '@atlas/form';
@@ -17,13 +18,12 @@ describe('TransportCompanySelectComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         NgSelectModule,
-        HttpClientTestingModule,
         TransportCompanySelectComponent,
         SearchSelectComponent,
         AtlasLabelFieldComponent,
         AtlasFieldErrorComponent,
       ],
-      providers: [TranslatePipe, translateServiceProvider],
+      providers: [TranslatePipe, translateServiceProvider, provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TransportCompanySelectComponent);
