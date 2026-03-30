@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import {
   ActivatedRouteSnapshot,
   convertToParamMap,
@@ -9,7 +10,7 @@ import {
   DossierDetailResolver,
   dossierResolver,
 } from './dossier-detail-resolver.service';
-import { Observable, of, throwError } from 'rxjs';
+import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 import { TthDossier } from '../../../../api/model/tthDossier';
 import { DossierInternalService } from '../../../../api/service/workflow/dossier-internal.service';
 import { HearingStatus, SwissCanton } from '../../../../api';
@@ -25,13 +26,14 @@ const dossier: TthDossier = {
 };
 
 describe('DossierDetailResolver', () => {
-  const dossierInternalService = jasmine.createSpyObj(
-    'DossierInternalService',
-    ['getDossier']
-  );
-  const router = jasmine.createSpyObj('Router', {
-    navigate: Promise.resolve(true),
-  });
+  const dossierInternalService: Mocked<
+    Pick<DossierInternalService, 'getDossier'>
+  > = {
+    getDossier: vi.fn(),
+  };
+  const router: Mocked<Pick<Router, 'navigate'>> = {
+    navigate: vi.fn().mockResolvedValue(true),
+  };
 
   let resolver: DossierDetailResolver;
 
@@ -51,14 +53,14 @@ describe('DossierDetailResolver', () => {
     });
     resolver = TestBed.inject(DossierDetailResolver);
 
-    dossierInternalService.getDossier.and.returnValue(of(dossier));
+    dossierInternalService.getDossier.mockReturnValue(of(dossier));
   });
 
   it('should create', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get dossier from service', () => {
+  it('should get dossier from service', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
@@ -68,13 +70,12 @@ describe('DossierDetailResolver', () => {
       dossierResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<TthDossier | undefined>;
 
-    result.subscribe((statement) => {
-      expect(statement).toBeTruthy();
-      expect(statement!.id).toBe(1234);
-    });
+    const statement = await firstValueFrom(result);
+    expect(statement).toBeTruthy();
+    expect(statement!.id).toBe(1234);
   });
 
-  it('should be undefined on add', () => {
+  it('should be undefined on add', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: 'add' }),
     } as ActivatedRouteSnapshot;
@@ -83,13 +84,12 @@ describe('DossierDetailResolver', () => {
       dossierResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<TthDossier | undefined>;
 
-    result.subscribe((statement) => {
-      expect(statement).toBeUndefined();
-    });
+    const statement = await firstValueFrom(result);
+    expect(statement).toBeUndefined();
   });
 
-  it('should route on error', () => {
-    dossierInternalService.getDossier.and.returnValue(
+  it('should route on error', async () => {
+    dossierInternalService.getDossier.mockReturnValue(
       throwError(() => 'Dossier not found')
     );
 
@@ -101,9 +101,8 @@ describe('DossierDetailResolver', () => {
     const result = TestBed.runInInjectionContext(() =>
       dossierResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<TthDossier | undefined>;
-    result.subscribe((statement) => {
-      expect(statement).toBeUndefined();
-    });
-    expect(router.navigate).toHaveBeenCalled();
+    const statement = await firstValueFrom(result);
+    expect(statement).toBeUndefined();
+    expect(router.navigate).toHaveBeenCalledTimes(1);
   });
 });

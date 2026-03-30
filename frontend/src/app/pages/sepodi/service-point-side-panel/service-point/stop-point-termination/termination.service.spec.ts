@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import {
   ALLOWED_TERMINATION_COUNTRIES,
@@ -43,7 +44,7 @@ describe('TerminationService', () => {
       //when
       const result = service.isStartingTermination(editedForm);
       //then
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
     });
 
     describe('[allowed countries]', () => {
@@ -66,7 +67,7 @@ describe('TerminationService', () => {
           //when
           const result = service.isStartingTermination(editedForm);
           //then
-          expect(result).toBeTrue();
+          expect(result).toBe(true);
         });
       });
     });
@@ -89,7 +90,7 @@ describe('TerminationService', () => {
       //when
       const result = service.isStartingTermination(editedForm);
       //then
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
     });
 
     it('should not start termination when is not stopPoint', () => {
@@ -110,7 +111,7 @@ describe('TerminationService', () => {
       //when
       const result = service.isStartingTermination(editedForm);
       //then
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
     });
 
     it('should not start termination when edited validTo is in the past and other attributes are changed', () => {
@@ -131,7 +132,7 @@ describe('TerminationService', () => {
       //when
       const result = service.isStartingTermination(editedForm);
       //then
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
     });
 
     it('should not start termination when status is not validated', () => {
@@ -152,7 +153,7 @@ describe('TerminationService', () => {
       //when
       const result = service.isStartingTermination(editedForm);
       //then
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
     });
 
     it('should not start termination when is not stopPoint', () => {
@@ -173,7 +174,7 @@ describe('TerminationService', () => {
       //when
       const result = service.isStartingTermination(editedForm);
       //then
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
     });
 
     it('should not start termination when edited validTo is in the future', () => {
@@ -193,7 +194,7 @@ describe('TerminationService', () => {
       //when
       const result = service.isStartingTermination(editedForm);
       //then
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
     });
   });
 
@@ -226,7 +227,7 @@ describe('TerminationService', () => {
       //when
       const result = service.isStartingTermination(editedForm);
       //then
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
     });
   });
 });

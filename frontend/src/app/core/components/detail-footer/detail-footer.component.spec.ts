@@ -1,21 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { DetailFooterComponent } from './detail-footer.component';
-import { AppTestingModule } from '../../../app.testing.module';
-
-let component: DetailFooterComponent;
-let fixture: ComponentFixture<DetailFooterComponent>;
 
 describe('DetailFooterComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppTestingModule, DetailFooterComponent],
-    }).compileComponents();
-  });
+  let component: DetailFooterComponent;
+  let fixture: ComponentFixture<DetailFooterComponent>;
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DetailFooterComponent);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
   });
 

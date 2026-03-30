@@ -1,28 +1,30 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { SearchSelectComponent } from '../../../../../core/form-components/search-select/search-select.component';
 import { AtlasFieldErrorComponent } from '../../../../../core/form-components/atlas-field-error/atlas-field-error.component';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { FormControl, FormGroup } from '@angular/forms';
 import { KilometerMasterSearchComponent } from './kilometer-master-search.component';
 import { of } from 'rxjs';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { ServicePointInternalService } from '../../../../../api/service/sepodi/service-point-internal.service';
-import SpyObj = jasmine.SpyObj;
 
 describe('KilometerMasterSearchComponent', () => {
   let component: KilometerMasterSearchComponent;
   let fixture: ComponentFixture<KilometerMasterSearchComponent>;
-  let servicePointsServiceSpy: SpyObj<ServicePointInternalService>;
+  let servicePointsServiceSpy: Mocked<
+    Pick<ServicePointInternalService, 'searchServicePointsWithRouteNetworkTrue'>
+  >;
 
   beforeEach(async () => {
-    servicePointsServiceSpy = jasmine.createSpyObj<ServicePointInternalService>(
-      'servicePointsService',
-      ['searchServicePointsWithRouteNetworkTrue']
+    servicePointsServiceSpy = {
+      searchServicePointsWithRouteNetworkTrue: vi.fn(),
+    };
+    servicePointsServiceSpy.searchServicePointsWithRouteNetworkTrue.mockReturnValue(
+      of()
     );
-    servicePointsServiceSpy.searchServicePointsWithRouteNetworkTrue
-      .withArgs({ value: 'be' })
-      .and.returnValue(of());
 
     await TestBed.configureTestingModule({
       providers: [
@@ -31,10 +33,11 @@ describe('KilometerMasterSearchComponent', () => {
           useValue: servicePointsServiceSpy,
         },
         translateServiceProvider,
+        provideHttpClient(),
+        provideHttpClientTesting(),
       ],
       imports: [
         NgSelectModule,
-        HttpClientTestingModule,
         KilometerMasterSearchComponent,
         SearchSelectComponent,
         AtlasFieldErrorComponent,

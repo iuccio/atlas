@@ -1,16 +1,27 @@
+import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { mock } from 'vitest-mock-extended';
 import { BoSelectionDisplayPipe } from './bo-selection-display.pipe';
 import { BusinessOrganisation } from '../../../api';
+import { BusinessOrganisationLanguageService } from './business-organisation-language.service';
 
 describe('BoSelectionDisplayPipe', () => {
   let boSelectionDisplayPipe: BoSelectionDisplayPipe;
 
-  const boLanguageServiveSpy = jasmine.createSpyObj('BoLanguageService', {
-    getCurrentLanguageAbbreviation: 'organisationNumber',
-    getCurrentLanguageDescription: 'organisationNumber',
-  });
+  const boLanguageServiceMock = mock<BusinessOrganisationLanguageService>();
 
   beforeEach(() => {
-    boSelectionDisplayPipe = new BoSelectionDisplayPipe(boLanguageServiveSpy);
+    boLanguageServiceMock.getCurrentLanguageAbbreviation.mockReturnValue('abbreviationDe');
+    boLanguageServiceMock.getCurrentLanguageDescription.mockReturnValue('descriptionDe');
+
+    TestBed.configureTestingModule({
+      providers: [
+        BoSelectionDisplayPipe,
+        { provide: BusinessOrganisationLanguageService, useValue: boLanguageServiceMock },
+      ],
+    });
+
+    boSelectionDisplayPipe = TestBed.inject(BoSelectionDisplayPipe);
   });
 
   it('create an instance', () => {
@@ -22,8 +33,10 @@ describe('BoSelectionDisplayPipe', () => {
       boSelectionDisplayPipe.transform({
         sboid: 'sboid',
         organisationNumber: 123,
+        abbreviationDe: 'ABB',
+        descriptionDe: 'Description',
       } as BusinessOrganisation)
-    ).toBe('123 - 123 - 123 - sboid');
+    ).toBe('123 - ABB - Description - sboid');
   });
 
   it('should transform undefined to text', () => {

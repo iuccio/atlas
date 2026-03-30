@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { StopPointWorkflowDetailComponent } from './stop-point-workflow-detail.component';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { FormModule } from '../../../../core/module/form.module';
@@ -37,74 +38,66 @@ import { StopPointWorkflowDetailFormGroupBuilder } from './detail-form/stop-poin
 import { AddExaminantsDialogService } from './add-examinants-dialog/add-examinants-dialog.service';
 import { StopPointWorkflowService } from '../../../../api/service/workflow/stop-point-workflow.service';
 
-const workflow: ReadStopPointWorkflow = {
-  versionId: 1000,
-  sloid: 'ch:1:sloid:8000',
-  workflowComment: 'No comment',
-  id: 1,
-};
-
-const workflowData: StopPointWorkflowDetailData = {
-  workflow: workflow,
-  servicePoint: [BERN_WYLEREGG],
-};
-
-const activatedRoute = {
-  snapshot: {
-    data: {
-      workflow: workflowData,
-    },
-  },
-};
-
-function getSpWfServiceSpy() {
-  return jasmine.createSpyObj('StopPointWorkflowService', {
-    startStopPointWorkflow: of(workflow),
-    editStopPointWorkflow: jasmine.createSpy('editStopPointWorkflow'),
-  });
-}
-
-function getNotificationServiceSpy() {
-  return jasmine.createSpyObj(['success']);
-}
-
-function getDialogServiceSpy() {
-  return jasmine.createSpyObj('DialogService', ['confirm']);
-}
-
-function getDialogSpy() {
-  return jasmine.createSpyObj(['open']);
-}
-
-function getStopPointRejectWorkflowDialogServiceSpy() {
-  return jasmine.createSpyObj(['openDialog']);
-}
-
-const addExaminantsDialogService = jasmine.createSpyObj(
-  'addExaminantsDialogService',
-  {
-    openDialog: of(true),
-  }
-);
-
 describe('StopPointWorkflowDetailComponent', () => {
+  const workflow: ReadStopPointWorkflow = {
+    versionId: 1000,
+    sloid: 'ch:1:sloid:8000',
+    workflowComment: 'No comment',
+    id: 1,
+  };
+
+  const workflowData: StopPointWorkflowDetailData = {
+    workflow: workflow,
+    servicePoint: [BERN_WYLEREGG],
+  };
+
+  const activatedRoute = {
+    snapshot: {
+      data: {
+        workflow: workflowData,
+      },
+    },
+  };
+
   let component: StopPointWorkflowDetailComponent;
   let fixture: ComponentFixture<StopPointWorkflowDetailComponent>;
 
-  let stopPointRejectWorkflowDialogServiceSpy =
-    getStopPointRejectWorkflowDialogServiceSpy();
-  let dialogSpy = getDialogSpy();
-  let spWfServiceSpy = getSpWfServiceSpy();
-  let notificationServiceSpy = getNotificationServiceSpy();
-  let dialogServiceSpy = getDialogServiceSpy();
+  let stopPointRejectWorkflowDialogServiceSpy: Mocked<
+    Pick<StopPointRejectWorkflowDialogService, 'openDialog'>
+  >;
+  let dialogSpy: Mocked<Pick<MatDialog, 'open'>>;
+  let spWfServiceSpy: Mocked<
+    Pick<
+      StopPointWorkflowService,
+      'startStopPointWorkflow' | 'editStopPointWorkflow'
+    >
+  >;
+  let notificationServiceSpy: Mocked<Pick<NotificationService, 'success'>>;
+  let dialogServiceSpy: Mocked<Pick<DialogService, 'confirm'>>;
+  let addExaminantsDialogService: Mocked<
+    Pick<AddExaminantsDialogService, 'openDialog'>
+  >;
 
   beforeEach(async () => {
-    stopPointRejectWorkflowDialogServiceSpy =
-      getStopPointRejectWorkflowDialogServiceSpy();
-    dialogSpy = getDialogSpy();
-    spWfServiceSpy = getSpWfServiceSpy();
-    notificationServiceSpy = getNotificationServiceSpy();
-    dialogServiceSpy = getDialogServiceSpy();
+    stopPointRejectWorkflowDialogServiceSpy = {
+      openDialog: vi.fn(),
+    };
+    dialogSpy = {
+      open: vi.fn(),
+    };
+    spWfServiceSpy = {
+      startStopPointWorkflow: vi.fn().mockReturnValue(of(workflow)),
+      editStopPointWorkflow: vi.fn(),
+    };
+    notificationServiceSpy = {
+      success: vi.fn(),
+    };
+    dialogServiceSpy = {
+      confirm: vi.fn(),
+    };
+    addExaminantsDialogService = {
+      openDialog: vi.fn().mockReturnValue(of(true)),
+    };
 
     TestBed.configureTestingModule({
       imports: [
@@ -241,30 +234,30 @@ describe('StopPointWorkflowDetailComponent', () => {
   });
 
   it('should switch to edit mode', () => {
-    expect(component.form?.disabled).toBeTrue();
+    expect(component.form?.disabled).toBe(true);
 
     component.toggleEdit();
-    expect(component.form?.enabled).toBeTrue();
+    expect(component.form?.enabled).toBe(true);
   });
 
   it('should stay in edit mode when confirmation canceled', () => {
     // given
     component.form?.enable();
-    expect(component.form?.enabled).toBeTrue();
+    expect(component.form?.enabled).toBe(true);
 
     component.form?.controls.designationOfficial.setValue('Basel beste Sport');
     component.form?.markAsDirty();
-    expect(component.form?.dirty).toBeTrue();
+    expect(component.form?.dirty).toBe(true);
 
-    dialogServiceSpy.confirm.and.returnValue(of(false));
+    dialogServiceSpy.confirm.mockReturnValue(of(false));
 
     // when & then
     component.toggleEdit();
-    expect(component.form?.enabled).toBeTrue();
+    expect(component.form?.enabled).toBe(true);
   });
 
   it('should validate the form and call update if form is valid', () => {
-    spyOn(ValidationService, 'validateForm').and.callThrough();
+    vi.spyOn(ValidationService, 'validateForm');
 
     component.toggleEdit();
     component.form.controls['designationOfficial'].setValue(
@@ -286,7 +279,7 @@ describe('StopPointWorkflowDetailComponent', () => {
     );
     component.form.controls['ccEmails'].setValue(['test@atlas.ch']);
 
-    spWfServiceSpy.editStopPointWorkflow.and.returnValue(of({ id: 1 }));
+    spWfServiceSpy.editStopPointWorkflow.mockReturnValue(of({ id: 1 } as ReadStopPointWorkflow));
 
     component.save();
 
@@ -340,13 +333,13 @@ describe('StopPointWorkflowDetailComponent', () => {
   });
 
   it('should open decision dialog and cancel', () => {
-    dialogSpy.open.and.returnValue({
+    dialogSpy.open.mockReturnValue({
       afterClosed: () => of(false),
-    });
+    } as never);
 
     component.openDecisionDialog();
 
-    expect(dialogSpy.open).toHaveBeenCalledOnceWith(DecisionStepperComponent, {
+    expect(dialogSpy.open).toHaveBeenCalledExactlyOnceWith(DecisionStepperComponent, {
       data: 1,
       disableClose: true,
       panelClass: 'atlas-dialog-panel',

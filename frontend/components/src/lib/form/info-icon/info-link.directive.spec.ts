@@ -1,7 +1,7 @@
 import { InfoLinkDirective } from '@atlas/form';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
@@ -46,7 +46,7 @@ describe('InfoLinkDirective', () => {
     );
     expect(elementsWithInfoLinkDirective).toHaveLength(1);
 
-    vi.spyOn(window, 'open');
+    vi.spyOn(window, 'open').mockImplementation(() => null);
     vi.spyOn(console, 'error');
     elementsWithInfoLinkDirective[0].nativeElement.click();
     fixture.detectChanges();

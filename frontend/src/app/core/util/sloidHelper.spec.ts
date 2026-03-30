@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { SloidHelper } from './sloidHelper';
 
 describe('SloidHelper', () => {

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { SplitServicePointNumberPipe } from './split-service-point-number.pipe';
 import { ServicePointNumber } from '../../api';
 

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+
 import { PlatformDetailComponent } from './platform-detail.component';
 import {
   ReadPlatformVersion,
@@ -9,7 +11,7 @@ import { DialogService } from '../../../../../../core/components/dialog/dialog.s
 import {
   STOP_POINT,
   STOP_POINT_COMPLETE,
-} from '../../../../util/stop-point-test-data.spec';
+} from '../../../../util/stop-point-test-data';
 import { BERN_WYLEREGG } from '../../../../../../../test/data/service-point';
 import { BERN_WYLEREGG_TRAFFIC_POINTS } from '../../../../../../../test/data/traffic-point-element';
 import {
@@ -42,7 +44,6 @@ import { SplitServicePointNumberPipe } from '../../../../../../core/search-servi
 import moment from 'moment';
 import { PermissionService } from '../../../../../../core/auth/permission/permission.service';
 import { PlatformService } from '../../../../../../api/service/prm/platform/platform.service';
-import SpyObj = jasmine.SpyObj;
 
 const reducedPlatform: ReadPlatformVersion[] = [
   {
@@ -122,23 +123,12 @@ const reducedPlatform: ReadPlatformVersion[] = [
 describe('PlatformDetailComponent', () => {
   let component: PlatformDetailComponent;
   let fixture: ComponentFixture<PlatformDetailComponent>;
-
-  const platformService = jasmine.createSpyObj('platformService', [
-    'createPlatform',
-    'updatePlatform',
-  ]);
-  platformService.createPlatform.and.returnValue(of(reducedPlatform[0]));
-  platformService.updatePlatform.and.returnValue(of(reducedPlatform));
-  let routerSpy: SpyObj<Router>;
-
-  const notificationService = jasmine.createSpyObj('notificationService', [
-    'success',
-  ]);
-  const dialogService: SpyObj<DialogService> = jasmine.createSpyObj(
-    'dialogService',
-    ['confirm']
-  );
-  dialogService.confirm.and.returnValue(of(true));
+  let platformService: Mocked<
+    Pick<PlatformService, 'createPlatform' | 'updatePlatform'>
+  >;
+  let routerSpy: Mocked<Pick<Router, 'navigate'>>;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
+  let dialogService: Mocked<Pick<DialogService, 'confirm'>>;
 
   const activatedRouteMock = {
     snapshot: {
@@ -154,8 +144,28 @@ describe('PlatformDetailComponent', () => {
   };
 
   beforeEach(() => {
-    routerSpy = jasmine.createSpyObj(['navigate']);
-    routerSpy.navigate.and.returnValue(Promise.resolve(true));
+    Element.prototype.scrollIntoView = vi.fn();
+
+    platformService = {
+      createPlatform: vi.fn(),
+      updatePlatform: vi.fn(),
+    };
+    platformService.createPlatform.mockReturnValue(of(reducedPlatform[0]));
+    platformService.updatePlatform.mockReturnValue(of(reducedPlatform[0]));
+
+    routerSpy = {
+      navigate: vi.fn(),
+    };
+    routerSpy.navigate.mockResolvedValue(true);
+
+    notificationService = {
+      success: vi.fn(),
+    };
+
+    dialogService = {
+      confirm: vi.fn(),
+    };
+    dialogService.confirm.mockReturnValue(of(true));
 
     TestBed.configureTestingModule({
       imports: [
@@ -214,11 +224,11 @@ describe('PlatformDetailComponent', () => {
     it('should init', () => {
       expect(component).toBeTruthy();
 
-      expect(component.isNew).toBeTrue();
-      expect(component.reduced).toBeTrue();
+      expect(component.isNew).toBe(true);
+      expect(component.reduced).toBe(true);
       expect(component.selectedVersion).toBeUndefined();
 
-      expect(component.form.enabled).toBeTrue();
+      expect(component.form.enabled).toBe(true);
     });
 
     it('should create on save', () => {
@@ -260,23 +270,23 @@ describe('PlatformDetailComponent', () => {
     it('should init', () => {
       expect(component).toBeTruthy();
 
-      expect(component.isNew).toBeFalse();
-      expect(component.reduced).toBeTrue();
+      expect(component.isNew).toBe(false);
+      expect(component.reduced).toBe(true);
       expect(component.selectedVersion).toBeDefined();
 
-      expect(component.form.enabled).toBeFalse();
-      expect(component.showVersionSwitch).toBeTrue();
+      expect(component.form.enabled).toBe(false);
+      expect(component.showVersionSwitch).toBe(true);
 
       component.switchVersion(0);
       expect(component.selectedVersionIndex).toBe(0);
     });
 
     it('should toggle form', () => {
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeTrue();
-      expect(component.form.dirty).toBeFalse();
+      expect(component.form.enabled).toBe(true);
+      expect(component.form.dirty).toBe(false);
 
       component.reducedForm.controls.vehicleAccess.setValue(
         VehicleAccessAttributeType.PlatformAccessWithAssistanceWhenNotified
@@ -284,10 +294,10 @@ describe('PlatformDetailComponent', () => {
       component.reducedForm.controls.vehicleAccess.markAsDirty();
       component.reducedForm.markAsDirty();
 
-      expect(component.form.dirty).toBeTrue();
+      expect(component.form.dirty).toBe(true);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
     });
 
     it('should update', () => {
@@ -328,10 +338,10 @@ describe('PlatformDetailComponent', () => {
     it('should init', () => {
       expect(component).toBeTruthy();
 
-      expect(component.isNew).toBeTrue();
-      expect(component.reduced).toBeFalse();
+      expect(component.isNew).toBe(true);
+      expect(component.reduced).toBe(false);
 
-      expect(component.form.enabled).toBeTrue();
+      expect(component.form.enabled).toBe(true);
     });
 
     it('should create complete platform', () => {

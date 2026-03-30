@@ -9,6 +9,7 @@ import {
   translateServiceProvider,
 } from '../../app.testing.mocks';
 import { PageService } from '../../core/pages/page.service';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -24,10 +25,7 @@ describe('HomeComponent', () => {
       ],
       providers: [
         translateServiceProvider,
-        {
-          provide: PageService,
-          useValue: pageServiceMock,
-        },
+        { provide: PageService, useValue: pageServiceMock },
       ],
     }).compileComponents();
 

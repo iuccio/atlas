@@ -1,60 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Company } from '../../../../api';
 import { CompanyDetailComponent } from './company-detail.component';
-import { AppTestingModule } from '../../../../app.testing.module';
-import { ErrorNotificationComponent } from '../../../../core/notification/error/error-notification.component';
-import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
-import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
-import { LinkIconComponent } from '../../../../core/form-components/link-icon/link-icon.component';
-import { FormGroup } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
-import { AtlasFieldErrorComponent } from '../../../../core/form-components/atlas-field-error/atlas-field-error.component';
-import { FieldExample } from '../../../../core/form-components/text-field/field-example';
-import { AtlasFieldCustomError } from '../../../../core/form-components/atlas-field-error/atlas-field-custom-error';
 import { ActivatedRoute } from '@angular/router';
-import { DetailPageContainerComponent } from '../../../../core/components/detail-page-container/detail-page-container.component';
-import { DetailFooterComponent } from '../../../../core/components/detail-footer/detail-footer.component';
-import { MockAtlasButtonComponent } from '../../../../app.testing.mocks';
-import { DetailPageContentComponent } from '../../../../core/components/detail-page-content/detail-page-content.component';
-
-const company: Company = {
-  uicCode: '1234',
-  name: 'SBB',
-};
-
-let component: CompanyDetailComponent;
-let fixture: ComponentFixture<CompanyDetailComponent>;
-
-@Component({
-  selector: 'atlas-text-field',
-  template: '<p>Mock Table Component</p>',
-  imports: [AppTestingModule],
-})
-class MockAtlasTextFieldComponent {
-  @Input() controlName!: string;
-  @Input() fieldLabel!: string;
-  @Input() infoIconTitle!: string;
-  @Input() infoIconLink!: string;
-  @Input() required!: boolean;
-  @Input() fieldExamples!: Array<FieldExample>;
-  @Input() customInputNgStyle!: Record<string, string | undefined | null>;
-  @Input() customError!: AtlasFieldCustomError;
-  @ContentChild('customChildInputPostfixTemplate')
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  customChildInputPostfixTemplate!: TemplateRef<any>;
-  @ContentChild('customChildInputPrefixTemplate')
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  customChildInputPrefixTemplate!: TemplateRef<any>;
-  @Input() formGroup!: FormGroup;
-}
+import { translateServiceProvider } from '../../../../app.testing.mocks';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('CompanyDetailComponent', () => {
+  let component: CompanyDetailComponent;
+  let fixture: ComponentFixture<CompanyDetailComponent>;
+
   const mockData = {
-    companyDetail: company,
+    companyDetail: {
+      uicCode: '1234',
+      name: 'SBB',
+    },
   };
 
   beforeEach(() => {
-    setupTestBed(mockData);
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: ActivatedRoute, useValue: { snapshot: { data: mockData } } },
+        translateServiceProvider,
+      ],
+    });
 
     fixture = TestBed.createComponent(CompanyDetailComponent);
     component = fixture.componentInstance;
@@ -84,28 +51,3 @@ describe('CompanyDetailComponent', () => {
     );
   });
 });
-
-function setupTestBed(data: { companyDetail: string | Company }) {
-  TestBed.configureTestingModule({
-    imports: [
-      AppTestingModule,
-      CompanyDetailComponent,
-      ErrorNotificationComponent,
-      InfoIconComponent,
-      LinkIconComponent,
-      AtlasLabelFieldComponent,
-      AtlasFieldErrorComponent,
-      MockAtlasTextFieldComponent,
-      DetailPageContainerComponent,
-      DetailPageContentComponent,
-      DetailFooterComponent,
-      MockAtlasButtonComponent,
-    ],
-    providers: [
-      { provide: ActivatedRoute, useValue: { snapshot: { data: data } } },
-      { provide: TranslatePipe },
-    ],
-  })
-    .compileComponents()
-    .then();
-}

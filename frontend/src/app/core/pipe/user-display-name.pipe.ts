@@ -14,7 +14,7 @@ export class UserDisplayNamePipe implements PipeTransform {
 
   transform(userId?: string): Observable<string | undefined> {
     if (!userId) {
-      return of();
+      return of(undefined);
     }
     return this.userAdministrationService
       .getUserDisplayName(userId)

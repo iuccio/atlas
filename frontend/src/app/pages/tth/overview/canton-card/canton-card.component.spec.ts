@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { CantonCardComponent } from './canton-card.component';
 import { By } from '@angular/platform-browser';
 import { Canton } from '../../../../core/cantons/Canton';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 const cantonAG: Canton = { short: 'AG', path: 'ag' };
 
@@ -12,11 +13,14 @@ describe('CantonCardComponent', () => {
   let component: CantonCardComponent;
   let fixture: ComponentFixture<CantonCardComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CantonCardComponent],
-      providers: [translateServiceProvider, provideHttpClient()],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        translateServiceProvider,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
+    });
 
     fixture = TestBed.createComponent(CantonCardComponent);
     component = fixture.componentInstance;

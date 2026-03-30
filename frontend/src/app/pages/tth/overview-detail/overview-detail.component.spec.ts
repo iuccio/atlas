@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { OverviewDetailComponent } from './overview-detail.component';
 import { AppTestingModule } from '../../../app.testing.module';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -50,21 +51,26 @@ class MockAppTthOverviewTabHeadingComponent {
   @Input() noPlannedTimetableHearingYearFound!: boolean;
 }
 
-const mockTimetableHearingYearsService = jasmine.createSpyObj(
-  'timetableHearingYearInternalService',
-  ['getHearingYears']
-);
-const mockTimetableHearingStatementsService = jasmine.createSpyObj(
-  'TimetableHearingStatementInternalService',
-  ['getStatements']
-);
-const tthChangeCantonDialogService = jasmine.createSpyObj(
-  'TthChangeCantonDialogService',
-  { onClick: of(true) }
-);
-const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+const mockTimetableHearingYearsService: Mocked<
+  Pick<TimetableHearingYearInternalService, 'getHearingYears'>
+> = {
+  getHearingYears: vi.fn(),
+};
+const mockTimetableHearingStatementsService: Mocked<
+  Pick<TimetableHearingStatementInternalService, 'getStatements'>
+> = {
+  getStatements: vi.fn(),
+};
+const tthChangeCantonDialogService: Mocked<
+  Pick<TthChangeCantonDialogService, 'onClick'>
+> = {
+  onClick: vi.fn().mockReturnValue(of(true)),
+};
+const dialogSpy: Mocked<Pick<MatDialog, 'open'>> = { open: vi.fn() };
 
-const dialogServiceSpy = jasmine.createSpyObj('DialogService', ['confirm']);
+const dialogServiceSpy: Mocked<Pick<DialogService, 'confirm'>> = {
+  confirm: vi.fn(),
+};
 
 const hearingYear2000: TimetableHearingYear = {
   timetableYear: 2000,
@@ -114,16 +120,18 @@ const containerTimetableHearingStatement: ContainerTimetableHearingStatementV2 =
     totalCount: 2,
   };
 
-const mockTthYearWfServiceSpy = jasmine.createSpyObj<TthYearInternalService>([
-  'startTimetableHearingYear',
-]);
+const mockTthYearWfServiceSpy: Mocked<
+  Pick<TthYearInternalService, 'startTimetableHearingYear'>
+> = {
+  startTimetableHearingYear: vi.fn(),
+};
 
 async function baseTestConfiguration() {
-  mockTimetableHearingStatementsService.getStatements.and.returnValue(
+  mockTimetableHearingStatementsService.getStatements.mockReturnValue(
     of(containerTimetableHearingStatement)
   );
 
-  mockTimetableHearingYearsService.getHearingYears.and.returnValue(
+  mockTimetableHearingYearsService.getHearingYears.mockReturnValue(
     of([hearingYear2000, hearingYear2001])
   );
 
@@ -333,41 +341,43 @@ describe('TimetableHearingOverviewDetailComponent', () => {
       const testDocuments: Array<TimetableHearingStatementDocument> = [
         { id: 1, fileName: 'Document 1', fileSize: 123 },
       ];
-      expect(component.isDocumentExisting(testDocuments)).toBeTrue();
+      expect(component.isDocumentExisting(testDocuments)).toBe(true);
     });
 
     it('should open dialog', () => {
-      dialogSpy.open.and.returnValue({
+      dialogSpy.open.mockReturnValue({
         afterClosed: () => of(null),
-      });
+      } as ReturnType<MatDialog['open']>);
 
       component.openTthExportAnonymizationChoiceDialog();
 
-      expect(dialogSpy.open).toHaveBeenCalled();
+      expect(dialogSpy.open).toHaveBeenCalledTimes(1);
     });
 
     it('should call downloadCsv(true) when dialog returns isAnonymized=true', () => {
-      spyOn(component, 'downloadCsv');
+      vi.spyOn(component, 'downloadCsv').mockImplementation(() => {});
 
-      dialogSpy.open.and.returnValue({
+      dialogSpy.open.mockReturnValue({
         afterClosed: () => of({ isAnonymized: true }),
-      });
+      } as ReturnType<MatDialog['open']>);
 
       component.openTthExportAnonymizationChoiceDialog();
 
-      expect(component.downloadCsv).toHaveBeenCalledOnceWith(true);
+      expect(component.downloadCsv).toHaveBeenCalledTimes(1);
+      expect(component.downloadCsv).toHaveBeenCalledWith(true);
     });
 
-    it('should call downloadCsv(true) when dialog returns isAnonymized=true', () => {
-      spyOn(component, 'downloadCsv');
+    it('should call downloadCsv(false) when dialog returns isAnonymized=false', () => {
+      vi.spyOn(component, 'downloadCsv').mockImplementation(() => {});
 
-      dialogSpy.open.and.returnValue({
+      dialogSpy.open.mockReturnValue({
         afterClosed: () => of({ isAnonymized: false }),
-      });
+      } as ReturnType<MatDialog['open']>);
 
       component.openTthExportAnonymizationChoiceDialog();
 
-      expect(component.downloadCsv).toHaveBeenCalledOnceWith(false);
+      expect(component.downloadCsv).toHaveBeenCalledTimes(1);
+      expect(component.downloadCsv).toHaveBeenCalledWith(false);
     });
 
     describe('collectingActions', () => {
@@ -378,42 +388,29 @@ describe('TimetableHearingOverviewDetailComponent', () => {
       });
 
       it('should enable status change collecting actions when STATUS_CHANGE is selected', () => {
-        const mockSelectChange = {
-          value: 'STATUS_CHANGE',
-        } as MatSelectChange;
-
-        spyOn(component, 'loadData');
-
+        const mockSelectChange = { value: 'STATUS_CHANGE' } as MatSelectChange;
+        vi.spyOn(component, 'loadData').mockImplementation(() => {});
         component.collectingActions(mockSelectChange);
-
         expect(component.statusChangeCollectingActionsEnabled).toBe(true);
         expect(component.showCollectingActionButton).toBe(false);
-        expect(component.loadData).toHaveBeenCalled();
+        expect(component.loadData).toHaveBeenCalledTimes(1);
       });
 
       it('should enable canton delivery collecting actions when CANTON_DELIVERY is selected', () => {
         const mockSelectChange = {
           value: 'CANTON_DELIVERY',
         } as MatSelectChange;
-
-        spyOn(component, 'loadData');
-
+        vi.spyOn(component, 'loadData').mockImplementation(() => {});
         component.collectingActions(mockSelectChange);
-
         expect(component.cantonDeliveryCollectingActionsEnabled).toBe(true);
         expect(component.showCollectingActionButton).toBe(false);
-        expect(component.loadData).toHaveBeenCalled();
+        expect(component.loadData).toHaveBeenCalledTimes(1);
       });
 
       it('should not change state when other value is selected', () => {
-        const mockSelectChange = {
-          value: 'OTHER_ACTION',
-        } as MatSelectChange;
-
-        spyOn(component, 'loadData');
-
+        const mockSelectChange = { value: 'OTHER_ACTION' } as MatSelectChange;
+        vi.spyOn(component, 'loadData').mockImplementation(() => {});
         component.collectingActions(mockSelectChange);
-
         expect(component.statusChangeCollectingActionsEnabled).toBe(false);
         expect(component.cantonDeliveryCollectingActionsEnabled).toBe(false);
         expect(component.showCollectingActionButton).toBe(true);
@@ -421,14 +418,9 @@ describe('TimetableHearingOverviewDetailComponent', () => {
       });
 
       it('should call loadData only once for STATUS_CHANGE', () => {
-        const mockSelectChange = {
-          value: 'STATUS_CHANGE',
-        } as MatSelectChange;
-
-        spyOn(component, 'loadData');
-
+        const mockSelectChange = { value: 'STATUS_CHANGE' } as MatSelectChange;
+        vi.spyOn(component, 'loadData').mockImplementation(() => {});
         component.collectingActions(mockSelectChange);
-
         expect(component.loadData).toHaveBeenCalledTimes(1);
       });
 
@@ -436,23 +428,15 @@ describe('TimetableHearingOverviewDetailComponent', () => {
         const mockSelectChange = {
           value: 'CANTON_DELIVERY',
         } as MatSelectChange;
-
-        spyOn(component, 'loadData');
-
+        vi.spyOn(component, 'loadData').mockImplementation(() => {});
         component.collectingActions(mockSelectChange);
-
         expect(component.loadData).toHaveBeenCalledTimes(1);
       });
 
       it('should not affect cantonDelivery when STATUS_CHANGE is selected', () => {
-        const mockSelectChange = {
-          value: 'STATUS_CHANGE',
-        } as MatSelectChange;
-
-        spyOn(component, 'loadData');
-
+        const mockSelectChange = { value: 'STATUS_CHANGE' } as MatSelectChange;
+        vi.spyOn(component, 'loadData').mockImplementation(() => {});
         component.collectingActions(mockSelectChange);
-
         expect(component.cantonDeliveryCollectingActionsEnabled).toBe(false);
       });
 
@@ -460,11 +444,8 @@ describe('TimetableHearingOverviewDetailComponent', () => {
         const mockSelectChange = {
           value: 'CANTON_DELIVERY',
         } as MatSelectChange;
-
-        spyOn(component, 'loadData');
-
+        vi.spyOn(component, 'loadData').mockImplementation(() => {});
         component.collectingActions(mockSelectChange);
-
         expect(component.statusChangeCollectingActionsEnabled).toBe(false);
       });
     });
@@ -511,7 +492,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
       hearingTo: moment().toDate(),
     };
     const hearingYears: TimetableHearingYear[] = [hearingYear, hearingYear];
-    mockTimetableHearingYearsService.getHearingYears.and.returnValue(
+    mockTimetableHearingYearsService.getHearingYears.mockReturnValue(
       of(hearingYears)
     );
 
@@ -525,7 +506,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
       overviewToTabService.setTimetableHearingYear(hearingYear2000);
       overviewToTabService.setTimetableHearingYearLoading(false);
       overviewToTabService.setTimetableHearingYearFound(false);
-      dialogServiceSpy.confirm.and.returnValue(of(true));
+      dialogServiceSpy.confirm.mockReturnValue(of(true));
 
       component = fixture.componentInstance;
       fixture.detectChanges();
@@ -604,15 +585,18 @@ describe('TimetableHearingOverviewDetailComponent', () => {
     });
 
     it('should startTimetableHearingYear', () => {
-      mockTthYearWfServiceSpy.startTimetableHearingYear.and
-        .stub()
-        .and.returnValue(of({}));
+      mockTthYearWfServiceSpy.startTimetableHearingYear.mockReturnValue(
+        of(hearingYear2000)
+      );
 
       component.startTimetableHearing();
 
       expect(
         mockTthYearWfServiceSpy.startTimetableHearingYear
-      ).toHaveBeenCalledOnceWith(2000);
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTthYearWfServiceSpy.startTimetableHearingYear
+      ).toHaveBeenCalledWith(2000);
     });
   });
 
@@ -625,7 +609,7 @@ describe('TimetableHearingOverviewDetailComponent', () => {
 
     const hearingYears: TimetableHearingYear[] = [hearingYear, hearingYear];
 
-    mockTimetableHearingYearsService.getHearingYears.and.returnValue(
+    mockTimetableHearingYearsService.getHearingYears.mockReturnValue(
       of(hearingYears)
     );
 

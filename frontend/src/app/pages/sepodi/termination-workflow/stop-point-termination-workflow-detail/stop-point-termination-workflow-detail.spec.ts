@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 import { StopPointTerminationWorkflowDetail } from './stop-point-termination-workflow-detail';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,38 +19,39 @@ import moment from 'moment/moment';
 import { TerminationStopPointWorkflowModel } from '../../../../api/model/terminationStopPointWorkflowModel';
 import TerminationDecisionPersonEnum = TerminationDecision.TerminationDecisionPersonEnum;
 
-const workflow: TerminationStopPointWorkflowModel = {
-  id: 10,
-  sloid: 'ch:1sloid:700',
-  versionId: 1000,
-  boTerminationDate: new Date('2029-06-01'),
-  applicantMail: 'a@b.ch',
-  workflowComment: 'Comment',
-  designationOfficial: 'designationOfficial',
-  versionValidTo: new Date('9999-06-01'),
-};
-
-const workflowData: StopPointTerminationWorkflowDetailData = {
-  workflow: workflow,
-  servicePoint: [BERN_WYLEREGG],
-};
-
-const activatedRoute = {
-  data: of({
-    workflow: workflowData,
-  }),
-};
-
-const terminationDecisionDetailDialogService = jasmine.createSpyObj(
-  'TerminationDecisionDetailDialogService',
-  { openDialog: of(true) }
-);
-
 describe('StopPointTerminationWorkflowDetail', () => {
   let component: StopPointTerminationWorkflowDetail;
   let fixture: ComponentFixture<StopPointTerminationWorkflowDetail>;
 
+  let terminationDecisionDetailDialogServiceMock: Mocked<Pick<TerminationDecisionDetailDialogService, 'openDialog'>>;
+
   beforeEach(async () => {
+    terminationDecisionDetailDialogServiceMock = {
+      openDialog: vi.fn().mockReturnValue(of(true)),
+    };
+
+    const workflow: TerminationStopPointWorkflowModel = {
+      id: 10,
+      sloid: 'ch:1sloid:700',
+      versionId: 1000,
+      boTerminationDate: new Date('2029-06-01'),
+      applicantMail: 'a@b.ch',
+      workflowComment: 'Comment',
+      designationOfficial: 'designationOfficial',
+      versionValidTo: new Date('9999-06-01'),
+    };
+
+    const workflowData: StopPointTerminationWorkflowDetailData = {
+      workflow: workflow,
+      servicePoint: [BERN_WYLEREGG],
+    };
+
+    const activatedRoute = {
+      data: of({
+        workflow: workflowData,
+      }),
+    };
+
     await TestBed.configureTestingModule({
       imports: [StopPointTerminationWorkflowDetail, TranslateModule.forRoot()],
       providers: [
@@ -61,7 +63,7 @@ describe('StopPointTerminationWorkflowDetail', () => {
         { provide: Router },
         {
           provide: TerminationDecisionDetailDialogService,
-          useValue: terminationDecisionDetailDialogService,
+          useValue: terminationDecisionDetailDialogServiceMock,
         },
       ],
     }).compileComponents();
@@ -77,7 +79,7 @@ describe('StopPointTerminationWorkflowDetail', () => {
   });
 
   it('should go to atlas stoppoint', () => {
-    spyOn(window, 'open');
+    vi.spyOn(window, 'open').mockImplementation(() => null);
 
     component.goToAtlasStopPoint();
     expect(window.open).toHaveBeenCalledWith(
@@ -89,14 +91,14 @@ describe('StopPointTerminationWorkflowDetail', () => {
   it('should open decision', () => {
     component.onOpenDecision(component.form.controls.examinants.at(0));
     expect(
-      terminationDecisionDetailDialogService.openDialog
+      terminationDecisionDetailDialogServiceMock.openDialog
     ).toHaveBeenCalled();
   });
 
   it('should open decision dialog', () => {
     component.openDecisionDialog();
     expect(
-      terminationDecisionDetailDialogService.openDialog
+      terminationDecisionDetailDialogServiceMock.openDialog
     ).toHaveBeenCalled();
   });
 
@@ -116,13 +118,13 @@ describe('StopPointTerminationWorkflowDetail', () => {
 
     component.openDecisionDialog();
     expect(
-      terminationDecisionDetailDialogService.openDialog
+      terminationDecisionDetailDialogServiceMock.openDialog
     ).toHaveBeenCalledWith(
       10,
       false,
       TerminationWorkflowStatus.TerminationNotApproved,
       TerminationDecisionPersonEnum.Nova,
-      jasmine.any(FormGroup),
+      expect.any(FormGroup),
       new Date('9999-06-01')
     );
   });

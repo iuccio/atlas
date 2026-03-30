@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+
 import { RelationTabDetailComponent } from './relation-tab-detail.component';
 import { AppTestingModule } from '../../../../../app.testing.module';
 import { ActivatedRoute } from '@angular/router';
@@ -8,7 +10,7 @@ import {
   MockSwitchVersionComponent,
   MockUserDetailInfoComponent,
 } from '../../../../../app.testing.mocks';
-import { STOP_POINT } from '../../../util/stop-point-test-data.spec';
+import { STOP_POINT } from '../../../util/stop-point-test-data';
 import { BERN_WYLEREGG } from '../../../../../../test/data/service-point';
 import { BERN_WYLEREGG_TRAFFIC_POINTS } from '../../../../../../test/data/traffic-point-element';
 import { DetailPageContentComponent } from '../../../../../core/components/detail-page-content/detail-page-content.component';
@@ -97,19 +99,16 @@ const relations: ReadRelationVersion[] = [
     referencePointElementType: 'PLATFORM',
   },
 ];
+
 describe('RelationTabDetailComponent', () => {
   let component: RelationTabDetailComponent;
   let fixture: ComponentFixture<RelationTabDetailComponent>;
-
-  let referencePointInternalService = jasmine.createSpyObj(
-    'referencePointInternalService',
-    ['getReferencePointsOverview']
-  );
-
-  let relationService = jasmine.createSpyObj('relationService', [
-    'getRelationsBySloid',
-    'updateRelation',
-  ]);
+  let referencePointInternalService: Mocked<
+    Pick<ReferencePointInternalService, 'getReferencePointsOverview'>
+  >;
+  let relationService: Mocked<
+    Pick<RelationService, 'getRelationsBySloid' | 'updateRelation'>
+  >;
 
   const activatedRouteMock = {
     parent: {
@@ -124,19 +123,22 @@ describe('RelationTabDetailComponent', () => {
   };
 
   beforeEach(() => {
-    referencePointInternalService = jasmine.createSpyObj(
-      'referencePointInternalService',
-      ['getReferencePointsOverview']
-    );
-    relationService = jasmine.createSpyObj('relationService', [
-      'getRelationsBySloid',
-      'updateRelation',
-    ]);
-    referencePointInternalService.getReferencePointsOverview.and.returnValue(
+    Element.prototype.scrollIntoView = vi.fn();
+
+    referencePointInternalService = {
+      getReferencePointsOverview: vi.fn(),
+    };
+    relationService = {
+      getRelationsBySloid: vi.fn(),
+      updateRelation: vi.fn(),
+    };
+
+    referencePointInternalService.getReferencePointsOverview.mockReturnValue(
       of([])
     );
-    relationService.getRelationsBySloid.and.returnValue(of([]));
-    relationService.updateRelation.and.returnValue(of());
+    relationService.getRelationsBySloid.mockReturnValue(of([]));
+    relationService.updateRelation.mockReturnValue(of());
+
     TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -162,15 +164,16 @@ describe('RelationTabDetailComponent', () => {
         },
       ],
     });
+
     fixture = TestBed.createComponent(RelationTabDetailComponent);
     component = fixture.componentInstance;
   });
 
   it('should init relation tab for complete variant', () => {
-    referencePointInternalService.getReferencePointsOverview.and.returnValue(
+    referencePointInternalService.getReferencePointsOverview.mockReturnValue(
       of(referencePointOverview)
     );
-    relationService.getRelationsBySloid.and.returnValue(of([relations[1]]));
+    relationService.getRelationsBySloid.mockReturnValue(of([relations[1]]));
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
@@ -202,7 +205,7 @@ describe('RelationTabDetailComponent', () => {
 
   it('should switch reference point', () => {
     component.ngOnInit();
-    relationService.getRelationsBySloid.and.returnValue(of([relations[0]]));
+    relationService.getRelationsBySloid.mockReturnValue(of([relations[0]]));
 
     component.referencePointChanged({
       source: undefined!,
@@ -218,10 +221,10 @@ describe('RelationTabDetailComponent', () => {
   });
 
   it('should change relation version correctly', () => {
-    referencePointInternalService.getReferencePointsOverview.and.returnValue(
+    referencePointInternalService.getReferencePointsOverview.mockReturnValue(
       of(referencePointOverview)
     );
-    relationService.getRelationsBySloid.and.returnValue(of(relations));
+    relationService.getRelationsBySloid.mockReturnValue(of(relations));
     fixture.detectChanges();
 
     component.versionChanged(relations[0], 0);
@@ -231,19 +234,19 @@ describe('RelationTabDetailComponent', () => {
   });
 
   it('should save valid form', () => {
-    referencePointInternalService.getReferencePointsOverview.and.returnValue(
+    referencePointInternalService.getReferencePointsOverview.mockReturnValue(
       of(referencePointOverview)
     );
-    relationService.getRelationsBySloid.and.returnValue(of(relations));
+    relationService.getRelationsBySloid.mockReturnValue(of(relations));
     fixture.detectChanges();
 
     component.toggleEdit();
-    expect(component.editing).toBeTrue();
+    expect(component.editing).toBe(true);
 
     component.form?.controls.validFrom.setValue(moment('2000-01-03'));
     component.save();
 
-    expect(component.editing).toBeFalse();
+    expect(component.editing).toBe(false);
     expect(relationService.updateRelation).toHaveBeenCalledTimes(1);
   });
 });

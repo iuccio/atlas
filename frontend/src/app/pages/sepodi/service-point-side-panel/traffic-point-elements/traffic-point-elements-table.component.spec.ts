@@ -1,7 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { TrafficPointElementsTableComponent } from './traffic-point-elements-table.component';
 import { AuthService } from '../../../../core/auth/auth.service';
-import { MockAtlasButtonComponent, MockNavigationSepodiPrmComponent, MockTableComponent, } from '../../../../app.testing.mocks';
+import {
+  MockAtlasButtonComponent,
+  MockNavigationSepodiPrmComponent,
+  MockTableComponent,
+} from '../../../../app.testing.mocks';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import {
@@ -16,21 +21,18 @@ import { TranslateModule } from '@ngx-translate/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TrafficPointElementInternalService } from '../../../../api/service/sepodi/traffic-point-element-internal.service';
-import SpyObj = jasmine.SpyObj;
 
 describe('TrafficPointElementsTableComponent', () => {
   let component: TrafficPointElementsTableComponent;
   let fixture: ComponentFixture<TrafficPointElementsTableComponent>;
-  let routerSpy: SpyObj<Router>;
+  let routerSpy: Mocked<Pick<Router, 'navigate'>>;
 
   const authService: Partial<AuthService> = {};
-  const trafficPointElementInternalService = jasmine.createSpyObj(
-    'TrafficPointElementsService',
-    ['getPlatformsOfServicePoint']
-  );
-  trafficPointElementInternalService.getPlatformsOfServicePoint.and.returnValue(
-    of(BERN_WYLEREGG_TRAFFIC_POINTS_CONTAINER)
-  );
+
+  let trafficPointElementInternalServiceSpy: Mocked<
+    Pick<TrafficPointElementInternalService, 'getPlatformsOfServicePoint'>
+  >;
+
   const activatedRouteMock = {
     parent: {
       snapshot: {
@@ -48,8 +50,17 @@ describe('TrafficPointElementsTableComponent', () => {
   };
 
   beforeEach(async () => {
-    routerSpy = jasmine.createSpyObj(['navigate']);
-    routerSpy.navigate.and.returnValue(Promise.resolve(true));
+    trafficPointElementInternalServiceSpy = {
+      getPlatformsOfServicePoint: vi.fn(),
+    };
+    trafficPointElementInternalServiceSpy.getPlatformsOfServicePoint.mockReturnValue(
+      of(BERN_WYLEREGG_TRAFFIC_POINTS_CONTAINER)
+    );
+
+    routerSpy = {
+      navigate: vi.fn(),
+    };
+    routerSpy.navigate.mockReturnValue(Promise.resolve(true));
 
     await TestBed.configureTestingModule({
       imports: [TrafficPointElementsTableComponent, TranslateModule.forRoot()],
@@ -59,7 +70,7 @@ describe('TrafficPointElementsTableComponent', () => {
         { provide: AuthService, useValue: authService },
         {
           provide: TrafficPointElementInternalService,
-          useValue: trafficPointElementInternalService,
+          useValue: trafficPointElementInternalServiceSpy,
         },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: Router, useValue: routerSpy },
@@ -99,23 +110,23 @@ describe('TrafficPointElementsTableComponent', () => {
     });
 
     expect(
-      trafficPointElementInternalService.getPlatformsOfServicePoint
-    ).toHaveBeenCalledOnceWith(8507000, 0, 10, ['designation,asc']);
+      trafficPointElementInternalServiceSpy.getPlatformsOfServicePoint
+    ).toHaveBeenCalledWith(8507000, 0, 10, ['designation,asc']);
   });
 
   it('should navigate to add trafficpoint', () => {
     component.addNewTrafficPointElement();
-    expect(routerSpy.navigate).toHaveBeenCalledOnceWith(
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
       ['add'],
-      jasmine.any(Object)
+      expect.any(Object)
     );
   });
 
   it('should navigate to edit trafficpoint', () => {
     component.editVersion(BERN_WYLEREGG_TRAFFIC_POINTS[0]);
-    expect(routerSpy.navigate).toHaveBeenCalledOnceWith(
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
       ['ch:1:sloid:89008:0:1'],
-      jasmine.any(Object)
+      expect.any(Object)
     );
   });
 });

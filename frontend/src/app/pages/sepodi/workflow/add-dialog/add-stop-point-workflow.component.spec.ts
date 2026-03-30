@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { AddStopPointWorkflowComponent } from './add-stop-point-workflow.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
@@ -24,48 +25,48 @@ import { BoSelectionDisplayPipe } from '../../../../core/form-components/bo-sele
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { StopPointWorkflowService } from '../../../../api/service/workflow/stop-point-workflow.service';
-import SpyObj = jasmine.SpyObj;
-
-const workflow: ReadStopPointWorkflow = {
-  versionId: 1,
-  sloid: 'ch:1:sloid:8000',
-  workflowComment: 'No comment',
-};
-
-const workflowDialogData: AddStopPointWorkflowDialogData = {
-  title: '',
-  message: '',
-  stopPoint: BERN_WYLEREGG,
-};
 
 describe('AddStopPointWorkflowComponent', () => {
+  const workflow: ReadStopPointWorkflow = {
+    versionId: 1,
+    sloid: 'ch:1:sloid:8000',
+    workflowComment: 'No comment',
+  };
+
+  const workflowDialogData: AddStopPointWorkflowDialogData = {
+    title: '',
+    message: '',
+    stopPoint: BERN_WYLEREGG,
+  };
+
   let component: AddStopPointWorkflowComponent;
   let fixture: ComponentFixture<AddStopPointWorkflowComponent>;
 
-  let dialogRefSpy: SpyObj<MatDialogRef<AddStopPointWorkflowComponent>>;
-  let notificationServiceSpy: SpyObj<NotificationService>;
-  let router: SpyObj<Router>;
-  let detailHelperService: SpyObj<DetailDialogHelperService>;
-  let stopPointWorkflowService: SpyObj<StopPointWorkflowService>;
+  let dialogRefSpy: Mocked<
+    Pick<MatDialogRef<AddStopPointWorkflowComponent>, 'close'>
+  >;
+  let notificationServiceSpy: Mocked<Pick<NotificationService, 'success'>>;
+  let router: Mocked<Pick<Router, 'navigate'>>;
+  let detailHelperService: Mocked<
+    Pick<DetailDialogHelperService, 'confirmLeaveDirtyForm'>
+  >;
+  let stopPointWorkflowService: Mocked<
+    Pick<StopPointWorkflowService, 'addStopPointWorkflow' | 'getExaminants'>
+  >;
 
   beforeEach(async () => {
-    dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
-    notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
-      'success',
-    ]);
-    router = jasmine.createSpyObj({
-      navigate: Promise.resolve(),
-    });
-    detailHelperService = jasmine.createSpyObj({
-      confirmLeaveDirtyForm: of(true),
-    });
-    stopPointWorkflowService = jasmine.createSpyObj(
-      'StopPointWorkflowService',
-      {
-        addStopPointWorkflow: of(workflow),
-        getExaminants: of([]),
-      }
-    );
+    dialogRefSpy = { close: vi.fn() };
+    notificationServiceSpy = { success: vi.fn() };
+    router = {
+      navigate: vi.fn().mockReturnValue(Promise.resolve()),
+    };
+    detailHelperService = {
+      confirmLeaveDirtyForm: vi.fn().mockReturnValue(of(true)),
+    };
+    stopPointWorkflowService = {
+      addStopPointWorkflow: vi.fn().mockReturnValue(of(workflow)),
+      getExaminants: vi.fn().mockReturnValue(of([])),
+    };
 
     await TestBed.configureTestingModule({
       imports: [AddStopPointWorkflowComponent, TranslateModule.forRoot()],
@@ -99,7 +100,7 @@ describe('AddStopPointWorkflowComponent', () => {
     component.cancel();
 
     expect(detailHelperService.confirmLeaveDirtyForm).toHaveBeenCalledTimes(1);
-    expect(dialogRefSpy.close).toHaveBeenCalledOnceWith(true);
+    expect(dialogRefSpy.close).toHaveBeenCalledExactlyOnceWith(true);
   });
 
   it('should add workflow via service', () => {
@@ -117,10 +118,10 @@ describe('AddStopPointWorkflowComponent', () => {
     expect(stopPointWorkflowService.addStopPointWorkflow).toHaveBeenCalledTimes(
       1
     );
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
+    expect(notificationServiceSpy.success).toHaveBeenCalledExactlyOnceWith(
       'WORKFLOW.NOTIFICATION.ADD.SUCCESS'
     );
-    expect(dialogRefSpy.close).toHaveBeenCalledOnceWith();
+    expect(dialogRefSpy.close).toHaveBeenCalledExactlyOnceWith();
   });
 
   it('should transform examinants firstName and lastName to null if empty', () => {
@@ -151,10 +152,10 @@ describe('AddStopPointWorkflowComponent', () => {
 
     expect(
       stopPointWorkflowService.addStopPointWorkflow
-    ).toHaveBeenCalledOnceWith(
-      jasmine.objectContaining({
+    ).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
         examinants: [
-          jasmine.objectContaining({
+          expect.objectContaining({
             firstName: null,
             lastName: null,
           }),
@@ -162,9 +163,9 @@ describe('AddStopPointWorkflowComponent', () => {
       })
     );
 
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
+    expect(notificationServiceSpy.success).toHaveBeenCalledExactlyOnceWith(
       'WORKFLOW.NOTIFICATION.ADD.SUCCESS'
     );
-    expect(dialogRefSpy.close).toHaveBeenCalledOnceWith();
+    expect(dialogRefSpy.close).toHaveBeenCalledExactlyOnceWith();
   });
 });

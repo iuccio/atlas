@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { By } from '@angular/platform-browser';
+
 import { StopPointCompleteFormComponent } from './stop-point-complete-form.component';
 import { AppTestingModule } from '../../../../../../app.testing.module';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -11,22 +14,23 @@ import { TextFieldComponent } from '../../../../../../core/form-components/text-
 import { AtlasLabelFieldComponent, InfoIconComponent } from '@atlas/form';
 import { MeansOfTransportPickerComponent } from '../../../../../../core/form-components/means-of-transport-picker/means-of-transport-picker.component';
 import { AtlasSpacerComponent } from '../../../../../../core/components/spacer/atlas-spacer.component';
-import { By } from '@angular/platform-browser';
 import { PrmVariantInfoService } from '../../prm-variant-info.service';
 import { MeanOfTransport } from '../../../../../../api';
-import arrayContaining = jasmine.arrayContaining;
 
 describe('StopPointCompleteFormComponent', () => {
   let fixture: ComponentFixture<StopPointCompleteFormComponent>;
-
-  const prmVariantInfoService = jasmine.createSpyObj('prmVariantInfoService', [
-    'getPrmMeansOfTransportToShow',
-  ]);
-  prmVariantInfoService.getPrmMeansOfTransportToShow.and.returnValue(
-    Object.values(MeanOfTransport)
-  );
+  let prmVariantInfoService: Mocked<
+    Pick<PrmVariantInfoService, 'getPrmMeansOfTransportToShow'>
+  >;
 
   beforeEach(() => {
+    prmVariantInfoService = {
+      getPrmMeansOfTransportToShow: vi.fn(),
+    };
+    prmVariantInfoService.getPrmMeansOfTransportToShow.mockReturnValue(
+      Object.values(MeanOfTransport)
+    );
+
     TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -85,10 +89,11 @@ describe('StopPointCompleteFormComponent', () => {
         'assistanceCondition',
         'alternativeTransportCondition',
       ];
+
       expect(formComments.length).toEqual(5);
       expect(
         formComments.map((value) => value.attributes['controlName'])
-      ).toEqual(arrayContaining(formCommentsControlName));
+      ).toEqual(expect.arrayContaining(formCommentsControlName));
     });
 
     it('should display atlasSelects', () => {
@@ -108,10 +113,11 @@ describe('StopPointCompleteFormComponent', () => {
         'alternativeTransport',
         'shuttleService',
       ];
+
       expect(atlasSelects.length).toEqual(11);
       expect(
         atlasSelects.map((value) => value.attributes['controlName'])
-      ).toEqual(arrayContaining(atlasSelectsControlName));
+      ).toEqual(expect.arrayContaining(atlasSelectsControlName));
     });
 
     it('should display atlas-text-fields', () => {
@@ -124,10 +130,11 @@ describe('StopPointCompleteFormComponent', () => {
         'zipCode',
         'city',
       ];
+
       expect(atlasTextFields.length).toEqual(4);
       expect(
         atlasTextFields.map((value) => value.attributes['controlName'])
-      ).toEqual(arrayContaining(atlasTextFieldsControlName));
+      ).toEqual(expect.arrayContaining(atlasTextFieldsControlName));
     });
   });
 });

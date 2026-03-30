@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { UserSelectComponent } from './user-select.component';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { Component, Input } from '@angular/core';
 import { ApplicationType, Permission } from '../../../../api';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -24,20 +24,22 @@ class MockFormSearchSelectComponent {
 describe('UserSelectComponent', () => {
   let component: UserSelectComponent;
   let fixture: ComponentFixture<UserSelectComponent>;
-
-  const userAdministrationServiceSpy = jasmine.createSpyObj(
-    'UserAdministrationService',
-    ['searchUsers', 'searchUsersInAtlas']
-  );
+  let userAdministrationService: Mocked<
+    Pick<UserAdministrationService, 'searchUsers' | 'searchUsersInAtlas'>
+  >;
 
   beforeEach(async () => {
+    userAdministrationService = {
+      searchUsers: vi.fn(),
+      searchUsersInAtlas: vi.fn(),
+    };
     await TestBed.configureTestingModule({
       imports: [UserSelectComponent],
       providers: [
         TranslatePipe,
         {
           provide: UserAdministrationService,
-          useValue: userAdministrationServiceSpy,
+          useValue: userAdministrationService,
         },
       ],
     })
@@ -57,8 +59,8 @@ describe('UserSelectComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('test searchUser', (done) => {
-    userAdministrationServiceSpy.searchUsers.and.returnValue(
+  it('test searchUser', async () => {
+    userAdministrationService.searchUsers.mockReturnValue(
       of([
         {
           sbbUserId: 'user1',
@@ -69,22 +71,20 @@ describe('UserSelectComponent', () => {
     component.search('testQuery');
     fixture.componentRef.setInput('searchMode', 'default');
     fixture.detectChanges();
-    expect(userAdministrationServiceSpy.searchUsers).toHaveBeenCalledOnceWith(
-      'testQuery'
-    );
-    component.userSearchResults$.subscribe((val) => {
-      expect(val).toEqual([
-        {
-          sbbUserId: 'user1',
-          permissions: new Set<Permission>(),
-        },
-      ]);
-      done();
-    });
+    expect(
+      userAdministrationService.searchUsers
+    ).toHaveBeenCalledExactlyOnceWith('testQuery');
+    const val = await firstValueFrom(component.userSearchResults$);
+    expect(val).toEqual([
+      {
+        sbbUserId: 'user1',
+        permissions: new Set<Permission>(),
+      },
+    ]);
   });
 
-  it('test searchUser in atlas', (done) => {
-    userAdministrationServiceSpy.searchUsersInAtlas.and.returnValue(
+  it('test searchUser in atlas', async () => {
+    userAdministrationService.searchUsersInAtlas.mockReturnValue(
       of([
         {
           sbbUserId: 'user1',
@@ -97,16 +97,14 @@ describe('UserSelectComponent', () => {
     fixture.detectChanges();
     component.search('testQuery');
     expect(
-      userAdministrationServiceSpy.searchUsersInAtlas
-    ).toHaveBeenCalledOnceWith('testQuery', ApplicationType.Sepodi);
-    component.userSearchResults$.subscribe((val) => {
-      expect(val).toEqual([
-        {
-          sbbUserId: 'user1',
-          permissions: new Set<Permission>(),
-        },
-      ]);
-      done();
-    });
+      userAdministrationService.searchUsersInAtlas
+    ).toHaveBeenCalledExactlyOnceWith('testQuery', ApplicationType.Sepodi);
+    const val = await firstValueFrom(component.userSearchResults$);
+    expect(val).toEqual([
+      {
+        sbbUserId: 'user1',
+        permissions: new Set<Permission>(),
+      },
+    ]);
   });
 });

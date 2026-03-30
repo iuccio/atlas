@@ -4,7 +4,7 @@ import {
   convertToParamMap,
   RouterStateSnapshot,
 } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { BusinessOrganisationVersion, Status } from '../../../../api';
 import {
   BusinessOrganisationDetailResolver,
@@ -12,6 +12,7 @@ import {
 } from './business-organisation-detail-resolver.service';
 import { AppTestingModule } from '../../../../app.testing.module';
 import { BusinessOrganisationService } from '../../../../api/service/bodi/business-organisation.service';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 const version: BusinessOrganisationVersion = {
   id: 1234,
@@ -31,25 +32,28 @@ const version: BusinessOrganisationVersion = {
 };
 
 describe('BusinessOrganisationDetailResolver', () => {
-  const businessOrganisationsServiceSpy = jasmine.createSpyObj(
-    'businessOrganisationsService',
-    ['getVersions']
-  );
-  businessOrganisationsServiceSpy.getVersions.and.returnValue(of([version]));
-
   let resolver: BusinessOrganisationDetailResolver;
+  let businessOrganisationsService: Mocked<
+    Pick<BusinessOrganisationService, 'getVersions'>
+  >;
 
   beforeEach(() => {
+    businessOrganisationsService = {
+      getVersions: vi.fn(),
+    };
+    businessOrganisationsService.getVersions.mockReturnValue(of([version]));
+
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
       providers: [
         BusinessOrganisationDetailResolver,
         {
           provide: BusinessOrganisationService,
-          useValue: businessOrganisationsServiceSpy,
+          useValue: businessOrganisationsService,
         },
       ],
     });
+
     resolver = TestBed.inject(BusinessOrganisationDetailResolver);
   });
 
@@ -57,7 +61,7 @@ describe('BusinessOrganisationDetailResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
-  it('should get version from service to display', () => {
+  it('should get version from service to display', async () => {
     const mockRoute = {
       paramMap: convertToParamMap({ id: '1234' }),
     } as ActivatedRouteSnapshot;
@@ -66,11 +70,10 @@ describe('BusinessOrganisationDetailResolver', () => {
       businessOrganisationResolver(mockRoute, {} as RouterStateSnapshot)
     ) as Observable<BusinessOrganisationVersion[]>;
 
-    result.subscribe((versions) => {
-      expect(versions.length).toBe(1);
-      expect(versions[0].id).toBe(1234);
-      expect(versions[0].status).toBe(Status.Validated);
-      expect(versions[0].sboid).toBe('sboid');
-    });
+    const versions = await firstValueFrom(result);
+    expect(versions.length).toBe(1);
+    expect(versions[0].id).toBe(1234);
+    expect(versions[0].status).toBe(Status.Validated);
+    expect(versions[0].sboid).toBe('sboid');
   });
 });

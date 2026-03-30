@@ -1,32 +1,37 @@
-import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { firstValueFrom, of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
   LineVersionWorkflow,
   Status,
   WorkflowProcessingStatus,
 } from '../../../api';
 import { LineWorkflowDialogService } from './line-workflow-dialog.service';
+import { mock } from 'vitest-mock-extended';
+import { DialogComponent } from '../../components/dialog/dialog.component';
 
 describe('LineWorkflowDialogService', () => {
   let service: LineWorkflowDialogService;
 
-  const dialogSpy = jasmine.createSpyObj('dialog', ['open']);
+  const matDialog = mock<MatDialog>();
+  const matDialogRef = mock<MatDialogRef<DialogComponent>>();
+  matDialogRef.afterClosed.mockReturnValue(of(true));
+  matDialog.open.mockReturnValue(matDialogRef);
 
   beforeEach(() => {
+    // Config
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
-      providers: [{ provide: MatDialog, useValue: dialogSpy }],
+      providers: [{ provide: MatDialog, useValue: matDialog }],
     });
+
+    // Arrangement
     service = TestBed.inject(LineWorkflowDialogService);
   });
 
-  it('should open new workflow', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
-
-    service
-      .openNew(
+  it('should open new workflow', async () => {
+    const result = await firstValueFrom(
+      service.openNew(
         {
           id: 123,
           validFrom: new Date(),
@@ -38,16 +43,15 @@ describe('LineWorkflowDialogService', () => {
         },
         'description'
       )
-      .subscribe((result) => expect(result).toBeTrue());
+    );
+    expect(result).toBe(true);
 
-    expect(dialogSpy.open).toHaveBeenCalled();
+    expect(matDialog.open).toHaveBeenCalled();
   });
 
-  it('should open existing workflow', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(true) });
-
-    service
-      .openExisting(
+  it('should open existing workflow', async () => {
+    const result = await firstValueFrom(
+      service.openExisting(
         {
           id: 123,
           validFrom: new Date(),
@@ -65,8 +69,8 @@ describe('LineWorkflowDialogService', () => {
         },
         'description'
       )
-      .subscribe((result) => expect(result).toBeTrue());
-
-    expect(dialogSpy.open).toHaveBeenCalled();
+    );
+    expect(result).toBe(true);
+    expect(matDialog.open).toHaveBeenCalled();
   });
 });

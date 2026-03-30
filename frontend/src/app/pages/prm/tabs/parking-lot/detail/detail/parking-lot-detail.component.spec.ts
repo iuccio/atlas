@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 import { ParkingLotDetailComponent } from './parking-lot-detail.component';
 import {
@@ -38,7 +39,6 @@ import { SplitServicePointNumberPipe } from '../../../../../../core/search-servi
 import moment from 'moment';
 import { PermissionService } from '../../../../../../core/auth/permission/permission.service';
 import { ParkingLotService } from '../../../../../../api/service/prm/parking-lot/parking-lot.service';
-import SpyObj = jasmine.SpyObj;
 
 const parkingLot: ReadParkingLotVersion[] = [
   {
@@ -68,22 +68,11 @@ const parkingLot: ReadParkingLotVersion[] = [
 describe('ParkingLotDetailComponent', () => {
   let component: ParkingLotDetailComponent;
   let fixture: ComponentFixture<ParkingLotDetailComponent>;
-
-  const parkingLotService = jasmine.createSpyObj('parkingLotService', [
-    'createParkingLot',
-    'updateParkingLot',
-  ]);
-  parkingLotService.createParkingLot.and.returnValue(of(parkingLot[0]));
-  parkingLotService.updateParkingLot.and.returnValue(of(parkingLot));
-
-  const notificationService = jasmine.createSpyObj('notificationService', [
-    'success',
-  ]);
-  const dialogService: SpyObj<DialogService> = jasmine.createSpyObj(
-    'dialogService',
-    ['confirm']
-  );
-  dialogService.confirm.and.returnValue(of(true));
+  let parkingLotService: Mocked<
+    Pick<ParkingLotService, 'createParkingLot' | 'updateParkingLot'>
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
+  let dialogService: Mocked<Pick<DialogService, 'confirm'>>;
 
   const activatedRouteMock = {
     snapshot: {
@@ -97,6 +86,24 @@ describe('ParkingLotDetailComponent', () => {
   };
 
   beforeEach(() => {
+    Element.prototype.scrollIntoView = vi.fn();
+
+    parkingLotService = {
+      createParkingLot: vi.fn(),
+      updateParkingLot: vi.fn(),
+    };
+    parkingLotService.createParkingLot.mockReturnValue(of(parkingLot[0]));
+    parkingLotService.updateParkingLot.mockReturnValue(of(parkingLot[0]));
+
+    notificationService = {
+      success: vi.fn(),
+    };
+
+    dialogService = {
+      confirm: vi.fn(),
+    };
+    dialogService.confirm.mockReturnValue(of(true));
+
     TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -153,10 +160,10 @@ describe('ParkingLotDetailComponent', () => {
     it('should init', () => {
       expect(component).toBeTruthy();
 
-      expect(component.isNew).toBeTrue();
+      expect(component.isNew).toBe(true);
       expect(component.selectedVersion).toBeUndefined();
 
-      expect(component.form.enabled).toBeTrue();
+      expect(component.form.enabled).toBe(true);
     });
 
     it('should create on save', () => {
@@ -197,29 +204,29 @@ describe('ParkingLotDetailComponent', () => {
     it('should init', () => {
       expect(component).toBeTruthy();
 
-      expect(component.isNew).toBeFalse();
+      expect(component.isNew).toBe(false);
       expect(component.selectedVersion).toBeDefined();
 
-      expect(component.form.enabled).toBeFalse();
-      expect(component.showVersionSwitch).toBeTrue();
+      expect(component.form.enabled).toBe(false);
+      expect(component.showVersionSwitch).toBe(true);
 
       component.switchVersion(0);
       expect(component.selectedVersionIndex).toBe(0);
     });
 
     it('should toggle form', () => {
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeTrue();
-      expect(component.form.dirty).toBeFalse();
+      expect(component.form.enabled).toBe(true);
+      expect(component.form.dirty).toBe(false);
 
       component.form.controls.designation.markAsDirty();
 
-      expect(component.form.dirty).toBeTrue();
+      expect(component.form.dirty).toBe(true);
 
       component.toggleEdit();
-      expect(component.form.enabled).toBeFalse();
+      expect(component.form.enabled).toBe(false);
     });
 
     it('should update', () => {

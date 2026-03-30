@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { UserAdministrationUserDetailComponent } from './user-administration-user-detail.component';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';

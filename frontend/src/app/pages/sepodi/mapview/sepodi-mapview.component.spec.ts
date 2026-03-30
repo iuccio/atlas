@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { SepodiMapviewComponent } from './sepodi-mapview.component';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Component, Input } from '@angular/core';
@@ -10,7 +11,6 @@ import { RouterModule } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MapService } from '../map/map.service';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Map } from 'maplibre-gl';
 import { GeoJsonProperties } from 'geojson';
 import { translateServiceProvider } from '../../../app.testing.mocks';
 
@@ -30,26 +30,31 @@ class SearchServicePointMockComponent {
   @Input() searchType!: ServicePointSearchType;
 }
 
-const authService: Partial<AuthService> = {};
-const mapSpy = jasmine.createSpyObj<Map>(['once', 'on']);
-const mapService = jasmine.createSpyObj<MapService>(
-  ['initMap', 'removeMap', 'initMapEvents'],
-  {
-    selectedElement: new Subject(),
-  }
-);
-
-mapService.servicePointsShown = new BehaviorSubject(false);
-mapService.mapInitialized = new BehaviorSubject(false);
-mapService.selectedElement = new BehaviorSubject({} as GeoJsonProperties);
-
-mapService.initMap.and.returnValue(mapSpy);
-
 describe('SepodiMapviewComponent', () => {
   let component: SepodiMapviewComponent;
   let fixture: ComponentFixture<SepodiMapviewComponent>;
 
+  const authService: Partial<AuthService> = {};
+
+  let mapServiceSpy: Mocked<
+    Pick<MapService, 'initMap' | 'removeMap' | 'initMapEvents'> & {
+      selectedElement: Subject<GeoJsonProperties>;
+      servicePointsShown: BehaviorSubject<boolean>;
+      mapInitialized: BehaviorSubject<boolean>;
+    }
+  >;
+
   beforeEach(async () => {
+    mapServiceSpy = {
+      initMap: vi.fn(),
+      removeMap: vi.fn(),
+      initMapEvents: vi.fn(),
+      selectedElement: new Subject<GeoJsonProperties>(),
+      servicePointsShown: new BehaviorSubject(false),
+      mapInitialized: new BehaviorSubject(false),
+    };
+    mapServiceSpy.initMap.mockReturnValue({} as ReturnType<MapService['initMap']>);
+
     await TestBed.configureTestingModule({
       imports: [
         SepodiMapviewComponent,
@@ -61,7 +66,7 @@ describe('SepodiMapviewComponent', () => {
       providers: [
         translateServiceProvider,
         { provide: AuthService, useValue: authService },
-        { provide: MapService, useValue: mapService },
+        { provide: MapService, useValue: mapServiceSpy },
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: TranslatePipe },

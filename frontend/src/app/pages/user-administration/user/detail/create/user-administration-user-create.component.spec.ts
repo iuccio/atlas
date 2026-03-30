@@ -1,68 +1,47 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { UserAdministrationUserCreateComponent } from './user-administration-user-create.component';
 import { Permission } from '../../../../../api';
 import { NotificationService } from '../../../../../core/notification/notification.service';
-import { TranslatePipe } from '@ngx-translate/core';
 import { of } from 'rxjs';
-import { Router, RouterModule } from '@angular/router';
-import { Component, Input } from '@angular/core';
+import { provideRouter, Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup } from '@angular/forms';
-import { DetailPageContainerComponent } from '../../../../../core/components/detail-page-container/detail-page-container.component';
-import { DetailFooterComponent } from '../../../../../core/components/detail-footer/detail-footer.component';
-import { DetailPageContentComponent } from '../../../../../core/components/detail-page-content/detail-page-content.component';
 import { UserAdministrationService } from '../../../../../api/service/user-administration/user-administration.service';
 import { translateServiceProvider } from '../../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
-import { tickAsync } from '../../../../../../test/tick-async';
-import SpyObj = jasmine.SpyObj;
-
-@Component({
-  selector: 'atlas-user-select',
-  template: '',
-})
-class MockUserSelectComponent {
-  @Input() form?: FormGroup;
-}
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('UserAdministrationUserCreateComponent', () => {
   let component: UserAdministrationUserCreateComponent;
   let fixture: ComponentFixture<UserAdministrationUserCreateComponent>;
 
-  let userAdministrationServiceSpy: SpyObj<UserAdministrationService>;
-  let notificationServiceSpy: SpyObj<NotificationService>;
+  let userAdministrationService: Mocked<
+    Pick<UserAdministrationService, 'getUser' | 'createUserPermission'>
+  >;
+  let notificationService: Mocked<Pick<NotificationService, 'success'>>;
 
-  beforeEach(async () => {
-    userAdministrationServiceSpy = jasmine.createSpyObj('UserService', [
-      'getUser',
-      'getPermissionsFromUserModelAsArray',
-      'createUserPermission',
-    ]);
-    notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
-      'success',
-    ]);
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        UserAdministrationUserCreateComponent,
-        MockUserSelectComponent,
-        DetailPageContainerComponent,
-        DetailPageContentComponent,
-        DetailFooterComponent,
-      ],
+  beforeEach(() => {
+    userAdministrationService = {
+      getUser: vi.fn(),
+      createUserPermission: vi.fn(),
+    };
+    notificationService = {
+      success: vi.fn(),
+    };
+    TestBed.configureTestingModule({
       providers: [
         translateServiceProvider,
         provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
         {
           provide: UserAdministrationService,
-          useValue: userAdministrationServiceSpy,
+          useValue: userAdministrationService,
         },
         {
           provide: NotificationService,
-          useValue: notificationServiceSpy,
+          useValue: notificationService,
         },
-        TranslatePipe,
         {
           provide: MAT_DIALOG_DATA,
           useValue: { user: undefined },
@@ -76,7 +55,7 @@ describe('UserAdministrationUserCreateComponent', () => {
           },
         },
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(UserAdministrationUserCreateComponent);
     component = fixture.componentInstance;
@@ -91,7 +70,7 @@ describe('UserAdministrationUserCreateComponent', () => {
   });
 
   it('test selectUser with valid user', () => {
-    userAdministrationServiceSpy.getUser.and.callFake((userId) =>
+    userAdministrationService.getUser.mockImplementation((userId) =>
       of({
         sbbUserId: userId,
         permissions: new Set<Permission>(),
@@ -107,7 +86,7 @@ describe('UserAdministrationUserCreateComponent', () => {
       sbbUserId: 'user1',
       permissions: new Set(),
     });
-    expect(userAdministrationServiceSpy.getUser).toHaveBeenCalledOnceWith(
+    expect(userAdministrationService.getUser).toHaveBeenCalledExactlyOnceWith(
       'user1'
     );
   });
@@ -118,20 +97,22 @@ describe('UserAdministrationUserCreateComponent', () => {
       sbbUserId: 'user1',
       permissions: new Set(),
     };
-    userAdministrationServiceSpy.createUserPermission.and.returnValue(
+    userAdministrationService.createUserPermission.mockReturnValue(
       of({
         sbbUserId: 'user1',
         permissions: new Set<Permission>(),
       })
     );
-    spyOn(router, 'navigate').and.resolveTo(true);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
     component.createUser();
+
     expect(
-      userAdministrationServiceSpy.createUserPermission
+      userAdministrationService.createUserPermission
     ).toHaveBeenCalledTimes(1);
     expect(router.navigate).toHaveBeenCalledTimes(1);
-    await tickAsync(1000);
-    expect(notificationServiceSpy.success).toHaveBeenCalledOnceWith(
+    await fixture.whenStable();
+    expect(notificationService.success).toHaveBeenCalledExactlyOnceWith(
       'USER_ADMIN.NOTIFICATIONS.ADD_SUCCESS'
     );
   });

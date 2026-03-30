@@ -1,9 +1,11 @@
 import {TestBed} from '@angular/core/testing';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
 import {AtlasApiService} from '../../atlas-api.service';
 import {HttpClient} from '@angular/common/http';
 import {UserService} from '../../../../core/auth/user/user.service';
 import {StopPointInternalService} from './stop-point-internal.service';
 import {RecordingObligation} from '../../../model/recordingObligation';
+import {EMPTY} from 'rxjs';
 
 describe('StopPointInternalService', () => {
   let service: StopPointInternalService;
@@ -19,18 +21,18 @@ describe('StopPointInternalService', () => {
 
     service = TestBed.inject(StopPointInternalService);
     apiService = TestBed.inject(AtlasApiService);
-    spyOn(apiService, 'validateParams').and.callThrough();
-    spyOn(apiService, 'get');
-    spyOn(apiService, 'put');
+    vi.spyOn(apiService, 'validateParams');
+    vi.spyOn(apiService, 'get').mockImplementation(() => EMPTY);
+    vi.spyOn(apiService, 'put').mockImplementation(() => EMPTY);
   });
 
   it('should getRecordingObligation', () => {
     service.getRecordingObligation('123');
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       sloid: '123'
     });
-    expect(apiService.get).toHaveBeenCalledOnceWith(
+    expect(apiService.get).toHaveBeenCalledExactlyOnceWith(
       '/prm-directory/internal/stop-points/recording-obligation/123',
     );
   });
@@ -38,11 +40,11 @@ describe('StopPointInternalService', () => {
   it('should updateRecordingObligation', () => {
     service.updateRecordingObligation('123', {} as RecordingObligation);
 
-    expect(apiService.validateParams).toHaveBeenCalledOnceWith({
+    expect(apiService.validateParams).toHaveBeenCalledExactlyOnceWith({
       sloid: '123',
       recordingObligation: {}
     });
-    expect(apiService.put).toHaveBeenCalledOnceWith(
+    expect(apiService.put).toHaveBeenCalledExactlyOnceWith(
       '/prm-directory/internal/stop-points/recording-obligation/123',
       {}
     );

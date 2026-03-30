@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach } from 'vitest';
 import { DownloadIconComponent } from './download-icon.component';
 
 describe('DownloadIconComponent', () => {

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { describe, expect, it } from 'vitest';
 import {
   HIDE_ORIGINAL_TEXT_LABEL,
   LOCK_ICON,
@@ -9,6 +9,7 @@ import {
 } from './statement-text.component';
 import { translateServiceProvider } from '../../../../app.testing.mocks';
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 
 const formGroup = new FormGroup({
@@ -24,7 +25,11 @@ describe('StatementText', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [StatementTextComponent],
-      providers: [translateServiceProvider, provideHttpClient()],
+      providers: [
+        translateServiceProvider,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StatementTextComponent);
@@ -80,11 +85,11 @@ describe('StatementText', () => {
     component.anonymizeStatement();
     fixture.detectChanges();
     //then
-    expect(component.statementText.anonymizeStatementButtonActive).toBeFalse();
+    expect(component.statementText.anonymizeStatementButtonActive).toBe(false);
     expect(component.form().controls.anonymousStatement.getRawValue()).toEqual(
       'Statement original text'
     );
-    expect(component.form().dirty).toBeTrue();
+    expect(component.form().dirty).toBe(true);
   });
 
   it('should uncheck anonymizeStatement', () => {
@@ -93,11 +98,11 @@ describe('StatementText', () => {
     component.anonymizeStatement();
     fixture.detectChanges();
     //then
-    expect(component.statementText.anonymizeStatementButtonActive).toBeTrue();
+    expect(component.statementText.anonymizeStatementButtonActive).toBe(true);
     expect(component.form().controls.anonymousStatement.getRawValue()).toEqual(
       'Statement original text'
     );
-    expect(component.form().dirty).toBeTrue();
+    expect(component.form().dirty).toBe(true);
   });
 
   it('should not show original text', () => {
@@ -105,7 +110,7 @@ describe('StatementText', () => {
     component.statementText.showOriginalStatementText = false;
     component.showOriginalText();
     //then
-    expect(component.statementText.showOriginalStatementText).toBeTrue();
+    expect(component.statementText.showOriginalStatementText).toBe(true);
     expect(component.statementText.originalTextButtonLabel).toBe(
       HIDE_ORIGINAL_TEXT_LABEL
     );
@@ -117,7 +122,7 @@ describe('StatementText', () => {
     component.statementText.showOriginalStatementText = true;
     component.showOriginalText();
     //then
-    expect(component.statementText.showOriginalStatementText).toBeFalse();
+    expect(component.statementText.showOriginalStatementText).toBe(false);
     expect(component.statementText.originalTextButtonLabel).toBe(
       SHOW_ORIGINAL_TEXT_LABEL
     );

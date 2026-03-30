@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { ParamsForTranslationPipe } from './params-for-translation.pipe';
 
 describe('ParamsForTranslationPipe', () => {

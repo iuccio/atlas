@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DateIconComponent } from './date-icon.component';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('DateIconComponent', () => {
   let component: DateIconComponent;
@@ -17,6 +18,6 @@ describe('DateIconComponent', () => {
   });
 
   it('should be enabled', () => {
-    expect(component.enabled()).toBeTrue();
+    expect(component.enabled()).toBe(true);
   });
 });

@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { DateService } from './date.service';
 
@@ -5,7 +6,6 @@ describe('DateService', () => {
   let service: DateService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
     service = TestBed.inject(DateService);
   });
 
@@ -14,7 +14,6 @@ describe('DateService', () => {
   });
 
   it('should calculate difference in days between dates', () => {
-    //when
     expect(
       DateService.differenceInDays(
         new Date('2020-01-01'),
@@ -39,6 +38,5 @@ describe('DateService', () => {
         new Date('2020-01-03')
       )
     ).toBe(2);
-    //then
   });
 });

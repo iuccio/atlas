@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { DateRangeComponent } from './date-range.component';
 import { AppTestingModule } from '../../../app.testing.module';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -15,19 +16,17 @@ import moment from 'moment';
 import { TimetableYearChangeInternalService } from '../../../api/service/lidi/timetable-year-change-internal.service';
 
 const nextTimetableYearChange = new Date('2024-12-15');
-const timetableYearChangeService = jasmine.createSpyObj(
-  'TimetableYearChangeInternalService',
-  ['getNextTimetablesYearChange']
-);
-timetableYearChangeService.getNextTimetablesYearChange.and.returnValue(
-  of([nextTimetableYearChange])
-);
 
 describe('DateRangeComponent', () => {
   let component: DateRangeComponent;
   let fixture: ComponentFixture<DateRangeComponent>;
+  let timetableYearChangeServiceMock: Mocked<Pick<TimetableYearChangeInternalService, 'getNextTimetablesYearChange'>>;
 
   beforeEach(async () => {
+    timetableYearChangeServiceMock = {
+      getNextTimetablesYearChange: vi.fn().mockReturnValue(of([nextTimetableYearChange])),
+    };
+
     await TestBed.configureTestingModule({
       imports: [
         AppTestingModule,
@@ -44,7 +43,7 @@ describe('DateRangeComponent', () => {
         { provide: TranslatePipe },
         {
           provide: TimetableYearChangeInternalService,
-          useValue: timetableYearChangeService,
+          useValue: timetableYearChangeServiceMock,
         },
       ],
     }).compileComponents();
@@ -134,9 +133,9 @@ describe('DateRangeComponent', () => {
       component.formGroup.controls.validFrom.value.isSame(
         moment().startOf('day')
       )
-    ).toBeTrue();
+    ).toBe(true);
     expect(
       component.formGroup.controls.validTo.value.isSame(moment().startOf('day'))
-    ).toBeTrue();
+    ).toBe(true);
   });
 });

@@ -1,16 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TableComponent } from './table.component';
-import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
-import { TableService } from './table.service';
 import { StatementStatus } from '../../../api';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { TableFilterComponent } from '../table-filter/table-filter.component';
 import { FormatPipe } from './pipe/format.pipe';
-
-export interface Obj {
-  prop: string;
-}
+import { translateServiceProvider } from '../../../app.testing.mocks';
 
 describe('TableComponent', () => {
   /*eslint-disable */
@@ -20,18 +15,13 @@ describe('TableComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TableComponent,
-        TranslateModule.forRoot(),
-        TableFilterComponent,
-      ],
-      providers: [TranslatePipe, FormatPipe, TableService],
+      providers: [translateServiceProvider, FormatPipe],
     });
 
     fixture = TestBed.createComponent(TableComponent);
     component = fixture.componentInstance;
 
-    function mapToCommaSeparated(props: Obj[]) {
+    function mapToCommaSeparated(props: { prop: string }[]) {
       return props
         .map((value) => value.prop)
         .sort()
@@ -104,9 +94,9 @@ describe('TableComponent', () => {
     fixture.detectChanges();
     const tableCells = fixture.debugElement.queryAll(By.css('td'));
     expect(tableCells).toBeDefined();
-    expect(tableCells[3].nativeElement.innerText).toEqual('a, b, c');
-    expect(tableCells[8].nativeElement.innerText).toEqual('d, f, g');
-    expect(tableCells[13].nativeElement.innerText).toEqual('');
+    expect(tableCells[3].nativeElement.textContent.trim()).toEqual('a, b, c');
+    expect(tableCells[8].nativeElement.textContent.trim()).toEqual('d, f, g');
+    expect(tableCells[13].nativeElement.textContent.trim()).toEqual('');
   });
 
   it('should get dropdown', () => {
@@ -117,14 +107,14 @@ describe('TableComponent', () => {
     expect(tableCells).toBeDefined();
     expect(tableCells.length).toEqual(3);
     tableCells.forEach((value) => {
-      expect(value.nativeElement.innerText).toEqual(
+      expect(value.nativeElement.textContent.trim()).toEqual(
         'FORM.DROPDOWN_PLACEHOLDER'
       );
     });
   });
 
   it('should output edit event', () => {
-    spyOn(component.editElementEvent, 'emit');
+    vi.spyOn(component.editElementEvent, 'emit').mockImplementation(() => {});
 
     fixture.detectChanges();
     const firstTableCell = fixture.debugElement.query(By.css('td'));
@@ -140,7 +130,7 @@ describe('TableComponent', () => {
 
   it('should click on show 5 element', () => {
     component.sortData({ active: 'validFrom', direction: 'asc' });
-    spyOn(component.tableChanged, 'emit');
+    vi.spyOn(component.tableChanged, 'emit').mockImplementation(() => {});
 
     fixture.detectChanges();
     const paginator = fixture.debugElement.query(By.css('mat-paginator'));
@@ -170,7 +160,7 @@ describe('TableComponent', () => {
 
   it('should click on sort name', () => {
     fixture.detectChanges();
-    spyOn(component.tableChanged, 'emit');
+    vi.spyOn(component.tableChanged, 'emit').mockImplementation(() => {});
 
     const buttonSortHeaderName = fixture.debugElement.query(
       By.css('.mat-sort-header-container')
@@ -189,7 +179,7 @@ describe('TableComponent', () => {
   });
 
   it('should emit selection change on checkbox click', () => {
-    spyOn(component.checkedBoxEvent, 'emit');
+    vi.spyOn(component.checkedBoxEvent, 'emit').mockImplementation(() => {});
 
     component.toggleCheckBox(new MatCheckboxChange(), { prop: 'row' });
 
