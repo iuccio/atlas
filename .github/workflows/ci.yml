@@ -14,6 +14,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TZ: Europe/Zurich  # or Europe/Berlin, Europe/Paris, Europe/Vienna (all use CET/CEST)
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
