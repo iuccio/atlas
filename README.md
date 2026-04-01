@@ -1,5 +1,4 @@
-# Atlas
-
+# Atlas [![CI - Java + Node](https://github.com/iuccio/atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/iuccio/atlas/actions/workflows/ci.yml)
 :construction: **At this point we do not accept opensource contributions or issues.** :construction:
 
 ATLAS is the SKI business application for public transport in Switzerland.
