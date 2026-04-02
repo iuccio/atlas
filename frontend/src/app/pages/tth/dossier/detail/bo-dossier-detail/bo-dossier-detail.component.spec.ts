@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
+import { describe, expect, it, beforeEach, vi, type Mocked } from 'vitest';
 import { BoDossierDetailComponent } from './bo-dossier-detail.component';
 import { AppTestingModule } from '../../../../../app.testing.module';
 import { TthDossier } from '../../../../../api/model/tthDossier';
@@ -11,8 +11,6 @@ import { TimetableHearingStatementInternalService } from '../../../../../api/ser
 import { FormatPipe } from '../../../../../core/components/table/pipe/format.pipe';
 import { DossierInternalService } from '../../../../../api/service/workflow/dossier-internal.service';
 import { NotificationService } from '../../../../../core/notification/notification.service';
-import { OpenBoDossierInMailService } from './open-bo-dossier-in-mail.service';
-import { mock } from 'vitest-mock-extended';
 
 const dossier: TthDossier = {
   swissCanton: SwissCanton.Bern,
@@ -47,7 +45,6 @@ describe('BoDossierDetail', () => {
     Pick<DossierInternalService, 'answerQuestion'>
   >;
   let notificationService: Mocked<Pick<NotificationService, 'success'>>;
-  const openBoDossierInMailService = mock<OpenBoDossierInMailService>();
 
   beforeEach(async () => {
     timetableHearingStatementInternalService = {
@@ -91,11 +88,7 @@ describe('BoDossierDetail', () => {
         },
         FormatPipe,
       ],
-    })
-      .overrideProvider(OpenBoDossierInMailService, {
-        useValue: openBoDossierInMailService,
-      })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(BoDossierDetailComponent);
     component = fixture.componentInstance;
@@ -125,11 +118,17 @@ describe('BoDossierDetail', () => {
   });
 
   it('should open mailto on openInMail()', () => {
+    //given
+    const windowOpenSpy = vi
+      .spyOn(window, 'open')
+      .mockImplementation(() => null);
     //when
     component.openInMail();
     //then
-    expect(openBoDossierInMailService.openDossierInMail).toHaveBeenCalledTimes(
-      1
+    expect(windowOpenSpy).toHaveBeenCalledTimes(1);
+    expect(windowOpenSpy).toHaveBeenCalledWith(
+      'mailto:?subject=Dossier%20%22Mehr%20Busse%20bitte%22&body=TTH.DOSSIER.INQUIRY_FROM_THE_CANTON%20%5BTTH.CANTON.BE%5D%0AHabt%20ihr%20mehr%20Busse%3F',
+      '_self'
     );
   });
 });

@@ -16,8 +16,8 @@
     }
   },
   "builder": {
-    "java": "25",
-    "node": "24"
+    "java": "21",
+    "node": "20"
   },
   "gradle": {
     "artifactoryMavenRepo": "atlas.mvn",
