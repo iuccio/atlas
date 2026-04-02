@@ -2,9 +2,9 @@ name: CI - Java + Node
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, sync-branch ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master, sync-branch ]
 
 env:
   # change these values to the exact versions you want, e.g. '25' or '25-ea' or 'openjdk@25'

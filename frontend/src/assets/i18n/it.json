@@ -268,10 +268,10 @@
       "DESCRIPTION": "Registrare, gestire e visualizzare i punti di esercizio e le fermate del trasporto pubblico svizzero (SLOID)."
     },
     "TTH": {
-      "TITLE": "Orario Audizione Svizerra",
-      "TITLE_MENU": "Orario Audizione",
+      "TITLE": "Consultazione del progetto d’orario Svizerra",
+      "TITLE_MENU": "Consultazione del progetto d’orario",
       "DESCRIPTION": "Visualizzazione ed elaborazione del feedback sul progetto di orario.",
-      "PATH_TEXT": "Orario Audizione",
+      "PATH_TEXT": "Consultazione del progetto d’orario",
       "SUBPAGE": {
         "PLANNED": "Audizioni programmate",
         "ARCHIVED": "Audizioni archiviate"
@@ -840,8 +840,7 @@
       "MULTIPLE_STATUS_CHANGE_MESSAGE": "Modifica le {{tthsLength}} audizione selezionate",
       "EXPORT_TYPE_TITLE": "Seleziona tipo di esportazione",
       "EXPORT_TYPE_MESSAGE": "Seleziona il tipo di esportazione desiderato per le osservazioni.",
-      "EXPORT_TYPE_INFO": "Le esportazioni anonimizzate rimuovono tutti i dati personali",
-      "EXPORT_TYPE_ANONYMIZED": "Anonimo",
+      "EXPORT_TYPE_ANONYMIZED": "Anonimo (I dati personali non vengono esportati; i testi di accompagnamento vengono esportati conformemente alla classificazione della protezione dei dati.)",
       "EXPORT_TYPE_NOT_ANONYMIZED": "Non anonimo",
       "EXPORT_TYPE_RESPONSIBILITY_INFO": "Per i dati non anonimi, la responsabilità ricade interamente sull'utente.",
       "CONFIRM": "Seleziona"
@@ -1151,7 +1150,8 @@
       "CANCEL_DOSSIER": "Revoca dossier",
       "DISSOLVE_DOSSIER": "Sciogliere dossier",
       "TOPIC": "Tema",
-      "ADD_TO_DOSSIER_INFO": "Dopo aver aggiunto, non è più possibile effettuare modifiche individuali. Le modifiche riguardano sempre tutte le prese di posizione in un dossier."
+      "ADD_TO_DOSSIER_INFO": "Dopo aver aggiunto, non è più possibile effettuare modifiche individuali. Le modifiche riguardano sempre tutte le prese di posizione in un dossier.",
+      "ID_AND_TOPIC": "Dossier-ID e tema"
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Chiusura dell'anno di calendario",

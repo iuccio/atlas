@@ -840,8 +840,7 @@
       "MULTIPLE_STATUS_CHANGE_MESSAGE": "Vous modifiez {{tthsLength}} l'avis sélectionné.",
       "EXPORT_TYPE_TITLE": "Sélectionner le type d'exportation",
       "EXPORT_TYPE_MESSAGE": "Veuillez sélectionner le type d'exportation souhaité pour les commentaires.",
-      "EXPORT_TYPE_INFO": "Les exportations anonymisées suppriment toutes les données à caractère personnel",
-      "EXPORT_TYPE_ANONYMIZED": "Anonymisé",
+      "EXPORT_TYPE_ANONYMIZED": "Anonymisé (Les données personnelles ne sont pas exportées; les textes d’accompagnement sont exportés conformément à la classification de la protection des données.)",
       "EXPORT_TYPE_NOT_ANONYMIZED": "Non anonymisé",
       "EXPORT_TYPE_RESPONSIBILITY_INFO": "L'utilisateur est entièrement responsable des données non anonymisées.",
       "CONFIRM": "Sélectionner"
@@ -1151,7 +1150,8 @@
       "CANCEL_DOSSIER": "Supprimer le dossier",
       "DISSOLVE_DOSSIER": "Fermer le dossier",
       "TOPIC": "Thème",
-      "ADD_TO_DOSSIER_INFO": "Après l’ajout, il n’est plus possible d’éditer individuellement. Les modifications concernent toujours toutes les prises de position d’un dossier."
+      "ADD_TO_DOSSIER_INFO": "Après l’ajout, il n’est plus possible d’éditer individuellement. Les modifications concernent toujours toutes les prises de position d’un dossier.",
+      "ID_AND_TOPIC": "Dossier-ID et thème"
     },
     "CLOSE_TIMETABLE_HEARING": {
       "POPUP_TITLE": "Clôture de l'année horaire",
